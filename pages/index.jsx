@@ -1826,6 +1826,302 @@ function ChoisirView() {
   )
 }
 
+// ─── Carte des Vignobles ───────────────────────────────────────────────────────
+const CARTE_REGIONS = [
+  { id:'Champagne',  label:'Champagne',        x:308, y:108, color:'#c9a84c', oeno:['Champagne'] },
+  { id:'Alsace',     label:'Alsace',            x:422, y:150, color:'#d4a040', oeno:['Alsace'] },
+  { id:'Bourgogne',  label:'Bourgogne',         x:320, y:262, color:'#8c2030', oeno:['Bourgogne'] },
+  { id:'Jura',       label:'Jura',              x:368, y:248, color:'#b09050', oeno:['Jura'] },
+  { id:'Beaujolais', label:'Beaujolais',        x:302, y:312, color:'#a02838', oeno:['Beaujolais'] },
+  { id:'Loire',      label:'Loire',             x:178, y:232, color:'#c9a84c', oeno:['Loire'] },
+  { id:'Bordeaux',   label:'Bordeaux',          x:138, y:378, color:'#8c2030', oeno:['Bordeaux'] },
+  { id:'SudOuest',   label:'Sud-Ouest',         x:185, y:445, color:'#a02838', oeno:['Sud-Ouest'] },
+  { id:'Languedoc',  label:'Languedoc',         x:272, y:455, color:'#8c2030', oeno:['Languedoc'] },
+  { id:'Rhone',      label:'Vallée du Rhône',   x:342, y:342, color:'#8c2030', oeno:['Rhône Nord','Rhône Sud'] },
+  { id:'Provence',   label:'Provence',          x:375, y:428, color:'#d4406a', oeno:['Provence'] },
+  { id:'Corse',      label:'Corse',             x:448, y:482, color:'#d4406a', oeno:['Corse'] },
+]
+
+const CARTE_WINE_ALIASES = {
+  Champagne:  ['champagne'],
+  Alsace:     ['alsace'],
+  Bourgogne:  ['bourgogne', 'burgundy'],
+  Jura:       ['jura'],
+  Beaujolais: ['beaujolais'],
+  Loire:      ['loire', 'val de loire'],
+  Bordeaux:   ['bordeaux'],
+  SudOuest:   ['sud-ouest', 'cahors', 'madiran', 'jurançon'],
+  Languedoc:  ['languedoc', 'roussillon', 'minervois', 'faugères'],
+  Rhone:      ['rhône', 'rhone', 'vallée du rhône'],
+  Provence:   ['provence', 'bandol'],
+  Corse:      ['corse'],
+}
+
+function getCarteRegionWines(regionId, wines) {
+  const terms = CARTE_WINE_ALIASES[regionId] || [regionId.toLowerCase()]
+  return wines.filter(w => terms.some(t => (w.region||'').toLowerCase().includes(t)))
+}
+
+function CarteView({ wines, onSelectWine, onDelete }) {
+  const [sel, setSel] = useState(null)
+
+  const selReg   = CARTE_REGIONS.find(r => r.id === sel)
+  const selWines = sel ? getCarteRegionWines(sel, wines) : []
+  const selOeno  = sel ? OENO_DB.filter(r => selReg.oeno.some(o => r[2].toLowerCase().includes(o.toLowerCase()))).slice(0, 10) : []
+
+  const bottleCount = id => getCarteRegionWines(id, wines).reduce((s,w)=>s+w.quantity, 0)
+
+  return (
+    <div>
+      {/* En-tête */}
+      <div style={{ marginBottom:18, padding:'16px 20px', borderRadius:16, background:`linear-gradient(135deg, #3e1420 0%, #1c0c10 55%, ${BG} 100%)`, border:`1px solid rgba(201,168,76,0.22)`, position:'relative', overflow:'hidden' }}>
+        <div style={{ position:'absolute', right:0, top:0, bottom:0, width:'35%', background:'radial-gradient(ellipse at 80% 50%,rgba(201,168,76,0.09) 0%,transparent 65%)', pointerEvents:'none' }}/>
+        <div style={{ fontSize:10, color:GOLD, textTransform:'uppercase', letterSpacing:'0.15em', fontWeight:700, marginBottom:5 }}>Vignobles de France</div>
+        <div style={{ fontSize:14, fontWeight:700, color:TEXT, fontFamily:'Georgia,serif', marginBottom:4 }}>Carte des régions viticoles</div>
+        <div style={{ fontSize:12, color:SUB, lineHeight:1.6 }}>
+          Sélectionnez un vignoble pour explorer vos bouteilles et les conseils de dégustation par région.
+        </div>
+      </div>
+
+      <div style={{ display:'flex', gap:18, flexWrap:'wrap', alignItems:'flex-start' }}>
+
+        {/* ── SVG Map ── */}
+        <div style={{ flex:'0 0 auto', width:'100%', maxWidth:480 }}>
+          <svg viewBox="0 0 480 520" style={{ width:'100%', display:'block', filter:'drop-shadow(0 6px 28px rgba(140,32,48,0.18))' }}>
+            {/* Fond léger */}
+            <rect width="480" height="520" fill="transparent" />
+
+            {/* Silhouette France */}
+            <path
+              d="M 235,25 L 292,18 L 352,35 L 400,62 L 432,108 L 448,162 L 442,222 L 428,268 L 415,322 L 398,370 L 378,422 L 348,462 L 300,485 L 252,490 L 188,472 L 122,445 L 88,408 L 72,352 L 78,292 L 68,238 L 58,196 L 35,178 L 58,148 L 112,112 L 148,78 L 180,50 L 218,30 Z"
+              fill="rgba(28,12,16,0.88)"
+              stroke="rgba(201,168,76,0.28)"
+              strokeWidth="1.8"
+              strokeLinejoin="round"
+            />
+
+            {/* Contours internes subtils (rivières / axes viticoles) */}
+            <path d="M 250,260 Q 310,310 340,342 Q 360,380 378,422" fill="none" stroke="rgba(201,168,76,0.07)" strokeWidth="1"/>
+            <path d="M 178,232 Q 220,260 258,268" fill="none" stroke="rgba(201,168,76,0.07)" strokeWidth="1"/>
+
+            {/* Marqueurs régions */}
+            {CARTE_REGIONS.map(r => {
+              const count = bottleCount(r.id)
+              const active = sel === r.id
+              const hasWine = count > 0
+              return (
+                <g key={r.id} onClick={() => setSel(active ? null : r.id)} style={{ cursor:'pointer' }}>
+                  {/* Halo sélection */}
+                  {active && (
+                    <>
+                      <circle cx={r.x} cy={r.y} r={22} fill={`${r.color}14`} />
+                      <circle cx={r.x} cy={r.y} r={17} fill={`${r.color}20`} stroke={`${r.color}55`} strokeWidth="1"/>
+                    </>
+                  )}
+                  {/* Cercle principal */}
+                  <circle
+                    cx={r.x} cy={r.y}
+                    r={active ? 13 : hasWine ? 11 : 7}
+                    fill={active ? r.color : hasWine ? `${r.color}cc` : 'rgba(255,255,255,0.1)'}
+                    stroke={active ? 'rgba(255,255,255,0.8)' : hasWine ? r.color : 'rgba(255,255,255,0.18)'}
+                    strokeWidth={active ? 1.8 : 1.2}
+                  />
+                  {/* Contenu marqueur */}
+                  {hasWine ? (
+                    <text x={r.x} y={r.y+4.5} textAnchor="middle" fontSize={active?9:8}
+                      fill={active?'#0f0508':'#fff'} fontWeight="800" fontFamily="sans-serif">
+                      {count}
+                    </text>
+                  ) : (
+                    <circle cx={r.x} cy={r.y} r={2} fill="rgba(255,255,255,0.35)" />
+                  )}
+                  {/* Label région */}
+                  <text x={r.x} y={r.y + (active?27:22)} textAnchor="middle"
+                    fontSize={active ? 8.5 : 7.5}
+                    fill={active ? r.color : hasWine ? 'rgba(245,237,224,0.75)' : 'rgba(168,144,128,0.55)'}
+                    fontWeight={active ? 700 : hasWine ? 600 : 400}
+                    fontFamily="Georgia, serif"
+                    style={{ pointerEvents:'none' }}
+                  >
+                    {r.label}
+                  </text>
+                </g>
+              )
+            })}
+
+            {/* Légende */}
+            <g>
+              <circle cx={16} cy={492} r={5} fill="rgba(201,168,76,0.7)" />
+              <text x={26} y={496} fontSize={7.5} fill="rgba(201,168,76,0.55)" fontFamily="sans-serif">bouteilles dans la cave</text>
+              <circle cx={16} cy={507} r={5} fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.2)" strokeWidth="1"/>
+              <text x={26} y={511} fontSize={7.5} fill="rgba(168,144,128,0.45)" fontFamily="sans-serif">aucune référence</text>
+            </g>
+          </svg>
+        </div>
+
+        {/* ── Panneau détail ── */}
+        <div style={{ flex:'1 1 260px', minWidth:250 }}>
+
+          {!sel ? (
+            /* Vue par défaut : liste des régions avec bouteilles */
+            <div>
+              <div style={{ fontSize:10, color:MUTED, textTransform:'uppercase', letterSpacing:'0.1em', fontWeight:700, marginBottom:12 }}>Vos vignobles</div>
+              <div style={{ display:'flex', flexDirection:'column', gap:7 }}>
+                {CARTE_REGIONS.map(r => {
+                  const count = bottleCount(r.id)
+                  const refs = getCarteRegionWines(r.id, wines).length
+                  return (
+                    <div key={r.id} onClick={()=>setSel(r.id)} style={{
+                      display:'flex', alignItems:'center', gap:12, padding:'11px 14px',
+                      background: count > 0 ? `linear-gradient(145deg,${CARD},${SURF})` : 'rgba(255,255,255,0.02)',
+                      border:`1px solid ${count > 0 ? BORD : 'rgba(255,255,255,0.04)'}`,
+                      borderRadius:12, cursor:'pointer', transition:'all 0.15s',
+                    }}
+                      onMouseEnter={e=>{ if(count>0) e.currentTarget.style.borderColor=`${r.color}55` }}
+                      onMouseLeave={e=>{ e.currentTarget.style.borderColor=count>0?BORD:'rgba(255,255,255,0.04)' }}
+                    >
+                      <div style={{ width:8, height:8, borderRadius:'50%', background: count > 0 ? r.color : 'rgba(255,255,255,0.12)', flexShrink:0 }} />
+                      <span style={{ fontSize:13, color: count > 0 ? TEXT : MUTED, fontFamily:'Georgia,serif', flex:1 }}>{r.label}</span>
+                      {count > 0 ? (
+                        <div style={{ textAlign:'right' }}>
+                          <div style={{ fontSize:13, fontWeight:800, color:GOLD }}>{count}</div>
+                          <div style={{ fontSize:9, color:MUTED, textTransform:'uppercase' }}>{refs} réf.</div>
+                        </div>
+                      ) : (
+                        <span style={{ fontSize:10, color:MUTED, fontStyle:'italic' }}>vide</span>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          ) : (
+            /* Détail région sélectionnée */
+            <div>
+              {/* Header région */}
+              <div style={{ padding:'16px 18px', borderRadius:14, background:`linear-gradient(145deg,${CARD},${SURF})`, border:`1px solid ${selReg?.color || BORD}55`, marginBottom:14 }}>
+                <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:8 }}>
+                  <div>
+                    <div style={{ fontSize:10, color:selReg?.color, textTransform:'uppercase', letterSpacing:'0.12em', fontWeight:700, marginBottom:4 }}>Vignoble</div>
+                    <div style={{ fontSize:20, fontWeight:800, color:TEXT, fontFamily:'Georgia,serif', lineHeight:1.2 }}>{selReg?.label}</div>
+                  </div>
+                  <button onClick={()=>setSel(null)} style={{ padding:'6px 12px', background:'rgba(255,255,255,0.05)', border:`1px solid ${BORD}`, borderRadius:9, color:MUTED, cursor:'pointer', fontSize:11, flexShrink:0, marginTop:2 }}>
+                    ✕
+                  </button>
+                </div>
+                {selWines.length > 0 && (
+                  <div style={{ display:'flex', gap:16, marginTop:14, paddingTop:12, borderTop:`1px solid ${BORD}` }}>
+                    <div>
+                      <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{selWines.reduce((s,w)=>s+w.quantity,0)}</div>
+                      <div style={{ fontSize:9, color:MUTED, textTransform:'uppercase' }}>bouteilles</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize:22, fontWeight:900, color:SUB }}>{selWines.length}</div>
+                      <div style={{ fontSize:9, color:MUTED, textTransform:'uppercase' }}>références</div>
+                    </div>
+                    {selWines.filter(w=>w.rating>0).length>0 && (
+                      <div>
+                        <div style={{ fontSize:22, fontWeight:900, color:'#fbbf24' }}>
+                          {Math.round(selWines.filter(w=>w.rating>0).reduce((s,w)=>s+w.rating,0)/selWines.filter(w=>w.rating>0).length)}
+                        </div>
+                        <div style={{ fontSize:9, color:MUTED, textTransform:'uppercase' }}>note moy.</div>
+                      </div>
+                    )}
+                    {selWines.reduce((s,w)=>s+(w.price||0)*w.quantity,0) > 0 && (
+                      <div>
+                        <div style={{ fontSize:22, fontWeight:900, background:'linear-gradient(135deg,#c9a84c,#e8c96a)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>
+                          {selWines.reduce((s,w)=>s+(w.price||0)*w.quantity,0).toLocaleString('fr')}€
+                        </div>
+                        <div style={{ fontSize:9, color:MUTED, textTransform:'uppercase' }}>valeur</div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Vins de la cave */}
+              {selWines.length > 0 ? (
+                <div style={{ marginBottom:16 }}>
+                  <div style={{ fontSize:10, color:MUTED, textTransform:'uppercase', letterSpacing:'0.09em', fontWeight:700, marginBottom:10 }}>Dans votre cave</div>
+                  <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+                    {selWines.map(w => {
+                      const ts = getTypeStyle(w.type)
+                      const st = getDrinkStatus(w)
+                      return (
+                        <div key={w.id} style={{ borderRadius:13, overflow:'hidden', background:`linear-gradient(145deg,${CARD},${SURF})`, border:`1px solid ${BORD}` }}>
+                          <div onClick={()=>onSelectWine(w)} style={{ display:'flex', gap:0, cursor:'pointer' }}>
+                            <div style={{ width:56, minHeight:70, background:ts.bg, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, borderRight:`1px solid ${BORD}`, overflow:'hidden' }}>
+                              {w.photo
+                                ? <img src={w.photo} alt="" style={{ width:'100%', height:'100%', objectFit:'cover' }}/>
+                                : <span style={{ fontSize:22 }}>{TYPE_EMOJI[w.type]||'🍷'}</span>
+                              }
+                            </div>
+                            <div style={{ flex:1, padding:'10px 13px', minWidth:0 }}>
+                              <div style={{ display:'flex', gap:5, marginBottom:4 }}>
+                                <span style={{ fontSize:9, padding:'1px 7px', borderRadius:10, background:ts.bg, color:ts.text, border:`1px solid ${ts.border}`, fontWeight:700 }}>{TYPE_LABELS[w.type]}</span>
+                                <span style={{ fontSize:9, padding:'1px 7px', borderRadius:10, background:st.bg, color:st.color, fontWeight:700 }}>{st.label}</span>
+                              </div>
+                              <div style={{ fontSize:13, fontWeight:700, color:TEXT, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', fontFamily:'Georgia,serif' }}>{w.name}</div>
+                              <div style={{ fontSize:11, color:SUB, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{w.domain}</div>
+                              <div style={{ display:'flex', gap:10, marginTop:5, alignItems:'center' }}>
+                                <span style={{ fontSize:13, fontWeight:800, color:GOLD }}>{w.quantity} btl</span>
+                                {w.price>0 && <span style={{ fontSize:11, color:MUTED }}>{w.price}€/btl</span>}
+                                <span style={{ fontSize:10, color:SUB }}>{w.vintage}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div style={{ display:'flex', borderTop:`1px solid ${BORD}` }}>
+                            <button onClick={()=>onSelectWine(w)} style={{ flex:1, padding:'8px', background:'none', border:'none', color:SUB, cursor:'pointer', fontSize:11, fontWeight:600, fontFamily:'inherit' }}>
+                              Fiche détaillée →
+                            </button>
+                            <div style={{ width:'1px', background:BORD }} />
+                            <button onClick={()=>onDelete(w.id)} style={{ flex:1, padding:'8px', background:'none', border:'none', color:'#f87171', cursor:'pointer', fontSize:11, fontWeight:600, fontFamily:'inherit' }}>
+                              🗑️ Supprimer
+                            </button>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              ) : (
+                <div style={{ padding:'22px 18px', textAlign:'center', borderRadius:13, background:'rgba(255,255,255,0.02)', border:`1px solid ${BORD}`, marginBottom:14 }}>
+                  <div style={{ fontSize:24, marginBottom:8, opacity:0.4 }}>🍾</div>
+                  <div style={{ fontSize:13, color:SUB, fontFamily:'Georgia,serif' }}>Aucun vin de cette région</div>
+                  <div style={{ fontSize:11, color:MUTED, marginTop:4 }}>Ajoutez une bouteille pour commencer</div>
+                </div>
+              )}
+
+              {/* Données OENO */}
+              {selOeno.length > 0 && (
+                <div>
+                  <div style={{ fontSize:10, color:MUTED, textTransform:'uppercase', letterSpacing:'0.09em', fontWeight:700, marginBottom:10 }}>📚 Conseils & millésimes</div>
+                  <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
+                    {selOeno.map((r,i) => (
+                      <div key={i} style={{ display:'flex', gap:10, alignItems:'center', padding:'10px 13px', background:'rgba(255,255,255,0.02)', borderRadius:11, border:`1px solid ${BORD}` }}>
+                        <span style={{ fontSize:16, flexShrink:0 }}>{TYPE_EMOJI[{Rouge:'red',Blanc:'white',Rosé:'rosé',Effervescent:'sparkling',Liquoreux:'sweet'}[r[1]]]||'🍷'}</span>
+                        <div style={{ flex:1, minWidth:0 }}>
+                          <div style={{ fontSize:12, fontWeight:700, color:TEXT, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{r[3]}</div>
+                          <div style={{ fontSize:10, color:SUB }}>{r[0]} · garde {r[5]} ans · boire avant {r[0]+r[5]}</div>
+                          {r[6] && <div style={{ fontSize:10, color:MUTED, fontStyle:'italic', marginTop:2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{r[6]}</div>}
+                        </div>
+                        <span style={{ fontSize:9, padding:'2px 8px', borderRadius:9, fontWeight:700, whiteSpace:'nowrap', flexShrink:0,
+                          background: r[7]==='Privilégier'?'rgba(74,222,128,0.12)':r[7]==='Bon choix'?'rgba(251,191,36,0.12)':r[7]==='À éviter'?'rgba(107,114,128,0.1)':'rgba(248,113,113,0.1)',
+                          color: r[7]==='Privilégier'?'#4ade80':r[7]==='Bon choix'?'#fbbf24':r[7]==='À éviter'?'#9ca3af':'#f87171',
+                        }}>{r[7]}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ─── App ───────────────────────────────────────────────────────────────────────
 const TABS = [
   { id:'dashboard', label:'Tableau de bord', icon:<ChartBar/> },
@@ -1837,6 +2133,7 @@ const TABS = [
 const BOTTOM_TABS = [
   { id:'dashboard', label:'Accueil',  icon:'🏠' },
   { id:'cave',      label:'Cave',     icon:'🍾' },
+  { id:'carte',     label:'Carte',    icon:'🗺️' },
   { id:'accords',   label:'Accords',  icon:'🍽️' },
   { id:'choisir',   label:'Choisir',  icon:'🔍' },
 ]
@@ -1887,7 +2184,7 @@ export default function App() {
     </div>
   )
 
-  const tabLabel = { dashboard:'Accueil', cave:'Ma Cave', accords:'Accords', choisir:'Choisir un Vin' }
+  const tabLabel = { dashboard:'Accueil', cave:'Ma Cave', carte:'Carte', accords:'Accords', choisir:'Choisir un Vin' }
 
   return (
     <div style={{ minHeight:'100vh', background:BG, paddingBottom:72 }}>
@@ -1920,6 +2217,7 @@ export default function App() {
       <main style={{ maxWidth:960, margin:'0 auto', padding:'20px 16px' }}>
         {tab==='dashboard' && <Dashboard wines={wines} searchQ={searchQ} setSearchQ={setSearchQ} onSelectWine={setDetailW} onGoToCave={()=>setTab('cave')}/>}
         {tab==='cave'      && <CaveView wines={wines} onAdd={()=>setShowAdd(true)} onEdit={edit} onDelete={del} onSelect={setDetailW}/>}
+        {tab==='carte'     && <CarteView wines={wines} onSelectWine={setDetailW} onDelete={del}/>}
         {tab==='accords'   && <AccordsView wines={wines}/>}
         {tab==='choisir'   && <ChoisirView/>}
       </main>
@@ -1933,8 +2231,8 @@ export default function App() {
               background:'none', border:'none', cursor:'pointer', transition:'all 0.15s',
               color: tab===t.id ? GOLD : MUTED,
             }}>
-              <span style={{ fontSize:20, lineHeight:1 }}>{t.icon}</span>
-              <span style={{ fontSize:9, fontWeight: tab===t.id ? 700 : 400, textTransform:'uppercase', letterSpacing:'0.06em' }}>{t.label}</span>
+              <span style={{ fontSize:18, lineHeight:1 }}>{t.icon}</span>
+              <span style={{ fontSize:8, fontWeight: tab===t.id ? 700 : 400, textTransform:'uppercase', letterSpacing:'0.04em' }}>{t.label}</span>
               {tab===t.id && <div style={{ position:'absolute', bottom:0, width:28, height:2, background:GOLD, borderRadius:1 }}/>}
             </button>
           ))}
