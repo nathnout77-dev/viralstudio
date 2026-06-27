@@ -291,24 +291,48 @@ const ForkKnifeIcon = () => (
   </svg>
 )
 
+// ─── Design tokens ─────────────────────────────────────────────────────────────
+const BG    = '#0f0508'
+const SURF  = '#1c0c10'
+const CARD  = '#230f13'
+const GOLD  = '#c9a84c'
+const WINE  = '#8c2030'
+const WINE2 = '#ca2e43'
+const TEXT  = '#f5ede0'
+const SUB   = '#a89080'
+const MUTED = '#6b5a50'
+const BORD  = 'rgba(201,168,76,0.18)'
+const BORDW = 'rgba(140,32,48,0.35)'
+
 // ─── Utilitaires ───────────────────────────────────────────────────────────────
 const YEAR = new Date().getFullYear()
 const TYPE_LABELS = { red: 'Rouge', white: 'Blanc', rosé: 'Rosé', sparkling: 'Effervescent', sweet: 'Liquoreux' }
+const TYPE_EMOJI  = { red: '🍷', white: '🥂', rosé: '🌹', sparkling: '🍾', sweet: '🍯' }
 
 function getDrinkStatus(w) {
-  if (w.drinkFrom > YEAR) return { label: 'Trop jeune', color: '#60a5fa', bg: 'rgba(96,165,250,0.1)' }
-  if (w.drinkUntil < YEAR) return { label: 'À consommer vite', color: '#f87171', bg: 'rgba(248,113,113,0.1)' }
-  if (w.drinkUntil - YEAR <= 2) return { label: 'Apogée imminente', color: '#fbbf24', bg: 'rgba(251,191,36,0.1)' }
-  return { label: 'À maturité', color: '#4ade80', bg: 'rgba(74,222,128,0.1)' }
+  if (w.drinkFrom > YEAR) return { label: 'Trop jeune', color: '#60a5fa', bg: 'rgba(96,165,250,0.12)' }
+  if (w.drinkUntil < YEAR) return { label: 'À consommer vite', color: '#f87171', bg: 'rgba(248,113,113,0.12)' }
+  if (w.drinkUntil - YEAR <= 2) return { label: 'Apogée imminente', color: '#fbbf24', bg: 'rgba(251,191,36,0.12)' }
+  return { label: 'À maturité', color: '#4ade80', bg: 'rgba(74,222,128,0.12)' }
+}
+
+function StarRating({ value, max=100, size=11 }) {
+  const stars = Math.round((value / max) * 5)
+  return (
+    <span style={{ color: GOLD, fontSize: size, letterSpacing: 1 }}>
+      {'★'.repeat(stars)}{'☆'.repeat(5 - stars)}
+      <span style={{ color: SUB, fontSize: size - 1, marginLeft: 4 }}>{value}</span>
+    </span>
+  )
 }
 
 function getTypeStyle(type) {
   const s = {
-    red:      { bg: 'rgba(139,26,48,0.25)',  border: 'rgba(139,26,48,0.5)',  text: '#f9a8b8', dot: '#ca2e43' },
-    white:    { bg: 'rgba(180,160,60,0.2)',   border: 'rgba(180,160,60,0.4)', text: '#fde68a', dot: '#d97706' },
-    rosé:     { bg: 'rgba(244,63,94,0.15)',   border: 'rgba(244,63,94,0.35)', text: '#fda4af', dot: '#f43f5e' },
-    sparkling:{ bg: 'rgba(6,182,212,0.12)',   border: 'rgba(6,182,212,0.3)',  text: '#67e8f9', dot: '#06b6d4' },
-    sweet:    { bg: 'rgba(245,158,11,0.15)',  border: 'rgba(245,158,11,0.35)',text: '#fcd34d', dot: '#f59e0b' },
+    red:      { bg: 'rgba(140,32,48,0.28)',   border: 'rgba(202,46,67,0.45)',  text: '#f4a0b0', dot: WINE2 },
+    white:    { bg: 'rgba(201,168,76,0.18)',  border: 'rgba(201,168,76,0.4)',  text: '#e8c96a', dot: GOLD },
+    rosé:     { bg: 'rgba(244,63,94,0.15)',   border: 'rgba(244,63,94,0.35)',  text: '#fda4af', dot: '#f43f5e' },
+    sparkling:{ bg: 'rgba(180,220,255,0.1)',  border: 'rgba(180,220,255,0.25)',text: '#bae6fd', dot: '#7dd3fc' },
+    sweet:    { bg: 'rgba(201,168,76,0.22)',  border: 'rgba(201,168,76,0.45)', text: '#fcd34d', dot: '#f59e0b' },
   }
   return s[type] || s.red
 }
@@ -366,15 +390,15 @@ function Modal({ open, onClose, title, children }) {
   }, [open])
   if (!open) return null
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '48px 16px 16px', background: 'rgba(0,0,0,0.88)', backdropFilter: 'blur(6px)' }}>
-      <div style={{ position: 'relative', width: '100%', maxWidth: 720, maxHeight: '85vh', overflowY: 'auto', borderRadius: 20, background: 'linear-gradient(160deg, #1c1c28 0%, #111118 100%)', border: '1px solid rgba(139,26,48,0.3)', boxShadow: '0 0 80px rgba(139,26,48,0.18)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px', borderBottom: '1px solid rgba(255,255,255,0.06)', position: 'sticky', top: 0, background: 'linear-gradient(160deg, #1c1c28, #111118)', zIndex: 1 }}>
-          <h2 style={{ fontSize: 17, fontWeight: 700, color: '#e8e0d5', fontFamily: 'Georgia, serif' }}>{title}</h2>
-          <button onClick={onClose} style={{ padding: 8, borderRadius: 8, background: 'rgba(255,255,255,0.05)', border: 'none', color: '#6b7280', cursor: 'pointer', display: 'flex' }}>
+    <div style={{ position:'fixed', inset:0, zIndex:50, display:'flex', alignItems:'flex-end', justifyContent:'center', background:'rgba(5,2,3,0.92)', backdropFilter:'blur(8px)' }}>
+      <div style={{ position:'relative', width:'100%', maxWidth:720, maxHeight:'92vh', overflowY:'auto', borderRadius:'24px 24px 0 0', background:`linear-gradient(160deg, ${SURF} 0%, ${BG} 100%)`, border:`1px solid ${BORD}`, boxShadow:`0 -8px 60px rgba(140,32,48,0.22)` }}>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'18px 22px', borderBottom:`1px solid ${BORD}`, position:'sticky', top:0, background:SURF, zIndex:1, borderRadius:'24px 24px 0 0' }}>
+          <h2 style={{ fontSize:17, fontWeight:700, color:TEXT, fontFamily:'Georgia, serif', letterSpacing:'0.01em' }}>{title}</h2>
+          <button onClick={onClose} style={{ padding:8, borderRadius:10, background:`rgba(201,168,76,0.08)`, border:`1px solid ${BORD}`, color:SUB, cursor:'pointer', display:'flex' }}>
             <CloseIcon />
           </button>
         </div>
-        <div style={{ padding: 24 }}>{children}</div>
+        <div style={{ padding:22 }}>{children}</div>
       </div>
     </div>
   )
@@ -394,6 +418,38 @@ function WineForm({ initial, onSave, onClose }) {
   const [aroma, setAroma] = useState('')
   const [food, setFood] = useState('')
   const [cepage, setCepage] = useState('')
+  const [oenoSearch, setOenoSearch] = useState('')
+  const [oenoOpen, setOenoOpen] = useState(false)
+  const oenoRef = useRef(null)
+
+  // Search OENO_DB: filter by region or appellation name
+  const oenoResults = oenoSearch.trim().length >= 2
+    ? OENO_DB.filter(r =>
+        r[2].toLowerCase().includes(oenoSearch.toLowerCase()) ||
+        r[3].toLowerCase().includes(oenoSearch.toLowerCase()) ||
+        r[4].toLowerCase().includes(oenoSearch.toLowerCase())
+      ).slice(0, 20)
+    : []
+
+  useEffect(() => {
+    const h = e => { if (oenoRef.current && !oenoRef.current.contains(e.target)) setOenoOpen(false) }
+    document.addEventListener('mousedown', h)
+    return () => document.removeEventListener('mousedown', h)
+  }, [])
+
+  const applyOeno = (row) => {
+    const couleurMap = { Rouge:'red', Blanc:'white', Rosé:'rosé', Effervescent:'sparkling', Liquoreux:'sweet' }
+    setForm(f => ({
+      ...f,
+      appellation: row[3],
+      region: row[2],
+      type: couleurMap[row[1]] || f.type,
+      cepages: row[4].split(', ').map(c => c.trim()).filter(Boolean),
+      drinkUntil: f.vintage ? f.vintage + row[5] : f.drinkUntil,
+    }))
+    setOenoSearch(row[3])
+    setOenoOpen(false)
+  }
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
   const addTag = (field, val, reset) => {
@@ -408,15 +464,48 @@ function WineForm({ initial, onSave, onClose }) {
     onSave({ ...form, id: form.id || Date.now().toString() })
   }
 
-  const inp = { width:'100%', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.09)', borderRadius:9, padding:'9px 13px', color:'#e8e0d5', fontSize:14, outline:'none', fontFamily:'inherit' }
-  const lbl = { display:'block', fontSize:11, color:'#9ca3af', marginBottom:5, fontWeight:600, textTransform:'uppercase', letterSpacing:'0.07em' }
-  const tagRed = { padding:'3px 10px', background:'rgba(139,26,48,0.2)', border:'1px solid rgba(139,26,48,0.4)', borderRadius:20, fontSize:12, color:'#f9a8b8', cursor:'pointer' }
-  const tagGold = { padding:'3px 10px', background:'rgba(120,53,15,0.25)', border:'1px solid rgba(180,83,9,0.4)', borderRadius:20, fontSize:12, color:'#fcd34d', cursor:'pointer' }
+  const inp = { width:'100%', background:`rgba(255,255,255,0.05)`, border:`1px solid ${BORD}`, borderRadius:10, padding:'10px 14px', color:TEXT, fontSize:14, outline:'none', fontFamily:'inherit' }
+  const lbl = { display:'block', fontSize:10, color:MUTED, marginBottom:5, fontWeight:700, textTransform:'uppercase', letterSpacing:'0.09em' }
+  const tagRed = { padding:'3px 10px', background:'rgba(140,32,48,0.22)', border:`1px solid ${BORDW}`, borderRadius:20, fontSize:12, color:'#f9a8b8', cursor:'pointer' }
+  const tagGold = { padding:'3px 10px', background:'rgba(201,168,76,0.15)', border:`1px solid rgba(201,168,76,0.35)`, borderRadius:20, fontSize:12, color:GOLD, cursor:'pointer' }
   const tagGreen = { padding:'3px 10px', background:'rgba(20,50,20,0.5)', border:'1px solid rgba(34,100,34,0.4)', borderRadius:20, fontSize:12, color:'#86efac', cursor:'pointer' }
-  const addBtn = { padding:'9px 14px', background:'rgba(139,26,48,0.25)', border:'1px solid rgba(139,26,48,0.4)', borderRadius:9, color:'#f9a8b8', fontSize:13, cursor:'pointer' }
+  const addBtn = { padding:'10px 14px', background:`rgba(201,168,76,0.15)`, border:`1px solid rgba(201,168,76,0.35)`, borderRadius:10, color:GOLD, fontSize:13, cursor:'pointer', fontWeight:600 }
 
   return (
     <form onSubmit={submit}>
+      {/* ── Recherche rapide OENO_DB ── */}
+      <div ref={oenoRef} style={{ position:'relative', marginBottom:18 }}>
+        <div style={{ fontSize:11, color:GOLD, fontWeight:700, textTransform:'uppercase', letterSpacing:'0.09em', marginBottom:7 }}>🔍 Rechercher un vin par région ou appellation</div>
+        <input
+          value={oenoSearch}
+          onChange={e => { setOenoSearch(e.target.value); setOenoOpen(true) }}
+          onFocus={() => setOenoOpen(true)}
+          placeholder="Ex: Bourgogne, Sancerre, Bordeaux, Syrah…"
+          style={{ ...inp, borderColor: oenoOpen && oenoResults.length ? GOLD : BORD }}
+          autoComplete="off"
+        />
+        {oenoOpen && oenoResults.length > 0 && (
+          <div style={{ position:'absolute', top:'100%', left:0, right:0, zIndex:200, marginTop:4, background:SURF, border:`1px solid ${BORD}`, borderRadius:12, boxShadow:`0 12px 40px rgba(0,0,0,0.6)`, maxHeight:280, overflowY:'auto' }}>
+            {oenoResults.map((row, i) => (
+              <div key={i} onMouseDown={e=>{ e.preventDefault(); applyOeno(row) }}
+                style={{ padding:'10px 14px', borderBottom:`1px solid rgba(201,168,76,0.08)`, cursor:'pointer', display:'flex', gap:10, alignItems:'center' }}
+                onMouseEnter={e=>e.currentTarget.style.background=`rgba(201,168,76,0.08)`}
+                onMouseLeave={e=>e.currentTarget.style.background=''}
+              >
+                <span style={{ fontSize:16 }}>{TYPE_EMOJI[{Rouge:'red',Blanc:'white',Rosé:'rosé',Effervescent:'sparkling',Liquoreux:'sweet'}[row[1]]] || '🍷'}</span>
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div style={{ fontSize:13, fontWeight:700, color:TEXT, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{row[3]}</div>
+                  <div style={{ fontSize:11, color:SUB }}>{row[2]} · {row[1]} · {row[0]} · garde {row[5]} ans</div>
+                  <div style={{ fontSize:10, color:MUTED, fontStyle:'italic', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{row[4]}</div>
+                </div>
+                <span style={{ fontSize:10, padding:'2px 8px', borderRadius:10, background: row[7]==='Privilégier'?'rgba(74,222,128,0.12)':row[7]==='Bon choix'?'rgba(251,191,36,0.12)':'rgba(248,113,113,0.1)', color: row[7]==='Privilégier'?'#4ade80':row[7]==='Bon choix'?'#fbbf24':'#f87171', whiteSpace:'nowrap', fontWeight:600 }}>{row[7]}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        {oenoSearch && <div style={{ fontSize:11, color:MUTED, marginTop:5 }}>↑ Sélectionner un résultat remplit automatiquement le formulaire</div>}
+      </div>
+
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 }}>
         <div style={{ gridColumn:'1/-1' }}>
           <label style={lbl}>Nom du vin *</label>
@@ -577,12 +666,12 @@ function WineForm({ initial, onSave, onClose }) {
         </div>
       </div>
 
-      <div style={{ display:'flex', gap:10, marginTop:20 }}>
-        <button type="button" onClick={onClose} style={{ flex:1, padding:'11px', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:10, color:'#9ca3af', cursor:'pointer', fontSize:14 }}>
+      <div style={{ display:'flex', gap:10, marginTop:24 }}>
+        <button type="button" onClick={onClose} style={{ flex:1, padding:'13px', background:'rgba(255,255,255,0.04)', border:`1px solid ${BORD}`, borderRadius:12, color:SUB, cursor:'pointer', fontSize:14, fontWeight:600 }}>
           Annuler
         </button>
-        <button type="submit" style={{ flex:2, padding:'11px', background:'linear-gradient(135deg, #8c2030, #ca2e43)', border:'none', borderRadius:10, color:'#fff', cursor:'pointer', fontSize:14, fontWeight:700 }}>
-          {initial ? 'Enregistrer' : 'Ajouter à la cave'}
+        <button type="submit" style={{ flex:2, padding:'13px', background:`linear-gradient(135deg, ${WINE}, ${WINE2})`, border:'none', borderRadius:12, color:'#fff', cursor:'pointer', fontSize:14, fontWeight:800, letterSpacing:'0.02em' }}>
+          {initial ? '✓ Enregistrer' : '+ Ajouter à la cave'}
         </button>
       </div>
     </form>
@@ -598,67 +687,67 @@ function WineCard({ wine, onClick, onEdit, onDelete }) {
   return (
     <div onClick={onClick} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
       style={{
-        position:'relative', cursor:'pointer', borderRadius:16, padding:18,
-        background: hov ? 'linear-gradient(145deg,#1e1e2a,#16161e)' : 'linear-gradient(145deg,#1a1a24,#111118)',
-        border:`1px solid ${hov ? 'rgba(139,26,48,0.45)' : 'rgba(255,255,255,0.06)'}`,
+        position:'relative', cursor:'pointer', borderRadius:16,
+        background: hov ? `linear-gradient(145deg,#2a1018,#1c0c10)` : `linear-gradient(145deg,${CARD},${SURF})`,
+        border:`1px solid ${hov ? 'rgba(201,168,76,0.38)' : BORD}`,
         transition:'all 0.18s ease',
-        boxShadow: hov ? '0 8px 30px rgba(139,26,48,0.14)' : '0 2px 8px rgba(0,0,0,0.28)',
+        boxShadow: hov ? `0 8px 30px rgba(201,168,76,0.10)` : '0 2px 10px rgba(0,0,0,0.35)',
         transform: hov ? 'translateY(-2px)' : 'none',
+        overflow:'hidden',
       }}>
+
+      {/* Actions hover */}
       {hov && (
-        <div style={{ position:'absolute', top:12, right:12, display:'flex', gap:5 }} onClick={e=>e.stopPropagation()}>
-          <button onClick={()=>onEdit(wine)} style={{ padding:'5px 7px', background:'rgba(255,255,255,0.07)', border:'none', borderRadius:7, color:'#9ca3af', cursor:'pointer', display:'flex' }}><EditIcon /></button>
-          <button onClick={()=>onDelete(wine.id)} style={{ padding:'5px 7px', background:'rgba(239,68,68,0.1)', border:'none', borderRadius:7, color:'#f87171', cursor:'pointer', display:'flex' }}><TrashIcon /></button>
+        <div style={{ position:'absolute', top:10, right:10, display:'flex', gap:5, zIndex:2 }} onClick={e=>e.stopPropagation()}>
+          <button onClick={()=>onEdit(wine)} style={{ padding:'5px 7px', background:SURF, border:`1px solid ${BORD}`, borderRadius:7, color:SUB, cursor:'pointer', display:'flex' }}><EditIcon /></button>
+          <button onClick={()=>onDelete(wine.id)} style={{ padding:'5px 7px', background:'rgba(248,113,113,0.12)', border:'1px solid rgba(248,113,113,0.3)', borderRadius:7, color:'#f87171', cursor:'pointer', display:'flex' }}><TrashIcon /></button>
         </div>
       )}
 
-      <div style={{ display:'flex', gap:12, alignItems:'flex-start' }}>
-        <div style={{ width:42, height:56, borderRadius:11, background:ts.bg, border:`1px solid ${ts.border}`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, overflow:'hidden' }}>
+      <div style={{ display:'flex', gap:0 }}>
+        {/* Photo / icône */}
+        <div style={{ width:72, minHeight:100, background:ts.bg, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, overflow:'hidden', borderRight:`1px solid ${BORD}` }}>
           {wine.photo
             ? <img src={wine.photo} alt="" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
-            : <WineGlass size={19} color={ts.dot} />
+            : <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
+                <span style={{ fontSize:26 }}>{TYPE_EMOJI[wine.type]||'🍷'}</span>
+                <span style={{ fontSize:9, color:ts.text, fontWeight:700, textTransform:'uppercase', letterSpacing:'0.06em' }}>{wine.vintage}</span>
+              </div>
           }
         </div>
-        <div style={{ flex:1, minWidth:0 }}>
-          <div style={{ display:'flex', gap:6, marginBottom:5, flexWrap:'wrap' }}>
-            <span style={{ fontSize:10, padding:'2px 8px', borderRadius:20, background:ts.bg, color:ts.text, border:`1px solid ${ts.border}`, fontWeight:600 }}>{TYPE_LABELS[wine.type]}</span>
-            <span style={{ fontSize:11, color:'#6b7280' }}>{wine.vintage}</span>
+
+        {/* Contenu */}
+        <div style={{ flex:1, padding:'13px 14px', minWidth:0 }}>
+          <div style={{ display:'flex', gap:5, marginBottom:5, flexWrap:'wrap', alignItems:'center' }}>
+            <span style={{ fontSize:10, padding:'2px 8px', borderRadius:12, background:ts.bg, color:ts.text, border:`1px solid ${ts.border}`, fontWeight:700 }}>{TYPE_LABELS[wine.type]}</span>
+            {wine.photo && <span style={{ fontSize:9, color:SUB }}>{wine.vintage}</span>}
           </div>
-          <div style={{ fontSize:14, fontWeight:700, color:'#e8e0d5', fontFamily:'Georgia,serif', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{wine.name}</div>
-          <div style={{ fontSize:12, color:'#9ca3af', marginTop:2 }}>{wine.domain}</div>
-          <div style={{ fontSize:11, color:'#6b7280', marginTop:1 }}>{wine.region}</div>
+          <div style={{ fontSize:14, fontWeight:700, color:TEXT, fontFamily:'Georgia,serif', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', marginBottom:2 }}>{wine.name}</div>
+          <div style={{ fontSize:11, color:SUB, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{wine.domain}</div>
+          <div style={{ fontSize:10, color:MUTED }}>{wine.region}</div>
+
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginTop:10 }}>
+            <div style={{ display:'flex', gap:12, alignItems:'center' }}>
+              <div style={{ textAlign:'center' }}>
+                <div style={{ fontSize:16, fontWeight:800, color:GOLD }}>{wine.quantity}</div>
+                <div style={{ fontSize:8, color:MUTED, textTransform:'uppercase', letterSpacing:'0.05em' }}>btl</div>
+              </div>
+              {wine.price > 0 && (
+                <div style={{ textAlign:'center' }}>
+                  <div style={{ fontSize:14, fontWeight:700, color:SUB }}>{wine.price}€</div>
+                  <div style={{ fontSize:8, color:MUTED, textTransform:'uppercase' }}>/ btl</div>
+                </div>
+              )}
+            </div>
+            <div style={{ textAlign:'right' }}>
+              {wine.rating > 0 && <StarRating value={wine.rating} size={10} />}
+              <div style={{ marginTop:3 }}>
+                <span style={{ fontSize:9, padding:'2px 7px', borderRadius:10, background:status.bg, color:status.color, fontWeight:700 }}>{status.label}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
-      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginTop:13 }}>
-        <div style={{ display:'flex', gap:14 }}>
-          <div style={{ textAlign:'center' }}>
-            <div style={{ fontSize:17, fontWeight:800, color:'#d97706' }}>{wine.quantity}</div>
-            <div style={{ fontSize:9, color:'#6b7280', textTransform:'uppercase' }}>btl</div>
-          </div>
-          {wine.rating > 0 && (
-            <div style={{ textAlign:'center' }}>
-              <div style={{ fontSize:17, fontWeight:800, color:'#f59e0b' }}>{wine.rating}</div>
-              <div style={{ fontSize:9, color:'#6b7280', textTransform:'uppercase' }}>pts</div>
-            </div>
-          )}
-          {wine.price > 0 && (
-            <div style={{ textAlign:'center' }}>
-              <div style={{ fontSize:17, fontWeight:800, color:'#a3a3a3' }}>{wine.price}€</div>
-              <div style={{ fontSize:9, color:'#6b7280', textTransform:'uppercase' }}>/ btl</div>
-            </div>
-          )}
-        </div>
-        <span style={{ fontSize:10, padding:'3px 9px', borderRadius:20, background:status.bg, color:status.color, fontWeight:600 }}>{status.label}</span>
-      </div>
-
-      {wine.cepages?.length > 0 && (
-        <div style={{ display:'flex', flexWrap:'wrap', gap:4, marginTop:10 }}>
-          {wine.cepages.slice(0,3).map(c=>(
-            <span key={c} style={{ fontSize:10, padding:'2px 7px', borderRadius:10, background:'rgba(255,255,255,0.04)', color:'#6b7280', border:'1px solid rgba(255,255,255,0.06)' }}>{c}</span>
-          ))}
-        </div>
-      )}
     </div>
   )
 }
@@ -694,56 +783,58 @@ function WineDetail({ wine, onEdit, onUpdate }) {
     setRvText(''); setRvRating('')
   }
 
-  const inp = { width:'100%', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.09)', borderRadius:9, padding:'9px 13px', color:'#e8e0d5', fontSize:14, outline:'none', fontFamily:'inherit' }
-  const lbl = { display:'block', fontSize:11, color:'#9ca3af', marginBottom:5, fontWeight:600, textTransform:'uppercase', letterSpacing:'0.07em' }
+  const inp = { width:'100%', background:'rgba(255,255,255,0.05)', border:`1px solid ${BORD}`, borderRadius:10, padding:'10px 13px', color:TEXT, fontSize:14, outline:'none', fontFamily:'inherit' }
+  const lbl = { display:'block', fontSize:10, color:MUTED, marginBottom:5, fontWeight:700, textTransform:'uppercase', letterSpacing:'0.09em' }
 
   return (
     <div>
-      <div style={{ display:'flex', gap:16, marginBottom:22 }}>
+      {/* ── Entête ── */}
+      <div style={{ display:'flex', gap:16, marginBottom:20 }}>
         {wine.photo
-          ? <img src={wine.photo} alt="" style={{ width:80, height:108, borderRadius:12, objectFit:'cover', border:`1px solid ${ts.border}`, flexShrink:0 }} />
-          : <div style={{ width:60, height:60, borderRadius:15, background:ts.bg, border:`1px solid ${ts.border}`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
-              <WineGlass size={26} color={ts.dot} />
+          ? <img src={wine.photo} alt="" style={{ width:76, height:104, borderRadius:12, objectFit:'cover', border:`1px solid ${BORD}`, flexShrink:0 }} />
+          : <div style={{ width:64, height:80, borderRadius:14, background:ts.bg, border:`1px solid ${ts.border}`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+              <span style={{ fontSize:28 }}>{TYPE_EMOJI[wine.type]||'🍷'}</span>
             </div>
         }
-        <div>
-          <div style={{ display:'flex', gap:7, marginBottom:6 }}>
-            <span style={{ fontSize:11, padding:'2px 9px', borderRadius:20, background:ts.bg, color:ts.text, border:`1px solid ${ts.border}` }}>{TYPE_LABELS[wine.type]}</span>
-            <span style={{ fontSize:11, padding:'2px 9px', borderRadius:20, background:status.bg, color:status.color }}>{status.label}</span>
+        <div style={{ flex:1 }}>
+          <div style={{ display:'flex', gap:6, marginBottom:6, flexWrap:'wrap' }}>
+            <span style={{ fontSize:10, padding:'2px 9px', borderRadius:12, background:ts.bg, color:ts.text, border:`1px solid ${ts.border}`, fontWeight:700 }}>{TYPE_LABELS[wine.type]}</span>
+            <span style={{ fontSize:10, padding:'2px 9px', borderRadius:12, background:status.bg, color:status.color, fontWeight:700 }}>{status.label}</span>
           </div>
-          <div style={{ fontSize:19, fontWeight:800, color:'#e8e0d5', fontFamily:'Georgia,serif' }}>{wine.name}</div>
-          <div style={{ fontSize:14, color:'#9ca3af' }}>{wine.domain}</div>
-          <div style={{ fontSize:12, color:'#6b7280' }}>{[wine.appellation, wine.region, wine.country].filter(Boolean).join(' · ')}</div>
+          <div style={{ fontSize:18, fontWeight:800, color:TEXT, fontFamily:'Georgia,serif', lineHeight:1.2, marginBottom:4 }}>{wine.name}</div>
+          <div style={{ fontSize:13, color:SUB }}>{wine.domain}</div>
+          <div style={{ fontSize:11, color:MUTED, marginTop:2 }}>{[wine.appellation, wine.region, wine.country].filter(Boolean).join(' · ')}</div>
+          {wine.rating > 0 && <div style={{ marginTop:6 }}><StarRating value={wine.rating} size={12}/></div>}
         </div>
       </div>
 
       {/* Stats */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:10, marginBottom:20 }}>
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:8, marginBottom:18 }}>
         {[
-          { l:'Millésime', v:wine.vintage, c:'#d97706' },
-          { l:'Quantité', v:`${wine.quantity} btl`, c:'#f59e0b' },
-          { l:'Note', v: wine.rating ? `${wine.rating}/100` : '—', c:'#fbbf24' },
-          { l:'Valeur', v: wine.price ? `${(wine.price*wine.quantity).toLocaleString('fr')}€` : '—', c:'#a3a3a3' },
+          { l:'Millésime', v:wine.vintage, c:GOLD },
+          { l:'Quantité', v:`${wine.quantity} btl`, c:GOLD },
+          { l:'Note', v: wine.rating ? `${wine.rating}` : '—', c:'#fbbf24' },
+          { l:'Valeur', v: wine.price ? `${(wine.price*wine.quantity).toLocaleString('fr')}€` : '—', c:SUB },
         ].map(s=>(
-          <div key={s.l} style={{ textAlign:'center', padding:'14px 6px', background:'rgba(255,255,255,0.03)', borderRadius:11, border:'1px solid rgba(255,255,255,0.06)' }}>
-            <div style={{ fontSize:19, fontWeight:800, color:s.c }}>{s.v}</div>
-            <div style={{ fontSize:10, color:'#6b7280', marginTop:2, textTransform:'uppercase', letterSpacing:'0.05em' }}>{s.l}</div>
+          <div key={s.l} style={{ textAlign:'center', padding:'12px 4px', background:`rgba(201,168,76,0.06)`, borderRadius:10, border:`1px solid ${BORD}` }}>
+            <div style={{ fontSize:17, fontWeight:800, color:s.c }}>{s.v}</div>
+            <div style={{ fontSize:9, color:MUTED, marginTop:2, textTransform:'uppercase', letterSpacing:'0.05em' }}>{s.l}</div>
           </div>
         ))}
       </div>
 
       {/* Fenêtre */}
-      <div style={{ marginBottom:18, padding:16, background:'rgba(255,255,255,0.03)', borderRadius:11, border:'1px solid rgba(255,255,255,0.06)' }}>
-        <div style={{ display:'flex', justifyContent:'space-between', marginBottom:9 }}>
-          <span style={{ fontSize:11, color:'#9ca3af', textTransform:'uppercase', letterSpacing:'0.05em', fontWeight:600 }}>Fenêtre de dégustation</span>
-          <span style={{ fontSize:11, color:'#6b7280' }}>{wine.drinkFrom} – {wine.drinkUntil}</span>
+      <div style={{ marginBottom:16, padding:14, background:`rgba(201,168,76,0.05)`, borderRadius:11, border:`1px solid ${BORD}` }}>
+        <div style={{ display:'flex', justifyContent:'space-between', marginBottom:8 }}>
+          <span style={{ fontSize:10, color:SUB, textTransform:'uppercase', letterSpacing:'0.06em', fontWeight:700 }}>Fenêtre de dégustation</span>
+          <span style={{ fontSize:11, color:MUTED }}>{wine.drinkFrom} – {wine.drinkUntil}</span>
         </div>
-        <div style={{ height:7, background:'rgba(255,255,255,0.06)', borderRadius:4, overflow:'hidden' }}>
-          <div style={{ height:'100%', width:`${progress}%`, background:'linear-gradient(90deg,#22c55e,#16a34a)', borderRadius:4 }} />
+        <div style={{ height:6, background:'rgba(255,255,255,0.06)', borderRadius:4, overflow:'hidden' }}>
+          <div style={{ height:'100%', width:`${progress}%`, background:`linear-gradient(90deg,${GOLD},#e8c96a)`, borderRadius:4 }} />
         </div>
-        <div style={{ display:'flex', justifyContent:'space-between', marginTop:6, fontSize:11, color:'#6b7280' }}>
-          {wine.purchaseDate && <span>Acheté le {wine.purchaseDate}</span>}
-          <span style={{ color:status.color, marginLeft:'auto' }}>{status.label}</span>
+        <div style={{ display:'flex', justifyContent:'space-between', marginTop:6, fontSize:11 }}>
+          {wine.purchaseDate && <span style={{ color:MUTED }}>Acheté le {wine.purchaseDate}</span>}
+          <span style={{ color:status.color, marginLeft:'auto', fontWeight:700 }}>{status.label}</span>
         </div>
       </div>
 
@@ -755,23 +846,23 @@ function WineDetail({ wine, onEdit, onUpdate }) {
         const recoColor = { 'Privilégier':'#4ade80', 'Bon choix':'#fbbf24', 'Sélection prudente':'#f87171', 'À éviter':'#6b7280' }
         const boire = match[0] + match[5]
         return (
-          <div style={{ marginBottom:18, padding:14, background: recoBg[match[7]] || 'rgba(255,255,255,0.03)', borderRadius:11, border:`1px solid ${recoColor[match[7]] || '#6b7280'}33` }}>
-            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:7, gap:8, flexWrap:'wrap' }}>
-              <span style={{ fontSize:11, color:'#9ca3af', textTransform:'uppercase', letterSpacing:'0.05em', fontWeight:600 }}>Base œnologique 2017–2025</span>
-              <span style={{ fontSize:11, padding:'2px 9px', borderRadius:20, background: recoBg[match[7]], color: recoColor[match[7]] || '#6b7280', fontWeight:700 }}>{match[7]}</span>
+          <div style={{ marginBottom:16, padding:14, background: recoBg[match[7]] || `rgba(201,168,76,0.05)`, borderRadius:11, border:`1px solid ${(recoColor[match[7]]||GOLD)}33` }}>
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:8, gap:8, flexWrap:'wrap' }}>
+              <span style={{ fontSize:10, color:MUTED, textTransform:'uppercase', letterSpacing:'0.06em', fontWeight:700 }}>📚 Base œnologique 2017–2025</span>
+              <span style={{ fontSize:10, padding:'2px 9px', borderRadius:12, background: recoBg[match[7]], color: recoColor[match[7]] || GOLD, fontWeight:700 }}>{match[7]}</span>
             </div>
             <div style={{ display:'flex', gap:16, flexWrap:'wrap', marginBottom: match[8] ? 8 : 0 }}>
               <div style={{ textAlign:'center' }}>
-                <div style={{ fontSize:17, fontWeight:800, color:'#f59e0b' }}>{boire}</div>
-                <div style={{ fontSize:9, color:'#6b7280', textTransform:'uppercase' }}>boire avant</div>
+                <div style={{ fontSize:18, fontWeight:800, color:GOLD }}>{boire}</div>
+                <div style={{ fontSize:8, color:MUTED, textTransform:'uppercase', letterSpacing:'0.04em' }}>boire avant</div>
               </div>
               <div style={{ textAlign:'center' }}>
-                <div style={{ fontSize:17, fontWeight:800, color:'#a3a3a3' }}>{match[5]} ans</div>
-                <div style={{ fontSize:9, color:'#6b7280', textTransform:'uppercase' }}>garde max</div>
+                <div style={{ fontSize:18, fontWeight:800, color:SUB }}>{match[5]} ans</div>
+                <div style={{ fontSize:8, color:MUTED, textTransform:'uppercase' }}>garde max</div>
               </div>
-              <div style={{ flex:1, fontSize:12, color:'#9ca3af', alignSelf:'center', fontStyle:'italic' }}>{match[6]}</div>
+              <div style={{ flex:1, fontSize:12, color:SUB, alignSelf:'center', fontStyle:'italic', lineHeight:1.5 }}>{match[6]}</div>
             </div>
-            {match[8] && <p style={{ fontSize:12, color:'#c9bfb5', margin:0, borderTop:'1px solid rgba(255,255,255,0.05)', paddingTop:7 }}>{match[8]}</p>}
+            {match[8] && <p style={{ fontSize:12, color:SUB, margin:0, borderTop:`1px solid ${BORD}`, paddingTop:7, lineHeight:1.55 }}>{match[8]}</p>}
           </div>
         )
       })()}
@@ -874,8 +965,8 @@ function WineDetail({ wine, onEdit, onUpdate }) {
         </div>
       )}
 
-      <button onClick={()=>onEdit(wine)} style={{ width:'100%', padding:'11px', background:'rgba(139,26,48,0.2)', border:'1px solid rgba(139,26,48,0.4)', borderRadius:10, color:'#f9a8b8', cursor:'pointer', fontSize:14, fontWeight:600 }}>
-        Modifier ce vin
+      <button onClick={()=>onEdit(wine)} style={{ width:'100%', padding:'13px', background:`linear-gradient(135deg,${WINE},${WINE2})`, border:'none', borderRadius:12, color:'#fff', cursor:'pointer', fontSize:14, fontWeight:700, letterSpacing:'0.02em' }}>
+        ✏️ Modifier ce vin
       </button>
     </div>
   )
@@ -883,23 +974,23 @@ function WineDetail({ wine, onEdit, onUpdate }) {
 
 function Section({ title, children }) {
   return (
-    <div style={{ marginBottom:15 }}>
-      <div style={{ fontSize:11, color:'#9ca3af', textTransform:'uppercase', letterSpacing:'0.06em', marginBottom:8, fontWeight:600 }}>{title}</div>
+    <div style={{ marginBottom:14 }}>
+      <div style={{ fontSize:10, color:MUTED, textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:7, fontWeight:700 }}>{title}</div>
       <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>{children}</div>
     </div>
   )
 }
 function Tag({ children, style }) {
   const styles = {
-    red:   { padding:'4px 12px', background:'rgba(139,26,48,0.2)', border:'1px solid rgba(139,26,48,0.4)', borderRadius:20, fontSize:12, color:'#f9a8b8' },
-    gold:  { padding:'4px 12px', background:'rgba(120,53,15,0.25)', border:'1px solid rgba(180,83,9,0.35)', borderRadius:20, fontSize:12, color:'#fcd34d' },
-    green: { padding:'4px 12px', background:'rgba(20,50,20,0.5)', border:'1px solid rgba(34,100,34,0.35)', borderRadius:20, fontSize:12, color:'#86efac' },
+    red:   { padding:'4px 12px', background:'rgba(140,32,48,0.22)', border:`1px solid ${BORDW}`, borderRadius:20, fontSize:12, color:'#f4a0b0' },
+    gold:  { padding:'4px 12px', background:'rgba(201,168,76,0.15)', border:`1px solid rgba(201,168,76,0.35)`, borderRadius:20, fontSize:12, color:GOLD },
+    green: { padding:'4px 12px', background:'rgba(20,55,25,0.5)', border:'1px solid rgba(34,110,34,0.4)', borderRadius:20, fontSize:12, color:'#86efac' },
   }
   return <span style={styles[style]}>{children}</span>
 }
 
 // ─── Dashboard ─────────────────────────────────────────────────────────────────
-function Dashboard({ wines }) {
+function Dashboard({ wines, searchQ, setSearchQ, onSelectWine }) {
   const total = wines.reduce((s,w)=>s+w.quantity,0)
   const value = wines.reduce((s,w)=>s+(w.price||0)*w.quantity,0)
   const rated = wines.filter(w=>w.rating>0)
@@ -908,39 +999,140 @@ function Dashboard({ wines }) {
   const typeMap = wines.reduce((a,w)=>{a[w.type]=(a[w.type]||0)+w.quantity;return a},{})
   const regionMap = wines.reduce((a,w)=>{if(w.region){a[w.region]=(a[w.region]||0)+w.quantity}return a},{})
 
+  const searchResults = searchQ.trim().length >= 2
+    ? wines.filter(w => {
+        const q = searchQ.toLowerCase()
+        return w.name.toLowerCase().includes(q) || w.domain.toLowerCase().includes(q) || (w.region||'').toLowerCase().includes(q) || (w.appellation||'').toLowerCase().includes(q)
+      })
+    : []
+
+  const cardStyle = { padding:18, borderRadius:16, background:`linear-gradient(145deg,${CARD},${SURF})`, border:`1px solid ${BORD}` }
+  const secTitle = { fontSize:10, color:MUTED, textTransform:'uppercase', letterSpacing:'0.1em', fontWeight:700, marginBottom:12 }
+
   return (
     <div>
-      {/* KPIs */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))', gap:14, marginBottom:28 }}>
-        {[
-          { label:'Bouteilles', value:total, sub:'en cave', icon:<BottleIcon size={20}/>, color:'#ca2e43' },
-          { label:'Vins distincts', value:wines.length, sub:'références', icon:<WineGlass size={20}/>, color:'#d97706' },
-          { label:'Valeur cave', value:`${value.toLocaleString('fr')} €`, sub:'estimation', icon:<AwardIcon/>, color:'#f59e0b' },
-          { label:'À maturité', value:ready, sub:'prêts à boire', icon:<ChartBar/>, color:'#4ade80' },
-        ].map(c=>(
-          <div key={c.label} style={{ padding:18, borderRadius:15, background:'linear-gradient(145deg,#1a1a24,#111118)', border:'1px solid rgba(255,255,255,0.06)' }}>
-            <div style={{ padding:9, borderRadius:9, background:`rgba(${c.color==='#ca2e43'?'202,46,67':c.color==='#d97706'?'217,119,6':c.color==='#f59e0b'?'245,158,11':'74,222,128'},0.12)`, color:c.color, display:'inline-flex', marginBottom:10 }}>
-              {c.icon}
-            </div>
-            <div style={{ fontSize:26, fontWeight:800, color:'#e8e0d5' }}>{c.value}</div>
-            <div style={{ fontSize:11, color:'#6b7280', marginTop:2 }}>{c.label} · {c.sub}</div>
-          </div>
-        ))}
+      {/* Barre de recherche */}
+      <div style={{ position:'relative', marginBottom:20 }}>
+        <div style={{ position:'absolute', left:14, top:'50%', transform:'translateY(-50%)', color:MUTED, pointerEvents:'none' }}><SearchIcon /></div>
+        <input
+          style={{ width:'100%', background:`rgba(201,168,76,0.06)`, border:`1px solid ${BORD}`, borderRadius:14, padding:'13px 14px 13px 40px', color:TEXT, fontSize:14, outline:'none', fontFamily:'inherit' }}
+          placeholder="Rechercher un vin, domaine, région…"
+          value={searchQ}
+          onChange={e=>setSearchQ(e.target.value)}
+        />
+        {searchQ && <button onClick={()=>setSearchQ('')} style={{ position:'absolute', right:12, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', color:MUTED, cursor:'pointer', fontSize:16 }}>×</button>}
       </div>
 
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:28 }}>
-        {/* Par type */}
-        <div style={{ padding:18, borderRadius:15, background:'linear-gradient(145deg,#1a1a24,#111118)', border:'1px solid rgba(255,255,255,0.06)' }}>
-          <div style={{ fontSize:12, fontWeight:700, color:'#9ca3af', textTransform:'uppercase', letterSpacing:'0.07em', marginBottom:14 }}>Répartition par type</div>
-          {Object.entries(typeMap).map(([t,q])=>{
-            const ts=getTypeStyle(t), pct=Math.round(q/total*100)
-            return (
-              <div key={t} style={{ marginBottom:10 }}>
-                <div style={{ display:'flex', justifyContent:'space-between', fontSize:12, marginBottom:4 }}>
-                  <span style={{ color:ts.text }}>{TYPE_LABELS[t]}</span>
-                  <span style={{ color:'#6b7280' }}>{q} · {pct}%</span>
+      {/* Résultats de recherche */}
+      {searchResults.length > 0 && (
+        <div style={{ marginBottom:20, ...cardStyle }}>
+          <div style={secTitle}>🔍 Résultats ({searchResults.length})</div>
+          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+            {searchResults.map(w => {
+              const ts = getTypeStyle(w.type)
+              return (
+                <div key={w.id} onClick={()=>onSelectWine(w)} style={{ display:'flex', gap:10, alignItems:'center', padding:'9px 12px', background:`rgba(201,168,76,0.05)`, borderRadius:10, border:`1px solid ${BORD}`, cursor:'pointer' }}>
+                  <div style={{ width:40, height:50, borderRadius:8, background:ts.bg, display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden', flexShrink:0 }}>
+                    {w.photo ? <img src={w.photo} alt="" style={{ width:'100%', height:'100%', objectFit:'cover' }}/> : <span style={{ fontSize:18 }}>{TYPE_EMOJI[w.type]||'🍷'}</span>}
+                  </div>
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ fontSize:13, fontWeight:700, color:TEXT, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{w.name}</div>
+                    <div style={{ fontSize:11, color:SUB }}>{w.domain} · {w.vintage}</div>
+                  </div>
+                  <div style={{ textAlign:'right' }}>
+                    {w.rating > 0 && <StarRating value={w.rating} size={10}/>}
+                    <div style={{ fontSize:11, color:GOLD, fontWeight:700 }}>{w.quantity} btl</div>
+                  </div>
                 </div>
-                <div style={{ height:5, background:'rgba(255,255,255,0.06)', borderRadius:3 }}>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Carte cave summary */}
+      <div style={{ marginBottom:20, padding:22, borderRadius:18, background:`linear-gradient(135deg, #3e1420 0%, #1c0c10 55%, ${BG} 100%)`, border:`1px solid rgba(201,168,76,0.22)`, position:'relative', overflow:'hidden' }}>
+        <div style={{ position:'absolute', right:0, top:0, bottom:0, width:'40%', background:'radial-gradient(ellipse at 80% 50%,rgba(201,168,76,0.1) 0%,transparent 65%)', pointerEvents:'none' }}/>
+        <div style={{ fontSize:10, color:GOLD, textTransform:'uppercase', letterSpacing:'0.15em', fontWeight:700, marginBottom:8 }}>Votre Cave à Vin</div>
+        <div style={{ display:'flex', alignItems:'baseline', gap:10, marginBottom:12 }}>
+          <span style={{ fontSize:52, fontWeight:900, color:TEXT, fontFamily:'Georgia,serif', lineHeight:1 }}>{total}</span>
+          <span style={{ fontSize:14, color:SUB, fontWeight:600, textTransform:'uppercase', letterSpacing:'0.08em' }}>bouteilles</span>
+        </div>
+        <div style={{ display:'flex', gap:18, flexWrap:'wrap' }}>
+          {Object.entries(typeMap).map(([t,q])=>(
+            <div key={t} style={{ display:'flex', alignItems:'center', gap:6 }}>
+              <span style={{ fontSize:14 }}>{TYPE_EMOJI[t]||'🍷'}</span>
+              <div>
+                <div style={{ fontSize:14, fontWeight:800, color:TEXT }}>{q}</div>
+                <div style={{ fontSize:9, color:MUTED, textTransform:'uppercase' }}>{TYPE_LABELS[t]}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        {value > 0 && (
+          <div style={{ marginTop:14, paddingTop:14, borderTop:`1px solid rgba(201,168,76,0.15)`, display:'flex', gap:24 }}>
+            <div>
+              <div style={{ fontSize:18, fontWeight:800, background:'linear-gradient(135deg,#c9a84c,#e8c96a)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>{value.toLocaleString('fr')} €</div>
+              <div style={{ fontSize:9, color:MUTED, textTransform:'uppercase' }}>valeur estimée</div>
+            </div>
+            {avgRating > 0 && (
+              <div>
+                <div style={{ fontSize:18, fontWeight:800, color:GOLD }}>{avgRating.toFixed(1)}/100</div>
+                <div style={{ fontSize:9, color:MUTED, textTransform:'uppercase' }}>note moy.</div>
+              </div>
+            )}
+            <div>
+              <div style={{ fontSize:18, fontWeight:800, color:'#4ade80' }}>{ready}</div>
+              <div style={{ fontSize:9, color:MUTED, textTransform:'uppercase' }}>à maturité</div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Découvertes du jour — scroll horizontal */}
+      {wines.length > 0 && (
+        <div style={{ marginBottom:24 }}>
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:13 }}>
+            <span style={{ fontSize:13, fontWeight:700, color:TEXT, textTransform:'uppercase', letterSpacing:'0.08em' }}>Découvertes du jour</span>
+            <span style={{ fontSize:11, color:GOLD }}>›</span>
+          </div>
+          <div style={{ display:'flex', gap:12, overflowX:'auto', paddingBottom:8 }} className="hide-scrollbar">
+            {[...wines].sort(()=>Math.random()-0.5).slice(0,6).map(w=>{
+              const ts=getTypeStyle(w.type)
+              return (
+                <div key={w.id} onClick={()=>onSelectWine(w)} style={{ flexShrink:0, width:130, borderRadius:14, background:`linear-gradient(160deg,${CARD},${SURF})`, border:`1px solid ${BORD}`, cursor:'pointer', overflow:'hidden' }}>
+                  <div style={{ height:90, background:ts.bg, display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
+                    {w.photo
+                      ? <img src={w.photo} alt="" style={{ width:'100%', height:'100%', objectFit:'cover' }}/>
+                      : <span style={{ fontSize:32 }}>{TYPE_EMOJI[w.type]||'🍷'}</span>
+                    }
+                  </div>
+                  <div style={{ padding:'10px 10px 12px' }}>
+                    {w.rating > 0 && <div style={{ marginBottom:4 }}><StarRating value={w.rating} size={9}/></div>}
+                    <div style={{ fontSize:12, fontWeight:700, color:TEXT, lineHeight:1.3, overflow:'hidden', display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical' }}>{w.name}</div>
+                    <div style={{ fontSize:10, color:MUTED, marginTop:3, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{TYPE_LABELS[w.type]}, {w.region}</div>
+                    {w.price > 0 && <div style={{ fontSize:12, fontWeight:700, color:GOLD, marginTop:5 }}>{w.price}€</div>}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14, marginBottom:22 }}>
+        {/* Par type */}
+        <div style={cardStyle}>
+          <div style={secTitle}>Répartition</div>
+          {Object.entries(typeMap).map(([t,q])=>{
+            const ts=getTypeStyle(t), pct=Math.round(q/(total||1)*100)
+            return (
+              <div key={t} style={{ marginBottom:9 }}>
+                <div style={{ display:'flex', justifyContent:'space-between', fontSize:11, marginBottom:3 }}>
+                  <span style={{ color:ts.text }}>{TYPE_EMOJI[t]} {TYPE_LABELS[t]}</span>
+                  <span style={{ color:MUTED }}>{q} · {pct}%</span>
+                </div>
+                <div style={{ height:4, background:'rgba(255,255,255,0.05)', borderRadius:3 }}>
                   <div style={{ height:'100%', width:`${pct}%`, background:ts.dot, borderRadius:3 }}/>
                 </div>
               </div>
@@ -949,18 +1141,18 @@ function Dashboard({ wines }) {
         </div>
 
         {/* Par région */}
-        <div style={{ padding:18, borderRadius:15, background:'linear-gradient(145deg,#1a1a24,#111118)', border:'1px solid rgba(255,255,255,0.06)' }}>
-          <div style={{ fontSize:12, fontWeight:700, color:'#9ca3af', textTransform:'uppercase', letterSpacing:'0.07em', marginBottom:14 }}>Par région</div>
-          {Object.entries(regionMap).sort((a,b)=>b[1]-a[1]).map(([r,q])=>{
-            const pct=Math.round(q/total*100)
+        <div style={cardStyle}>
+          <div style={secTitle}>Régions</div>
+          {Object.entries(regionMap).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([r,q])=>{
+            const pct=Math.round(q/(total||1)*100)
             return (
-              <div key={r} style={{ marginBottom:10 }}>
-                <div style={{ display:'flex', justifyContent:'space-between', fontSize:12, marginBottom:4 }}>
-                  <span style={{ color:'#c9bfb5' }}>{r}</span>
-                  <span style={{ color:'#6b7280' }}>{q} btl</span>
+              <div key={r} style={{ marginBottom:9 }}>
+                <div style={{ display:'flex', justifyContent:'space-between', fontSize:11, marginBottom:3 }}>
+                  <span style={{ color:SUB, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', maxWidth:'65%' }}>{r}</span>
+                  <span style={{ color:MUTED }}>{q} btl</span>
                 </div>
-                <div style={{ height:5, background:'rgba(255,255,255,0.06)', borderRadius:3 }}>
-                  <div style={{ height:'100%', width:`${pct}%`, background:'linear-gradient(90deg,#8c2030,#ca2e43)', borderRadius:3 }}/>
+                <div style={{ height:4, background:'rgba(255,255,255,0.05)', borderRadius:3 }}>
+                  <div style={{ height:'100%', width:`${pct}%`, background:`linear-gradient(90deg,${WINE},${WINE2})`, borderRadius:3 }}/>
                 </div>
               </div>
             )
@@ -968,40 +1160,22 @@ function Dashboard({ wines }) {
         </div>
       </div>
 
-      {/* Note moyenne */}
-      {avgRating > 0 && (
-        <div style={{ padding:18, borderRadius:15, background:'linear-gradient(145deg,#1a1a24,#111118)', border:'1px solid rgba(255,255,255,0.06)', marginBottom:28 }}>
-          <div style={{ fontSize:12, fontWeight:700, color:'#9ca3af', textTransform:'uppercase', letterSpacing:'0.07em', marginBottom:14 }}>Note moyenne de la cave</div>
-          <div style={{ display:'flex', alignItems:'center', gap:18 }}>
-            <div style={{ fontSize:52, fontWeight:900, background:'linear-gradient(135deg,#d4a017,#f5c842)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>
-              {avgRating.toFixed(1)}
-            </div>
-            <div>
-              <div style={{ fontSize:16, color:'#e8e0d5', fontWeight:600 }}>
-                {avgRating>=95?'Exceptionnel':avgRating>=90?'Excellent':avgRating>=85?'Très bien':avgRating>=80?'Bien':'Correct'}
-              </div>
-              <div style={{ fontSize:12, color:'#6b7280', marginTop:3 }}>sur {rated.length} vin{rated.length>1?'s':''} noté{rated.length>1?'s':''}</div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Cépages du moment */}
-      <div style={{ marginBottom:28 }}>
-        <div style={{ display:'flex', alignItems:'center', gap:9, marginBottom:14 }}>
-          <GrapeIcon />
-          <h3 style={{ fontSize:17, fontWeight:700, color:'#e8e0d5', fontFamily:'Georgia,serif' }}>Cépages idéaux du moment</h3>
+      <div style={{ marginBottom:22 }}>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:13 }}>
+          <span style={{ fontSize:13, fontWeight:700, color:TEXT, textTransform:'uppercase', letterSpacing:'0.08em' }}>Cépages idéaux du moment</span>
+          <span style={{ fontSize:11, color:GOLD }}>›</span>
         </div>
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(190px,1fr))', gap:11 }}>
+        <div style={{ display:'flex', gap:10, overflowX:'auto', paddingBottom:6 }} className="hide-scrollbar">
           {FEATURED_CEPAGES.map(c=>(
-            <div key={c.name} style={{ padding:15, borderRadius:13, background:'linear-gradient(145deg,#1a1a24,#111118)', border:'1px solid rgba(139,26,48,0.22)' }}>
+            <div key={c.name} style={{ flexShrink:0, width:160, padding:14, borderRadius:13, background:`linear-gradient(145deg,${CARD},${SURF})`, border:`1px solid ${BORD}` }}>
               <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:7 }}>
-                <span style={{ fontSize:20 }}>{c.icon}</span>
+                <span style={{ fontSize:22 }}>{c.icon}</span>
                 {c.trend==='up' && <TrendUpIcon />}
               </div>
-              <div style={{ fontSize:14, fontWeight:700, color:'#e8e0d5', marginBottom:3 }}>{c.name}</div>
-              <div style={{ fontSize:10, color:'#ca2e43', fontWeight:600, marginBottom:5 }}>{c.region}</div>
-              <div style={{ fontSize:11, color:'#6b7280', lineHeight:1.45 }}>{c.reason}</div>
+              <div style={{ fontSize:13, fontWeight:700, color:TEXT, marginBottom:2 }}>{c.name}</div>
+              <div style={{ fontSize:10, color:GOLD, fontWeight:600, marginBottom:5 }}>{c.region}</div>
+              <div style={{ fontSize:10, color:MUTED, lineHeight:1.5 }}>{c.reason}</div>
             </div>
           ))}
         </div>
@@ -1009,28 +1183,28 @@ function Dashboard({ wines }) {
 
       {/* Millésimes */}
       <div>
-        <div style={{ display:'flex', alignItems:'center', gap:9, marginBottom:14 }}>
-          <AwardIcon />
-          <h3 style={{ fontSize:17, fontWeight:700, color:'#e8e0d5', fontFamily:'Georgia,serif' }}>Millésimes à privilégier</h3>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:13 }}>
+          <span style={{ fontSize:13, fontWeight:700, color:TEXT, textTransform:'uppercase', letterSpacing:'0.08em' }}>Millésimes à privilégier</span>
+          <span style={{ fontSize:11, color:GOLD }}>›</span>
         </div>
         <div style={{ display:'flex', flexDirection:'column', gap:9 }}>
           {FEATURED_MILLESIMES.map(m=>(
-            <div key={m.year} style={{ display:'flex', alignItems:'center', gap:14, padding:15, borderRadius:13, background:'linear-gradient(145deg,#1a1a24,#111118)', border:'1px solid rgba(255,255,255,0.05)' }}>
-              <div style={{ textAlign:'center', minWidth:55 }}>
-                <div style={{ fontSize:24, fontWeight:900, background:'linear-gradient(135deg,#d4a017,#f5c842)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>{m.year}</div>
-                <div style={{ fontSize:10, color:'#d97706', fontWeight:700 }}>{m.score} pts</div>
+            <div key={m.year} style={{ display:'flex', alignItems:'center', gap:14, padding:14, borderRadius:13, background:`linear-gradient(145deg,${CARD},${SURF})`, border:`1px solid ${BORD}` }}>
+              <div style={{ textAlign:'center', minWidth:52 }}>
+                <div style={{ fontSize:22, fontWeight:900, background:'linear-gradient(135deg,#c9a84c,#e8c96a)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>{m.year}</div>
+                <div style={{ fontSize:10, color:GOLD, fontWeight:700 }}>{m.score} pts</div>
               </div>
               <div style={{ flex:1 }}>
-                <div style={{ fontSize:13, color:'#c9bfb5', marginBottom:5 }}>{m.note}</div>
+                <div style={{ fontSize:12, color:SUB, marginBottom:5, lineHeight:1.45 }}>{m.note}</div>
                 <div style={{ display:'flex', gap:5, flexWrap:'wrap' }}>
                   {m.regions.map(r=>(
-                    <span key={r} style={{ fontSize:10, padding:'1px 7px', borderRadius:10, background:'rgba(255,255,255,0.04)', color:'#6b7280', border:'1px solid rgba(255,255,255,0.06)' }}>{r}</span>
+                    <span key={r} style={{ fontSize:9, padding:'1px 7px', borderRadius:10, background:`rgba(201,168,76,0.08)`, color:MUTED, border:`1px solid ${BORD}` }}>{r}</span>
                   ))}
                 </div>
               </div>
               <span style={{
-                fontSize:11, padding:'4px 11px', borderRadius:20, fontWeight:600, whiteSpace:'nowrap',
-                background: m.action==='Acheter maintenant'?'rgba(34,197,94,0.1)':m.action==='Conserver'?'rgba(96,165,250,0.1)':'rgba(251,191,36,0.1)',
+                fontSize:10, padding:'3px 10px', borderRadius:12, fontWeight:700, whiteSpace:'nowrap',
+                background: m.action==='Acheter maintenant'?'rgba(74,222,128,0.12)':m.action==='Conserver'?'rgba(96,165,250,0.12)':'rgba(251,191,36,0.12)',
                 color: m.action==='Acheter maintenant'?'#4ade80':m.action==='Conserver'?'#60a5fa':'#fbbf24',
               }}>{m.action}</span>
             </div>
@@ -1069,18 +1243,18 @@ function CaveView({ wines, onAdd, onEdit, onDelete, onSelect }) {
       return 0
     })
 
-  const sel = { background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:9, padding:'9px 12px', color:'#e8e0d5', fontSize:13, outline:'none', cursor:'pointer' }
+  const sel = { background:`rgba(201,168,76,0.06)`, border:`1px solid ${BORD}`, borderRadius:10, padding:'10px 12px', color:TEXT, fontSize:13, outline:'none', cursor:'pointer' }
 
   return (
     <div>
-      <div style={{ display:'flex', gap:10, marginBottom:18, flexWrap:'wrap' }}>
+      <div style={{ display:'flex', gap:8, marginBottom:16, flexWrap:'wrap' }}>
         <div style={{ position:'relative', flex:'1 1 200px' }}>
-          <div style={{ position:'absolute', left:11, top:'50%', transform:'translateY(-50%)', color:'#6b7280', pointerEvents:'none' }}><SearchIcon /></div>
+          <div style={{ position:'absolute', left:11, top:'50%', transform:'translateY(-50%)', color:MUTED, pointerEvents:'none' }}><SearchIcon /></div>
           <input style={{ ...sel, width:'100%', paddingLeft:34 }} placeholder="Vin, domaine, région…" value={q} onChange={e=>setQ(e.target.value)} />
         </div>
         <select style={sel} value={type} onChange={e=>setType(e.target.value)}>
           <option value="all">Tous types</option>
-          {Object.entries(TYPE_LABELS).map(([v,l])=><option key={v} value={v}>{l}</option>)}
+          {Object.entries(TYPE_LABELS).map(([v,l])=><option key={v} value={v}>{TYPE_EMOJI[v]} {l}</option>)}
         </select>
         <select style={sel} value={statusF} onChange={e=>setStatusF(e.target.value)}>
           <option value="all">Tous statuts</option>
@@ -1089,28 +1263,25 @@ function CaveView({ wines, onAdd, onEdit, onDelete, onSelect }) {
           <option value="urgent">À consommer vite</option>
         </select>
         <select style={sel} value={sort} onChange={e=>setSort(e.target.value)}>
-          <option value="name">Nom</option>
+          <option value="name">Nom A–Z</option>
           <option value="vintage">Millésime</option>
           <option value="rating">Note</option>
           <option value="price">Prix</option>
         </select>
-        <button onClick={onAdd} style={{ display:'flex', alignItems:'center', gap:6, padding:'9px 16px', background:'linear-gradient(135deg,#8c2030,#ca2e43)', border:'none', borderRadius:9, color:'#fff', cursor:'pointer', fontSize:13, fontWeight:700, whiteSpace:'nowrap' }}>
-          <PlusIcon /> Ajouter
-        </button>
       </div>
 
-      <div style={{ fontSize:12, color:'#6b7280', marginBottom:14 }}>
+      <div style={{ fontSize:11, color:MUTED, marginBottom:12 }}>
         {list.length} vin{list.length>1?'s':''} · {list.reduce((s,w)=>s+w.quantity,0)} bouteilles
       </div>
 
       {list.length === 0 ? (
         <div style={{ textAlign:'center', padding:'60px 20px' }}>
-          <div style={{ fontSize:52, marginBottom:14, opacity:0.4 }}>🍷</div>
-          <div style={{ fontSize:16, color:'#6b7280' }}>Cave vide ou aucun résultat</div>
-          <div style={{ fontSize:13, color:'#4b5563', marginTop:6 }}>Ajoutez votre premier vin pour commencer</div>
+          <div style={{ fontSize:52, marginBottom:14, opacity:0.3 }}>🍾</div>
+          <div style={{ fontSize:15, color:SUB }}>Cave vide ou aucun résultat</div>
+          <div style={{ fontSize:12, color:MUTED, marginTop:6 }}>Ajoutez votre premier vin pour commencer</div>
         </div>
       ) : (
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(275px,1fr))', gap:14 }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(290px,1fr))', gap:12 }}>
           {list.map(w=><WineCard key={w.id} wine={w} onClick={()=>onSelect(w)} onEdit={onEdit} onDelete={onDelete}/>)}
         </div>
       )}
@@ -1127,33 +1298,33 @@ function AccordsView({ wines }) {
 
   return (
     <div>
-      <div style={{ marginBottom:22, padding:18, borderRadius:14, background:'linear-gradient(145deg,#1a1a24,#111118)', border:'1px solid rgba(255,255,255,0.06)' }}>
-        <p style={{ fontSize:13, color:'#9ca3af', lineHeight:1.7 }}>
+      <div style={{ marginBottom:18, padding:14, borderRadius:12, background:`rgba(201,168,76,0.06)`, border:`1px solid ${BORD}` }}>
+        <p style={{ fontSize:12, color:SUB, lineHeight:1.7 }}>
           Accords mets & vins issus de votre cave. Chaque plat est associé aux bouteilles que vous avez sélectionnées.
         </p>
       </div>
       {allFoods.length === 0 ? (
         <div style={{ textAlign:'center', padding:'60px 20px' }}>
-          <div style={{ fontSize:52, marginBottom:14, opacity:0.4 }}>🍽️</div>
-          <div style={{ fontSize:16, color:'#6b7280' }}>Aucun accord défini</div>
-          <div style={{ fontSize:13, color:'#4b5563', marginTop:6 }}>Ajoutez des accords lors de l'édition d'un vin</div>
+          <div style={{ fontSize:52, marginBottom:14, opacity:0.3 }}>🍽️</div>
+          <div style={{ fontSize:15, color:SUB }}>Aucun accord défini</div>
+          <div style={{ fontSize:12, color:MUTED, marginTop:6 }}>Ajoutez des accords lors de l'édition d'un vin</div>
         </div>
       ) : (
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(290px,1fr))', gap:13 }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(290px,1fr))', gap:12 }}>
           {allFoods.map(food=>(
-            <div key={food} style={{ padding:16, borderRadius:13, background:'linear-gradient(145deg,#1a1a24,#111118)', border:'1px solid rgba(255,255,255,0.06)' }}>
-              <div style={{ fontSize:14, fontWeight:700, color:'#e8e0d5', marginBottom:11, display:'flex', alignItems:'center', gap:8 }}>
-                <span style={{ fontSize:17 }}>🍽️</span> {food}
+            <div key={food} style={{ padding:15, borderRadius:13, background:`linear-gradient(145deg,${CARD},${SURF})`, border:`1px solid ${BORD}` }}>
+              <div style={{ fontSize:13, fontWeight:700, color:TEXT, marginBottom:10, display:'flex', alignItems:'center', gap:8 }}>
+                <span style={{ fontSize:16 }}>🍽️</span> {food}
               </div>
-              <div style={{ display:'flex', flexDirection:'column', gap:7 }}>
+              <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
                 {byFood[food].map(w=>(
-                  <div key={w.id} style={{ display:'flex', alignItems:'center', gap:9, padding:'7px 10px', borderRadius:9, background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.04)' }}>
-                    <div style={{ width:7, height:7, borderRadius:'50%', background:typeDot[w.type]||'#ca2e43', flexShrink:0 }}/>
+                  <div key={w.id} style={{ display:'flex', alignItems:'center', gap:8, padding:'7px 10px', borderRadius:9, background:`rgba(201,168,76,0.04)`, border:`1px solid ${BORD}` }}>
+                    <span style={{ fontSize:14 }}>{TYPE_EMOJI[w.type]||'🍷'}</span>
                     <div style={{ flex:1, minWidth:0 }}>
-                      <div style={{ fontSize:12, color:'#c9bfb5', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{w.name}</div>
-                      <div style={{ fontSize:10, color:'#6b7280' }}>{w.vintage} · {TYPE_LABELS[w.type]}</div>
+                      <div style={{ fontSize:12, color:SUB, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{w.name}</div>
+                      <div style={{ fontSize:10, color:MUTED }}>{w.vintage} · {TYPE_LABELS[w.type]}</div>
                     </div>
-                    {w.rating>0 && <span style={{ fontSize:10, color:'#d97706', fontWeight:700 }}>{w.rating}</span>}
+                    {w.rating>0 && <StarRating value={w.rating} size={9}/>}
                   </div>
                 ))}
               </div>
@@ -1523,6 +1694,13 @@ const TABS = [
   { id:'choisir', label:'Choisir un Vin', icon:<span style={{fontSize:16}}>🔍</span> },
 ]
 
+const BOTTOM_TABS = [
+  { id:'dashboard', label:'Accueil',  icon:'🏠' },
+  { id:'cave',      label:'Cave',     icon:'🍾' },
+  { id:'accords',   label:'Accords',  icon:'🍽️' },
+  { id:'choisir',   label:'Choisir',  icon:'🔍' },
+]
+
 export default function App() {
   const [wines, setWines] = useState([])
   const [tab, setTab] = useState('dashboard')
@@ -1530,6 +1708,7 @@ export default function App() {
   const [editW, setEditW] = useState(null)
   const [detailW, setDetailW] = useState(null)
   const [ready, setReady] = useState(false)
+  const [searchQ, setSearchQ] = useState('')
 
   useEffect(()=>{
     const s = localStorage.getItem('cave-a-vin-v1')
@@ -1558,76 +1737,71 @@ export default function App() {
   },[])
 
   const total = wines.reduce((s,w)=>s+w.quantity,0)
-  const readyCount = wines.filter(w=>getDrinkStatus(w).label==='À maturité').length
 
   if(!ready) return (
-    <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#0a0a0f' }}>
-      <WineGlass size={40} color="#8c2030" />
+    <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:BG }}>
+      <div style={{ textAlign:'center' }}>
+        <span style={{ fontSize:48 }}>🍷</span>
+        <div style={{ marginTop:12, fontSize:12, color:MUTED, letterSpacing:'0.1em', textTransform:'uppercase' }}>Cave à Vin</div>
+      </div>
     </div>
   )
 
+  const tabLabel = { dashboard:'Accueil', cave:'Ma Cave', accords:'Accords', choisir:'Choisir un Vin' }
+
   return (
-    <div style={{ minHeight:'100vh', background:'#0a0a0f' }}>
-      {/* Header */}
-      <header style={{ position:'sticky', top:0, zIndex:40, background:'rgba(10,10,15,0.92)', backdropFilter:'blur(18px)', borderBottom:'1px solid rgba(139,26,48,0.18)' }}>
-        <div style={{ maxWidth:1300, margin:'0 auto', display:'flex', alignItems:'center', justifyContent:'space-between', height:60, padding:'0 20px' }}>
-          <div style={{ display:'flex', alignItems:'center', gap:11 }}>
-            <div style={{ width:34, height:34, borderRadius:9, background:'linear-gradient(135deg,#8c2030,#3e0c17)', display:'flex', alignItems:'center', justifyContent:'center' }}>
-              <WineGlass size={16} color="#f9a8b8" />
+    <div style={{ minHeight:'100vh', background:BG, paddingBottom:72 }}>
+
+      {/* ── Header ── */}
+      <header style={{ position:'sticky', top:0, zIndex:40, background:`rgba(15,5,8,0.95)`, backdropFilter:'blur(20px)', borderBottom:`1px solid ${BORD}` }}>
+        <div style={{ maxWidth:960, margin:'0 auto', display:'flex', alignItems:'center', justifyContent:'space-between', height:58, padding:'0 18px' }}>
+          {/* Logo */}
+          <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+            <div style={{ width:36, height:36, borderRadius:10, background:`linear-gradient(135deg,${WINE},#3e0c17)`, display:'flex', alignItems:'center', justifyContent:'center', border:`1px solid rgba(201,168,76,0.2)` }}>
+              <span style={{ fontSize:18 }}>🍷</span>
             </div>
             <div>
-              <div style={{ fontSize:16, fontWeight:800, color:'#e8e0d5', fontFamily:'Georgia,serif', letterSpacing:'0.02em' }}>Cave à Vin</div>
-              <div style={{ fontSize:9, color:'#6b7280', textTransform:'uppercase', letterSpacing:'0.1em' }}>{total} bouteilles · {readyCount} prêtes</div>
+              <div style={{ fontSize:15, fontWeight:800, color:TEXT, fontFamily:'Georgia,serif', letterSpacing:'0.04em', textTransform:'uppercase' }}>Cave à Vin</div>
+              <div style={{ fontSize:8, color:MUTED, textTransform:'uppercase', letterSpacing:'0.12em' }}>{total} bouteilles</div>
             </div>
           </div>
 
-          <nav style={{ display:'flex', gap:3 }}>
-            {TABS.map(t=>(
-              <button key={t.id} onClick={()=>setTab(t.id)}
-                style={{
-                  display:'flex', alignItems:'center', gap:7, padding:'7px 14px', borderRadius:9,
-                  background: tab===t.id ? 'rgba(139,26,48,0.22)' : 'transparent',
-                  border: tab===t.id ? '1px solid rgba(139,26,48,0.38)' : '1px solid transparent',
-                  color: tab===t.id ? '#f9a8b8' : '#6b7280',
-                  cursor:'pointer', fontSize:13, fontWeight: tab===t.id ? 700 : 400, transition:'all 0.15s',
-                }}>
-                {t.icon} {t.label}
-              </button>
-            ))}
-          </nav>
+          {/* Page title */}
+          <div style={{ fontSize:13, fontWeight:700, color:GOLD, textTransform:'uppercase', letterSpacing:'0.1em' }}>{tabLabel[tab]||''}</div>
 
-          <button onClick={()=>setShowAdd(true)} style={{ display:'flex', alignItems:'center', gap:6, padding:'7px 14px', background:'linear-gradient(135deg,#8c2030,#ca2e43)', border:'none', borderRadius:9, color:'#fff', cursor:'pointer', fontSize:13, fontWeight:700 }}>
-            <PlusIcon /> Ajouter
+          {/* Add button */}
+          <button onClick={()=>setShowAdd(true)} style={{ width:36, height:36, background:`linear-gradient(135deg,${WINE},${WINE2})`, border:'none', borderRadius:10, color:'#fff', cursor:'pointer', fontSize:20, display:'flex', alignItems:'center', justifyContent:'center', boxShadow:`0 4px 14px rgba(140,32,48,0.4)` }}>
+            +
           </button>
         </div>
       </header>
 
-      {/* Main */}
-      <main style={{ maxWidth:1300, margin:'0 auto', padding:'28px 20px' }}>
-        {tab === 'dashboard' && (
-          <div style={{ marginBottom:26, padding:'28px 32px', borderRadius:18, background:'linear-gradient(135deg,#3e0c17 0%,#1a0a1a 55%,#0a0a0f 100%)', border:'1px solid rgba(139,26,48,0.28)', position:'relative', overflow:'hidden' }}>
-            <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse at 80% 50%,rgba(139,26,48,0.18) 0%,transparent 65%)', pointerEvents:'none' }}/>
-            <div style={{ position:'relative' }}>
-              <div style={{ fontSize:11, color:'#ca2e43', textTransform:'uppercase', letterSpacing:'0.15em', marginBottom:7, fontWeight:700 }}>Millésime {YEAR}</div>
-              <h1 style={{ fontSize:28, fontWeight:900, color:'#e8e0d5', fontFamily:'Georgia,serif', lineHeight:1.2, marginBottom:10 }}>
-                Votre cave compte<br/>
-                <span style={{ background:'linear-gradient(135deg,#d4a017,#f5c842)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>
-                  {total} bouteilles
-                </span>
-              </h1>
-              <p style={{ color:'#9ca3af', fontSize:13 }}>
-                {readyCount} vin{readyCount>1?'s':''} à leur apogée · {wines.filter(w=>getDrinkStatus(w).label==='Trop jeune').length} en attente
-              </p>
-            </div>
-          </div>
-        )}
-
-        {tab==='dashboard' && <Dashboard wines={wines}/>}
-        {tab==='cave' && <CaveView wines={wines} onAdd={()=>setShowAdd(true)} onEdit={edit} onDelete={del} onSelect={setDetailW}/>}
-        {tab==='accords' && <AccordsView wines={wines}/>}
-        {tab==='choisir' && <ChoisirView/>}
+      {/* ── Main content ── */}
+      <main style={{ maxWidth:960, margin:'0 auto', padding:'20px 16px' }}>
+        {tab==='dashboard' && <Dashboard wines={wines} searchQ={searchQ} setSearchQ={setSearchQ} onSelectWine={setDetailW}/>}
+        {tab==='cave'      && <CaveView wines={wines} onAdd={()=>setShowAdd(true)} onEdit={edit} onDelete={del} onSelect={setDetailW}/>}
+        {tab==='accords'   && <AccordsView wines={wines}/>}
+        {tab==='choisir'   && <ChoisirView/>}
       </main>
 
+      {/* ── Bottom navigation ── */}
+      <nav style={{ position:'fixed', bottom:0, left:0, right:0, zIndex:40, background:`rgba(15,5,8,0.97)`, backdropFilter:'blur(20px)', borderTop:`1px solid ${BORD}`, paddingBottom:'env(safe-area-inset-bottom)' }}>
+        <div style={{ maxWidth:960, margin:'0 auto', display:'flex', height:60 }}>
+          {BOTTOM_TABS.map(t => (
+            <button key={t.id} onClick={()=>setTab(t.id)} style={{
+              flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:3,
+              background:'none', border:'none', cursor:'pointer', transition:'all 0.15s',
+              color: tab===t.id ? GOLD : MUTED,
+            }}>
+              <span style={{ fontSize:20, lineHeight:1 }}>{t.icon}</span>
+              <span style={{ fontSize:9, fontWeight: tab===t.id ? 700 : 400, textTransform:'uppercase', letterSpacing:'0.06em' }}>{t.label}</span>
+              {tab===t.id && <div style={{ position:'absolute', bottom:0, width:28, height:2, background:GOLD, borderRadius:1 }}/>}
+            </button>
+          ))}
+        </div>
+      </nav>
+
+      {/* ── Modals ── */}
       <Modal open={showAdd} onClose={()=>setShowAdd(false)} title="Ajouter un vin à la cave">
         <WineForm onSave={save} onClose={()=>setShowAdd(false)}/>
       </Modal>
