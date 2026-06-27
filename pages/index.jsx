@@ -413,7 +413,7 @@ const EMPTY = {
   photo:'', history:[], reviews:[],
 }
 
-function WineForm({ initial, onSave, onClose }) {
+function WineForm({ initial, onSave, onClose, wines = [] }) {
   const [form, setForm] = useState(initial || EMPTY)
   const [aroma, setAroma] = useState('')
   const [food, setFood] = useState('')
@@ -464,7 +464,10 @@ function WineForm({ initial, onSave, onClose }) {
     onSave({ ...form, id: form.id || Date.now().toString() })
   }
 
-  const inp = { width:'100%', background:`rgba(255,255,255,0.05)`, border:`1px solid ${BORD}`, borderRadius:10, padding:'10px 14px', color:TEXT, fontSize:14, outline:'none', fontFamily:'inherit' }
+  const wineNames = [...new Set(wines.map(w=>w.name))].sort()
+  const wineDomains = [...new Set(wines.map(w=>w.domain))].sort()
+
+  const inp ={ width:'100%', background:`rgba(255,255,255,0.05)`, border:`1px solid ${BORD}`, borderRadius:10, padding:'10px 14px', color:TEXT, fontSize:14, outline:'none', fontFamily:'inherit' }
   const lbl = { display:'block', fontSize:10, color:MUTED, marginBottom:5, fontWeight:700, textTransform:'uppercase', letterSpacing:'0.09em' }
   const tagRed = { padding:'3px 10px', background:'rgba(140,32,48,0.22)', border:`1px solid ${BORDW}`, borderRadius:20, fontSize:12, color:'#f9a8b8', cursor:'pointer' }
   const tagGold = { padding:'3px 10px', background:'rgba(201,168,76,0.15)', border:`1px solid rgba(201,168,76,0.35)`, borderRadius:20, fontSize:12, color:GOLD, cursor:'pointer' }
@@ -509,11 +512,13 @@ function WineForm({ initial, onSave, onClose }) {
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 }}>
         <div style={{ gridColumn:'1/-1' }}>
           <label style={lbl}>Nom du vin *</label>
-          <input style={inp} value={form.name} onChange={e=>set('name',e.target.value)} placeholder="Gevrey-Chambertin 1er Cru" required />
+          <AutocompleteInput style={inp} value={form.name} placeholder="Gevrey-Chambertin 1er Cru"
+            suggestions={wineNames} onChange={v=>set('name',v)} />
         </div>
         <div>
           <label style={lbl}>Domaine / Château *</label>
-          <input style={inp} value={form.domain} onChange={e=>set('domain',e.target.value)} placeholder="Domaine Rossignol-Trapet" required />
+          <AutocompleteInput style={inp} value={form.domain} placeholder="Domaine Rossignol-Trapet"
+            suggestions={wineDomains} onChange={v=>set('domain',v)} />
         </div>
         <div>
           <label style={lbl}>Appellation</label>
@@ -753,7 +758,7 @@ function WineCard({ wine, onClick, onEdit, onDelete }) {
 }
 
 // ─── Détail vin ────────────────────────────────────────────────────────────────
-function WineDetail({ wine, onEdit, onUpdate }) {
+function WineDetail({ wine, onEdit, onUpdate, onDelete }) {
   const status = getDrinkStatus(wine)
   const ts = getTypeStyle(wine.type)
   const drinkWindow = Math.max(1, wine.drinkUntil - wine.drinkFrom)
@@ -965,9 +970,16 @@ function WineDetail({ wine, onEdit, onUpdate }) {
         </div>
       )}
 
-      <button onClick={()=>onEdit(wine)} style={{ width:'100%', padding:'13px', background:`linear-gradient(135deg,${WINE},${WINE2})`, border:'none', borderRadius:12, color:'#fff', cursor:'pointer', fontSize:14, fontWeight:700, letterSpacing:'0.02em' }}>
-        ✏️ Modifier ce vin
-      </button>
+      <div style={{ display:'flex', gap:10, marginTop:4 }}>
+        <button onClick={()=>onEdit(wine)} style={{ flex:2, padding:'13px', background:`linear-gradient(135deg,${WINE},${WINE2})`, border:'none', borderRadius:12, color:'#fff', cursor:'pointer', fontSize:14, fontWeight:700, letterSpacing:'0.02em' }}>
+          ✏️ Modifier ce vin
+        </button>
+        {onDelete && (
+          <button onClick={()=>onDelete(wine.id)} style={{ flex:1, padding:'13px', background:'rgba(248,113,113,0.1)', border:'1px solid rgba(248,113,113,0.35)', borderRadius:12, color:'#f87171', cursor:'pointer', fontSize:13, fontWeight:700 }}>
+            🗑️ Supprimer
+          </button>
+        )}
+      </div>
     </div>
   )
 }
@@ -990,7 +1002,8 @@ function Tag({ children, style }) {
 }
 
 // ─── Dashboard ─────────────────────────────────────────────────────────────────
-function Dashboard({ wines, searchQ, setSearchQ, onSelectWine }) {
+function Dashboard({ wines, searchQ, setSearchQ, onSelectWine, onGoToCave }) {
+  const [dashModal, setDashModal] = useState(null) // { type: 'cepage'|'millesime', data }
   const total = wines.reduce((s,w)=>s+w.quantity,0)
   const value = wines.reduce((s,w)=>s+(w.price||0)*w.quantity,0)
   const rated = wines.filter(w=>w.rating>0)
@@ -1051,7 +1064,7 @@ function Dashboard({ wines, searchQ, setSearchQ, onSelectWine }) {
       )}
 
       {/* Carte cave summary */}
-      <div style={{ marginBottom:20, padding:22, borderRadius:18, background:`linear-gradient(135deg, #3e1420 0%, #1c0c10 55%, ${BG} 100%)`, border:`1px solid rgba(201,168,76,0.22)`, position:'relative', overflow:'hidden' }}>
+      <div onClick={onGoToCave} style={{ marginBottom:20, padding:22, borderRadius:18, background:`linear-gradient(135deg, #3e1420 0%, #1c0c10 55%, ${BG} 100%)`, border:`1px solid rgba(201,168,76,0.22)`, position:'relative', overflow:'hidden', cursor:'pointer' }}>
         <div style={{ position:'absolute', right:0, top:0, bottom:0, width:'40%', background:'radial-gradient(ellipse at 80% 50%,rgba(201,168,76,0.1) 0%,transparent 65%)', pointerEvents:'none' }}/>
         <div style={{ fontSize:10, color:GOLD, textTransform:'uppercase', letterSpacing:'0.15em', fontWeight:700, marginBottom:8 }}>Votre Cave à Vin</div>
         <div style={{ display:'flex', alignItems:'baseline', gap:10, marginBottom:12 }}>
@@ -1168,7 +1181,7 @@ function Dashboard({ wines, searchQ, setSearchQ, onSelectWine }) {
         </div>
         <div style={{ display:'flex', gap:10, overflowX:'auto', paddingBottom:6 }} className="hide-scrollbar">
           {FEATURED_CEPAGES.map(c=>(
-            <div key={c.name} style={{ flexShrink:0, width:160, padding:14, borderRadius:13, background:`linear-gradient(145deg,${CARD},${SURF})`, border:`1px solid ${BORD}` }}>
+            <div key={c.name} onClick={()=>setDashModal({ type:'cepage', data:c })} style={{ flexShrink:0, width:160, padding:14, borderRadius:13, background:`linear-gradient(145deg,${CARD},${SURF})`, border:`1px solid ${BORD}`, cursor:'pointer' }}>
               <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:7 }}>
                 <span style={{ fontSize:22 }}>{c.icon}</span>
                 {c.trend==='up' && <TrendUpIcon />}
@@ -1189,7 +1202,7 @@ function Dashboard({ wines, searchQ, setSearchQ, onSelectWine }) {
         </div>
         <div style={{ display:'flex', flexDirection:'column', gap:9 }}>
           {FEATURED_MILLESIMES.map(m=>(
-            <div key={m.year} style={{ display:'flex', alignItems:'center', gap:14, padding:14, borderRadius:13, background:`linear-gradient(145deg,${CARD},${SURF})`, border:`1px solid ${BORD}` }}>
+            <div key={m.year} onClick={()=>setDashModal({ type:'millesime', data:m })} style={{ display:'flex', alignItems:'center', gap:14, padding:14, borderRadius:13, background:`linear-gradient(145deg,${CARD},${SURF})`, border:`1px solid ${BORD}`, cursor:'pointer' }}>
               <div style={{ textAlign:'center', minWidth:52 }}>
                 <div style={{ fontSize:22, fontWeight:900, background:'linear-gradient(135deg,#c9a84c,#e8c96a)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>{m.year}</div>
                 <div style={{ fontSize:10, color:GOLD, fontWeight:700 }}>{m.score} pts</div>
@@ -1211,6 +1224,133 @@ function Dashboard({ wines, searchQ, setSearchQ, onSelectWine }) {
           ))}
         </div>
       </div>
+
+      {/* ── Dashboard detail modal ── */}
+      {dashModal && (
+        <div style={{ position:'fixed', inset:0, zIndex:60, display:'flex', alignItems:'flex-end', justifyContent:'center', background:'rgba(5,2,3,0.92)', backdropFilter:'blur(8px)' }} onClick={()=>setDashModal(null)}>
+          <div style={{ width:'100%', maxWidth:720, maxHeight:'80vh', overflowY:'auto', borderRadius:'24px 24px 0 0', background:`linear-gradient(160deg,${SURF} 0%,${BG} 100%)`, border:`1px solid ${BORD}`, padding:24 }} onClick={e=>e.stopPropagation()}>
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:18 }}>
+              <h3 style={{ fontSize:17, fontWeight:700, color:TEXT, fontFamily:'Georgia,serif' }}>
+                {dashModal.type==='cepage' ? `${dashModal.data.icon} ${dashModal.data.name}` : `Millésime ${dashModal.data.year}`}
+              </h3>
+              <button onClick={()=>setDashModal(null)} style={{ padding:'6px 12px', background:'rgba(201,168,76,0.08)', border:`1px solid ${BORD}`, borderRadius:9, color:SUB, cursor:'pointer', fontSize:12 }}>Fermer</button>
+            </div>
+
+            {dashModal.type==='cepage' && (() => {
+              const c = dashModal.data
+              const winesWithCepage = wines.filter(w=>w.cepages?.some(cp=>cp.toLowerCase().includes(c.name.toLowerCase())))
+              return (
+                <div>
+                  <div style={{ marginBottom:16, padding:13, background:`rgba(201,168,76,0.07)`, borderRadius:11, border:`1px solid ${BORD}` }}>
+                    <div style={{ fontSize:13, color:GOLD, fontWeight:700, marginBottom:4 }}>{c.region}</div>
+                    <div style={{ fontSize:12, color:SUB, lineHeight:1.6 }}>{c.reason}</div>
+                    {c.trend==='up' && <div style={{ fontSize:11, color:'#22c55e', marginTop:6, fontWeight:700 }}>↑ Tendance à la hausse</div>}
+                  </div>
+                  {winesWithCepage.length > 0 ? (
+                    <div>
+                      <div style={{ fontSize:10, color:MUTED, textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:10, fontWeight:700 }}>Dans votre cave ({winesWithCepage.length})</div>
+                      <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+                        {winesWithCepage.map(w=>(
+                          <div key={w.id} onClick={()=>{ setDashModal(null); onSelectWine(w) }} style={{ display:'flex', gap:10, alignItems:'center', padding:'10px 12px', background:`rgba(201,168,76,0.05)`, borderRadius:10, border:`1px solid ${BORD}`, cursor:'pointer' }}>
+                            <span style={{ fontSize:20 }}>{TYPE_EMOJI[w.type]||'🍷'}</span>
+                            <div style={{ flex:1, minWidth:0 }}>
+                              <div style={{ fontSize:13, fontWeight:700, color:TEXT, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{w.name}</div>
+                              <div style={{ fontSize:11, color:SUB }}>{w.domain} · {w.vintage} · {w.quantity} btl</div>
+                            </div>
+                            {w.rating>0 && <StarRating value={w.rating} size={10}/>}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ textAlign:'center', padding:'24px 0', color:MUTED, fontSize:13 }}>Aucun vin avec ce cépage dans votre cave</div>
+                  )}
+                  {/* OENO data for this cépage */}
+                  {(() => {
+                    const oenoRows = OENO_DB.filter(r=>r[4].toLowerCase().includes(c.name.toLowerCase())).slice(0,5)
+                    if (!oenoRows.length) return null
+                    return (
+                      <div style={{ marginTop:16 }}>
+                        <div style={{ fontSize:10, color:MUTED, textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:10, fontWeight:700 }}>📚 Base œnologique</div>
+                        {oenoRows.map((r,i)=>(
+                          <div key={i} style={{ display:'flex', gap:10, alignItems:'center', padding:'9px 12px', marginBottom:6, background:'rgba(255,255,255,0.02)', borderRadius:9, border:`1px solid ${BORD}` }}>
+                            <span style={{ fontSize:14 }}>{TYPE_EMOJI[{Rouge:'red',Blanc:'white',Rosé:'rosé',Effervescent:'sparkling',Liquoreux:'sweet'}[r[1]]]||'🍷'}</span>
+                            <div style={{ flex:1 }}>
+                              <div style={{ fontSize:12, fontWeight:700, color:TEXT }}>{r[3]} {r[0]}</div>
+                              <div style={{ fontSize:10, color:SUB }}>{r[2]} · garde {r[5]} ans</div>
+                            </div>
+                            <span style={{ fontSize:10, padding:'2px 8px', borderRadius:10, background:r[7]==='Privilégier'?'rgba(74,222,128,0.12)':r[7]==='Bon choix'?'rgba(251,191,36,0.12)':'rgba(248,113,113,0.1)', color:r[7]==='Privilégier'?'#4ade80':r[7]==='Bon choix'?'#fbbf24':'#f87171', fontWeight:600 }}>{r[7]}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )
+                  })()}
+                </div>
+              )
+            })()}
+
+            {dashModal.type==='millesime' && (() => {
+              const m = dashModal.data
+              const oenoRows = OENO_DB.filter(r=>r[0]===m.year)
+              const winesOfYear = wines.filter(w=>w.vintage===m.year)
+              return (
+                <div>
+                  <div style={{ display:'flex', gap:16, marginBottom:18, flexWrap:'wrap' }}>
+                    <div style={{ textAlign:'center', padding:'14px 20px', background:`rgba(201,168,76,0.08)`, borderRadius:12, border:`1px solid ${BORD}` }}>
+                      <div style={{ fontSize:32, fontWeight:900, background:'linear-gradient(135deg,#c9a84c,#e8c96a)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>{m.year}</div>
+                      <div style={{ fontSize:10, color:MUTED, textTransform:'uppercase', marginTop:2 }}>millésime</div>
+                    </div>
+                    <div style={{ flex:1, padding:14, background:`rgba(201,168,76,0.05)`, borderRadius:12, border:`1px solid ${BORD}` }}>
+                      <div style={{ fontSize:22, fontWeight:800, color:GOLD, marginBottom:4 }}>{m.score} pts</div>
+                      <div style={{ fontSize:13, color:SUB, lineHeight:1.55, marginBottom:8 }}>{m.note}</div>
+                      <span style={{ fontSize:11, padding:'3px 10px', borderRadius:12, fontWeight:700,
+                        background: m.action==='Acheter maintenant'?'rgba(74,222,128,0.12)':m.action==='Conserver'?'rgba(96,165,250,0.12)':'rgba(251,191,36,0.12)',
+                        color: m.action==='Acheter maintenant'?'#4ade80':m.action==='Conserver'?'#60a5fa':'#fbbf24',
+                      }}>{m.action}</span>
+                    </div>
+                  </div>
+
+                  {winesOfYear.length > 0 && (
+                    <div style={{ marginBottom:16 }}>
+                      <div style={{ fontSize:10, color:MUTED, textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:10, fontWeight:700 }}>Dans votre cave ({winesOfYear.length})</div>
+                      {winesOfYear.map(w=>(
+                        <div key={w.id} onClick={()=>{ setDashModal(null); onSelectWine(w) }} style={{ display:'flex', gap:10, alignItems:'center', padding:'10px 12px', marginBottom:6, background:`rgba(201,168,76,0.05)`, borderRadius:10, border:`1px solid ${BORD}`, cursor:'pointer' }}>
+                          <span style={{ fontSize:20 }}>{TYPE_EMOJI[w.type]||'🍷'}</span>
+                          <div style={{ flex:1, minWidth:0 }}>
+                            <div style={{ fontSize:13, fontWeight:700, color:TEXT, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{w.name}</div>
+                            <div style={{ fontSize:11, color:SUB }}>{w.domain} · {w.quantity} btl</div>
+                          </div>
+                          {w.rating>0 && <StarRating value={w.rating} size={10}/>}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {oenoRows.length > 0 && (
+                    <div>
+                      <div style={{ fontSize:10, color:MUTED, textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:10, fontWeight:700 }}>📚 Base œnologique {m.year}</div>
+                      {oenoRows.map((r,i)=>(
+                        <div key={i} style={{ padding:'10px 13px', marginBottom:7, background:'rgba(255,255,255,0.02)', borderRadius:10, border:`1px solid ${BORD}` }}>
+                          <div style={{ display:'flex', gap:10, alignItems:'center', marginBottom:4 }}>
+                            <span style={{ fontSize:16 }}>{TYPE_EMOJI[{Rouge:'red',Blanc:'white',Rosé:'rosé',Effervescent:'sparkling',Liquoreux:'sweet'}[r[1]]]||'🍷'}</span>
+                            <div style={{ flex:1 }}>
+                              <div style={{ fontSize:13, fontWeight:700, color:TEXT }}>{r[3]}</div>
+                              <div style={{ fontSize:10, color:SUB }}>{r[2]} · {r[1]} · garde {r[5]} ans · {r[4]}</div>
+                            </div>
+                            <span style={{ fontSize:10, padding:'2px 8px', borderRadius:10, background:r[7]==='Privilégier'?'rgba(74,222,128,0.12)':r[7]==='Bon choix'?'rgba(251,191,36,0.12)':'rgba(248,113,113,0.1)', color:r[7]==='Privilégier'?'#4ade80':r[7]==='Bon choix'?'#fbbf24':'#f87171', fontWeight:600 }}>{r[7]}</span>
+                          </div>
+                          {r[6] && <div style={{ fontSize:11, color:SUB, fontStyle:'italic' }}>{r[6]}</div>}
+                          {r[8] && <div style={{ fontSize:11, color:MUTED, marginTop:3 }}>{r[8]}</div>}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )
+            })()}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -1778,7 +1918,7 @@ export default function App() {
 
       {/* ── Main content ── */}
       <main style={{ maxWidth:960, margin:'0 auto', padding:'20px 16px' }}>
-        {tab==='dashboard' && <Dashboard wines={wines} searchQ={searchQ} setSearchQ={setSearchQ} onSelectWine={setDetailW}/>}
+        {tab==='dashboard' && <Dashboard wines={wines} searchQ={searchQ} setSearchQ={setSearchQ} onSelectWine={setDetailW} onGoToCave={()=>setTab('cave')}/>}
         {tab==='cave'      && <CaveView wines={wines} onAdd={()=>setShowAdd(true)} onEdit={edit} onDelete={del} onSelect={setDetailW}/>}
         {tab==='accords'   && <AccordsView wines={wines}/>}
         {tab==='choisir'   && <ChoisirView/>}
@@ -1803,13 +1943,13 @@ export default function App() {
 
       {/* ── Modals ── */}
       <Modal open={showAdd} onClose={()=>setShowAdd(false)} title="Ajouter un vin à la cave">
-        <WineForm onSave={save} onClose={()=>setShowAdd(false)}/>
+        <WineForm onSave={save} onClose={()=>setShowAdd(false)} wines={wines}/>
       </Modal>
       <Modal open={!!editW} onClose={()=>setEditW(null)} title="Modifier le vin">
-        {editW && <WineForm initial={editW} onSave={save} onClose={()=>setEditW(null)}/>}
+        {editW && <WineForm initial={editW} onSave={save} onClose={()=>setEditW(null)} wines={wines}/>}
       </Modal>
       <Modal open={!!detailW} onClose={()=>setDetailW(null)} title="Fiche du vin">
-        {detailW && <WineDetail wine={detailW} onEdit={edit} onUpdate={updateWine}/>}
+        {detailW && <WineDetail wine={detailW} onEdit={edit} onUpdate={updateWine} onDelete={del}/>}
       </Modal>
     </div>
   )
