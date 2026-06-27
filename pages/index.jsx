@@ -68,11 +68,11 @@ const FEATURED_CEPAGES = [
 ]
 
 const FEATURED_MILLESIMES = [
-  { year: 2019, regions: ['Bourgogne', 'Bordeaux', 'Rhône'], score: 98, note: 'Millésime du siècle en Bourgogne', action: 'Acheter maintenant' },
-  { year: 2020, regions: ['Bourgogne', 'Loire', 'Alsace'], score: 95, note: 'Blancs exceptionnels, rouges élégants', action: 'Acheter maintenant' },
-  { year: 2015, regions: ['Bordeaux', 'Rhône'], score: 97, note: 'Grands rouges à conserver encore 10 ans', action: 'Conserver' },
-  { year: 2016, regions: ['Bordeaux'], score: 96, note: 'Bordeaux classiques de grande garde', action: 'Conserver' },
-  { year: 2021, regions: ['Champagne', 'Alsace'], score: 93, note: 'Effervescents et blancs en progression', action: 'À suivre' },
+  { year: 2025, regions: ['Bourgogne', 'Loire', 'Alsace'], score: 94, note: 'En cours de vinification — très prometteur après un été sec', action: 'À suivre' },
+  { year: 2023, regions: ['Bourgogne', 'Bordeaux', 'Rhône'], score: 96, note: 'Millésime solaire, équilibre remarquable', action: 'Acheter maintenant' },
+  { year: 2022, regions: ['Bourgogne', 'Loire', 'Alsace'], score: 95, note: 'Blancs exceptionnels, rouges concentrés', action: 'Acheter maintenant' },
+  { year: 2019, regions: ['Bourgogne', 'Bordeaux'], score: 98, note: 'Millésime du siècle en Bourgogne — apogée 2026–2035', action: 'Conserver' },
+  { year: 2015, regions: ['Bordeaux', 'Rhône'], score: 97, note: 'Grands rouges de garde — encore 10 ans minimum', action: 'Conserver' },
 ]
 
 const AROMAS_LIST = [
