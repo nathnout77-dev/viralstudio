@@ -229,6 +229,7 @@ const EMPTY = {
   type:'red', cepages:[], vintage: YEAR-2, quantity:1, price:'',
   location:'', drinkFrom: YEAR+2, drinkUntil: YEAR+10,
   rating:'', status:'cellar', aromas:[], foodPairings:[], notes:'', purchaseDate:'',
+  photo:'', history:[], reviews:[],
 }
 
 function WineForm({ initial, onSave, onClose }) {
@@ -319,6 +320,29 @@ function WineForm({ initial, onSave, onClose }) {
           <input style={inp} type="date" value={form.purchaseDate} onChange={e=>set('purchaseDate',e.target.value)} />
         </div>
 
+        {/* Photo */}
+        <div style={{ gridColumn:'1/-1' }}>
+          <label style={lbl}>Photo de la bouteille</label>
+          <div style={{ display:'flex', alignItems:'center', gap:14 }}>
+            {form.photo && (
+              <div style={{ position:'relative', flexShrink:0 }}>
+                <img src={form.photo} alt="bouteille" style={{ width:72, height:96, objectFit:'cover', borderRadius:10, border:'1px solid rgba(139,26,48,0.4)' }} />
+                <button type="button" onClick={()=>set('photo','')} style={{ position:'absolute', top:-6, right:-6, width:18, height:18, borderRadius:'50%', background:'#ca2e43', border:'none', color:'#fff', cursor:'pointer', fontSize:11, display:'flex', alignItems:'center', justifyContent:'center', lineHeight:1 }}>×</button>
+              </div>
+            )}
+            <label style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:6, padding:'18px', border:'1px dashed rgba(139,26,48,0.4)', borderRadius:10, cursor:'pointer', background:'rgba(139,26,48,0.05)', color:'#9ca3af', fontSize:12 }}>
+              📷 {form.photo ? 'Changer la photo' : 'Ajouter une photo'}
+              <input type="file" accept="image/*" style={{ display:'none' }} onChange={e=>{
+                const file = e.target.files?.[0]
+                if (!file) return
+                const reader = new FileReader()
+                reader.onload = ev => set('photo', ev.target.result)
+                reader.readAsDataURL(file)
+              }} />
+            </label>
+          </div>
+        </div>
+
         {/* Cépages */}
         <div style={{ gridColumn:'1/-1' }}>
           <label style={lbl}>Cépages</label>
@@ -406,8 +430,11 @@ function WineCard({ wine, onClick, onEdit, onDelete }) {
       )}
 
       <div style={{ display:'flex', gap:12, alignItems:'flex-start' }}>
-        <div style={{ width:42, height:42, borderRadius:11, background:ts.bg, border:`1px solid ${ts.border}`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
-          <WineGlass size={19} color={ts.dot} />
+        <div style={{ width:42, height:56, borderRadius:11, background:ts.bg, border:`1px solid ${ts.border}`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, overflow:'hidden' }}>
+          {wine.photo
+            ? <img src={wine.photo} alt="" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+            : <WineGlass size={19} color={ts.dot} />
+          }
         </div>
         <div style={{ flex:1, minWidth:0 }}>
           <div style={{ display:'flex', gap:6, marginBottom:5, flexWrap:'wrap' }}>
@@ -454,18 +481,48 @@ function WineCard({ wine, onClick, onEdit, onDelete }) {
 }
 
 // ─── Détail vin ────────────────────────────────────────────────────────────────
-function WineDetail({ wine, onEdit }) {
+function WineDetail({ wine, onEdit, onUpdate }) {
   const status = getDrinkStatus(wine)
   const ts = getTypeStyle(wine.type)
-  const window = Math.max(1, wine.drinkUntil - wine.drinkFrom)
-  const progress = Math.max(0, Math.min(100, ((YEAR - wine.drinkFrom) / window) * 100))
+  const drinkWindow = Math.max(1, wine.drinkUntil - wine.drinkFrom)
+  const progress = Math.max(0, Math.min(100, ((YEAR - wine.drinkFrom) / drinkWindow) * 100))
+
+  // Mouvement entrée/sortie
+  const [mvType, setMvType] = useState('out')
+  const [mvQty, setMvQty] = useState(1)
+  const [mvNote, setMvNote] = useState('')
+  const [mvDate, setMvDate] = useState(new Date().toISOString().slice(0,10))
+  const addMovement = () => {
+    const qtyChange = mvType === 'in' ? +mvQty : -Math.min(+mvQty, wine.quantity)
+    const newQty = Math.max(0, wine.quantity + qtyChange)
+    const entry = { id: Date.now().toString(), date: mvDate, type: mvType, qty: +mvQty, note: mvNote }
+    onUpdate({ ...wine, quantity: newQty, history: [...(wine.history||[]), entry] })
+    setMvNote(''); setMvQty(1)
+  }
+
+  // Avis
+  const [rvText, setRvText] = useState('')
+  const [rvRating, setRvRating] = useState('')
+  const [rvDate, setRvDate] = useState(new Date().toISOString().slice(0,10))
+  const addReview = () => {
+    if (!rvText.trim()) return
+    const entry = { id: Date.now().toString(), date: rvDate, rating: rvRating ? +rvRating : null, text: rvText }
+    onUpdate({ ...wine, reviews: [...(wine.reviews||[]), entry] })
+    setRvText(''); setRvRating('')
+  }
+
+  const inp = { width:'100%', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.09)', borderRadius:9, padding:'9px 13px', color:'#e8e0d5', fontSize:14, outline:'none', fontFamily:'inherit' }
+  const lbl = { display:'block', fontSize:11, color:'#9ca3af', marginBottom:5, fontWeight:600, textTransform:'uppercase', letterSpacing:'0.07em' }
 
   return (
     <div>
       <div style={{ display:'flex', gap:16, marginBottom:22 }}>
-        <div style={{ width:60, height:60, borderRadius:15, background:ts.bg, border:`1px solid ${ts.border}`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
-          <WineGlass size={26} color={ts.dot} />
-        </div>
+        {wine.photo
+          ? <img src={wine.photo} alt="" style={{ width:80, height:108, borderRadius:12, objectFit:'cover', border:`1px solid ${ts.border}`, flexShrink:0 }} />
+          : <div style={{ width:60, height:60, borderRadius:15, background:ts.bg, border:`1px solid ${ts.border}`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+              <WineGlass size={26} color={ts.dot} />
+            </div>
+        }
         <div>
           <div style={{ display:'flex', gap:7, marginBottom:6 }}>
             <span style={{ fontSize:11, padding:'2px 9px', borderRadius:20, background:ts.bg, color:ts.text, border:`1px solid ${ts.border}` }}>{TYPE_LABELS[wine.type]}</span>
@@ -531,6 +588,77 @@ function WineDetail({ wine, onEdit }) {
       {wine.location && (
         <div style={{ display:'flex', alignItems:'center', gap:7, marginBottom:16, fontSize:12, color:'#6b7280' }}>
           <MapPin /> Emplacement : <span style={{ color:'#9ca3af' }}>{wine.location}</span>
+        </div>
+      )}
+
+      {/* ── Mouvement entrée / sortie ── */}
+      <div style={{ marginBottom:20, padding:16, background:'rgba(255,255,255,0.02)', borderRadius:12, border:'1px solid rgba(255,255,255,0.07)' }}>
+        <div style={{ fontSize:11, color:'#9ca3af', textTransform:'uppercase', letterSpacing:'0.06em', marginBottom:12, fontWeight:600 }}>Enregistrer un mouvement</div>
+        <div style={{ display:'flex', gap:8, marginBottom:10, flexWrap:'wrap' }}>
+          {['out','in'].map(t=>(
+            <button key={t} type="button" onClick={()=>setMvType(t)} style={{ padding:'6px 16px', borderRadius:8, border:'none', cursor:'pointer', fontWeight:600, fontSize:13,
+              background: mvType===t ? (t==='in'?'rgba(74,222,128,0.2)':'rgba(248,113,113,0.2)') : 'rgba(255,255,255,0.04)',
+              color: mvType===t ? (t==='in'?'#4ade80':'#f87171') : '#6b7280',
+            }}>{t==='in'?'📦 Entrée':'🍾 Sortie'}</button>
+          ))}
+          <input type="number" min="1" value={mvQty} onChange={e=>setMvQty(e.target.value)} style={{ ...inp, width:70 }} />
+          <input type="date" value={mvDate} onChange={e=>setMvDate(e.target.value)} style={{ ...inp, flex:1, minWidth:130 }} />
+        </div>
+        <div style={{ display:'flex', gap:8 }}>
+          <input value={mvNote} onChange={e=>setMvNote(e.target.value)} placeholder="Commentaire (occasion, destinataire…)" style={{ ...inp, flex:1 }} />
+          <button type="button" onClick={addMovement} style={{ padding:'9px 16px', background:'linear-gradient(135deg,#8c2030,#ca2e43)', border:'none', borderRadius:9, color:'#fff', cursor:'pointer', fontSize:13, fontWeight:700, whiteSpace:'nowrap' }}>
+            + Ajouter
+          </button>
+        </div>
+      </div>
+
+      {/* ── Historique ── */}
+      {(wine.history||[]).length > 0 && (
+        <div style={{ marginBottom:20 }}>
+          <div style={{ fontSize:11, color:'#9ca3af', textTransform:'uppercase', letterSpacing:'0.06em', marginBottom:10, fontWeight:600 }}>Historique</div>
+          <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
+            {[...(wine.history||[])].reverse().map(h=>(
+              <div key={h.id} style={{ display:'flex', alignItems:'center', gap:10, padding:'9px 13px', background:'rgba(255,255,255,0.02)', borderRadius:9, border:'1px solid rgba(255,255,255,0.05)' }}>
+                <span style={{ fontSize:15 }}>{h.type==='in'?'📦':'🍾'}</span>
+                <span style={{ fontSize:12, fontWeight:700, color: h.type==='in'?'#4ade80':'#f87171', minWidth:24 }}>{h.type==='in'?'+':'-'}{h.qty}</span>
+                <span style={{ fontSize:11, color:'#6b7280', minWidth:85 }}>{h.date}</span>
+                {h.note && <span style={{ fontSize:12, color:'#9ca3af', flex:1 }}>{h.note}</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── Ajouter un avis ── */}
+      <div style={{ marginBottom:20, padding:16, background:'rgba(255,255,255,0.02)', borderRadius:12, border:'1px solid rgba(255,255,255,0.07)' }}>
+        <div style={{ fontSize:11, color:'#9ca3af', textTransform:'uppercase', letterSpacing:'0.06em', marginBottom:12, fontWeight:600 }}>Ajouter un avis de dégustation</div>
+        <div style={{ display:'flex', gap:8, marginBottom:8 }}>
+          <input type="number" min="0" max="100" value={rvRating} onChange={e=>setRvRating(e.target.value)} placeholder="Note /100" style={{ ...inp, width:100 }} />
+          <input type="date" value={rvDate} onChange={e=>setRvDate(e.target.value)} style={{ ...inp, flex:1 }} />
+        </div>
+        <div style={{ display:'flex', gap:8 }}>
+          <input value={rvText} onChange={e=>setRvText(e.target.value)} placeholder="Impressions, arômes, évolution…" style={{ ...inp, flex:1 }} onKeyDown={e=>{ if(e.key==='Enter') addReview() }} />
+          <button type="button" onClick={addReview} style={{ padding:'9px 16px', background:'rgba(139,26,48,0.25)', border:'1px solid rgba(139,26,48,0.4)', borderRadius:9, color:'#f9a8b8', cursor:'pointer', fontSize:13, fontWeight:700, whiteSpace:'nowrap' }}>
+            + Avis
+          </button>
+        </div>
+      </div>
+
+      {/* ── Liste des avis ── */}
+      {(wine.reviews||[]).length > 0 && (
+        <div style={{ marginBottom:20 }}>
+          <div style={{ fontSize:11, color:'#9ca3af', textTransform:'uppercase', letterSpacing:'0.06em', marginBottom:10, fontWeight:600 }}>Avis &amp; dégustations</div>
+          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+            {[...(wine.reviews||[])].reverse().map(r=>(
+              <div key={r.id} style={{ padding:'12px 14px', background:'rgba(255,255,255,0.02)', borderRadius:10, borderLeft:'3px solid rgba(139,26,48,0.6)' }}>
+                <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:6 }}>
+                  {r.rating && <span style={{ fontSize:14, fontWeight:800, color:'#f59e0b' }}>{r.rating}/100</span>}
+                  <span style={{ fontSize:11, color:'#6b7280' }}>{r.date}</span>
+                </div>
+                <p style={{ fontSize:13, color:'#c9bfb5', lineHeight:1.6, fontStyle:'italic', margin:0 }}>{r.text}</p>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -1212,6 +1340,11 @@ export default function App() {
 
   const edit = useCallback(w=>{ setDetailW(null); setEditW(w) },[])
 
+  const updateWine = useCallback(w=>{
+    setWines(prev=>prev.map(x=>x.id===w.id?w:x))
+    setDetailW(w)
+  },[])
+
   const total = wines.reduce((s,w)=>s+w.quantity,0)
   const readyCount = wines.filter(w=>getDrinkStatus(w).label==='À maturité').length
 
@@ -1290,7 +1423,7 @@ export default function App() {
         {editW && <WineForm initial={editW} onSave={save} onClose={()=>setEditW(null)}/>}
       </Modal>
       <Modal open={!!detailW} onClose={()=>setDetailW(null)} title="Fiche du vin">
-        {detailW && <WineDetail wine={detailW} onEdit={edit}/>}
+        {detailW && <WineDetail wine={detailW} onEdit={edit} onUpdate={updateWine}/>}
       </Modal>
     </div>
   )
