@@ -825,11 +825,362 @@ function AccordsView({ wines }) {
   )
 }
 
+// ─── Base de données vins à acheter ───────────────────────────────────────────
+const WINE_DB = [
+  // Rouges légers & fruités
+  { name:'Pinot Noir d\'Alsace', appellation:'Alsace', region:'Alsace', type:'red', body:'light', taste:['fruité','floral','léger'], budget:[8,18], cepages:['Pinot Noir'], foods:['Charcuterie','Saumon grillé','Volaille','Fromages doux'], desc:'Léger, fruité, notes de cerise et framboise. Parfait en entrée de gamme.', score:87, garde:'1-4 ans' },
+  { name:'Bourgogne Pinot Noir', appellation:'Bourgogne', region:'Bourgogne', type:'red', body:'light', taste:['fruité','élégant','minéral'], budget:[15,35], cepages:['Pinot Noir'], foods:['Volaille rôtie','Veau','Champignons','Comté'], desc:'Élégance bourguignonne, fruits rouges et notes terreuses caractéristiques.', score:89, garde:'3-8 ans' },
+  { name:'Gevrey-Chambertin', appellation:'Gevrey-Chambertin', region:'Bourgogne', type:'red', body:'medium', taste:['complexe','épicé','terroir'], budget:[40,120], cepages:['Pinot Noir'], foods:['Bœuf bourguignon','Gibier','Canard','Époisses'], desc:'Grand terroir bourguignon. Tanins soyeux, finale longue et complexe.', score:94, garde:'8-20 ans' },
+  { name:'Côte de Nuits-Villages', appellation:'Côte de Nuits', region:'Bourgogne', type:'red', body:'medium', taste:['fruité','structuré','terroir'], budget:[20,40], cepages:['Pinot Noir'], foods:['Magret de canard','Bœuf','Fromages affinés'], desc:'Porte d\'entrée idéale vers les grands vins de la Côte de Nuits.', score:90, garde:'5-12 ans' },
+  // Rouges puissants
+  { name:'Château Pichon Baron', appellation:'Pauillac', region:'Bordeaux', type:'red', body:'full', taste:['puissant','tannique','boisé'], budget:[60,150], cepages:['Cabernet Sauvignon','Merlot'], foods:['Agneau rôti','Filet de bœuf','Truffe'], desc:'Classique bordelais puissant. Fruits noirs, cèdre, finale tannique élégante.', score:95, garde:'15-30 ans' },
+  { name:'Saint-Émilion Grand Cru', appellation:'Saint-Émilion', region:'Bordeaux', type:'red', body:'full', taste:['charnu','fruité','velouté'], budget:[25,80], cepages:['Merlot','Cabernet Franc'], foods:['Côte de bœuf','Magret','Foie gras'], desc:'Dominante Merlot, rondeur et générosité. Plus accessible que les Médocs.', score:91, garde:'8-20 ans' },
+  { name:'Côtes du Rhône Villages', appellation:'Côtes du Rhône', region:'Vallée du Rhône', type:'red', body:'medium', taste:['épicé','fruité','chaleureux'], budget:[8,20], cepages:['Grenache','Syrah','Mourvèdre'], foods:['Daube','Pizza','Charcuterie','Grillades'], desc:'Rapport qualité-prix imbattable. Garrigue, fruits rouges, épices douces.', score:86, garde:'2-6 ans' },
+  { name:'Châteauneuf-du-Pape', appellation:'Châteauneuf-du-Pape', region:'Vallée du Rhône', type:'red', body:'full', taste:['puissant','chaleureux','complexe'], budget:[30,80], cepages:['Grenache','Mourvèdre','Syrah'], foods:['Gibier','Agneau','Fromages puissants','Truffe'], desc:'Soleil du Rhône concentré. Alcool généreux, fruits mûrs, épices méditerranéennes.', score:93, garde:'8-20 ans' },
+  { name:'Crozes-Hermitage', appellation:'Crozes-Hermitage', region:'Vallée du Rhône', type:'red', body:'medium', taste:['épicé','fumé','fruits noirs'], budget:[15,35], cepages:['Syrah'], foods:['Gibier','Daube provençale','Fromages affinés'], desc:'Syrah du Rhône septentrional. Olive noire, viande fumée, poivre blanc.', score:90, garde:'5-12 ans' },
+  { name:'Barolo', appellation:'Barolo', region:'Piémont', type:'red', body:'full', taste:['tannique','complexe','floral'], budget:[35,100], cepages:['Nebbiolo'], foods:['Truffe blanche','Bœuf braisé','Gibier','Fromages affinés'], desc:'Le roi des vins italiens. Tanins puissants, rose fanée, goudron. Garde exceptionnelle.', score:96, garde:'15-30 ans' },
+  { name:'Chianti Classico Riserva', appellation:'Chianti Classico', region:'Toscane', type:'red', body:'medium', taste:['fruité','épicé','acidité'], budget:[18,45], cepages:['Sangiovese'], foods:['Pasta bolognaise','Pizza','Viandes rouges','Pecorino'], desc:'Toscane authentique. Cerise, herbes, acidité fraîche et persistante.', score:91, garde:'5-15 ans' },
+  { name:'Rioja Reserva', appellation:'Rioja', region:'Rioja', type:'red', body:'medium', taste:['boisé','vanillé','fruité'], budget:[12,30], cepages:['Tempranillo'], foods:['Agneau rôti','Jambon ibérique','Chorizo'], desc:'Espagne classique. Vieillissement en fût de chêne américain, vanille et fruits rouges.', score:89, garde:'5-12 ans' },
+  // Blancs secs
+  { name:'Sancerre', appellation:'Sancerre', region:'Loire', type:'white', body:'light', taste:['minéral','vif','fruité'], budget:[15,30], cepages:['Sauvignon Blanc'], foods:['Huîtres','Chèvre frais','Asperges','Poissons'], desc:'Le Sauvignon par excellence. Pierre à fusil, buis, agrumes, fraîcheur absolue.', score:91, garde:'2-6 ans' },
+  { name:'Pouilly-Fumé', appellation:'Pouilly-Fumé', region:'Loire', type:'white', body:'light', taste:['fumé','minéral','vif'], budget:[18,40], cepages:['Sauvignon Blanc'], foods:['Chèvre','Asperges','Saumon','Crevettes'], desc:'Cousin du Sancerre, plus fumé. Minéralité unique, grande fraîcheur.', score:92, garde:'3-8 ans' },
+  { name:'Chablis 1er Cru', appellation:'Chablis', region:'Bourgogne', type:'white', body:'medium', taste:['minéral','vif','iodé'], budget:[20,45], cepages:['Chardonnay'], foods:['Huîtres','Fruits de mer','Poissons nobles','Saint-Jacques'], desc:'Chardonnay le plus minéral qui soit. Silex, iode, citron vert. Accord huîtres parfait.', score:93, garde:'4-10 ans' },
+  { name:'Puligny-Montrachet', appellation:'Puligny-Montrachet', region:'Bourgogne', type:'white', body:'full', taste:['complexe','beurré','minéral'], budget:[50,150], cepages:['Chardonnay'], foods:['Homard','Saint-Jacques','Truffe blanche','Sole'], desc:'Sommet du Chardonnay mondial. Beurre frais, noisette, minéralité profonde.', score:96, garde:'8-20 ans' },
+  { name:'Meursault', appellation:'Meursault', region:'Bourgogne', type:'white', body:'full', taste:['beurré','noisette','opulent'], budget:[35,90], cepages:['Chardonnay'], foods:['Volaille à la crème','Poissons gras','Langoustines','Camembert'], desc:'Opulence bourguignonne. Beurre, noisette, miel. Plus généreux que Puligny.', score:94, garde:'6-15 ans' },
+  { name:'Alsace Riesling Grand Cru', appellation:'Alsace Grand Cru', region:'Alsace', type:'white', body:'medium', taste:['minéral','pétrolé','vif'], budget:[20,50], cepages:['Riesling'], foods:['Choucroute','Poissons','Crustacés','Munster'], desc:'Riesling au sommet. Notes pétrolées avec l\'âge, acidité tendue, longévité exceptionnelle.', score:94, garde:'10-25 ans' },
+  { name:'Condrieu', appellation:'Condrieu', region:'Vallée du Rhône', type:'white', body:'full', taste:['floral','exotique','opulent'], budget:[30,70], cepages:['Viognier'], foods:['Foie gras','Homard à la vanille','Poulet à la crème','Abricots'], desc:'Viognier pur, seul au monde à ce niveau. Abricot, violette, miel. Déroutant de luxe.', score:95, garde:'3-8 ans' },
+  { name:'Muscadet Sèvre et Maine', appellation:'Muscadet', region:'Loire', type:'white', body:'light', taste:['minéral','iodé','vif'], budget:[6,15], cepages:['Melon de Bourgogne'], foods:['Huîtres','Moules marinières','Crevettes','Poissons'], desc:'Le vin des fruits de mer par excellence. Sur lie = plus de texture. Prix imbattable.', score:85, garde:'1-3 ans' },
+  // Rosés
+  { name:'Bandol Rosé', appellation:'Bandol', region:'Provence', type:'rosé', body:'medium', taste:['structuré','fruité','garrigue'], budget:[18,40], cepages:['Mourvèdre','Grenache'], foods:['Bouillabaisse','Grillades','Ratatouille','Tapenade'], desc:'Le roi des rosés provençaux. Tenue en bouche rare pour un rosé, fruits rouges et garrigue.', score:92, garde:'2-5 ans' },
+  { name:'Tavel', appellation:'Tavel', region:'Vallée du Rhône', type:'rosé', body:'full', taste:['puissant','fruité','épicé'], budget:[12,22], cepages:['Grenache','Syrah'], foods:['Charcuterie','Grillades','Tajine','Fromages'], desc:'Le seul AOC 100% rosé de France. Charnu, coloré, peut se garder.', score:88, garde:'2-4 ans' },
+  { name:'Côtes de Provence Rosé', appellation:'Côtes de Provence', region:'Provence', type:'rosé', body:'light', taste:['léger','fruité','floral'], budget:[8,20], cepages:['Grenache','Cinsault','Syrah'], foods:['Salade niçoise','Poissons grillés','Pizza','Apéritif'], desc:'L\'incontournable de l\'été. Pâle, frais, fleurs blanches et fruits exotiques.', score:86, garde:'1-2 ans' },
+  // Effervescents
+  { name:'Champagne Blanc de Blancs', appellation:'Champagne', region:'Champagne', type:'sparkling', body:'light', taste:['minéral','vif','élégant'], budget:[30,80], cepages:['Chardonnay'], foods:['Huîtres','Caviar','Saint-Jacques','Sushis'], desc:'100% Chardonnay, finesse absolue. Craie, citron, brioche légère. Apéritif de prestige.', score:93, garde:'5-15 ans' },
+  { name:'Champagne Rosé', appellation:'Champagne', region:'Champagne', type:'sparkling', body:'medium', taste:['fruité','élégant','vif'], budget:[35,100], cepages:['Pinot Noir','Chardonnay'], foods:['Fraises','Saumon','Canard','Desserts aux fruits rouges'], desc:'Champagne rosé : fraise, framboise, petites bulles élégantes. Festif et versatile.', score:91, garde:'5-10 ans' },
+  { name:'Crémant d\'Alsace', appellation:'Crémant d\'Alsace', region:'Alsace', type:'sparkling', body:'light', taste:['fruité','vif','frais'], budget:[10,20], cepages:['Pinot Blanc','Auxerrois'], foods:['Apéritif','Poissons','Fruits de mer','Desserts légers'], desc:'Meilleure alternative au Champagne en rapport Q/P. Frais, fruité, bulles fines.', score:88, garde:'2-5 ans' },
+  // Liquoreux
+  { name:'Sauternes', appellation:'Sauternes', region:'Bordeaux', type:'sweet', body:'full', taste:['doux','mielleux','complexe'], budget:[25,200], cepages:['Sémillon','Sauvignon'], foods:['Foie gras','Roquefort','Desserts exotiques','Tarte Tatin'], desc:'Le plus grand vin liquoreux du monde. Miel, abricot confit, botrytis noble unique.', score:96, garde:'20-50 ans' },
+  { name:'Gewurztraminer Vendanges Tardives', appellation:'Alsace', region:'Alsace', type:'sweet', body:'full', taste:['exotique','doux','floral'], budget:[20,50], cepages:['Gewurztraminer'], foods:['Foie gras','Roquefort','Curry','Tarte aux mirabelles'], desc:'Litchi, rose, mangue, sucrosité équilibrée par l\'acidité alsacienne. Déroutant.', score:93, garde:'10-20 ans' },
+]
+
+const TASTE_OPTIONS = [
+  { id:'léger', label:'Léger & délicat', icon:'🌸', desc:'Vins subtils, peu alcoolisés' },
+  { id:'fruité', label:'Fruité & gourmand', icon:'🍓', desc:'Beaucoup de fruit, accessible' },
+  { id:'minéral', label:'Minéral & vif', icon:'🪨', desc:'Fraîcheur, acidité, terroir' },
+  { id:'boisé', label:'Boisé & vanillé', icon:'🪵', desc:'Passage en fût de chêne' },
+  { id:'épicé', label:'Épicé & poivré', icon:'🌶️', desc:'Herbes, épices, garrigue' },
+  { id:'puissant', label:'Puissant & tannique', icon:'💪', desc:'Structure, garde, concentration' },
+  { id:'doux', label:'Doux & liquoreux', icon:'🍯', desc:'Sucré, mielleux, onctueux' },
+  { id:'complexe', label:'Complexe & élégant', icon:'✨', desc:'Nuances, longueur, profondeur' },
+]
+
+const OCCASION_OPTIONS = [
+  { id:'apero', label:'Apéritif', icon:'🥂' },
+  { id:'poisson', label:'Poissons & fruits de mer', icon:'🐟' },
+  { id:'viande', label:'Viandes & gibier', icon:'🥩' },
+  { id:'fromage', label:'Fromages', icon:'🧀' },
+  { id:'dessert', label:'Desserts', icon:'🍰' },
+  { id:'fete', label:'Fête & célébration', icon:'🎉' },
+  { id:'cadeau', label:'Cadeau', icon:'🎁' },
+  { id:'cave', label:'Cave & investissement', icon:'📈' },
+]
+
+const BUDGET_RANGES = [
+  { id:'b1', label:'< 15€', max:15, min:0, icon:'💰' },
+  { id:'b2', label:'15 – 30€', max:30, min:15, icon:'💰💰' },
+  { id:'b3', label:'30 – 60€', max:60, min:30, icon:'💰💰💰' },
+  { id:'b4', label:'60 – 150€', max:150, min:60, icon:'💎' },
+  { id:'b5', label:'+ de 150€', max:9999, min:150, icon:'👑' },
+]
+
+// ─── Vue Choisir un Vin ────────────────────────────────────────────────────────
+function ChoisirView() {
+  const [step, setStep] = useState(0)
+  const [sel, setSel] = useState({ type: null, tastes: [], occasion: null, budget: null })
+  const [results, setResults] = useState(null)
+
+  const toggle = (field, val, multi = false) => {
+    if (multi) {
+      setSel(s => ({ ...s, [field]: s[field].includes(val) ? s[field].filter(x=>x!==val) : [...s[field], val] }))
+    } else {
+      setSel(s => ({ ...s, [field]: s[field] === val ? null : val }))
+    }
+  }
+
+  const compute = () => {
+    let scored = WINE_DB.map(w => {
+      let score = 0
+      if (sel.type && sel.type !== 'all' && w.type !== sel.type) return null
+      if (sel.budget) {
+        const b = BUDGET_RANGES.find(b => b.id === sel.budget)
+        if (b && (w.budget[0] > b.max || w.budget[1] < b.min)) return null
+      }
+      if (sel.tastes.length > 0) {
+        const matches = sel.tastes.filter(t => w.taste.includes(t)).length
+        if (matches === 0) score -= 10
+        score += matches * 15
+      }
+      if (sel.occasion) {
+        const occasionFoodMap = {
+          apero: ['Apéritif','Charcuterie','Tapenade'],
+          poisson: ['Poissons','Saumon','Huîtres','Fruits de mer','Saint-Jacques','Moules marinières','Sole','Turbot'],
+          viande: ['Bœuf','Agneau','Gibier','Magret','Côte de bœuf','Filet de bœuf','Côte de bœuf'],
+          fromage: ['Fromages','Comté','Reblochon','Époisses','Chèvre','Munster','Pecorino','Roquefort'],
+          dessert: ['Desserts','Tarte','Fraises'],
+          fete: ['Champagne'],
+          cadeau: [],
+          cave: [],
+        }
+        const foods = occasionFoodMap[sel.occasion] || []
+        const match = w.foods.some(f => foods.some(occ => f.toLowerCase().includes(occ.toLowerCase())))
+        if (match) score += 20
+        if (sel.occasion === 'fete' && w.type === 'sparkling') score += 30
+        if (sel.occasion === 'cadeau' && w.score >= 92) score += 20
+        if (sel.occasion === 'cave' && w.garde.includes('ans') && parseInt(w.garde) >= 8) score += 20
+      }
+      score += (w.score - 85) * 2
+      return { ...w, matchScore: score }
+    }).filter(Boolean).sort((a,b) => b.matchScore - a.matchScore)
+    setResults(scored.slice(0, 6))
+    setStep(4)
+  }
+
+  const reset = () => { setSel({ type: null, tastes: [], occasion: null, budget: null }); setResults(null); setStep(0) }
+
+  const typeColor = { red:'#ca2e43', white:'#d97706', rosé:'#f43f5e', sparkling:'#06b6d4', sweet:'#f59e0b' }
+  const typeLabel = { red:'Rouge', white:'Blanc', rosé:'Rosé', sparkling:'Effervescent', sweet:'Liquoreux', all:'Tous' }
+
+  const btnBase = { padding:'10px 14px', borderRadius:11, cursor:'pointer', fontSize:13, fontWeight:500, transition:'all 0.15s', textAlign:'left' }
+  const selected = (active) => active
+    ? { ...btnBase, background:'rgba(139,26,48,0.25)', border:'1px solid rgba(139,26,48,0.55)', color:'#f9a8b8' }
+    : { ...btnBase, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:'#9ca3af' }
+
+  const progress = Math.round((step / 4) * 100)
+
+  return (
+    <div style={{ maxWidth:860, margin:'0 auto' }}>
+      {/* Header */}
+      <div style={{ marginBottom:28, padding:'24px 28px', borderRadius:18, background:'linear-gradient(135deg,#3e0c17 0%,#1a0a1a 55%,#0a0a0f 100%)', border:'1px solid rgba(139,26,48,0.28)', position:'relative', overflow:'hidden' }}>
+        <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse at 70% 50%,rgba(139,26,48,0.15) 0%,transparent 65%)', pointerEvents:'none' }}/>
+        <div style={{ position:'relative' }}>
+          <div style={{ fontSize:11, color:'#ca2e43', textTransform:'uppercase', letterSpacing:'0.15em', marginBottom:6, fontWeight:700 }}>Aide au choix</div>
+          <h2 style={{ fontSize:22, fontWeight:900, color:'#e8e0d5', fontFamily:'Georgia,serif', marginBottom:8 }}>Quel vin choisir ?</h2>
+          <p style={{ color:'#9ca3af', fontSize:13 }}>Répondez à 3 questions pour trouver le vin parfait selon votre goût, l'occasion et votre budget.</p>
+        </div>
+      </div>
+
+      {step < 4 && (
+        <div style={{ marginBottom:24 }}>
+          <div style={{ display:'flex', justifyContent:'space-between', fontSize:11, color:'#6b7280', marginBottom:8 }}>
+            <span>{step === 0 ? 'Type de vin' : step === 1 ? 'Goût & style' : step === 2 ? 'Occasion' : 'Budget'}</span>
+            <span>Étape {step+1} / 4</span>
+          </div>
+          <div style={{ height:4, background:'rgba(255,255,255,0.06)', borderRadius:2 }}>
+            <div style={{ height:'100%', width:`${(step+1)*25}%`, background:'linear-gradient(90deg,#8c2030,#ca2e43)', borderRadius:2, transition:'width 0.3s' }}/>
+          </div>
+        </div>
+      )}
+
+      {/* Étape 0 : Type */}
+      {step === 0 && (
+        <div>
+          <h3 style={{ fontSize:16, fontWeight:700, color:'#e8e0d5', marginBottom:16 }}>Quel type de vin ?</h3>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(140px,1fr))', gap:10, marginBottom:24 }}>
+            {[
+              { id:'all', label:'Peu importe', icon:'🍷' },
+              { id:'red', label:'Rouge', icon:'🔴' },
+              { id:'white', label:'Blanc', icon:'⚪' },
+              { id:'rosé', label:'Rosé', icon:'🌸' },
+              { id:'sparkling', label:'Effervescent', icon:'🥂' },
+              { id:'sweet', label:'Liquoreux', icon:'🍯' },
+            ].map(t => (
+              <button key={t.id} onClick={() => toggle('type', t.id)} style={{
+                ...selected(sel.type === t.id),
+                display:'flex', flexDirection:'column', alignItems:'center', padding:'16px 10px', gap:8, borderRadius:13,
+              }}>
+                <span style={{ fontSize:24 }}>{t.icon}</span>
+                <span style={{ fontSize:12, fontWeight:600 }}>{t.label}</span>
+              </button>
+            ))}
+          </div>
+          <button onClick={() => setStep(1)} disabled={!sel.type}
+            style={{ width:'100%', padding:'12px', background: sel.type ? 'linear-gradient(135deg,#8c2030,#ca2e43)' : 'rgba(255,255,255,0.05)', border:'none', borderRadius:11, color: sel.type ? '#fff' : '#4b5563', cursor: sel.type ? 'pointer' : 'default', fontSize:14, fontWeight:700 }}>
+            Continuer →
+          </button>
+        </div>
+      )}
+
+      {/* Étape 1 : Goût */}
+      {step === 1 && (
+        <div>
+          <h3 style={{ fontSize:16, fontWeight:700, color:'#e8e0d5', marginBottom:6 }}>Quel(s) style(s) vous attire(nt) ?</h3>
+          <p style={{ fontSize:12, color:'#6b7280', marginBottom:16 }}>Sélectionnez 1 à 3 styles (facultatif)</p>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(175px,1fr))', gap:9, marginBottom:24 }}>
+            {TASTE_OPTIONS.map(t => (
+              <button key={t.id} onClick={() => toggle('tastes', t.id, true)} style={{
+                ...selected(sel.tastes.includes(t.id)),
+                display:'flex', alignItems:'center', gap:10, padding:'12px 14px',
+              }}>
+                <span style={{ fontSize:20, flexShrink:0 }}>{t.icon}</span>
+                <div>
+                  <div style={{ fontSize:12, fontWeight:600, color: sel.tastes.includes(t.id) ? '#f9a8b8' : '#c9bfb5' }}>{t.label}</div>
+                  <div style={{ fontSize:10, color:'#6b7280', marginTop:1 }}>{t.desc}</div>
+                </div>
+              </button>
+            ))}
+          </div>
+          <div style={{ display:'flex', gap:10 }}>
+            <button onClick={() => setStep(0)} style={{ flex:1, padding:'12px', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:11, color:'#9ca3af', cursor:'pointer', fontSize:13 }}>← Retour</button>
+            <button onClick={() => setStep(2)} style={{ flex:3, padding:'12px', background:'linear-gradient(135deg,#8c2030,#ca2e43)', border:'none', borderRadius:11, color:'#fff', cursor:'pointer', fontSize:14, fontWeight:700 }}>Continuer →</button>
+          </div>
+        </div>
+      )}
+
+      {/* Étape 2 : Occasion */}
+      {step === 2 && (
+        <div>
+          <h3 style={{ fontSize:16, fontWeight:700, color:'#e8e0d5', marginBottom:16 }}>Pour quelle occasion ?</h3>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(150px,1fr))', gap:10, marginBottom:24 }}>
+            {OCCASION_OPTIONS.map(o => (
+              <button key={o.id} onClick={() => toggle('occasion', o.id)} style={{
+                ...selected(sel.occasion === o.id),
+                display:'flex', alignItems:'center', gap:10, padding:'13px 14px',
+              }}>
+                <span style={{ fontSize:22 }}>{o.icon}</span>
+                <span style={{ fontSize:12, fontWeight:600 }}>{o.label}</span>
+              </button>
+            ))}
+          </div>
+          <div style={{ display:'flex', gap:10 }}>
+            <button onClick={() => setStep(1)} style={{ flex:1, padding:'12px', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:11, color:'#9ca3af', cursor:'pointer', fontSize:13 }}>← Retour</button>
+            <button onClick={() => setStep(3)} style={{ flex:3, padding:'12px', background:'linear-gradient(135deg,#8c2030,#ca2e43)', border:'none', borderRadius:11, color:'#fff', cursor:'pointer', fontSize:14, fontWeight:700 }}>Continuer →</button>
+          </div>
+        </div>
+      )}
+
+      {/* Étape 3 : Budget */}
+      {step === 3 && (
+        <div>
+          <h3 style={{ fontSize:16, fontWeight:700, color:'#e8e0d5', marginBottom:16 }}>Quel est votre budget ?</h3>
+          <div style={{ display:'flex', flexDirection:'column', gap:9, marginBottom:24 }}>
+            {BUDGET_RANGES.map(b => (
+              <button key={b.id} onClick={() => toggle('budget', b.id)} style={{
+                ...selected(sel.budget === b.id),
+                display:'flex', alignItems:'center', justifyContent:'space-between', padding:'14px 18px',
+              }}>
+                <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+                  <span style={{ fontSize:18 }}>{b.icon}</span>
+                  <span style={{ fontSize:14, fontWeight:600 }}>{b.label}</span>
+                </div>
+                {sel.budget === b.id && <span style={{ fontSize:16 }}>✓</span>}
+              </button>
+            ))}
+          </div>
+          <div style={{ display:'flex', gap:10 }}>
+            <button onClick={() => setStep(2)} style={{ flex:1, padding:'12px', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:11, color:'#9ca3af', cursor:'pointer', fontSize:13 }}>← Retour</button>
+            <button onClick={compute} disabled={!sel.budget}
+              style={{ flex:3, padding:'12px', background: sel.budget ? 'linear-gradient(135deg,#8c2030,#ca2e43)' : 'rgba(255,255,255,0.05)', border:'none', borderRadius:11, color: sel.budget ? '#fff' : '#4b5563', cursor: sel.budget ? 'pointer' : 'default', fontSize:14, fontWeight:700 }}>
+              Voir mes recommandations 🍷
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Résultats */}
+      {step === 4 && results && (
+        <div>
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:20, flexWrap:'wrap', gap:10 }}>
+            <div>
+              <h3 style={{ fontSize:17, fontWeight:800, color:'#e8e0d5', fontFamily:'Georgia,serif' }}>
+                {results.length} vin{results.length > 1 ? 's' : ''} recommandé{results.length > 1 ? 's' : ''}
+              </h3>
+              <p style={{ fontSize:12, color:'#6b7280', marginTop:3 }}>
+                {sel.type && sel.type !== 'all' ? typeLabel[sel.type] : 'Tous types'} · {sel.budget ? BUDGET_RANGES.find(b=>b.id===sel.budget)?.label : 'Tous budgets'}
+                {sel.occasion ? ` · ${OCCASION_OPTIONS.find(o=>o.id===sel.occasion)?.label}` : ''}
+              </p>
+            </div>
+            <button onClick={reset} style={{ padding:'8px 16px', background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:9, color:'#9ca3af', cursor:'pointer', fontSize:13 }}>
+              ↺ Recommencer
+            </button>
+          </div>
+
+          <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
+            {results.map((w, i) => (
+              <div key={w.name} style={{
+                padding:18, borderRadius:15,
+                background: i === 0 ? 'linear-gradient(145deg,#1e1620,#160e14)' : 'linear-gradient(145deg,#1a1a24,#111118)',
+                border: i === 0 ? '1px solid rgba(139,26,48,0.5)' : '1px solid rgba(255,255,255,0.06)',
+                boxShadow: i === 0 ? '0 4px 20px rgba(139,26,48,0.12)' : 'none',
+              }}>
+                <div style={{ display:'flex', alignItems:'flex-start', gap:14 }}>
+                  {/* Rang */}
+                  <div style={{ width:34, height:34, borderRadius:10, background: i===0 ? 'linear-gradient(135deg,#d4a017,#f5c842)' : 'rgba(255,255,255,0.05)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontWeight:800, fontSize:14, color: i===0 ? '#000' : '#6b7280' }}>
+                    {i+1}
+                  </div>
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ display:'flex', gap:7, marginBottom:5, flexWrap:'wrap', alignItems:'center' }}>
+                      <span style={{ fontSize:10, padding:'2px 8px', borderRadius:20, background:`rgba(${typeColor[w.type]==='#ca2e43'?'202,46,67':typeColor[w.type]==='#d97706'?'217,119,6':typeColor[w.type]==='#f43f5e'?'244,63,94':typeColor[w.type]==='#06b6d4'?'6,182,212':'245,158,11'},0.18)`, color:typeColor[w.type], fontWeight:600 }}>
+                        {typeLabel[w.type]}
+                      </span>
+                      <span style={{ fontSize:10, color:'#6b7280' }}>{w.appellation}</span>
+                      {i === 0 && <span style={{ fontSize:10, padding:'2px 8px', borderRadius:20, background:'rgba(212,160,23,0.15)', color:'#d4a017', fontWeight:700 }}>★ Meilleur choix</span>}
+                    </div>
+                    <div style={{ fontSize:15, fontWeight:800, color:'#e8e0d5', fontFamily:'Georgia,serif', marginBottom:3 }}>{w.name}</div>
+                    <div style={{ fontSize:12, color:'#9ca3af', marginBottom:8, lineHeight:1.5 }}>{w.desc}</div>
+
+                    {/* Détails */}
+                    <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(130px,1fr))', gap:8 }}>
+                      <div style={{ padding:'8px 10px', borderRadius:8, background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.05)' }}>
+                        <div style={{ fontSize:10, color:'#6b7280', marginBottom:2, textTransform:'uppercase', letterSpacing:'0.06em' }}>Budget</div>
+                        <div style={{ fontSize:13, fontWeight:700, color:'#d97706' }}>{w.budget[0]}€ – {w.budget[1]}€</div>
+                      </div>
+                      <div style={{ padding:'8px 10px', borderRadius:8, background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.05)' }}>
+                        <div style={{ fontSize:10, color:'#6b7280', marginBottom:2, textTransform:'uppercase', letterSpacing:'0.06em' }}>Garde</div>
+                        <div style={{ fontSize:13, fontWeight:700, color:'#60a5fa' }}>{w.garde}</div>
+                      </div>
+                      <div style={{ padding:'8px 10px', borderRadius:8, background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.05)' }}>
+                        <div style={{ fontSize:10, color:'#6b7280', marginBottom:2, textTransform:'uppercase', letterSpacing:'0.06em' }}>Note critique</div>
+                        <div style={{ fontSize:13, fontWeight:700, color:'#f59e0b' }}>{w.score} / 100</div>
+                      </div>
+                      <div style={{ padding:'8px 10px', borderRadius:8, background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.05)' }}>
+                        <div style={{ fontSize:10, color:'#6b7280', marginBottom:2, textTransform:'uppercase', letterSpacing:'0.06em' }}>Cépage</div>
+                        <div style={{ fontSize:12, fontWeight:600, color:'#f9a8b8' }}>{w.cepages.join(', ')}</div>
+                      </div>
+                    </div>
+
+                    {/* Accords */}
+                    <div style={{ marginTop:10 }}>
+                      <div style={{ fontSize:10, color:'#6b7280', marginBottom:6, textTransform:'uppercase', letterSpacing:'0.06em' }}>Accords mets & vins</div>
+                      <div style={{ display:'flex', flexWrap:'wrap', gap:5 }}>
+                        {w.foods.map(f=>(
+                          <span key={f} style={{ fontSize:10, padding:'2px 8px', borderRadius:10, background:'rgba(20,50,20,0.5)', border:'1px solid rgba(34,100,34,0.3)', color:'#86efac' }}>{f}</span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Style tags */}
+                    <div style={{ marginTop:8, display:'flex', flexWrap:'wrap', gap:5 }}>
+                      {w.taste.map(t=>(
+                        <span key={t} style={{ fontSize:10, padding:'2px 8px', borderRadius:10, background:'rgba(120,53,15,0.2)', border:'1px solid rgba(180,83,9,0.3)', color:'#fcd34d' }}>{t}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ─── App ───────────────────────────────────────────────────────────────────────
 const TABS = [
   { id:'dashboard', label:'Tableau de bord', icon:<ChartBar/> },
   { id:'cave', label:'Ma Cave', icon:<CellarIcon/> },
   { id:'accords', label:'Accords', icon:<ForkKnifeIcon/> },
+  { id:'choisir', label:'Choisir un Vin', icon:<span style={{fontSize:16}}>🔍</span> },
 ]
 
 export default function App() {
@@ -929,6 +1280,7 @@ export default function App() {
         {tab==='dashboard' && <Dashboard wines={wines}/>}
         {tab==='cave' && <CaveView wines={wines} onAdd={()=>setShowAdd(true)} onEdit={edit} onDelete={del} onSelect={setDetailW}/>}
         {tab==='accords' && <AccordsView wines={wines}/>}
+        {tab==='choisir' && <ChoisirView/>}
       </main>
 
       <Modal open={showAdd} onClose={()=>setShowAdd(false)} title="Ajouter un vin à la cave">
