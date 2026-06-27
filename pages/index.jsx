@@ -1,4 +1,116 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
+
+// ─── Base œnologique 2017-2025 ────────────────────────────────────────────────
+// [millesime, couleur, region, appellation, cepages, gardeMax, qualite, recommandation, commentaire]
+const OENO_DB = [
+[2017,"Rouge","Bordeaux","Saint-Émilion Grand Cru Classé","Merlot, Cabernet Franc",18,"Hétérogène, gel sévère rive droite","Sélection prudente","Choisir des producteurs ayant trié sévèrement ; volumes faibles"],
+[2017,"Liquoreux","Bordeaux","Sauternes 1er Cru","Sémillon, Sauvignon",35,"Bon, botrytis présent","Bon choix","Encore très jeune"],
+[2018,"Rouge","Bordeaux","Médoc Cru Classé (Pauillac/Margaux)","Cabernet Sauvignon dominant",28,"Excellent, mûr et concentré","Privilégier","Un des meilleurs millésimes de la décennie"],
+[2018,"Rouge","Bordeaux","Médoc Cru Bourgeois","Cabernet Sauvignon, Merlot",10,"Excellent","Privilégier","Très bon rapport qualité-prix"],
+[2018,"Blanc","Bordeaux","Pessac-Léognan","Sauvignon, Sémillon",12,"Très bon, riche","Bon choix",null],
+[2019,"Rouge","Bordeaux","Pomerol","Merlot dominant",22,"Très bon, élégant","Privilégier",null],
+[2019,"Rouge","Bordeaux","Côtes de Bordeaux","Merlot, Cabernet",7,"Bon","Bon choix","À boire sans trop attendre"],
+[2020,"Rouge","Bordeaux","Saint-Émilion Grand Cru","Merlot",16,"Bon, volumes faibles","Bon choix",null],
+[2021,"Rouge","Bordeaux","Médoc générique","Cabernet, Merlot",6,"Léger, frais, millésime mineur","Sélection prudente","À boire sans trop attendre"],
+[2022,"Rouge","Bordeaux","Pauillac Cru Classé","Cabernet Sauvignon",28,"Excellent, très mûr","Privilégier",null],
+[2022,"Liquoreux","Bordeaux","Sauternes","Sémillon",38,"Excellent, botrytis idéal","Privilégier",null],
+[2023,"Rouge","Bordeaux","Médoc Cru Bourgeois","Cabernet, Merlot",11,"Bon, abondant","Bon choix",null],
+[2024,"Rouge","Bordeaux","Bordeaux Supérieur","Merlot",5,"Difficile, pluie, sélection nécessaire","Sélection prudente","Choisir un producteur sérieux"],
+[2022,"Rouge","Bordeaux","Saint-Julien Cru Classé","Cabernet Sauvignon",24,"Excellent","Privilégier",null],
+[2017,"Rouge","Bourgogne","Pommard 1er Cru","Pinot Noir",14,"Bon, classique","Bon choix",null],
+[2017,"Blanc","Bourgogne","Chablis 1er Cru","Chardonnay",9,"Bon, tendu","Bon choix","À boire maintenant"],
+[2018,"Rouge","Bourgogne","Gevrey-Chambertin","Pinot Noir",20,"Excellent, mûr","Privilégier",null],
+[2018,"Blanc","Bourgogne","Meursault","Chardonnay",15,"Excellent, riche","Privilégier",null],
+[2018,"Rouge","Bourgogne","Grand Cru (Chambertin/Romanée)","Pinot Noir",25,"Excellent, exceptionnel","Privilégier","Très haut de gamme, pour grandes occasions"],
+[2019,"Rouge","Bourgogne","Vosne-Romanée","Pinot Noir",22,"Excellent, équilibré","Privilégier",null],
+[2019,"Blanc","Bourgogne","Puligny-Montrachet","Chardonnay",18,"Excellent","Privilégier",null],
+[2020,"Rouge","Bourgogne","Bourgogne village","Pinot Noir",7,"Bon, faible volume","Bon choix",null],
+[2021,"Blanc","Bourgogne","Chablis","Chardonnay",8,"Bon pour les blancs, acidité vive","Bon choix",null],
+[2021,"Rouge","Bourgogne","Côte de Beaune village","Pinot Noir",8,"Gel sévère, faible volume, plus léger","Sélection prudente",null],
+[2022,"Rouge","Bourgogne","Nuits-Saint-Georges 1er Cru","Pinot Noir",18,"Excellent, abondant","Privilégier",null],
+[2022,"Blanc","Bourgogne","Mâcon-Villages","Chardonnay",5,"Excellent, mûr","Privilégier",null],
+[2023,"Rouge","Bourgogne","Beaune 1er Cru","Pinot Noir",13,"Bon, abondant","Bon choix",null],
+[2023,"Blanc","Bourgogne","Saint-Véran","Chardonnay",6,"Bon, abondant","Bon choix",null],
+[2024,"Blanc","Bourgogne","Chablis village","Chardonnay",6,"Difficile, mildiou, faible volume","Sélection prudente","Rendements très faibles, qualité variable selon domaines"],
+[2018,"Effervescent","Champagne","Champagne Brut Millésimé","Pinot Noir, Chardonnay",15,"Vintage déclaré, riche et mûr","Privilégier",null],
+[2019,"Effervescent","Champagne","Champagne Brut Millésimé","Pinot Noir, Chardonnay",18,"Vintage exceptionnel, très équilibré","Privilégier","Un des meilleurs millésimes récents en Champagne"],
+[2020,"Effervescent","Champagne","Champagne Brut Millésimé","Chardonnay, Pinot Noir",14,"Bon vintage, mûr","Bon choix",null],
+[2022,"Effervescent","Champagne","Champagne Brut Millésimé","Chardonnay, Pinot Noir",16,"Excellent, récolte abondante et qualitative","Privilégier",null],
+[2017,"Rouge","Rhône Nord","Côte-Rôtie","Syrah",18,"Chaud, mûr, bon","Bon choix",null],
+[2018,"Rouge","Rhône Nord","Hermitage","Syrah",22,"Excellent, puissant","Privilégier",null],
+[2019,"Blanc","Rhône Nord","Condrieu","Viognier",7,"Excellent, aromatique","Privilégier","Le Viognier ne se garde pas indéfiniment"],
+[2020,"Rouge","Rhône Nord","Saint-Joseph","Syrah",10,"Bon, équilibré","Bon choix",null],
+[2022,"Rouge","Rhône Nord","Crozes-Hermitage","Syrah",11,"Excellent, mûr","Privilégier",null],
+[2024,"Rouge","Rhône Nord","Saint-Joseph","Syrah",8,"Irrégulier, pluie en cours de saison","Sélection prudente",null],
+[2017,"Rouge","Rhône Sud","Lirac","Grenache, Syrah",7,"Bon, déjà à boire","À éviter","Fenêtre de consommation dépassée"],
+[2017,"Rouge","Rhône Sud","Châteauneuf-du-Pape","Grenache, Syrah, Mourvèdre",14,"Chaud, généreux","Bon choix",null],
+[2018,"Rouge","Rhône Sud","Châteauneuf-du-Pape","Grenache dominant",16,"Excellent, riche","Privilégier",null],
+[2019,"Rouge","Rhône Sud","Gigondas","Grenache, Syrah",12,"Excellent","Privilégier",null],
+[2020,"Rouge","Rhône Sud","Côtes du Rhône Villages","Grenache, Syrah",7,"Bon","Bon choix",null],
+[2021,"Rosé","Rhône Sud","Tavel","Grenache, Cinsault",2,"Frais, bonne acidité","À éviter","Fenêtre de consommation dépassée"],
+[2022,"Rouge","Rhône Sud","Châteauneuf-du-Pape (vieilles vignes)","Grenache, Syrah, Mourvèdre",18,"Excellent, très mûr","Privilégier",null],
+[2023,"Rouge","Rhône Sud","Côtes du Rhône Village","Grenache, Syrah",8,"Bon","Bon choix",null],
+[2017,"Blanc","Loire","Sancerre","Sauvignon Blanc",5,"Faible volume (gel)","À éviter","Trop tardif pour ce style de blanc vif"],
+[2018,"Rouge","Loire","Chinon","Cabernet Franc",8,"Bon, mûr","Bon choix","À boire maintenant"],
+[2019,"Liquoreux","Loire","Coteaux du Layon","Chenin Blanc",22,"Bon, équilibré","Bon choix",null],
+[2020,"Blanc","Loire","Vouvray sec","Chenin Blanc",10,"Bon, sec et tendu","Bon choix",null],
+[2021,"Blanc","Loire","Pouilly-Fumé","Sauvignon Blanc",6,"Gel sévère, faible volume, belle acidité","Sélection prudente",null],
+[2022,"Rosé","Loire","Anjou rosé","Cabernet Franc, Grolleau",2,"Excellent, mûr","À éviter","Fenêtre de consommation dépassée"],
+[2023,"Blanc","Loire","Muscadet sur lie","Melon de Bourgogne",4,"Bon","Bon choix",null],
+[2025,"Rosé","Loire","Saumur rosé","Cabernet Franc, Grolleau",2,"Bon, frais, déjà en vente","Bon choix","Millésime tout juste commercialisé"],
+[2025,"Blanc","Loire","Sancerre","Sauvignon Blanc",5,"Bon, déjà en vente","Bon choix","Profil frais et vif"],
+[2018,"Blanc","Alsace","Riesling Grand Cru","Riesling",15,"Excellent, riche","Privilégier",null],
+[2019,"Blanc","Alsace","Gewurztraminer","Gewurztraminer",9,"Bon, aromatique","Bon choix",null],
+[2021,"Effervescent","Alsace","Crémant d'Alsace","Pinot Blanc, Auxerrois",5,"Bon, frais","Bon choix","À boire maintenant"],
+[2022,"Blanc","Alsace","Pinot Gris","Pinot Gris",7,"Excellent, mûr","Bon choix",null],
+[2024,"Blanc","Alsace","Riesling village","Riesling",8,"Difficile, mildiou, faible volume","Sélection prudente",null],
+[2018,"Rouge","Provence","Bandol","Mourvèdre",16,"Excellent, structuré","Bon choix",null],
+[2021,"Rosé","Provence","Côtes de Provence","Grenache, Cinsault",2,"Bon, frais","À éviter","Fenêtre de consommation dépassée"],
+[2022,"Rosé","Provence","Côtes de Provence","Grenache, Cinsault",3,"Excellent millésime","À éviter","Fenêtre de consommation dépassée"],
+[2023,"Rosé","Provence","Bandol","Mourvèdre, Cinsault",3,"Bon, structuré","Sélection prudente","Dernière fenêtre pour le boire"],
+[2024,"Rosé","Provence","Côtes de Provence","Grenache, Cinsault",2,"Bon, malgré pression mildiou modérée","Privilégier","À boire maintenant"],
+[2025,"Rosé","Provence","Côtes de Provence","Grenache, Cinsault",2,"Bon, fraîcheur, déjà disponible","Privilégier","Le rosé le plus frais actuellement sur le marché"],
+[2017,"Liquoreux","Languedoc-Roussillon","Banyuls Rimage","Grenache Noir",30,"Style oxydatif, garde exceptionnelle","Bon choix","Garde quasi illimitée"],
+[2018,"Rouge","Languedoc","Saint-Chinian","Syrah, Grenache",8,"Excellent","Privilégier","À boire maintenant"],
+[2019,"Effervescent","Languedoc","Crémant de Limoux","Chardonnay, Chenin",6,"Bon","À éviter","Fenêtre de consommation dépassée"],
+[2020,"Blanc","Languedoc","Picpoul de Pinet","Picpoul",4,"Bon, frais","À éviter","Fenêtre de consommation dépassée"],
+[2022,"Rouge","Languedoc","Faugères","Syrah, Mourvèdre",9,"Excellent, mûr","Privilégier",null],
+[2023,"Rouge","Languedoc","Minervois","Syrah, Carignan",6,"Bon","Bon choix",null],
+[2019,"Rouge","Beaujolais","Morgon (Cru)","Gamay",9,"Excellent","Privilégier",null],
+[2021,"Rouge","Beaujolais","Beaujolais-Villages","Gamay",5,"Gel, faible volume, léger","Sélection prudente","À boire maintenant"],
+[2022,"Rouge","Beaujolais","Moulin-à-Vent (Cru)","Gamay",10,"Excellent, mûr et concentré","Privilégier",null],
+[2024,"Rouge","Beaujolais","Fleurie (Cru)","Gamay",8,"Difficile mais sélection fine possible","Sélection prudente",null],
+[2025,"Rouge","Beaujolais","Beaujolais Nouveau","Gamay",1,"Bon, déjà sur le marché depuis novembre 2025","Bon choix","À boire impérativement dans l'année"],
+[2017,"Blanc","Jura","Vin Jaune","Savagnin",40,"Style oxydatif, garde exceptionnelle","Privilégier","Mis en bouteille après 6 ans sous voile"],
+[2021,"Blanc","Jura","Côtes du Jura","Chardonnay",9,"Bon","Bon choix",null],
+[2023,"Effervescent","Jura","Crémant du Jura","Chardonnay, Savagnin",5,"Bon","Bon choix",null],
+[2018,"Rouge","Sud-Ouest","Cahors","Malbec",13,"Excellent, mûr","Privilégier",null],
+[2019,"Rouge","Sud-Ouest","Madiran","Tannat",15,"Excellent, structuré","Privilégier",null],
+[2020,"Liquoreux","Sud-Ouest","Jurançon moelleux","Petit Manseng",20,"Bon","Bon choix",null],
+[2024,"Blanc","Sud-Ouest","Jurançon sec","Gros, Petit Manseng",6,"Bon, moins touché par le mildiou","Bon choix",null],
+[2019,"Rouge","Corse","Patrimonio","Niellucciu",9,"Bon","Bon choix",null],
+[2022,"Rosé","Corse","Corse rosé","Sciacarello, Niellucciu",3,"Excellent","À éviter","Fenêtre de consommation dépassée"],
+[2024,"Rosé","Corse","Corse rosé","Sciacarello, Niellucciu",2,"Bon, île relativement épargnée par le mildiou","Privilégier","À boire maintenant"],
+]
+
+// Fonctions de recherche dans la base
+const OENO_APPELLATIONS = [...new Set(OENO_DB.map(r=>r[3]))].sort()
+const OENO_REGIONS = [...new Set(OENO_DB.map(r=>r[2]))].sort()
+
+function getOenoMatch(appellation, millesime) {
+  if (!appellation) return null
+  const norm = s => s.toLowerCase().trim()
+  // exact match first
+  let hit = OENO_DB.find(r => norm(r[3]) === norm(appellation) && r[0] === millesime)
+  if (!hit) hit = OENO_DB.find(r => norm(r[3]).includes(norm(appellation)) || norm(appellation).includes(norm(r[3])))
+  return hit || null
+}
+
+function getOenoCepages(appellation) {
+  const norm = s => s.toLowerCase().trim()
+  const hit = OENO_DB.find(r => norm(r[3]).includes(norm(appellation)) || norm(appellation).includes(norm(r[3])))
+  return hit ? hit[4] : null
+}
 
 // ─── Données de démonstration ──────────────────────────────────────────────────
 const DEMO_WINES = [
@@ -201,6 +313,51 @@ function getTypeStyle(type) {
   return s[type] || s.red
 }
 
+// ─── Autocomplete ──────────────────────────────────────────────────────────────
+function AutocompleteInput({ value, onChange, suggestions, style, placeholder, onSelect }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+  const filtered = value.length >= 1
+    ? suggestions.filter(s => s.toLowerCase().includes(value.toLowerCase())).slice(0, 8)
+    : []
+
+  useEffect(() => {
+    const handler = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false) }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  return (
+    <div ref={ref} style={{ position:'relative' }}>
+      <input
+        style={style}
+        value={value}
+        placeholder={placeholder}
+        onChange={e => { onChange(e.target.value); setOpen(true) }}
+        onFocus={() => setOpen(true)}
+        autoComplete="off"
+      />
+      {open && filtered.length > 0 && (
+        <div style={{
+          position:'absolute', top:'100%', left:0, right:0, zIndex:100, marginTop:3,
+          background:'#1c1c28', border:'1px solid rgba(139,26,48,0.4)', borderRadius:9,
+          boxShadow:'0 8px 24px rgba(0,0,0,0.5)', maxHeight:220, overflowY:'auto',
+        }}>
+          {filtered.map(s => (
+            <div key={s} onMouseDown={e=>{ e.preventDefault(); onChange(s); onSelect && onSelect(s); setOpen(false) }}
+              style={{ padding:'9px 13px', fontSize:13, color:'#c9bfb5', cursor:'pointer', borderBottom:'1px solid rgba(255,255,255,0.04)' }}
+              onMouseEnter={e=>e.currentTarget.style.background='rgba(139,26,48,0.15)'}
+              onMouseLeave={e=>e.currentTarget.style.background=''}
+            >
+              {s}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ─── Modal ─────────────────────────────────────────────────────────────────────
 function Modal({ open, onClose, title, children }) {
   useEffect(() => {
@@ -271,11 +428,33 @@ function WineForm({ initial, onSave, onClose }) {
         </div>
         <div>
           <label style={lbl}>Appellation</label>
-          <input style={inp} value={form.appellation} onChange={e=>set('appellation',e.target.value)} placeholder="Gevrey-Chambertin" />
+          <AutocompleteInput style={inp} value={form.appellation} placeholder="Gevrey-Chambertin, Sancerre…"
+            suggestions={OENO_APPELLATIONS}
+            onChange={v => set('appellation', v)}
+            onSelect={v => {
+              set('appellation', v)
+              const match = getOenoMatch(v, form.vintage)
+              if (match) {
+                setForm(f => ({
+                  ...f,
+                  appellation: v,
+                  drinkUntil: f.vintage + match[5],
+                  drinkFrom: f.drinkFrom || f.vintage + 2,
+                }))
+              }
+              const cep = getOenoCepages(v)
+              if (cep && !form.cepages.length) {
+                setForm(f => ({ ...f, cepages: cep.split(', ').map(c => c.trim()).filter(Boolean) }))
+              }
+            }}
+          />
         </div>
         <div>
           <label style={lbl}>Région</label>
-          <input style={inp} value={form.region} onChange={e=>set('region',e.target.value)} placeholder="Bourgogne" />
+          <AutocompleteInput style={inp} value={form.region} placeholder="Bourgogne, Bordeaux…"
+            suggestions={OENO_REGIONS}
+            onChange={v => set('region', v)}
+          />
         </div>
         <div>
           <label style={lbl}>Pays</label>
@@ -289,7 +468,11 @@ function WineForm({ initial, onSave, onClose }) {
         </div>
         <div>
           <label style={lbl}>Millésime *</label>
-          <input style={inp} type="number" min="1900" max={YEAR} value={form.vintage} onChange={e=>set('vintage',+e.target.value)} required />
+          <input style={inp} type="number" min="1900" max="2025" value={form.vintage} onChange={e=>{
+            const v = +e.target.value
+            const match = getOenoMatch(form.appellation, v)
+            setForm(f => ({ ...f, vintage: v, drinkUntil: match ? v + match[5] : f.drinkUntil }))
+          }} required />
         </div>
         <div>
           <label style={lbl}>Quantité (btl)</label>
@@ -563,6 +746,35 @@ function WineDetail({ wine, onEdit, onUpdate }) {
           <span style={{ color:status.color, marginLeft:'auto' }}>{status.label}</span>
         </div>
       </div>
+
+      {/* Conseil de garde OENO_DB */}
+      {(() => {
+        const match = getOenoMatch(wine.appellation, wine.vintage)
+        if (!match) return null
+        const recoBg = { 'Privilégier':'rgba(74,222,128,0.08)', 'Bon choix':'rgba(251,191,36,0.08)', 'Sélection prudente':'rgba(248,113,113,0.08)', 'À éviter':'rgba(107,114,128,0.08)' }
+        const recoColor = { 'Privilégier':'#4ade80', 'Bon choix':'#fbbf24', 'Sélection prudente':'#f87171', 'À éviter':'#6b7280' }
+        const boire = match[0] + match[5]
+        return (
+          <div style={{ marginBottom:18, padding:14, background: recoBg[match[7]] || 'rgba(255,255,255,0.03)', borderRadius:11, border:`1px solid ${recoColor[match[7]] || '#6b7280'}33` }}>
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:7, gap:8, flexWrap:'wrap' }}>
+              <span style={{ fontSize:11, color:'#9ca3af', textTransform:'uppercase', letterSpacing:'0.05em', fontWeight:600 }}>Base œnologique 2017–2025</span>
+              <span style={{ fontSize:11, padding:'2px 9px', borderRadius:20, background: recoBg[match[7]], color: recoColor[match[7]] || '#6b7280', fontWeight:700 }}>{match[7]}</span>
+            </div>
+            <div style={{ display:'flex', gap:16, flexWrap:'wrap', marginBottom: match[8] ? 8 : 0 }}>
+              <div style={{ textAlign:'center' }}>
+                <div style={{ fontSize:17, fontWeight:800, color:'#f59e0b' }}>{boire}</div>
+                <div style={{ fontSize:9, color:'#6b7280', textTransform:'uppercase' }}>boire avant</div>
+              </div>
+              <div style={{ textAlign:'center' }}>
+                <div style={{ fontSize:17, fontWeight:800, color:'#a3a3a3' }}>{match[5]} ans</div>
+                <div style={{ fontSize:9, color:'#6b7280', textTransform:'uppercase' }}>garde max</div>
+              </div>
+              <div style={{ flex:1, fontSize:12, color:'#9ca3af', alignSelf:'center', fontStyle:'italic' }}>{match[6]}</div>
+            </div>
+            {match[8] && <p style={{ fontSize:12, color:'#c9bfb5', margin:0, borderTop:'1px solid rgba(255,255,255,0.05)', paddingTop:7 }}>{match[8]}</p>}
+          </div>
+        )
+      })()}
 
       {wine.cepages?.length > 0 && (
         <Section title="Cépages">
