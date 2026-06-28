@@ -1,4 +1,4 @@
-import { Wine, GlassWater, MapPin, Sparkles, BookOpen, Plus } from 'lucide-react'
+import { Wine, GlassWater, MapPin, Sparkles, BookOpen, Plus, Home } from 'lucide-react'
 
 const TABS = [
   { id: 'cave',      label: 'Ma Cave',    Icon: Wine },
@@ -8,7 +8,7 @@ const TABS = [
   { id: 'millésimes',label: 'Millésimes', Icon: BookOpen },
 ]
 
-export default function Navbar({ tab, setTab, total, onAdd }) {
+export default function Navbar({ tab, setTab, total, onAdd, onLanding }) {
   return (
     <>
       {/* Top header */}
@@ -43,6 +43,13 @@ export default function Navbar({ tab, setTab, total, onAdd }) {
               </button>
             ))}
           </nav>
+
+          {/* Home button */}
+          {onLanding && (
+            <button onClick={onLanding} className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-anthracite-400 hover:text-cream hover:bg-anthracite-800 transition-all cursor-pointer mr-1" title="Accueil">
+              <Home size={13} />
+            </button>
+          )}
 
           {/* Add button */}
           <button onClick={onAdd} className="btn-gold text-xs px-4 py-2 hidden sm:inline-flex">

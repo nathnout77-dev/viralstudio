@@ -2,16 +2,15 @@ import { useState, useEffect, useCallback } from 'react'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
 
-import Navbar       from '../components/Navbar'
-import WineCard     from '../components/WineCard'
-import WineDetail   from '../components/WineDetail'
-import WineForm     from '../components/WineForm'
-import CaveView     from '../components/CaveView'
-import AccordsView  from '../components/AccordsView'
+import Navbar        from '../components/Navbar'
+import WineDetail    from '../components/WineDetail'
+import WineForm      from '../components/WineForm'
+import CaveView      from '../components/CaveView'
+import AccordsView   from '../components/AccordsView'
 import SommelierForm from '../components/SommelierForm'
 import MillesimesView from '../components/MillesimesView'
+import LandingPage   from '../components/LandingPage'
 
-// Leaflet must load client-side only
 const InteractiveMap = dynamic(() => import('../components/InteractiveMap'), { ssr: false })
 
 // ─── Demo data ────────────────────────────────────────────────────────────────
@@ -91,22 +90,37 @@ const DEMO_WINES = [
 ]
 
 export default function App() {
-  const [wines, setWines]     = useState([])
-  const [tab, setTab]         = useState('cave')
-  const [ready, setReady]     = useState(false)
-  const [detailWine, setDetailWine] = useState(null)
-  const [showForm, setShowForm]     = useState(false)
-  const [editWine, setEditWine]     = useState(null)
+  const [wines, setWines]         = useState([])
+  const [tab, setTab]             = useState('cave')
+  const [ready, setReady]         = useState(false)
+  const [showLanding, setShowLanding] = useState(true)
+  const [detailWine, setDetailWine]   = useState(null)
+  const [showForm, setShowForm]       = useState(false)
+  const [editWine, setEditWine]       = useState(null)
 
   useEffect(() => {
     const saved = localStorage.getItem('oenotheque-v2')
     setWines(saved ? JSON.parse(saved) : DEMO_WINES)
+    // Show landing only on first visit per session
+    const seen = sessionStorage.getItem('landing-seen')
+    if (seen) setShowLanding(false)
     setReady(true)
   }, [])
 
   useEffect(() => {
     if (ready) localStorage.setItem('oenotheque-v2', JSON.stringify(wines))
   }, [wines, ready])
+
+  const enterApp = useCallback(() => {
+    sessionStorage.setItem('landing-seen', '1')
+    setShowLanding(false)
+  }, [])
+
+  const handleTabChange = useCallback((newTab) => {
+    sessionStorage.setItem('landing-seen', '1')
+    setShowLanding(false)
+    setTab(newTab)
+  }, [])
 
   const saveWine = useCallback(w => {
     setWines(prev =>
@@ -137,20 +151,41 @@ export default function App() {
 
   const total = wines.reduce((s, w) => s + w.quantity, 0)
 
+  // Loading screen
   if (!ready) {
     return (
-      <div className="min-h-screen bg-anthracite-950 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center"
+           style={{ background: 'linear-gradient(160deg, #0d1011 0%, #1a0a10 60%, #0d1011 100%)' }}>
         <div className="text-center">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-wine"
-               style={{ background: 'linear-gradient(135deg, #9a1633 0%, #72102a 100%)' }}>
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M8 2h8l1 7H7L8 2z"/><path d="M7 9c0 5.523 4.477 10 5 10s5-4.477 5-10"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="9" y1="22" x2="15" y2="22"/>
+          <div
+            className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 animate-pulse-gold"
+            style={{ background: 'linear-gradient(135deg, #9a1633 0%, #72102a 100%)' }}
+          >
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M8 2h8l1 7H7L8 2z"/>
+              <path d="M7 9c0 5.523 4.477 10 5 10s5-4.477 5-10"/>
+              <line x1="12" y1="19" x2="12" y2="22"/>
+              <line x1="9" y1="22" x2="15" y2="22"/>
             </svg>
           </div>
-          <div className="font-serif text-xl font-semibold text-cream">Œnothèque</div>
-          <div className="text-xs text-gold-500/60 uppercase tracking-[0.2em] mt-1">Chargement…</div>
+          <div className="font-serif text-2xl font-semibold" style={{ color: '#f5f0e8' }}>Œnothèque</div>
+          <div className="text-xs uppercase tracking-[0.25em] mt-2 shimmer-text">Chargement…</div>
         </div>
       </div>
+    )
+  }
+
+  // Landing page
+  if (showLanding) {
+    return (
+      <>
+        <Head>
+          <title>L'Œnothèque — L'Art du Vin Accessible</title>
+          <meta name="description" content="Gérez votre cave, explorez les vignobles, consultez votre sommelier virtuel. L'œnologie pour tous." />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+        </Head>
+        <LandingPage onEnter={enterApp} onTabChange={handleTabChange} />
+      </>
     )
   }
 
@@ -167,11 +202,11 @@ export default function App() {
           setTab={setTab}
           total={total}
           onAdd={() => setShowForm(true)}
+          onLanding={() => setShowLanding(true)}
         />
 
-        {/* Main content */}
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-10">
-          {tab === 'cave'      && (
+          {tab === 'cave'       && (
             <CaveView
               wines={wines}
               onAdd={() => setShowForm(true)}
@@ -181,13 +216,12 @@ export default function App() {
               onUpdateQty={updateQty}
             />
           )}
-          {tab === 'carte'     && <InteractiveMap onAddWine={saveWine} />}
-          {tab === 'sommelier' && <SommelierForm />}
-          {tab === 'accords'   && <AccordsView />}
-          {tab === 'millésimes'&& <MillesimesView />}
+          {tab === 'carte'      && <InteractiveMap onAddWine={saveWine} />}
+          {tab === 'sommelier'  && <SommelierForm />}
+          {tab === 'accords'    && <AccordsView />}
+          {tab === 'millésimes' && <MillesimesView />}
         </main>
 
-        {/* Modals */}
         {detailWine && (
           <WineDetail
             wine={detailWine}
