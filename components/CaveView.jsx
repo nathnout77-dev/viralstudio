@@ -1,0 +1,197 @@
+import { useState, useMemo } from 'react'
+import { Search, SlidersHorizontal, LayoutGrid, List, Wine, Plus, X, ChevronDown } from 'lucide-react'
+import WineCard from './WineCard'
+
+const TYPES = ['Tous', 'Rouge', 'Blanc', 'Rosé', 'Effervescent', 'Liquoreux']
+const TYPE_MAP = { 'Rouge':'red', 'Blanc':'white', 'Rosé':'rosé', 'Effervescent':'sparkling', 'Liquoreux':'sweet' }
+const REGIONS = ['Toutes','Bordeaux','Bourgogne','Champagne','Rhône Nord','Rhône Sud','Loire','Alsace','Provence','Languedoc','Beaujolais','Jura','Sud-Ouest','Corse','Autre']
+const SORT_OPTIONS = [
+  { value: 'name',     label: 'Nom A→Z' },
+  { value: 'vintage',  label: 'Millésime ↓' },
+  { value: 'quantity', label: 'Quantité ↓' },
+  { value: 'value',    label: 'Valeur ↓' },
+]
+
+function SelectFilter({ value, onChange, options, label }) {
+  return (
+    <div className="relative">
+      <select
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        className="pl-3 pr-8 py-2 bg-white border border-anthracite-200 rounded-lg text-xs text-anthracite-700 focus:outline-none focus:ring-2 focus:ring-gold-500/40 cursor-pointer appearance-none"
+        aria-label={label}
+      >
+        {options.map(o => <option key={o.value || o} value={o.value || o}>{o.label || o}</option>)}
+      </select>
+      <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-anthracite-400 pointer-events-none" />
+    </div>
+  )
+}
+
+export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onUpdateQty }) {
+  const [search, setSearch]   = useState('')
+  const [typeFilter, setType] = useState('Tous')
+  const [region, setRegion]   = useState('Toutes')
+  const [sort, setSort]       = useState('name')
+  const [view, setView]       = useState('grid')
+  const [showFilters, setShowFilters] = useState(false)
+
+  const filtered = useMemo(() => {
+    let list = wines.filter(w => {
+      const q = search.toLowerCase()
+      const matchSearch = !q || w.name.toLowerCase().includes(q) || w.domain?.toLowerCase().includes(q)
+                          || w.appellation?.toLowerCase().includes(q) || String(w.vintage).includes(q)
+      const matchType   = typeFilter === 'Tous' || w.type === TYPE_MAP[typeFilter]
+      const matchRegion = region === 'Toutes' || w.region === region
+      return matchSearch && matchType && matchRegion
+    })
+    list = [...list].sort((a, b) => {
+      if (sort === 'name')     return a.name.localeCompare(b.name)
+      if (sort === 'vintage')  return b.vintage - a.vintage
+      if (sort === 'quantity') return b.quantity - a.quantity
+      if (sort === 'value')    return (b.estimatedValue || 0) - (a.estimatedValue || 0)
+      return 0
+    })
+    return list
+  }, [wines, search, typeFilter, region, sort])
+
+  const stats = useMemo(() => ({
+    total:    wines.reduce((s, w) => s + w.quantity, 0),
+    value:    wines.reduce((s, w) => s + (w.estimatedValue || 0) * w.quantity, 0),
+    regions:  new Set(wines.map(w => w.region).filter(Boolean)).size,
+    ready:    wines.filter(w => {
+      const y = new Date().getFullYear()
+      const from = w.vintage + (w.drinkFrom || 2)
+      const to   = w.vintage + (w.drinkUntil || 8)
+      return y >= from && y <= to
+    }).length,
+  }), [wines])
+
+  const hasFilters = typeFilter !== 'Tous' || region !== 'Toutes'
+
+  return (
+    <div className="animate-fade-in">
+      {/* Stats strip */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+        {[
+          { label: 'Bouteilles', value: stats.total,               sub: 'en cave' },
+          { label: 'Valeur totale',  value: `${stats.value.toLocaleString('fr')} €`, sub: 'estimée' },
+          { label: 'Régions',    value: stats.regions,            sub: 'représentées' },
+          { label: 'À boire',    value: stats.ready,              sub: 'à l\'apogée' },
+        ].map(s => (
+          <div key={s.label} className="card p-4">
+            <div className="text-2xl font-semibold text-anthracite-900 font-serif">{s.value}</div>
+            <div className="text-xs text-anthracite-500 uppercase tracking-wide mt-0.5">{s.label}</div>
+            <div className="text-[10px] text-anthracite-400">{s.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Search + controls */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-4">
+        <div className="relative flex-1">
+          <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-anthracite-400 pointer-events-none" />
+          <input
+            type="search"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Rechercher un vin, domaine, appellation…"
+            className="input-field pl-9 pr-4"
+            aria-label="Rechercher"
+          />
+          {search && (
+            <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-anthracite-400 hover:text-anthracite-600">
+              <X size={12} />
+            </button>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <button
+            onClick={() => setShowFilters(f => !f)}
+            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg border text-xs font-medium transition-all cursor-pointer ${
+              showFilters || hasFilters
+                ? 'bg-wine-50 border-wine-300 text-wine-800'
+                : 'bg-white border-anthracite-200 text-anthracite-600 hover:border-anthracite-300'
+            }`}
+          >
+            <SlidersHorizontal size={13} />
+            Filtres
+            {hasFilters && <span className="w-1.5 h-1.5 rounded-full bg-wine-700" />}
+          </button>
+          <div className="flex border border-anthracite-200 rounded-lg overflow-hidden">
+            {[['grid', LayoutGrid], ['list', List]].map(([v, Icon]) => (
+              <button key={v} onClick={() => setView(v)}
+                      className={`px-2.5 py-2 transition-all cursor-pointer ${view === v ? 'bg-wine-800 text-cream' : 'bg-white text-anthracite-400 hover:text-anthracite-700'}`}
+                      aria-label={v === 'grid' ? 'Grille' : 'Liste'} aria-pressed={view === v}>
+                <Icon size={14} />
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Filter panel */}
+      {showFilters && (
+        <div className="card p-4 mb-4 flex flex-wrap gap-3 animate-fade-in">
+          {/* Type pills */}
+          <div className="flex flex-wrap gap-1.5">
+            {TYPES.map(t => (
+              <button
+                key={t}
+                onClick={() => setType(t)}
+                className={`px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
+                  typeFilter === t
+                    ? 'bg-wine-800 text-cream border-wine-800'
+                    : 'bg-white text-anthracite-500 border-anthracite-200 hover:border-anthracite-300'
+                }`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+          <div className="flex gap-2 items-center ml-auto">
+            <SelectFilter value={region} onChange={setRegion} options={REGIONS} label="Région" />
+            <SelectFilter value={sort}   onChange={setSort}   options={SORT_OPTIONS} label="Trier par" />
+          </div>
+        </div>
+      )}
+
+      {/* Results */}
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-xs text-anthracite-400">
+          {filtered.length} vin{filtered.length > 1 ? 's' : ''} trouvé{filtered.length > 1 ? 's' : ''}
+        </p>
+        <button onClick={onAdd} className="btn-gold text-xs px-3.5 py-1.5">
+          <Plus size={12} /> Ajouter
+        </button>
+      </div>
+
+      {filtered.length === 0 ? (
+        <div className="card p-12 text-center">
+          <Wine size={36} className="text-anthracite-200 mx-auto mb-4" />
+          <p className="font-serif text-base text-anthracite-400 mb-1">Aucun vin trouvé</p>
+          <p className="text-xs text-anthracite-300 mb-4">Essayez d'autres critères ou ajoutez un vin.</p>
+          <button onClick={onAdd} className="btn-primary mx-auto"><Plus size={13} />Ajouter un vin</button>
+        </div>
+      ) : (
+        <div className={
+          view === 'grid'
+            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'
+            : 'flex flex-col gap-2'
+        }>
+          {filtered.map(w => (
+            <WineCard
+              key={w.id} wine={w}
+              compact={view === 'list'}
+              onSelect={onSelect}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              onUpdateQty={onUpdateQty}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}

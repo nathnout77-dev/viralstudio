@@ -2,20 +2,97 @@
 @tailwind components;
 @tailwind utilities;
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
 
-body {
-  background-color: #0f0508;
-  color: #f5ede0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  -webkit-font-smoothing: antialiased;
+  :root {
+    --wine:       #72102a;
+    --wine-dark:  #5c0d22;
+    --gold:       #c9a84c;
+    --gold-light: #d4a847;
+    --anthracite: #1e2426;
+    --surface:    #f5f0e8;
+    --text:       #1e2426;
+    --muted:      #7a8486;
+    --border:     rgba(201,168,76,0.15);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: #f5f0e8;
+    color: #1e2426;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; }
+
+  input, select, textarea, button { font-family: inherit; }
+
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: #e2e4e4; }
+  ::-webkit-scrollbar-thumb { background: #c9a84c; border-radius: 4px; }
 }
 
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: #1c0c10; }
-::-webkit-scrollbar-thumb { background: #c9a84c; border-radius: 4px; }
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 bg-wine-800 text-cream font-medium text-sm rounded-lg
+           hover:bg-wine-700 active:bg-wine-900 transition-all duration-200 cursor-pointer shadow-wine
+           focus:outline-none focus:ring-2 focus:ring-gold-500 focus:ring-offset-1;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-4 py-2 text-anthracite-700 text-sm rounded-lg border border-anthracite-200
+           hover:bg-anthracite-100 hover:border-anthracite-300 transition-all duration-200 cursor-pointer
+           focus:outline-none focus:ring-2 focus:ring-gold-500;
+  }
+  .btn-gold {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 font-medium text-sm rounded-lg text-anthracite-950
+           transition-all duration-200 cursor-pointer shadow-gold
+           focus:outline-none focus:ring-2 focus:ring-gold-500;
+    background: linear-gradient(135deg, #d4a847 0%, #c9a84c 50%, #b8962a 100%);
+  }
+  .btn-gold:hover { filter: brightness(1.08); }
 
-input, select, textarea, button { font-family: inherit; }
+  .card {
+    @apply bg-white rounded-xl border border-anthracite-100 shadow-card hover:shadow-card-hover transition-all duration-200;
+  }
+  .card-dark {
+    @apply bg-anthracite-900 rounded-xl border border-gold-500/10 shadow-wine;
+  }
 
-.hide-scrollbar::-webkit-scrollbar { display: none; }
-.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .input-field {
+    @apply w-full px-3.5 py-2.5 bg-white border border-anthracite-200 rounded-lg text-sm text-anthracite-900
+           placeholder-anthracite-400 focus:outline-none focus:ring-2 focus:ring-gold-500/50 focus:border-gold-500
+           transition-all duration-150;
+  }
+  .select-field {
+    @apply w-full px-3.5 py-2.5 bg-white border border-anthracite-200 rounded-lg text-sm text-anthracite-900
+           focus:outline-none focus:ring-2 focus:ring-gold-500/50 focus:border-gold-500 cursor-pointer
+           transition-all duration-150 appearance-none;
+  }
+  .label {
+    @apply block text-xs font-semibold text-anthracite-600 uppercase tracking-wider mb-1.5;
+  }
+
+  .section-title {
+    @apply font-serif text-2xl font-semibold text-anthracite-900 tracking-tight;
+  }
+  .section-sub {
+    @apply text-sm text-anthracite-500 mt-1;
+  }
+
+  .badge-rouge    { @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-wine-100 text-wine-800; }
+  .badge-blanc    { @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-800 border border-amber-200; }
+  .badge-rose     { @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-pink-50 text-pink-700 border border-pink-200; }
+  .badge-effervescent { @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200; }
+  .badge-liquoreux { @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-900; }
+
+  .divider-gold {
+    @apply h-px bg-gradient-to-r from-transparent via-gold-500/40 to-transparent my-6;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar { display: none; }
+  .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
