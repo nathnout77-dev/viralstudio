@@ -181,7 +181,7 @@ export default function App() {
               onUpdateQty={updateQty}
             />
           )}
-          {tab === 'carte'     && <InteractiveMap />}
+          {tab === 'carte'     && <InteractiveMap onAddWine={saveWine} />}
           {tab === 'sommelier' && <SommelierForm />}
           {tab === 'accords'   && <AccordsView />}
           {tab === 'millésimes'&& <MillesimesView />}

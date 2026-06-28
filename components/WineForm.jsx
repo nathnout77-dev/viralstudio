@@ -1,5 +1,6 @@
-import { useState } from 'react'
-import { X, Wine, ChevronDown } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { X, Wine, ChevronDown, Sparkles } from 'lucide-react'
+import { WINE_DB_APPELLATIONS } from '../data/wineDatabase'
 
 const TYPES = [
   { value: 'red',       label: 'Rouge' },
@@ -52,8 +53,40 @@ export default function WineForm({ initial, onSave, onClose }) {
     notes:          initial?.notes || '',
   })
   const [errors, setErrors] = useState({})
+  const [appellSuggestions, setAppellSuggestions] = useState([])
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
+
+  // Autocomplete appellation depuis la base de données
+  const handleAppellationChange = (val) => {
+    set('appellation', val)
+    if (val.length > 1) {
+      const q = val.toLowerCase()
+      setAppellSuggestions(
+        WINE_DB_APPELLATIONS.filter(a =>
+          a.appellation.toLowerCase().includes(q) || a.region.toLowerCase().includes(q)
+        ).slice(0, 5)
+      )
+    } else {
+      setAppellSuggestions([])
+    }
+  }
+
+  const applyAppellation = (a) => {
+    setForm(f => ({
+      ...f,
+      appellation: a.appellation,
+      region:      a.region,
+      type:        a.type,
+      cepages:     a.cepages.join(', '),
+      serviceTemp: a.serviceTemp || f.serviceTemp,
+      carafage:    a.carafage || f.carafage,
+      drinkFrom:   a.drinkFrom || f.drinkFrom,
+      drinkUntil:  a.drinkUntil || f.drinkUntil,
+      foodPairings: a.accords || f.foodPairings,
+    }))
+    setAppellSuggestions([])
+  }
 
   const toggleFood = (f) => set('foodPairings', form.foodPairings.includes(f)
     ? form.foodPairings.filter(x => x !== f)
@@ -152,7 +185,34 @@ export default function WineForm({ initial, onSave, onClose }) {
               </SelectWrapper>
             </Field>
             <Field label="Appellation">
-              <input className="input-field" value={form.appellation} onChange={e => set('appellation', e.target.value)} placeholder="ex: Gevrey-Chambertin" />
+              <div className="relative">
+                <input
+                  className="input-field pr-8"
+                  value={form.appellation}
+                  onChange={e => handleAppellationChange(e.target.value)}
+                  onBlur={() => setTimeout(() => setAppellSuggestions([]), 200)}
+                  placeholder="ex: Gevrey-Chambertin"
+                  autoComplete="off"
+                />
+                {appellSuggestions.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-white border border-anthracite-200 rounded-lg shadow-card-hover overflow-hidden">
+                    {appellSuggestions.map(a => (
+                      <button
+                        key={a.appellation}
+                        type="button"
+                        onMouseDown={() => applyAppellation(a)}
+                        className="w-full px-3 py-2.5 text-left hover:bg-anthracite-50 flex items-center gap-2 cursor-pointer"
+                      >
+                        <Sparkles size={10} className="text-gold-500 flex-shrink-0" />
+                        <div>
+                          <div className="text-xs font-semibold text-anthracite-900">{a.appellation}</div>
+                          <div className="text-[10px] text-anthracite-400">{a.region} · {a.cepages.join(', ')}</div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </Field>
           </div>
 
