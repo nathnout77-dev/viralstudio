@@ -1,0 +1,9 @@
+node_modules/
+dist/
+data/jobs.db
+data/jobs.db-shm
+data/jobs.db-wal
+.env
+.env.local
+cv.pdf
+cv.docx
