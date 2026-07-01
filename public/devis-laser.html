@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estimateur Découpe Laser</title>
+<style>
+  :root {
+    --bg:#f4f3f0;--surface:#fff;--border:#e0ddd8;--accent:#2c3e50;--accent2:#c0a060;
+    --text:#1a1a1a;--text2:#6b6b6b;--radius:10px;--shadow:0 2px 12px rgba(0,0,0,0.07);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px 16px;}
+  .container{max-width:800px;margin:0 auto;}
+  header{text-align:center;margin-bottom:32px;}
+  header h1{font-size:1.5rem;font-weight:600;color:var(--accent);letter-spacing:.04em;text-transform:uppercase;}
+  header p{color:var(--text2);font-size:.85rem;margin-top:4px;}
+  .accent-line{width:48px;height:2px;background:var(--accent2);margin:10px auto 0;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:18px;box-shadow:var(--shadow);}
+  .card-title{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent2);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .card-title::after{content:'';flex:1;height:1px;background:var(--border);}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+  .grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;}
+  label{display:block;font-size:.78rem;color:var(--text2);margin-bottom:5px;font-weight:500;}
+  input[type="number"],input[type="text"]{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:6px;font-size:.92rem;color:var(--text);background:#fafaf8;outline:none;transition:border .2s;}
+  input:focus{border-color:var(--accent);background:#fff;}
+  .info-row{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#f4f3f0;border-radius:6px;font-size:.82rem;color:var(--text2);}
+  .info-row strong{color:var(--accent);font-size:.95rem;}
+  .info-row-accent{border-left:3px solid var(--accent);background:#eef2f7;}
+  .info-row-ps{border-left:3px solid #7b5ea7;background:#f4f0fa;}
+  .info-row-ps strong{color:#7b5ea7;}
+  .info-row-tube{border-left:3px solid #2e7d5e;background:#edf7f2;}
+  .info-row-tube strong{color:#2e7d5e;}
+  .info-row-laser{border-left:3px solid #a34a28;background:#faf1ec;}
+  .info-row-laser strong{color:#a34a28;}
+  .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+
+  /* Visualization */
+  .visu-toggle{background:none;border:1px dashed var(--accent2);border-radius:6px;padding:7px 14px;color:var(--accent2);font-size:.8rem;cursor:pointer;font-weight:600;margin-top:10px;transition:background .15s;}
+  .visu-toggle:hover{background:#fdf6e8;}
+  .canvas-wrap{margin-top:10px;display:none;background:#f8f9fb;border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+  .canvas-wrap.open{display:block;}
+  #pieceCanvas{display:block;width:100%;height:260px;}
+
+  /* Auto-time button */
+  .btn-auto{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:9px 16px;font-size:.8rem;cursor:pointer;font-weight:600;white-space:nowrap;transition:opacity .2s;}
+  .btn-auto:hover{opacity:.85;}
+
+  /* Ops table */
+  .ops-table{width:100%;border-collapse:collapse;margin-bottom:6px;}
+  .ops-table th{font-size:.7rem;color:var(--text2);font-weight:600;text-align:left;padding:0 6px 8px;line-height:1.3;}
+  .ops-table th:last-child,.ops-table td:last-child{text-align:right;}
+  .ops-table td{padding:5px 6px;border-top:1px solid var(--border);vertical-align:middle;}
+  .ops-table td:first-child{font-size:.85rem;color:var(--text);white-space:nowrap;}
+  .ops-table td input{padding:6px 8px;text-align:center;}
+  .ops-table td:last-child{font-size:.88rem;font-weight:600;color:var(--accent);}
+
+  /* Laser holes/slots table */
+  .holes-table{width:100%;border-collapse:collapse;margin-bottom:8px;}
+  .holes-table th{font-size:.68rem;color:var(--text2);font-weight:600;text-align:left;padding:0 6px 6px;}
+  .holes-table td{padding:4px 6px;border-top:1px solid var(--border);}
+  .holes-table td input{padding:6px 8px;}
+  .holes-table td:last-child{width:36px;text-align:center;}
+
+  /* P+S */
+  .pt-list{margin-bottom:10px;}
+  .pt-row{display:grid;grid-template-columns:1fr 36px;gap:8px;align-items:center;margin-bottom:8px;}
+  .pt-row input{margin:0;}
+  .btn-remove{background:none;border:1px solid #e0ddd8;border-radius:6px;width:36px;height:36px;cursor:pointer;color:#b00;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background .15s;}
+  .btn-remove:hover{background:#fff0f0;}
+  .btn-add{background:none;border:1px dashed var(--accent2);border-radius:6px;padding:8px 16px;color:var(--accent2);font-size:.82rem;cursor:pointer;font-weight:600;letter-spacing:.05em;transition:background .15s;}
+  .btn-add:hover{background:#fdf6e8;}
+  .ps-total-box{background:#5c3d8f;border-radius:var(--radius);padding:14px 18px;color:#fff;display:flex;justify-content:space-between;align-items:center;margin-top:10px;}
+  .ps-total-box .t-label{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;opacity:.7;}
+  .ps-total-box .t-val{font-size:1.3rem;font-weight:700;}
+
+  /* Coefficient */
+  .coef-select{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .coef-btn{border:1px solid var(--border);border-radius:8px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .18s;background:#fafaf8;}
+  .coef-btn:hover{border-color:var(--accent2);}
+  .coef-btn.active{border-color:var(--accent);background:var(--accent);color:#fff;}
+  .coef-btn .cb-label{font-size:.78rem;font-weight:600;}
+  .coef-btn .cb-val{font-size:.72rem;opacity:.7;margin-top:2px;}
+  .coef-btn.active .cb-val{opacity:.8;}
+
+  /* Results */
+  .result-line{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px dashed var(--border);}
+  .result-line:last-child{border-bottom:none;}
+  .result-label{font-size:.85rem;color:var(--text2);}
+  .result-value{font-size:.95rem;font-weight:600;color:var(--accent);}
+  .total-box{background:var(--accent);border-radius:var(--radius);padding:20px 24px;color:#fff;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+  .total-box .t-label{font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;opacity:.7;}
+  .total-box .t-val{font-size:1.8rem;font-weight:700;}
+  .total-box .t-coef{font-size:.8rem;opacity:.6;margin-top:2px;}
+  .results-section{display:none;}
+  .results-section.visible{display:block;}
+
+  /* Save estimation */
+  .save-row{display:flex;gap:10px;margin-top:16px;align-items:center;}
+  .save-row input{flex:1;}
+  .btn-save{background:var(--accent2);color:#fff;border:none;border-radius:6px;padding:9px 18px;font-size:.85rem;cursor:pointer;font-weight:700;white-space:nowrap;transition:opacity .2s;}
+  .btn-save:hover{opacity:.85;}
+
+  /* Log */
+  .log-empty{text-align:center;color:var(--text2);font-size:.85rem;padding:16px 0;font-style:italic;}
+  .log-item{display:grid;grid-template-columns:1fr auto auto auto;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;background:#fafaf8;}
+  .log-item-name{font-size:.9rem;font-weight:600;color:var(--accent);}
+  .log-item-date{font-size:.72rem;color:var(--text2);}
+  .log-item-price{font-size:.9rem;font-weight:700;color:var(--accent2);}
+  .btn-log{font-size:.75rem;padding:5px 10px;border-radius:5px;cursor:pointer;border:1px solid var(--border);background:#fff;transition:background .15s;}
+  .btn-log:hover{background:#eef;}
+  .btn-log.del{color:#b00;border-color:#fcc;}
+  .btn-log.del:hover{background:#fff0f0;}
+  .log-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:10px;}
+  .btn-export{background:none;border:1px solid var(--accent);border-radius:6px;padding:7px 14px;color:var(--accent);font-size:.8rem;cursor:pointer;font-weight:600;}
+  .btn-export:hover{background:#eef2f7;}
+
+  .sub-note{font-size:.75rem;color:var(--text2);margin-top:8px;font-style:italic;}
+  .import-drop{border:1px dashed var(--accent2);border-radius:8px;padding:16px;text-align:center;background:#fdfaf3;cursor:pointer;transition:background .15s;}
+  .import-drop:hover{background:#fdf6e8;}
+  .import-drop input{display:none;}
+  .import-log{margin-top:10px;font-size:.78rem;color:var(--text2);background:#f8f9fb;border-radius:6px;padding:8px 10px;white-space:pre-wrap;display:none;}
+  .warn-box{margin-top:8px;font-size:.76rem;color:#a34a28;background:#faf1ec;border-radius:6px;padding:8px 10px;display:none;}
+  @media(max-width:560px){
+    .grid2,.grid3,.grid4{grid-template-columns:1fr 1fr;}
+    .coef-select{grid-template-columns:1fr;}
+    .info-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Estimateur de coût</h1>
+    <p>Découpe laser & Soudure – Pièces métalliques</p>
+    <div class="accent-line"></div>
+  </header>
+
+  <!-- 1. MATIÈRE -->
+  <div class="card">
+    <div class="card-title">1 — Coût matière</div>
+    <div class="grid4">
+      <div>
+        <label>Longueur (mm)</label>
+        <input type="number" id="longueur" placeholder="ex : 450" min="0" step="any" oninput="onDimChange()">
+      </div>
+      <div>
+        <label>Largeur (mm)</label>
+        <input type="number" id="largeur" placeholder="ex : 900" min="0" step="any" oninput="onDimChange()">
+      </div>
+      <div>
+        <label>Épaisseur (mm)</label>
+        <input type="number" id="epaisseur" placeholder="ex : 3" min="0" step="any" oninput="onDimChange()">
+      </div>
+      <div>
+        <label>Coût plaque fournisseur (€)</label>
+        <input type="number" id="coutMat" placeholder="ex : 48.00" min="0" step="any" oninput="calc()">
+      </div>
+    </div>
+    <div class="info-grid">
+      <div class="info-row"><span>Plaque standard</span><strong>1500 × 3000 mm</strong></div>
+      <div class="info-row"><span>Surface calculée</span><strong id="surface-display">— mm²</strong></div>
+    </div>
+    <div class="info-row info-row-accent" style="margin-top:8px;">
+      <span><strong style="font-size:.8rem;">Coût matière final</strong></span>
+      <strong id="prix-mat-brut">— €</strong>
+    </div>
+    <p class="sub-note">Surface × coût plaque × 1,16 × 1,25 ÷ 4 500 000</p>
+    <button class="visu-toggle" onclick="toggleVisu()">🔲 Visualiser la pièce</button>
+    <div class="canvas-wrap" id="canvasWrap">
+      <canvas id="pieceCanvas"></canvas>
+    </div>
+  </div>
+
+  <!-- 2. DÉCOUPE LASER -->
+  <div class="card">
+    <div class="card-title">2 — Coût découpe laser</div>
+
+    <div class="import-drop" id="importDrop" onclick="document.getElementById('planFile').click()">
+      <input type="file" id="planFile" accept=".svg,.dxf" onchange="handlePlanFile(event)">
+      <strong style="color:var(--accent2);font-size:.85rem;">📐 Importer un plan (.SVG ou .DXF)</strong>
+      <div class="sub-note" style="margin-top:4px;">
+        Le contour extérieur, les trous (cercles) et les oblongs sont détectés et pré-remplis automatiquement ci-dessous. Les temps unitaires restent à saisir (dépendent de la matière/machine).
+      </div>
+    </div>
+    <div class="import-log" id="importLog"></div>
+    <div class="warn-box" id="importWarn"></div>
+
+    <div class="grid2" style="margin-top:16px;">
+      <div>
+        <label>Quantité de pièces identiques</label>
+        <input type="number" id="qtePieces" value="1" min="1" step="1" oninput="calc()">
+      </div>
+      <div>
+        <label>Coefficient de marge découpe</label>
+        <input type="number" id="coefLaser" value="1.20" min="1" step="0.01" oninput="calc()">
+      </div>
+    </div>
+
+    <label style="margin-top:14px;">Contour</label>
+    <div class="grid3" style="margin-bottom:6px;">
+      <div>
+        <label>Longueur contour (mm)</label>
+        <input type="number" id="contourLongueur" placeholder="ex : 1200" min="0" step="any" oninput="calc()">
+      </div>
+      <div>
+        <label>Vitesse de coupe (mm/s)</label>
+        <input type="number" id="contourVitesse" placeholder="ex : 25" min="0" step="any" oninput="calc()">
+      </div>
+      <div>
+        <label>ou temps direct (s)</label>
+        <input type="number" id="contourManuel" placeholder="—" min="0" step="0.1" oninput="calc()">
+      </div>
+    </div>
+    <p class="sub-note">Si "temps direct" est renseigné, il prime sur longueur/vitesse.</p>
+
+    <label style="margin-top:14px;">Trous</label>
+    <table class="holes-table">
+      <thead><tr><th>Diamètre / type</th><th>Qté</th><th>Temps unit. (s)</th><th></th></tr></thead>
+      <tbody id="trousBody"></tbody>
+    </table>
+    <button class="btn-add" onclick="addHole('trous')">+ Ajouter un diamètre de trou</button>
+
+    <label style="margin-top:16px;">Oblongs</label>
+    <table class="holes-table">
+      <thead><tr><th>Dimension / type</th><th>Qté</th><th>Temps unit. (s)</th><th></th></tr></thead>
+      <tbody id="oblongsBody"></tbody>
+    </table>
+    <button class="btn-add" onclick="addHole('oblongs')">+ Ajouter un type d'oblong</button>
+
+    <div style="margin-top:16px;">
+      <label>Taux de découpe (€ / min)</label>
+      <input type="number" id="tarifDecoupe" value="3.08" min="0" step="0.01" oninput="calc()" style="max-width:160px;">
+    </div>
+
+    <div class="info-grid" style="margin-top:12px;">
+      <div class="info-row"><span>T contour</span><strong id="laser-tcontour">—</strong></div>
+      <div class="info-row"><span>Σ trous</span><strong id="laser-ttrous">—</strong></div>
+      <div class="info-row"><span>Σ oblongs</span><strong id="laser-toblongs">—</strong></div>
+      <div class="info-row"><span>N total × 1 s</span><strong id="laser-tpercage">—</strong></div>
+    </div>
+    <div class="info-row info-row-laser" style="margin-top:8px;">
+      <span>T facturé <em style="font-size:.72rem;">(× coefficient, par pièce)</em></span>
+      <strong id="laser-tfacture">— s</strong>
+    </div>
+    <div class="info-row info-row-accent" style="margin-top:8px;">
+      <span><strong style="font-size:.8rem;">Coût découpe laser (lot)</strong></span>
+      <strong id="prix-temps">— €</strong>
+    </div>
+    <p class="sub-note">T_facturé = coefficient × [T_contour + Σ(N_trous × T_trou) + Σ(N_oblongs × T_oblong) + N_total × 1] — puis × quantité de pièces × tarif/min</p>
+  </div>
+
+  <!-- 3. OPÉRATIONS -->
+  <div class="card">
+    <div class="card-title">3 — Coût opérationnel</div>
+    <table class="ops-table">
+      <thead>
+        <tr>
+          <th>Opération</th>
+          <th style="text-align:center;">1ère op<br>(min)</th>
+          <th style="text-align:center;">Suivantes<br>(min/op)</th>
+          <th style="text-align:center;">Qté<br>suivantes</th>
+          <th>Coût</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Pliage</td><td><input type="number" id="op1-pliage" value="3" min="0" step="0.5" oninput="calc()"></td><td><input type="number" id="opt-pliage" placeholder="—" min="0" step="0.5" oninput="calc()"></td><td><input type="number" id="opq-pliage" placeholder="0" min="0" step="1" oninput="calc()"></td><td id="c-pliage">— €</td></tr>
+        <tr><td>Perçage</td><td><input type="number" id="op1-percage" value="3" min="0" step="0.5" oninput="calc()"></td><td><input type="number" id="opt-percage" placeholder="—" min="0" step="0.5" oninput="calc()"></td><td><input type="number" id="opq-percage" placeholder="0" min="0" step="1" oninput="calc()"></td><td id="c-percage">— €</td></tr>
+        <tr><td>Taraudage</td><td><input type="number" id="op1-taraudage" value="5" min="0" step="0.5" oninput="calc()"></td><td><input type="number" id="opt-taraudage" placeholder="—" min="0" step="0.5" oninput="calc()"></td><td><input type="number" id="opq-taraudage" placeholder="0" min="0" step="1" oninput="calc()"></td><td id="c-taraudage">— €</td></tr>
+        <tr><td>Coupe</td><td><input type="number" id="op1-coupe" value="3" min="0" step="0.5" oninput="calc()"></td><td><input type="number" id="opt-coupe" placeholder="—" min="0" step="0.5" oninput="calc()"></td><td><input type="number" id="opq-coupe" placeholder="0" min="0" step="1" oninput="calc()"></td><td id="c-coupe">— €</td></tr>
+        <tr><td>Pointage</td><td><input type="number" id="op1-pointage" value="3" min="0" step="0.5" oninput="calc()"></td><td><input type="number" id="opt-pointage" placeholder="—" min="0" step="0.5" oninput="calc()"></td><td><input type="number" id="opq-pointage" placeholder="0" min="0" step="1" oninput="calc()"></td><td id="c-pointage">— €</td></tr>
+        <tr><td>Finition</td><td><input type="number" id="op1-finition" value="1" min="0" step="0.5" oninput="calc()"></td><td><input type="number" id="opt-finition" placeholder="—" min="0" step="0.5" oninput="calc()"></td><td><input type="number" id="opq-finition" placeholder="0" min="0" step="1" oninput="calc()"></td><td id="c-finition">— €</td></tr>
+      </tbody>
+    </table>
+    <p class="sub-note">Taux : 1,20 €/min (72 €/h) — 1ère op toujours comptée. Suivantes au temps réduit saisi.</p>
+  </div>
+
+  <!-- 4. MATIÈRE TUBE -->
+  <div class="card">
+    <div class="card-title">4 — Matière tube (optionnel)</div>
+    <div class="grid3">
+      <div>
+        <label>Distance besoin (m)</label>
+        <input type="number" id="tubeDistance" placeholder="ex : 2.5" min="0" step="any" oninput="calc()">
+      </div>
+      <div>
+        <label>Prix tube fournisseur (€ / 6 m)</label>
+        <input type="number" id="tubePrix6m" placeholder="ex : 42.00" min="0" step="any" oninput="calc()">
+      </div>
+      <div style="display:flex;flex-direction:column;justify-content:flex-end;">
+        <div class="info-row info-row-tube">
+          <span>Prix / mètre</span>
+          <strong id="tube-pm">— €</strong>
+        </div>
+      </div>
+    </div>
+    <div class="info-row info-row-tube" style="margin-top:8px;">
+      <span><strong style="font-size:.8rem;">Coût matière tube</strong></span>
+      <strong id="tube-total">— €</strong>
+    </div>
+    <p class="sub-note">Prix/m = prix 6m ÷ 6 — Coût = distance × prix/m × 1,10 (perte) × 1,25 (marge)</p>
+  </div>
+
+  <!-- 5. POINTAGE + SOUDURE -->
+  <div class="card">
+    <div class="card-title">5 — Pointage + Soudure (optionnel)</div>
+    <div class="grid2" style="margin-bottom:14px;">
+      <div>
+        <label>Surface à souder (mm)</label>
+        <input type="number" id="surfSoudure" placeholder="ex : 350" min="0" step="any" oninput="calc()">
+        <p class="sub-note" style="margin-top:4px;">Surface × 72 ÷ 1000</p>
+      </div>
+      <div style="display:flex;flex-direction:column;justify-content:flex-end;">
+        <div class="info-row info-row-ps"><span>Prix soudure</span><strong id="prix-soudure">— €</strong></div>
+      </div>
+    </div>
+    <label style="margin-bottom:8px;">Pointages</label>
+    <div class="pt-list" id="ptList"></div>
+    <button class="btn-add" onclick="addPointage()">+ Ajouter un pointage</button>
+    <p class="sub-note">1 pointage = 3 min × 1,20 € = 3,60 €</p>
+    <div class="ps-total-box">
+      <div class="t-label">Total Pointage + Soudure</div>
+      <div class="t-val" id="prix-ps">— €</div>
+    </div>
+  </div>
+
+  <!-- 6. CLIENT -->
+  <div class="card">
+    <div class="card-title">6 — Type de client</div>
+    <div class="coef-select">
+      <div class="coef-btn active" onclick="setCoef(this,1.05)"><div class="cb-label">Client régulier</div><div class="cb-val">× 1,05</div></div>
+      <div class="coef-btn" onclick="setCoef(this,1.06)"><div class="cb-label">Client à potentiel</div><div class="cb-val">× 1,06</div></div>
+      <div class="coef-btn" onclick="setCoef(this,1.07)"><div class="cb-label">Prospect / À réactiver</div><div class="cb-val">× 1,07</div></div>
+    </div>
+  </div>
+
+  <button class="btn-calc" style="width:100%;padding:14px;background:var(--accent2);color:#fff;border:none;border-radius:var(--radius);font-size:.95rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;margin-bottom:18px;" onclick="calc(true)">Calculer l'estimation</button>
+
+  <!-- RÉSULTATS -->
+  <div class="results-section" id="results">
+    <div class="card">
+      <div class="card-title">Détail du calcul</div>
+      <div class="result-line"><span class="result-label">Coût matière plaque</span><span class="result-value" id="r-mat">—</span></div>
+      <div class="result-line"><span class="result-label">Coût matière tube</span><span class="result-value" id="r-tube">—</span></div>
+      <div class="result-line"><span class="result-label">Coût découpe laser</span><span class="result-value" id="r-temps">—</span></div>
+      <div class="result-line"><span class="result-label">Coût opérationnel</span><span class="result-value" id="r-ops">—</span></div>
+      <div class="result-line"><span class="result-label">Pointage + Soudure</span><span class="result-value" id="r-ps">—</span></div>
+      <div class="result-line"><span class="result-label">Sous-total HT</span><span class="result-value" id="r-sous">—</span></div>
+      <div class="result-line"><span class="result-label" id="r-coef-label">Coefficient client</span><span class="result-value" id="r-coef">—</span></div>
+    </div>
+    <div class="total-box">
+      <div><div class="t-label">Coût final facturé HT</div><div class="t-coef" id="r-total-detail"></div></div>
+      <div class="t-val" id="r-total">—</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;">
+      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;box-shadow:var(--shadow);">
+        <div style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);margin-bottom:6px;">Montant HT</div>
+        <div style="font-size:1.3rem;font-weight:700;color:var(--accent);" id="r-ht">—</div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;box-shadow:var(--shadow);">
+        <div style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);margin-bottom:6px;">Montant TTC <span style="font-weight:400;opacity:.7;">(TVA 20%)</span></div>
+        <div style="font-size:1.3rem;font-weight:700;color:var(--accent2);" id="r-ttc">—</div>
+      </div>
+    </div>
+    <!-- SAVE -->
+    <div class="card" style="background:#f8f9fb;">
+      <div class="card-title">Sauvegarder cette estimation</div>
+      <div class="save-row">
+        <input type="text" id="estimName" placeholder="Nom de l'estimation (ex : Platine 450×900 – Client X)">
+        <button class="btn-save" onclick="saveEstimation()">💾 Sauvegarder</button>
+      </div>
+      <p id="save-msg" style="font-size:.78rem;margin-top:8px;display:none;"></p>
+    </div>
+  </div>
+
+  <!-- LOG -->
+  <div class="card">
+    <div class="card-title">Journal des estimations</div>
+    <div id="logList"><p class="log-empty">Aucune estimation sauvegardée.</p></div>
+    <div class="log-actions">
+      <button class="btn-export" onclick="exportLog()">⬇ Exporter en JSON</button>
+      <button class="btn-export" onclick="importLog()" style="border-color:var(--accent2);color:var(--accent2);">⬆ Importer JSON</button>
+      <input type="file" id="importFile" accept=".json" style="display:none;" onchange="handleImport(event)">
+    </div>
+  </div>
+</div>
+
+<script>
+let coef = 1.05, coefLabel = 'Client régulier', ptId = 0;
+let lastResult = null;
+let holeId = 0;
+let trous = [];
+let oblongs = [];
+
+// ─── Coeff ───────────────────────────────────
+function setCoef(el, val) {
+  document.querySelectorAll('.coef-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active'); coef = val;
+  coefLabel = el.querySelector('.cb-label').textContent;
+  calc();
+}
+
+// ─── Dim change ───────────────────────────────
+function onDimChange() {
+  const L = parseFloat(document.getElementById('longueur').value) || 0;
+  const W = parseFloat(document.getElementById('largeur').value) || 0;
+  const s = L * W;
+  document.getElementById('surface-display').textContent = s > 0 ? s.toLocaleString('fr-FR') + ' mm²' : '— mm²';
+  drawPiece();
+  calc();
+}
+
+// ─── Trous / Oblongs (perçages) ────────────────
+function addHole(kind, prefill) {
+  const id = holeId++;
+  const item = { id, label: prefill?.label || '', qte: prefill?.qte || '', temps: prefill?.temps || '' };
+  (kind === 'trous' ? trous : oblongs).push(item);
+  renderHoles(kind);
+}
+function removeHole(kind, id) {
+  if (kind === 'trous') trous = trous.filter(h => h.id !== id);
+  else oblongs = oblongs.filter(h => h.id !== id);
+  renderHoles(kind);
+  calc();
+}
+function updateHole(kind, id, field, value) {
+  const list = kind === 'trous' ? trous : oblongs;
+  const item = list.find(h => h.id === id);
+  if (item) item[field] = value;
+  calc();
+}
+function renderHoles(kind) {
+  const list = kind === 'trous' ? trous : oblongs;
+  const body = document.getElementById(kind === 'trous' ? 'trousBody' : 'oblongsBody');
+  body.innerHTML = list.map(h => `
+    <tr>
+      <td><input type="text" placeholder="ex : Ø6 mm" value="${escapeAttr(h.label)}" oninput="updateHole('${kind}',${h.id},'label',this.value)"></td>
+      <td><input type="number" min="0" step="1" value="${h.qte}" oninput="updateHole('${kind}',${h.id},'qte',this.value)"></td>
+      <td><input type="number" min="0" step="0.1" value="${h.temps}" oninput="updateHole('${kind}',${h.id},'temps',this.value)"></td>
+      <td><button class="btn-remove" style="width:30px;height:30px;" onclick="removeHole('${kind}',${h.id})">×</button></td>
+    </tr>
+  `).join('');
+}
+function escapeAttr(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+
+// seed one empty row of each on load
+addHole('trous'); addHole('oblongs');
+
+// ─── Pointage ────────────────────────────────
+function addPointage() {
+  const list = document.getElementById('ptList');
+  const id = ptId++;
+  const row = document.createElement('div');
+  row.className = 'pt-row'; row.id = 'pt-' + id;
+  row.innerHTML = `<input type="text" placeholder="ex : Pointage angle droit" id="pt-name-${id}">
+    <button class="btn-remove" onclick="removePt(${id})">×</button>`;
+  list.appendChild(row); calc();
+}
+function removePt(id) { document.getElementById('pt-' + id)?.remove(); calc(); }
+
+// ─── Format ───────────────────────────────────
+function fmt(v) { return v.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €'; }
+function fmtTime(s) {
+  if (!isFinite(s)) return '0 s';
+  if (s < 60) return s.toFixed(1) + ' s';
+  const m = Math.floor(s / 60), r = s - m * 60;
+  return m + ' min ' + r.toFixed(0) + ' s';
+}
+
+// ─── Main calc ────────────────────────────────
+function calc(show = false) {
+  const L = parseFloat(document.getElementById('longueur').value) || 0;
+  const W = parseFloat(document.getElementById('largeur').value) || 0;
+  const surface = L * W;
+  const coutMat = parseFloat(document.getElementById('coutMat').value) || 0;
+  const surfSoudure = parseFloat(document.getElementById('surfSoudure').value) || 0;
+  const tubeDistance = parseFloat(document.getElementById('tubeDistance').value) || 0;
+  const tubePrix6m = parseFloat(document.getElementById('tubePrix6m').value) || 0;
+
+  // Matière plaque
+  const matFinal = (surface * coutMat * 1.16 * 1.25) / 4500000;
+  document.getElementById('prix-mat-brut').textContent = matFinal > 0 ? fmt(matFinal) : '— €';
+
+  // ── Découpe laser : T_facturé = coef × [T_contour + Σ(N×T_trou) + Σ(N×T_oblong) + N_total×1] ──
+  const contourManuel = parseFloat(document.getElementById('contourManuel').value) || 0;
+  const contourLongueur = parseFloat(document.getElementById('contourLongueur').value) || 0;
+  const contourVitesse = parseFloat(document.getElementById('contourVitesse').value) || 0;
+  const tContour = contourManuel > 0 ? contourManuel : (contourVitesse > 0 ? contourLongueur / contourVitesse : 0);
+
+  let tTrous = 0, nTrous = 0;
+  trous.forEach(h => { const q = parseFloat(h.qte) || 0, t = parseFloat(h.temps) || 0; tTrous += q * t; nTrous += q; });
+  let tOblongs = 0, nOblongs = 0;
+  oblongs.forEach(h => { const q = parseFloat(h.qte) || 0, t = parseFloat(h.temps) || 0; tOblongs += q * t; nOblongs += q; });
+
+  const nTotal = nTrous + nOblongs;
+  const tPercage = nTotal * 1;
+  const tBrut = tContour + tTrous + tOblongs + tPercage;
+  const coefLaser = parseFloat(document.getElementById('coefLaser').value) || 1.20;
+  const tFacture = coefLaser * tBrut; // par pièce, en secondes
+
+  const qtePieces = Math.max(1, parseInt(document.getElementById('qtePieces').value) || 1);
+  const tarifDecoupe = parseFloat(document.getElementById('tarifDecoupe').value) || 0; // €/min
+  const tempsTotal = (tFacture / 60) * tarifDecoupe * qtePieces;
+
+  document.getElementById('laser-tcontour').textContent = fmtTime(tContour);
+  document.getElementById('laser-ttrous').textContent = fmtTime(tTrous) + ` (${nTrous})`;
+  document.getElementById('laser-toblongs').textContent = fmtTime(tOblongs) + ` (${nOblongs})`;
+  document.getElementById('laser-tpercage').textContent = fmtTime(tPercage);
+  document.getElementById('laser-tfacture').textContent = fmtTime(tFacture);
+  document.getElementById('prix-temps').textContent = tBrut > 0 ? fmt(tempsTotal) : '— €';
+
+  // Ops
+  let opsTotal = 0;
+  for (const key of ['pliage','percage','taraudage','coupe','pointage','finition']) {
+    const t1 = parseFloat(document.getElementById('op1-' + key)?.value) || 0;
+    const tS = parseFloat(document.getElementById('opt-' + key)?.value) || 0;
+    const qS = parseFloat(document.getElementById('opq-' + key)?.value) || 0;
+    const cost = (t1 > 0 ? t1 * 1.2 : 0) + (qS * tS * 1.2);
+    opsTotal += cost;
+    const el = document.getElementById('c-' + key);
+    if (el) el.textContent = (t1 > 0 || qS > 0) ? fmt(cost) : '— €';
+  }
+
+  // Tube
+  const prixMetre = tubePrix6m > 0 ? tubePrix6m / 6 : 0;
+  const tubeCost = tubeDistance * prixMetre * 1.1 * 1.25;
+  document.getElementById('tube-pm').textContent = prixMetre > 0 ? fmt(prixMetre) : '— €';
+  document.getElementById('tube-total').textContent = tubeCost > 0 ? fmt(tubeCost) : '— €';
+
+  // Soudure + Pointage
+  const prixSoudure = (surfSoudure * 72) / 1000;
+  document.getElementById('prix-soudure').textContent = surfSoudure > 0 ? fmt(prixSoudure) : '— €';
+  const nbPt = document.querySelectorAll('.pt-row').length;
+  const prixPointage = nbPt * 3 * 1.2;
+  const totalPS = prixSoudure + prixPointage;
+  const hasPS = surfSoudure > 0 || nbPt > 0;
+  document.getElementById('prix-ps').textContent = hasPS ? fmt(totalPS) : '— €';
+
+  // Totaux
+  const sousTotal = matFinal + tempsTotal + opsTotal + tubeCost + totalPS;
+  const total = sousTotal * coef;
+  lastResult = { matFinal, tempsTotal, opsTotal, tubeCost, totalPS: hasPS ? totalPS : 0, sousTotal, total, coef, coefLabel };
+
+  if (show || document.getElementById('results').classList.contains('visible')) {
+    document.getElementById('r-mat').textContent = fmt(matFinal);
+    document.getElementById('r-tube').textContent = tubeCost > 0 ? fmt(tubeCost) : '0,00 €';
+    document.getElementById('r-temps').textContent = fmt(tempsTotal);
+    document.getElementById('r-ops').textContent = fmt(opsTotal);
+    document.getElementById('r-ps').textContent = hasPS ? fmt(totalPS) : '0,00 €';
+    document.getElementById('r-sous').textContent = fmt(sousTotal);
+    document.getElementById('r-coef-label').textContent = `Coefficient — ${coefLabel}`;
+    document.getElementById('r-coef').textContent = `× ${coef.toFixed(2)}`;
+    document.getElementById('r-total').textContent = fmt(total);
+    document.getElementById('r-ht').textContent = fmt(total);
+    document.getElementById('r-ttc').textContent = fmt(total * 1.2);
+    document.getElementById('r-total-detail').textContent = `${fmt(sousTotal)} × ${coef.toFixed(2)}`;
+    document.getElementById('results').classList.add('visible');
+  }
+}
+
+// ─── Visualisation ────────────────────────────
+function toggleVisu() {
+  const wrap = document.getElementById('canvasWrap');
+  wrap.classList.toggle('open');
+  if (wrap.classList.contains('open')) {
+    const canvas = document.getElementById('pieceCanvas');
+    canvas.width = canvas.offsetWidth; canvas.height = 200;
+    drawPiece();
+  }
+}
+
+function drawPiece() {
+  const canvas = document.getElementById('pieceCanvas');
+  if (!canvas || !document.getElementById('canvasWrap').classList.contains('open')) return;
+  canvas.width = canvas.offsetWidth || 400; canvas.height = 200;
+  const ctx = canvas.getContext('2d');
+  const CW = canvas.width, CH = canvas.height;
+  ctx.clearRect(0, 0, CW, CH);
+
+  const Lv = parseFloat(document.getElementById('longueur').value) || 0;
+  const Wv = parseFloat(document.getElementById('largeur').value) || 0;
+  const Tv = parseFloat(document.getElementById('epaisseur').value) || 0;
+
+  if (!Lv || !Wv) {
+    ctx.fillStyle = '#aaa'; ctx.font = '13px Segoe UI'; ctx.textAlign = 'center';
+    ctx.fillText('Saisissez longueur et largeur pour visualiser', CW/2, CH/2);
+    return;
+  }
+
+  const cos = Math.cos(Math.PI / 6), sin = Math.sin(Math.PI / 6);
+  const Td = Math.max(Tv > 0 ? Tv : 0, Math.max(Lv, Wv) * 0.05);
+
+  const projW = (Lv + Wv) * cos;
+  const projH = (Lv + Wv) * sin + Td;
+  const margin = 70;
+  const sc = Math.min((CW - margin * 2) / projW, (CH - 50) / projH, 0.18);
+
+  const sw = Wv * sc, sl = Lv * sc, st = Td * sc;
+  const ox = CW / 2 + (sl - sw) * cos * sc / 2;
+  const oy = CH - 28;
+
+  function proj(w, t, l) {
+    return { x: ox + w * cos - l * cos, y: oy - t - w * sin - l * sin };
+  }
+
+  const p = [
+    proj(0,  0,  0),   proj(sw, 0,  0),   proj(sw, 0,  sl),  proj(0,  0,  sl),
+    proj(0,  st, 0),   proj(sw, st, 0),   proj(sw, st, sl),  proj(0,  st, sl)
+  ];
+
+  function face(pts, fill) {
+    ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y);
+    pts.slice(1).forEach(q => ctx.lineTo(q.x, q.y));
+    ctx.closePath(); ctx.fillStyle = fill; ctx.fill();
+    ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 1.2; ctx.stroke();
+  }
+
+  face([p[3], p[2], p[6], p[7]], '#b0c4d8');
+  face([p[0], p[1], p[5], p[4]], '#ccd8e8');
+  face([p[4], p[5], p[6], p[7]], '#e4eef8');
+
+  ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 11px Segoe UI'; ctx.textAlign = 'center';
+
+  const wm = { x:(p[0].x+p[1].x)/2, y:(p[0].y+p[1].y)/2 + 15 };
+  ctx.fillText(`Larg. : ${Wv} mm`, wm.x, wm.y);
+
+  const lm = { x:(p[0].x+p[3].x)/2 - 36, y:(p[0].y+p[3].y)/2 };
+  ctx.fillText(`Long. : ${Lv} mm`, lm.x, lm.y);
+
+  if (Tv > 0) {
+    const tm = { x: p[1].x + 36, y: (p[1].y + p[5].y) / 2 };
+    ctx.fillText(`Ép. : ${Tv} mm`, tm.x, tm.y);
+  }
+}
+
+window.addEventListener('resize', () => {
+  const canvas = document.getElementById('pieceCanvas');
+  if (canvas && document.getElementById('canvasWrap').classList.contains('open')) {
+    canvas.width = canvas.offsetWidth; drawPiece();
+  }
+});
+
+// ─── Import de plan (SVG / DXF) ────────────────────────────────────────────
+// Analyse géométrique : détecte le contour extérieur (plus grande boucle fermée)
+// et classe les boucles internes en "trous" (proches d'un cercle) ou "oblongs"
+// (forme allongée), en les groupant par dimension arrondie. Les temps unitaires
+// dépendent de la machine/matière et restent à saisir manuellement.
+
+function handlePlanFile(evt) {
+  const file = evt.target.files[0];
+  if (!file) return;
+  const ext = file.name.split('.').pop().toLowerCase();
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      let analysis;
+      if (ext === 'svg') analysis = analyzeSVG(e.target.result);
+      else if (ext === 'dxf') analysis = analyzeDXF(e.target.result);
+      else throw new Error('Format non supporté (utilisez .svg ou .dxf).');
+      applyAnalysis(analysis, file.name);
+    } catch (err) {
+      showImportWarn('❌ ' + (err.message || 'Impossible d\'analyser ce fichier.'));
+    }
+  };
+  reader.readAsText(file);
+  evt.target.value = '';
+}
+
+function showImportWarn(msg) {
+  const el = document.getElementById('importWarn');
+  el.textContent = msg; el.style.display = 'block';
+}
+
+function applyAnalysis(a, filename) {
+  document.getElementById('importWarn').style.display = 'none';
+  document.getElementById('contourManuel').value = '';
+  document.getElementById('contourLongueur').value = a.contourLength ? a.contourLength.toFixed(1) : '';
+
+  if (a.contourLength) {
+    trous = []; oblongs = [];
+    a.holes.forEach(h => addHole('trous', { label: `Ø${h.diameter.toFixed(1)} mm`, qte: h.count }));
+    a.slots.forEach(s => addHole('oblongs', { label: `${s.w.toFixed(1)} × ${s.h.toFixed(1)} mm`, qte: s.count }));
+    if (!a.holes.length) addHole('trous');
+    if (!a.slots.length) addHole('oblongs');
+  }
+
+  const log = document.getElementById('importLog');
+  log.style.display = 'block';
+  log.textContent =
+    `Fichier : ${filename}\n` +
+    `Contour extérieur : ${a.contourLength ? a.contourLength.toFixed(1) + ' mm' : 'non détecté'}\n` +
+    `Trous détectés : ${a.holes.reduce((s,h)=>s+h.count,0)} (${a.holes.length} diamètre(s))\n` +
+    `Oblongs détectés : ${a.slots.reduce((s,h)=>s+h.count,0)} (${a.slots.length} type(s))`;
+
+  if (a.warnings && a.warnings.length) showImportWarn('⚠ ' + a.warnings.join(' — '));
+  calc();
+}
+
+function groupShapes(shapes) {
+  // shapes: [{diameter?, w?, h?, kind:'circle'|'slot'}]
+  const map = new Map();
+  shapes.forEach(s => {
+    const key = s.kind === 'circle'
+      ? 'c:' + Math.round(s.diameter * 2) / 2
+      : 's:' + Math.round(s.w) + 'x' + Math.round(s.h);
+    if (!map.has(key)) map.set(key, { ...s, count: 0 });
+    map.get(key).count++;
+  });
+  return [...map.values()];
+}
+
+function classifyLoop(bbox, area) {
+  // Approximates a closed loop as a circle (trou) or an elongated slot (oblong)
+  const w = bbox.w, h = bbox.h;
+  const aspect = Math.max(w, h) / Math.max(0.001, Math.min(w, h));
+  if (aspect <= 1.3) {
+    const diameter = 2 * Math.sqrt(Math.max(area, 0) / Math.PI) || (w + h) / 2;
+    return { kind: 'circle', diameter };
+  }
+  return { kind: 'slot', w: Math.max(w, h), h: Math.min(w, h) };
+}
+
+function shoelaceArea(pts) {
+  let a = 0;
+  for (let i = 0; i < pts.length; i++) {
+    const p1 = pts[i], p2 = pts[(i + 1) % pts.length];
+    a += p1.x * p2.y - p2.x * p1.y;
+  }
+  return Math.abs(a) / 2;
+}
+function polyLength(pts, closed) {
+  let l = 0;
+  for (let i = 0; i < pts.length - 1; i++) l += Math.hypot(pts[i+1].x - pts[i].x, pts[i+1].y - pts[i].y);
+  if (closed) l += Math.hypot(pts[0].x - pts[pts.length-1].x, pts[0].y - pts[pts.length-1].y);
+  return l;
+}
+function bboxOf(pts) {
+  const xs = pts.map(p => p.x), ys = pts.map(p => p.y);
+  return { w: Math.max(...xs) - Math.min(...xs), h: Math.max(...ys) - Math.min(...ys) };
+}
+
+// ── SVG ──
+function analyzeSVG(text) {
+  const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
+  if (doc.querySelector('parsererror')) throw new Error('SVG invalide.');
+  const svgRoot = doc.documentElement;
+
+  const host = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  host.style.position = 'absolute'; host.style.left = '-99999px'; host.style.width = '1px'; host.style.height = '1px';
+  document.body.appendChild(host);
+  host.innerHTML = svgRoot.innerHTML;
+
+  const loops = [];
+  const warnings = [];
+
+  host.querySelectorAll('circle').forEach(el => {
+    const r = parseFloat(el.getAttribute('r')) || 0;
+    if (r > 0) loops.push({ length: 2 * Math.PI * r, area: Math.PI * r * r, bbox: { w: 2*r, h: 2*r } });
+  });
+  host.querySelectorAll('ellipse').forEach(el => {
+    const rx = parseFloat(el.getAttribute('rx')) || 0, ry = parseFloat(el.getAttribute('ry')) || 0;
+    if (rx > 0 && ry > 0) {
+      const h = Math.pow((rx-ry)/(rx+ry), 2);
+      const length = Math.PI * (rx+ry) * (1 + 3*h/(10+Math.sqrt(4-3*h)));
+      loops.push({ length, area: Math.PI * rx * ry, bbox: { w: 2*rx, h: 2*ry } });
+    }
+  });
+  host.querySelectorAll('rect').forEach(el => {
+    const w = parseFloat(el.getAttribute('width')) || 0, h = parseFloat(el.getAttribute('height')) || 0;
+    if (w > 0 && h > 0) loops.push({ length: 2*(w+h), area: w*h, bbox: { w, h } });
+  });
+  host.querySelectorAll('polygon, polyline').forEach(el => {
+    const raw = (el.getAttribute('points') || '').trim().split(/\s+/).map(pair => {
+      const [x, y] = pair.split(',').map(Number); return { x, y };
+    }).filter(p => isFinite(p.x) && isFinite(p.y));
+    if (raw.length >= 3) {
+      const closed = el.tagName.toLowerCase() === 'polygon';
+      loops.push({ length: polyLength(raw, closed), area: shoelaceArea(raw), bbox: bboxOf(raw) });
+    }
+  });
+  host.querySelectorAll('path').forEach(el => {
+    const d = el.getAttribute('d') || '';
+    const closed = /z/i.test(d);
+    try {
+      const len = el.getTotalLength();
+      const N = 48;
+      const pts = [];
+      for (let i = 0; i < N; i++) pts.push(el.getPointAtLength((i / N) * len));
+      loops.push({ length: len, area: shoelaceArea(pts), bbox: bboxOf(pts), closed });
+    } catch { warnings.push('un tracé <path> n\'a pas pu être mesuré'); }
+  });
+
+  document.body.removeChild(host);
+  if (!loops.length) throw new Error('Aucune forme exploitable trouvée dans le SVG.');
+
+  return buildAnalysisFromLoops(loops, warnings);
+}
+
+// ── DXF (ASCII, entités LWPOLYLINE / LINE / ARC / CIRCLE) ──
+function analyzeDXF(text) {
+  const lines = text.split(/\r\n|\r|\n/);
+  const pairs = [];
+  for (let i = 0; i < lines.length - 1; i += 2) pairs.push([lines[i].trim(), lines[i+1].trim()]);
+
+  const loops = [];
+  const warnings = [];
+  let i = 0;
+  function readEntity(type) {
+    const e = { type, pts: [], closed: false };
+    let cx, cy, r, a1, a2;
+    let curX, curY;
+    while (i < pairs.length) {
+      const [code, val] = pairs[i];
+      if (code === '0') break;
+      const n = parseFloat(val);
+      if (type === 'CIRCLE') {
+        if (code === '10') cx = n; else if (code === '20') cy = n; else if (code === '40') r = n;
+      } else if (type === 'ARC') {
+        if (code === '10') cx = n; else if (code === '20') cy = n; else if (code === '40') r = n;
+        else if (code === '50') a1 = n; else if (code === '51') a2 = n;
+      } else if (type === 'LINE') {
+        if (code === '10') e.x1 = n; else if (code === '20') e.y1 = n;
+        else if (code === '11') e.x2 = n; else if (code === '21') e.y2 = n;
+      } else if (type === 'LWPOLYLINE' || type === 'POLYLINE') {
+        if (code === '70') e.closed = (n & 1) === 1;
+        else if (code === '10') curX = n;
+        else if (code === '20') { curY = n; e.pts.push({ x: curX, y: curY }); }
+      }
+      i++;
+    }
+    if (type === 'CIRCLE' && r > 0) loops.push({ length: 2*Math.PI*r, area: Math.PI*r*r, bbox: { w: 2*r, h: 2*r } });
+    if (type === 'ARC' && r > 0 && a1 != null && a2 != null) {
+      let sweep = a2 - a1; if (sweep < 0) sweep += 360;
+      warnings.push('un arc isolé a été ignoré dans le contour (non refermé automatiquement)');
+    }
+    if (type === 'LINE') { /* segments isolés non reliés : ignorés pour le contour, signalé */ warnings.push('des segments LINE isolés existent (non inclus dans le contour détecté)'); }
+    if ((type === 'LWPOLYLINE' || type === 'POLYLINE') && e.pts.length >= 3) {
+      loops.push({ length: polyLength(e.pts, e.closed), area: e.closed ? shoelaceArea(e.pts) : 0, bbox: bboxOf(e.pts), closed: e.closed });
+    }
+  }
+
+  while (i < pairs.length) {
+    const [code, val] = pairs[i];
+    if (code === '0' && ['LWPOLYLINE','POLYLINE','LINE','CIRCLE','ARC'].includes(val)) {
+      i++; readEntity(val);
+    } else i++;
+  }
+
+  const closedLoops = loops.filter(l => l.closed !== false);
+  if (!closedLoops.length) throw new Error('Aucune boucle fermée détectée (CIRCLE ou LWPOLYLINE fermée) dans ce DXF.');
+
+  return buildAnalysisFromLoops(closedLoops, [...new Set(warnings)]);
+}
+
+function buildAnalysisFromLoops(loops, warnings) {
+  // La plus grande boucle (par surface) = contour extérieur de la pièce
+  let outer = loops[0];
+  loops.forEach(l => { if (l.area > outer.area) outer = l; });
+
+  const inner = loops.filter(l => l !== outer);
+  const holes = [], slots = [];
+  inner.forEach(l => {
+    const c = classifyLoop(l.bbox, l.area);
+    if (c.kind === 'circle') holes.push(c); else slots.push(c);
+  });
+
+  return {
+    contourLength: outer.length,
+    holes: groupShapes(holes),
+    slots: groupShapes(slots),
+    warnings,
+  };
+}
+
+// ─── Log / Save ───────────────────────────────
+function getLog() {
+  try { return JSON.parse(localStorage.getItem('laser_log') || '[]'); } catch(e) { return []; }
+}
+function setLog(data) {
+  try { localStorage.setItem('laser_log', JSON.stringify(data)); return true; } catch(e) { return false; }
+}
+
+function saveEstimation() {
+  const name = document.getElementById('estimName').value.trim();
+  if (!name) { showSaveMsg('⚠ Donnez un nom à cette estimation.', 'orange'); return; }
+  if (!lastResult) { showSaveMsg('⚠ Calculez d\'abord l\'estimation.', 'orange'); return; }
+
+  const log = getLog();
+  const entry = {
+    id: Date.now(),
+    name,
+    date: new Date().toLocaleString('fr-FR'),
+    result: lastResult,
+    inputs: {
+      L: document.getElementById('longueur').value,
+      W: document.getElementById('largeur').value,
+      T: document.getElementById('epaisseur').value,
+      coutMat: document.getElementById('coutMat').value,
+      contourLongueur: document.getElementById('contourLongueur').value,
+      contourVitesse: document.getElementById('contourVitesse').value,
+      qtePieces: document.getElementById('qtePieces').value,
+      trous, oblongs,
+    }
+  };
+  log.unshift(entry);
+  if (setLog(log)) {
+    showSaveMsg('✅ Estimation sauvegardée !', 'green');
+    document.getElementById('estimName').value = '';
+    renderLog();
+  } else {
+    showSaveMsg('❌ Sauvegarde impossible (localStorage non disponible dans cet aperçu — fonctionnel une fois téléchargé).', 'red');
+  }
+}
+
+function showSaveMsg(msg, color) {
+  const el = document.getElementById('save-msg');
+  el.textContent = msg; el.style.color = color; el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 3500);
+}
+
+function deleteEstimation(id) {
+  if (!confirm('Supprimer cette estimation ?')) return;
+  const log = getLog().filter(e => e.id !== id);
+  setLog(log); renderLog();
+}
+
+function renderLog() {
+  const log = getLog();
+  const el = document.getElementById('logList');
+  if (!log.length) { el.innerHTML = '<p class="log-empty">Aucune estimation sauvegardée.</p>'; return; }
+  el.innerHTML = log.map(e => `
+    <div class="log-item">
+      <div>
+        <div class="log-item-name">${e.name}</div>
+        <div class="log-item-date">${e.date}</div>
+      </div>
+      <div class="log-item-price">${e.result ? fmt(e.result.total) : '—'}</div>
+      <button class="btn-log" onclick="viewEstimation(${e.id})">📋 Voir</button>
+      <button class="btn-log del" onclick="deleteEstimation(${e.id})">✕</button>
+    </div>
+  `).join('');
+}
+
+function viewEstimation(id) {
+  const e = getLog().find(x => x.id === id);
+  if (!e || !e.result) return;
+  const r = e.result;
+  const lines = [
+    `📋 ${e.name} — ${e.date}`,
+    `─────────────────────────`,
+    `Matière plaque  : ${fmt(r.matFinal)}`,
+    `Matière tube    : ${fmt(r.tubeCost)}`,
+    `Découpe laser   : ${fmt(r.tempsTotal)}`,
+    `Opérationnel    : ${fmt(r.opsTotal)}`,
+    `Pointage+Soudure: ${fmt(r.totalPS)}`,
+    `Sous-total HT   : ${fmt(r.sousTotal)}`,
+    `Coef. (${r.coefLabel}): × ${r.coef}`,
+    `─────────────────────────`,
+    `TOTAL HT  : ${fmt(r.total)}`,
+    `TOTAL TTC : ${fmt(r.total * 1.2)}`,
+  ];
+  alert(lines.join('\n'));
+}
+
+function exportLog() {
+  const log = getLog();
+  if (!log.length) { alert('Aucune estimation à exporter.'); return; }
+  const blob = new Blob([JSON.stringify(log, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'estimations_laser_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click(); URL.revokeObjectURL(a.href);
+}
+
+function importLog() { document.getElementById('importFile').click(); }
+
+function handleImport(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (!Array.isArray(data)) throw new Error();
+      const existing = getLog();
+      const merged = [...data, ...existing].filter((v,i,a) => a.findIndex(x=>x.id===v.id) === i);
+      setLog(merged); renderLog();
+      alert(`✅ ${data.length} estimation(s) importée(s).`);
+    } catch { alert('❌ Fichier JSON invalide.'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+// Init
+renderLog();
+</script>
+</body>
+</html>
