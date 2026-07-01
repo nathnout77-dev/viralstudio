@@ -1,31 +1,54 @@
 <!DOCTYPE html>
+<!--
+  ORTUDEV-UP — Estimateur de coût découpe laser & soudure
+  Propriété intellectuelle privée. Toute reproduction, diffusion ou usage commercial
+  sans autorisation écrite de l'auteur (ORTUDEV-UP) est interdit.
+-->
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Estimateur Découpe Laser</title>
+<title>Estimateur Découpe Laser — ORTUDEV-UP</title>
 <style>
   :root {
     --bg:#f4f3f0;--surface:#fff;--border:#e0ddd8;--accent:#2c3e50;--accent2:#c0a060;
-    --text:#1a1a1a;--text2:#6b6b6b;--radius:10px;--shadow:0 2px 12px rgba(0,0,0,0.07);
+    --text:#1a1a1a;--text2:#6b6b6b;--radius:14px;--shadow:0 4px 22px rgba(0,0,0,0.06);
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px 16px;}
-  .container{max-width:800px;margin:0 auto;}
-  header{text-align:center;margin-bottom:32px;}
-  header h1{font-size:1.5rem;font-weight:600;color:var(--accent);letter-spacing:.04em;text-transform:uppercase;}
-  header p{color:var(--text2);font-size:.85rem;margin-top:4px;}
-  .accent-line{width:48px;height:2px;background:var(--accent2);margin:10px auto 0;}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:18px;box-shadow:var(--shadow);}
-  .card-title{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent2);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:48px 20px;line-height:1.5;position:relative;}
+
+  /* ── Filigrane de propriété intellectuelle (ORTUDEV-UP) ── */
+  .watermark-overlay{
+    position:fixed;inset:0;pointer-events:none;z-index:9999;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='200'%3E%3Ctext x='0' y='110' font-size='22' font-family='Segoe UI,Arial,sans-serif' font-weight='700' fill='rgba(44,62,80,0.055)' transform='rotate(-28 170 100)'%3EORTUDEV-UP%3C/text%3E%3C/svg%3E");
+    background-repeat:repeat;
+  }
+  @media print {
+    .watermark-overlay{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
+
+  .container{max-width:900px;margin:0 auto;}
+  header{text-align:center;margin-bottom:44px;}
+  header h1{font-size:1.55rem;font-weight:600;color:var(--accent);letter-spacing:.04em;text-transform:uppercase;}
+  header p{color:var(--text2);font-size:.88rem;margin-top:6px;}
+  header .ip-tag{display:inline-block;margin-top:12px;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);border:1px solid rgba(192,160,96,0.4);border-radius:20px;padding:4px 14px;}
+  .accent-line{width:52px;height:2px;background:var(--accent2);margin:16px auto 0;}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:30px 32px;margin-bottom:26px;box-shadow:var(--shadow);}
+  .card-title{font-size:.73rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--accent2);margin-bottom:22px;display:flex;align-items:center;gap:10px;}
   .card-title::after{content:'';flex:1;height:1px;background:var(--border);}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
-  .grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;}
-  label{display:block;font-size:.78rem;color:var(--text2);margin-bottom:5px;font-weight:500;}
-  input[type="number"],input[type="text"]{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:6px;font-size:.92rem;color:var(--text);background:#fafaf8;outline:none;transition:border .2s;}
+  .subsection{margin-top:26px;padding-top:22px;border-top:1px solid var(--border);}
+  .subsection:first-of-type{margin-top:20px;padding-top:0;border-top:none;}
+  .subsection-title{font-size:.83rem;font-weight:700;color:var(--accent);margin-bottom:12px;display:block;letter-spacing:.01em;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;}
+  .grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;}
+  label{display:block;font-size:.8rem;color:var(--text2);margin-bottom:7px;font-weight:500;}
+  input[type="number"],input[type="text"]{width:100%;padding:10px 13px;border:1px solid var(--border);border-radius:8px;font-size:.93rem;color:var(--text);background:#fafaf8;outline:none;transition:border .2s;}
   input:focus{border-color:var(--accent);background:#fff;}
-  .info-row{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#f4f3f0;border-radius:6px;font-size:.82rem;color:var(--text2);}
+  .info-row{display:flex;justify-content:space-between;align-items:center;padding:11px 15px;background:#f4f3f0;border-radius:8px;font-size:.83rem;color:var(--text2);}
   .info-row strong{color:var(--accent);font-size:.95rem;}
   .info-row-accent{border-left:3px solid var(--accent);background:#eef2f7;}
   .info-row-ps{border-left:3px solid #7b5ea7;background:#f4f0fa;}
@@ -34,108 +57,133 @@
   .info-row-tube strong{color:#2e7d5e;}
   .info-row-laser{border-left:3px solid #a34a28;background:#faf1ec;}
   .info-row-laser strong{color:#a34a28;}
-  .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+  .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
 
   /* Visualization */
-  .visu-toggle{background:none;border:1px dashed var(--accent2);border-radius:6px;padding:7px 14px;color:var(--accent2);font-size:.8rem;cursor:pointer;font-weight:600;margin-top:10px;transition:background .15s;}
+  .visu-toggle{background:none;border:1px dashed var(--accent2);border-radius:8px;padding:9px 16px;color:var(--accent2);font-size:.82rem;cursor:pointer;font-weight:600;margin-top:14px;transition:background .15s;}
   .visu-toggle:hover{background:#fdf6e8;}
-  .canvas-wrap{margin-top:10px;display:none;background:#f8f9fb;border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+  .canvas-wrap{margin-top:14px;display:none;background:#f8f9fb;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
   .canvas-wrap.open{display:block;}
   #pieceCanvas{display:block;width:100%;height:260px;}
 
-  /* Auto-time button */
-  .btn-auto{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:9px 16px;font-size:.8rem;cursor:pointer;font-weight:600;white-space:nowrap;transition:opacity .2s;}
-  .btn-auto:hover{opacity:.85;}
-
   /* Ops table */
-  .ops-table{width:100%;border-collapse:collapse;margin-bottom:6px;}
-  .ops-table th{font-size:.7rem;color:var(--text2);font-weight:600;text-align:left;padding:0 6px 8px;line-height:1.3;}
+  .ops-table{width:100%;border-collapse:collapse;margin-bottom:8px;}
+  .ops-table th{font-size:.71rem;color:var(--text2);font-weight:600;text-align:left;padding:0 8px 10px;line-height:1.3;}
   .ops-table th:last-child,.ops-table td:last-child{text-align:right;}
-  .ops-table td{padding:5px 6px;border-top:1px solid var(--border);vertical-align:middle;}
-  .ops-table td:first-child{font-size:.85rem;color:var(--text);white-space:nowrap;}
-  .ops-table td input{padding:6px 8px;text-align:center;}
+  .ops-table td{padding:9px 8px;border-top:1px solid var(--border);vertical-align:middle;}
+  .ops-table td:first-child{font-size:.86rem;color:var(--text);white-space:nowrap;}
+  .ops-table td input{padding:7px 9px;text-align:center;}
   .ops-table td:last-child{font-size:.88rem;font-weight:600;color:var(--accent);}
 
   /* Laser holes/slots table */
-  .holes-table{width:100%;border-collapse:collapse;margin-bottom:8px;}
-  .holes-table th{font-size:.68rem;color:var(--text2);font-weight:600;text-align:left;padding:0 6px 6px;}
-  .holes-table td{padding:4px 6px;border-top:1px solid var(--border);}
-  .holes-table td input{padding:6px 8px;}
+  .holes-table{width:100%;border-collapse:collapse;margin-bottom:10px;}
+  .holes-table th{font-size:.69rem;color:var(--text2);font-weight:600;text-align:left;padding:0 8px 8px;}
+  .holes-table td{padding:6px 8px;border-top:1px solid var(--border);}
+  .holes-table td input{padding:7px 9px;}
   .holes-table td:last-child{width:36px;text-align:center;}
 
   /* P+S */
-  .pt-list{margin-bottom:10px;}
-  .pt-row{display:grid;grid-template-columns:1fr 36px;gap:8px;align-items:center;margin-bottom:8px;}
+  .pt-list{margin-bottom:12px;}
+  .pt-row{display:grid;grid-template-columns:1fr 36px;gap:8px;align-items:center;margin-bottom:10px;}
   .pt-row input{margin:0;}
-  .btn-remove{background:none;border:1px solid #e0ddd8;border-radius:6px;width:36px;height:36px;cursor:pointer;color:#b00;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background .15s;}
+  .btn-remove{background:none;border:1px solid #e0ddd8;border-radius:8px;width:36px;height:36px;cursor:pointer;color:#b00;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background .15s;}
   .btn-remove:hover{background:#fff0f0;}
-  .btn-add{background:none;border:1px dashed var(--accent2);border-radius:6px;padding:8px 16px;color:var(--accent2);font-size:.82rem;cursor:pointer;font-weight:600;letter-spacing:.05em;transition:background .15s;}
+  .btn-add{background:none;border:1px dashed var(--accent2);border-radius:8px;padding:9px 18px;color:var(--accent2);font-size:.83rem;cursor:pointer;font-weight:600;letter-spacing:.05em;transition:background .15s;}
   .btn-add:hover{background:#fdf6e8;}
-  .ps-total-box{background:#5c3d8f;border-radius:var(--radius);padding:14px 18px;color:#fff;display:flex;justify-content:space-between;align-items:center;margin-top:10px;}
+  .ps-total-box{background:#5c3d8f;border-radius:var(--radius);padding:16px 20px;color:#fff;display:flex;justify-content:space-between;align-items:center;margin-top:14px;}
   .ps-total-box .t-label{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;opacity:.7;}
   .ps-total-box .t-val{font-size:1.3rem;font-weight:700;}
 
   /* Coefficient */
-  .coef-select{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-  .coef-btn{border:1px solid var(--border);border-radius:8px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .18s;background:#fafaf8;}
+  .coef-select{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .coef-btn{border:1px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .18s;background:#fafaf8;}
   .coef-btn:hover{border-color:var(--accent2);}
   .coef-btn.active{border-color:var(--accent);background:var(--accent);color:#fff;}
-  .coef-btn .cb-label{font-size:.78rem;font-weight:600;}
-  .coef-btn .cb-val{font-size:.72rem;opacity:.7;margin-top:2px;}
+  .coef-btn .cb-label{font-size:.79rem;font-weight:600;}
+  .coef-btn .cb-val{font-size:.72rem;opacity:.7;margin-top:3px;}
   .coef-btn.active .cb-val{opacity:.8;}
 
   /* Results */
-  .result-line{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px dashed var(--border);}
+  .result-line{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px dashed var(--border);}
   .result-line:last-child{border-bottom:none;}
-  .result-label{font-size:.85rem;color:var(--text2);}
-  .result-value{font-size:.95rem;font-weight:600;color:var(--accent);}
-  .total-box{background:var(--accent);border-radius:var(--radius);padding:20px 24px;color:#fff;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+  .result-label{font-size:.86rem;color:var(--text2);}
+  .result-value{font-size:.96rem;font-weight:600;color:var(--accent);}
+  .total-box{background:var(--accent);border-radius:var(--radius);padding:24px 28px;color:#fff;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
   .total-box .t-label{font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;opacity:.7;}
-  .total-box .t-val{font-size:1.8rem;font-weight:700;}
-  .total-box .t-coef{font-size:.8rem;opacity:.6;margin-top:2px;}
+  .total-box .t-val{font-size:1.85rem;font-weight:700;}
+  .total-box .t-coef{font-size:.8rem;opacity:.6;margin-top:3px;}
   .results-section{display:none;}
   .results-section.visible{display:block;}
 
   /* Save estimation */
-  .save-row{display:flex;gap:10px;margin-top:16px;align-items:center;}
+  .save-row{display:flex;gap:12px;margin-top:18px;align-items:center;}
   .save-row input{flex:1;}
-  .btn-save{background:var(--accent2);color:#fff;border:none;border-radius:6px;padding:9px 18px;font-size:.85rem;cursor:pointer;font-weight:700;white-space:nowrap;transition:opacity .2s;}
+  .btn-save{background:var(--accent2);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:.86rem;cursor:pointer;font-weight:700;white-space:nowrap;transition:opacity .2s;}
   .btn-save:hover{opacity:.85;}
+  .btn-download{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:.86rem;cursor:pointer;font-weight:700;white-space:nowrap;transition:opacity .2s;}
+  .btn-download:hover{opacity:.85;}
 
   /* Log */
-  .log-empty{text-align:center;color:var(--text2);font-size:.85rem;padding:16px 0;font-style:italic;}
-  .log-item{display:grid;grid-template-columns:1fr auto auto auto;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;background:#fafaf8;}
+  .log-empty{text-align:center;color:var(--text2);font-size:.86rem;padding:20px 0;font-style:italic;}
+  .log-item{display:grid;grid-template-columns:1fr auto auto auto;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;margin-bottom:10px;background:#fafaf8;}
   .log-item-name{font-size:.9rem;font-weight:600;color:var(--accent);}
-  .log-item-date{font-size:.72rem;color:var(--text2);}
+  .log-item-date{font-size:.73rem;color:var(--text2);}
   .log-item-price{font-size:.9rem;font-weight:700;color:var(--accent2);}
-  .btn-log{font-size:.75rem;padding:5px 10px;border-radius:5px;cursor:pointer;border:1px solid var(--border);background:#fff;transition:background .15s;}
+  .btn-log{font-size:.76rem;padding:6px 11px;border-radius:6px;cursor:pointer;border:1px solid var(--border);background:#fff;transition:background .15s;}
   .btn-log:hover{background:#eef;}
   .btn-log.del{color:#b00;border-color:#fcc;}
   .btn-log.del:hover{background:#fff0f0;}
-  .log-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:10px;}
-  .btn-export{background:none;border:1px solid var(--accent);border-radius:6px;padding:7px 14px;color:var(--accent);font-size:.8rem;cursor:pointer;font-weight:600;}
+  .log-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap;}
+  .btn-export{background:none;border:1px solid var(--accent);border-radius:8px;padding:8px 16px;color:var(--accent);font-size:.81rem;cursor:pointer;font-weight:600;}
   .btn-export:hover{background:#eef2f7;}
 
-  .sub-note{font-size:.75rem;color:var(--text2);margin-top:8px;font-style:italic;}
-  .import-drop{border:1px dashed var(--accent2);border-radius:8px;padding:16px;text-align:center;background:#fdfaf3;cursor:pointer;transition:background .15s;}
+  .sub-note{font-size:.76rem;color:var(--text2);margin-top:10px;font-style:italic;line-height:1.5;}
+  .import-drop{border:1px dashed var(--accent2);border-radius:10px;padding:20px;text-align:center;background:#fdfaf3;cursor:pointer;transition:background .15s;}
   .import-drop:hover{background:#fdf6e8;}
   .import-drop input{display:none;}
-  .import-log{margin-top:10px;font-size:.78rem;color:var(--text2);background:#f8f9fb;border-radius:6px;padding:8px 10px;white-space:pre-wrap;display:none;}
-  .warn-box{margin-top:8px;font-size:.76rem;color:#a34a28;background:#faf1ec;border-radius:6px;padding:8px 10px;display:none;}
+  .import-log{margin-top:12px;font-size:.79rem;color:var(--text2);background:#f8f9fb;border-radius:8px;padding:10px 12px;white-space:pre-wrap;display:none;line-height:1.6;}
+  .warn-box{margin-top:10px;font-size:.77rem;color:#a34a28;background:#faf1ec;border-radius:8px;padding:10px 12px;display:none;}
+
+  footer.legal{text-align:center;margin-top:36px;padding:18px 12px;font-size:.72rem;color:var(--text2);opacity:.85;}
+
   @media(max-width:560px){
+    body{padding:32px 14px;}
+    .card{padding:22px 18px;}
     .grid2,.grid3,.grid4{grid-template-columns:1fr 1fr;}
     .coef-select{grid-template-columns:1fr;}
     .info-grid{grid-template-columns:1fr;}
   }
+  @media print {
+    .no-print{display:none !important;}
+    body{background:#fff;padding:0;}
+    .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid;}
+  }
 </style>
 </head>
 <body>
+<div class="watermark-overlay"></div>
 <div class="container">
   <header>
     <h1>Estimateur de coût</h1>
     <p>Découpe laser & Soudure – Pièces métalliques</p>
+    <div class="ip-tag">ORTUDEV-UP · Outil privé</div>
     <div class="accent-line"></div>
   </header>
+
+  <!-- 0. CLIENT / RÉFÉRENCE -->
+  <div class="card no-print">
+    <div class="card-title">Référence du devis</div>
+    <div class="grid2">
+      <div>
+        <label>Client</label>
+        <input type="text" id="clientNom" placeholder="ex : Atelier Dupont">
+      </div>
+      <div>
+        <label>Référence</label>
+        <input type="text" id="clientRef" placeholder="ex : DEV-2026-014">
+      </div>
+    </div>
+  </div>
 
   <!-- 1. MATIÈRE -->
   <div class="card">
@@ -162,12 +210,12 @@
       <div class="info-row"><span>Plaque standard</span><strong>1500 × 3000 mm</strong></div>
       <div class="info-row"><span>Surface calculée</span><strong id="surface-display">— mm²</strong></div>
     </div>
-    <div class="info-row info-row-accent" style="margin-top:8px;">
+    <div class="info-row info-row-accent" style="margin-top:10px;">
       <span><strong style="font-size:.8rem;">Coût matière final</strong></span>
       <strong id="prix-mat-brut">— €</strong>
     </div>
     <p class="sub-note">Surface × coût plaque × 1,16 × 1,25 ÷ 4 500 000</p>
-    <button class="visu-toggle" onclick="toggleVisu()">🔲 Visualiser la pièce</button>
+    <button class="visu-toggle no-print" onclick="toggleVisu()">🔲 Visualiser la pièce</button>
     <div class="canvas-wrap" id="canvasWrap">
       <canvas id="pieceCanvas"></canvas>
     </div>
@@ -177,74 +225,82 @@
   <div class="card">
     <div class="card-title">2 — Coût découpe laser</div>
 
-    <div class="import-drop" id="importDrop" onclick="document.getElementById('planFile').click()">
+    <div class="import-drop no-print" id="importDrop" onclick="document.getElementById('planFile').click()">
       <input type="file" id="planFile" accept=".svg,.dxf" onchange="handlePlanFile(event)">
-      <strong style="color:var(--accent2);font-size:.85rem;">📐 Importer un plan (.SVG ou .DXF)</strong>
-      <div class="sub-note" style="margin-top:4px;">
-        Le contour extérieur, les trous (cercles) et les oblongs sont détectés et pré-remplis automatiquement ci-dessous. Les temps unitaires restent à saisir (dépendent de la matière/machine).
+      <strong style="color:var(--accent2);font-size:.86rem;">📐 Importer un plan (.SVG ou .DXF)</strong>
+      <div class="sub-note" style="margin-top:6px;">
+        Contour extérieur, trous et oblongs sont mesurés géométriquement (y compris arcs / rayons de perçage) et pré-remplis ci-dessous. Les segments épars d'un DXF sont automatiquement rechaînés en boucles fermées. Les temps unitaires restent à saisir (dépendent de la matière/machine).
       </div>
     </div>
     <div class="import-log" id="importLog"></div>
     <div class="warn-box" id="importWarn"></div>
 
-    <div class="grid2" style="margin-top:16px;">
-      <div>
-        <label>Quantité de pièces identiques</label>
-        <input type="number" id="qtePieces" value="1" min="1" step="1" oninput="calc()">
-      </div>
-      <div>
-        <label>Coefficient de marge découpe</label>
-        <input type="number" id="coefLaser" value="1.20" min="1" step="0.01" oninput="calc()">
-      </div>
-    </div>
-
-    <label style="margin-top:14px;">Contour</label>
-    <div class="grid3" style="margin-bottom:6px;">
-      <div>
-        <label>Longueur contour (mm)</label>
-        <input type="number" id="contourLongueur" placeholder="ex : 1200" min="0" step="any" oninput="calc()">
-      </div>
-      <div>
-        <label>Vitesse de coupe (mm/s)</label>
-        <input type="number" id="contourVitesse" placeholder="ex : 25" min="0" step="any" oninput="calc()">
-      </div>
-      <div>
-        <label>ou temps direct (s)</label>
-        <input type="number" id="contourManuel" placeholder="—" min="0" step="0.1" oninput="calc()">
+    <div class="subsection">
+      <div class="grid2">
+        <div>
+          <label>Quantité de pièces identiques</label>
+          <input type="number" id="qtePieces" value="1" min="1" step="1" oninput="calc()">
+        </div>
+        <div>
+          <label>Coefficient de marge découpe</label>
+          <input type="number" id="coefLaser" value="1.20" min="1" step="0.01" oninput="calc()">
+        </div>
       </div>
     </div>
-    <p class="sub-note">Si "temps direct" est renseigné, il prime sur longueur/vitesse.</p>
 
-    <label style="margin-top:14px;">Trous</label>
-    <table class="holes-table">
-      <thead><tr><th>Diamètre / type</th><th>Qté</th><th>Temps unit. (s)</th><th></th></tr></thead>
-      <tbody id="trousBody"></tbody>
-    </table>
-    <button class="btn-add" onclick="addHole('trous')">+ Ajouter un diamètre de trou</button>
+    <div class="subsection">
+      <span class="subsection-title">Contour</span>
+      <div class="grid3">
+        <div>
+          <label>Longueur contour (mm)</label>
+          <input type="number" id="contourLongueur" placeholder="ex : 1200" min="0" step="any" oninput="calc()">
+        </div>
+        <div>
+          <label>Vitesse de coupe (mm/s)</label>
+          <input type="number" id="contourVitesse" placeholder="ex : 25" min="0" step="any" oninput="calc()">
+        </div>
+        <div>
+          <label>ou temps direct (s)</label>
+          <input type="number" id="contourManuel" placeholder="—" min="0" step="0.1" oninput="calc()">
+        </div>
+      </div>
+      <p class="sub-note">Si "temps direct" est renseigné, il prime sur longueur/vitesse.</p>
+    </div>
 
-    <label style="margin-top:16px;">Oblongs</label>
-    <table class="holes-table">
-      <thead><tr><th>Dimension / type</th><th>Qté</th><th>Temps unit. (s)</th><th></th></tr></thead>
-      <tbody id="oblongsBody"></tbody>
-    </table>
-    <button class="btn-add" onclick="addHole('oblongs')">+ Ajouter un type d'oblong</button>
+    <div class="subsection">
+      <span class="subsection-title">Trous</span>
+      <table class="holes-table">
+        <thead><tr><th>Diamètre / type</th><th>Qté</th><th>Temps unit. (s)</th><th></th></tr></thead>
+        <tbody id="trousBody"></tbody>
+      </table>
+      <button class="btn-add no-print" onclick="addHole('trous')">+ Ajouter un diamètre de trou</button>
+    </div>
 
-    <div style="margin-top:16px;">
+    <div class="subsection">
+      <span class="subsection-title">Oblongs</span>
+      <table class="holes-table">
+        <thead><tr><th>Dimension / type</th><th>Qté</th><th>Temps unit. (s)</th><th></th></tr></thead>
+        <tbody id="oblongsBody"></tbody>
+      </table>
+      <button class="btn-add no-print" onclick="addHole('oblongs')">+ Ajouter un type d'oblong</button>
+    </div>
+
+    <div class="subsection">
       <label>Taux de découpe (€ / min)</label>
-      <input type="number" id="tarifDecoupe" value="3.08" min="0" step="0.01" oninput="calc()" style="max-width:160px;">
+      <input type="number" id="tarifDecoupe" value="3.08" min="0" step="0.01" oninput="calc()" style="max-width:180px;">
     </div>
 
-    <div class="info-grid" style="margin-top:12px;">
+    <div class="info-grid" style="margin-top:16px;">
       <div class="info-row"><span>T contour</span><strong id="laser-tcontour">—</strong></div>
       <div class="info-row"><span>Σ trous</span><strong id="laser-ttrous">—</strong></div>
       <div class="info-row"><span>Σ oblongs</span><strong id="laser-toblongs">—</strong></div>
       <div class="info-row"><span>N total × 1 s</span><strong id="laser-tpercage">—</strong></div>
     </div>
-    <div class="info-row info-row-laser" style="margin-top:8px;">
+    <div class="info-row info-row-laser" style="margin-top:10px;">
       <span>T facturé <em style="font-size:.72rem;">(× coefficient, par pièce)</em></span>
       <strong id="laser-tfacture">— s</strong>
     </div>
-    <div class="info-row info-row-accent" style="margin-top:8px;">
+    <div class="info-row info-row-accent" style="margin-top:10px;">
       <span><strong style="font-size:.8rem;">Coût découpe laser (lot)</strong></span>
       <strong id="prix-temps">— €</strong>
     </div>
@@ -295,7 +351,7 @@
         </div>
       </div>
     </div>
-    <div class="info-row info-row-tube" style="margin-top:8px;">
+    <div class="info-row info-row-tube" style="margin-top:10px;">
       <span><strong style="font-size:.8rem;">Coût matière tube</strong></span>
       <strong id="tube-total">— €</strong>
     </div>
@@ -305,19 +361,19 @@
   <!-- 5. POINTAGE + SOUDURE -->
   <div class="card">
     <div class="card-title">5 — Pointage + Soudure (optionnel)</div>
-    <div class="grid2" style="margin-bottom:14px;">
+    <div class="grid2" style="margin-bottom:16px;">
       <div>
         <label>Surface à souder (mm)</label>
         <input type="number" id="surfSoudure" placeholder="ex : 350" min="0" step="any" oninput="calc()">
-        <p class="sub-note" style="margin-top:4px;">Surface × 72 ÷ 1000</p>
+        <p class="sub-note" style="margin-top:6px;">Surface × 72 ÷ 1000</p>
       </div>
       <div style="display:flex;flex-direction:column;justify-content:flex-end;">
         <div class="info-row info-row-ps"><span>Prix soudure</span><strong id="prix-soudure">— €</strong></div>
       </div>
     </div>
-    <label style="margin-bottom:8px;">Pointages</label>
+    <label style="margin-bottom:10px;">Pointages</label>
     <div class="pt-list" id="ptList"></div>
-    <button class="btn-add" onclick="addPointage()">+ Ajouter un pointage</button>
+    <button class="btn-add no-print" onclick="addPointage()">+ Ajouter un pointage</button>
     <p class="sub-note">1 pointage = 3 min × 1,20 € = 3,60 €</p>
     <div class="ps-total-box">
       <div class="t-label">Total Pointage + Soudure</div>
@@ -335,7 +391,7 @@
     </div>
   </div>
 
-  <button class="btn-calc" style="width:100%;padding:14px;background:var(--accent2);color:#fff;border:none;border-radius:var(--radius);font-size:.95rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;margin-bottom:18px;" onclick="calc(true)">Calculer l'estimation</button>
+  <button class="btn-calc no-print" style="width:100%;padding:16px;background:var(--accent2);color:#fff;border:none;border-radius:var(--radius);font-size:.95rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;margin-bottom:20px;" onclick="calc(true)">Calculer l'estimation</button>
 
   <!-- RÉSULTATS -->
   <div class="results-section" id="results">
@@ -353,29 +409,35 @@
       <div><div class="t-label">Coût final facturé HT</div><div class="t-coef" id="r-total-detail"></div></div>
       <div class="t-val" id="r-total">—</div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;">
-      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;box-shadow:var(--shadow);">
-        <div style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);margin-bottom:6px;">Montant HT</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
+      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);">
+        <div style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);margin-bottom:8px;">Montant HT</div>
         <div style="font-size:1.3rem;font-weight:700;color:var(--accent);" id="r-ht">—</div>
       </div>
-      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;box-shadow:var(--shadow);">
-        <div style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);margin-bottom:6px;">Montant TTC <span style="font-weight:400;opacity:.7;">(TVA 20%)</span></div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);">
+        <div style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);margin-bottom:8px;">Montant TTC <span style="font-weight:400;opacity:.7;">(TVA 20%)</span></div>
         <div style="font-size:1.3rem;font-weight:700;color:var(--accent2);" id="r-ttc">—</div>
       </div>
     </div>
+
+    <div class="card no-print" style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;">
+      <button class="btn-download" onclick="downloadDevis()">⬇ Télécharger le chiffrage</button>
+      <button class="btn-download" style="background:var(--accent2);" onclick="window.print()">🖨️ Imprimer / Enregistrer en PDF</button>
+    </div>
+
     <!-- SAVE -->
-    <div class="card" style="background:#f8f9fb;">
+    <div class="card no-print" style="background:#f8f9fb;">
       <div class="card-title">Sauvegarder cette estimation</div>
       <div class="save-row">
         <input type="text" id="estimName" placeholder="Nom de l'estimation (ex : Platine 450×900 – Client X)">
         <button class="btn-save" onclick="saveEstimation()">💾 Sauvegarder</button>
       </div>
-      <p id="save-msg" style="font-size:.78rem;margin-top:8px;display:none;"></p>
+      <p id="save-msg" style="font-size:.78rem;margin-top:10px;display:none;"></p>
     </div>
   </div>
 
   <!-- LOG -->
-  <div class="card">
+  <div class="card no-print">
     <div class="card-title">Journal des estimations</div>
     <div id="logList"><p class="log-empty">Aucune estimation sauvegardée.</p></div>
     <div class="log-actions">
@@ -384,6 +446,11 @@
       <input type="file" id="importFile" accept=".json" style="display:none;" onchange="handleImport(event)">
     </div>
   </div>
+
+  <footer class="legal">
+    © 2026 ORTUDEV-UP — Estimateur de coût découpe laser & soudure. Propriété intellectuelle privée.<br>
+    Toute reproduction, diffusion ou usage commercial sans autorisation écrite est interdit.
+  </footer>
 </div>
 
 <script>
@@ -438,11 +505,12 @@ function renderHoles(kind) {
       <td><input type="text" placeholder="ex : Ø6 mm" value="${escapeAttr(h.label)}" oninput="updateHole('${kind}',${h.id},'label',this.value)"></td>
       <td><input type="number" min="0" step="1" value="${h.qte}" oninput="updateHole('${kind}',${h.id},'qte',this.value)"></td>
       <td><input type="number" min="0" step="0.1" value="${h.temps}" oninput="updateHole('${kind}',${h.id},'temps',this.value)"></td>
-      <td><button class="btn-remove" style="width:30px;height:30px;" onclick="removeHole('${kind}',${h.id})">×</button></td>
+      <td><button class="btn-remove no-print" style="width:30px;height:30px;" onclick="removeHole('${kind}',${h.id})">×</button></td>
     </tr>
   `).join('');
 }
 function escapeAttr(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+function escapeHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 // seed one empty row of each on load
 addHole('trous'); addHole('oblongs');
@@ -454,7 +522,7 @@ function addPointage() {
   const row = document.createElement('div');
   row.className = 'pt-row'; row.id = 'pt-' + id;
   row.innerHTML = `<input type="text" placeholder="ex : Pointage angle droit" id="pt-name-${id}">
-    <button class="btn-remove" onclick="removePt(${id})">×</button>`;
+    <button class="btn-remove no-print" onclick="removePt(${id})">×</button>`;
   list.appendChild(row); calc();
 }
 function removePt(id) { document.getElementById('pt-' + id)?.remove(); calc(); }
@@ -641,11 +709,357 @@ window.addEventListener('resize', () => {
   }
 });
 
-// ─── Import de plan (SVG / DXF) ────────────────────────────────────────────
-// Analyse géométrique : détecte le contour extérieur (plus grande boucle fermée)
-// et classe les boucles internes en "trous" (proches d'un cercle) ou "oblongs"
-// (forme allongée), en les groupant par dimension arrondie. Les temps unitaires
-// dépendent de la machine/matière et restent à saisir manuellement.
+// ══════════════════════════════════════════════════════════════════════════
+// Import de plan (SVG / DXF) — moteur géométrique
+//
+// Objectif : mesurer précisément le contour extérieur et les perforations
+// (trous, oblongs) d'une pièce à partir d'un fichier de plan, y compris
+// quand le contour est composé d'arcs ou de segments non reliés entre eux.
+//
+// - Les arcs (ARC, ou bulge de LWPOLYLINE) sont discrétisés analytiquement
+//   (formule exacte centre/rayon/angle), pas approximés par des droites.
+// - Les entités DXF non refermées (LINE/ARC isolés) sont automatiquement
+//   rechaînées en boucles fermées par appariement de leurs extrémités.
+// - Les temps unitaires de perçage restent saisis manuellement : ils
+//   dépendent de la machine et de la matière, non de la géométrie seule.
+// ══════════════════════════════════════════════════════════════════════════
+
+function shoelaceArea(pts) {
+  let a = 0;
+  for (let i = 0; i < pts.length; i++) {
+    const p1 = pts[i], p2 = pts[(i + 1) % pts.length];
+    a += p1.x * p2.y - p2.x * p1.y;
+  }
+  return Math.abs(a) / 2;
+}
+function polyLength(pts, closed) {
+  let l = 0;
+  for (let i = 0; i < pts.length - 1; i++) l += Math.hypot(pts[i+1].x - pts[i].x, pts[i+1].y - pts[i].y);
+  if (closed) l += Math.hypot(pts[0].x - pts[pts.length-1].x, pts[0].y - pts[pts.length-1].y);
+  return l;
+}
+function bboxOf(pts) {
+  const xs = pts.map(p => p.x), ys = pts.map(p => p.y);
+  return { w: Math.max(...xs) - Math.min(...xs), h: Math.max(...ys) - Math.min(...ys) };
+}
+
+// Segment d'arc défini par bulge DXF (bulge = tan(angle_inclus / 4))
+function bulgeSegmentPoints(p1, p2, bulge, segsPerQuarter = 16) {
+  if (!bulge) return [p1, p2];
+  const dx = p2.x - p1.x, dy = p2.y - p1.y;
+  const chord = Math.hypot(dx, dy);
+  if (chord < 1e-9) return [p1, p2];
+  const s = bulge * chord / 2; // sagittale signée
+  const r = (s*s + (chord/2)*(chord/2)) / (2*s);
+  const mx = (p1.x+p2.x)/2, my = (p1.y+p2.y)/2;
+  const ux = dx/chord, uy = dy/chord;
+  const px = -uy, py = ux;
+  const cx = mx - px*(r - s), cy = my - py*(r - s);
+  const theta = 4 * Math.atan(bulge);
+  const a0 = Math.atan2(p1.y-cy, p1.x-cx);
+  const pts = [];
+  const n = Math.max(4, Math.round(segsPerQuarter * Math.abs(theta)/(Math.PI/2)));
+  for (let i=0;i<=n;i++) {
+    const a = a0 + theta*(i/n);
+    pts.push({ x: cx + Math.abs(r)*Math.cos(a), y: cy + Math.abs(r)*Math.sin(a) });
+  }
+  return pts;
+}
+
+// Discrétisation d'une entité ARC (centre, rayon, angles en degrés, sens CCW du DXF)
+function arcEntityPoints(cx, cy, r, a1Deg, a2Deg, segsPerQuarter = 12) {
+  let a1 = a1Deg * Math.PI / 180, a2 = a2Deg * Math.PI / 180;
+  let sweep = a2 - a1;
+  while (sweep <= 0) sweep += Math.PI * 2;
+  const n = Math.max(4, Math.round(segsPerQuarter * sweep / (Math.PI/2)));
+  const pts = [];
+  for (let i = 0; i <= n; i++) {
+    const a = a1 + sweep * (i/n);
+    pts.push({ x: cx + r*Math.cos(a), y: cy + r*Math.sin(a) });
+  }
+  return pts;
+}
+
+function keyPt(p, tol) { return Math.round(p.x/tol) + ',' + Math.round(p.y/tol); }
+
+// Rechaîne des segments ouverts (LINE/ARC isolés) en boucles fermées par
+// appariement de leurs extrémités (tolérance en mm).
+function chainEdges(edges, tol = 0.05) {
+  const used = new Array(edges.length).fill(false);
+  const loops = [];
+  let leftoverLength = 0;
+  const map = new Map();
+  function addKey(k, rec) { if (!map.has(k)) map.set(k, []); map.get(k).push(rec); }
+  edges.forEach((e, idx) => {
+    addKey(keyPt(e.pts[0], tol), { idx, end: 's' });
+    addKey(keyPt(e.pts[e.pts.length-1], tol), { idx, end: 'e' });
+  });
+
+  for (let start = 0; start < edges.length; start++) {
+    if (used[start]) continue;
+    used[start] = true;
+    let chain = edges[start].pts.slice();
+    let closed = false;
+    let safety = 0;
+    while (safety++ < edges.length + 5) {
+      const tail = chain[chain.length-1];
+      const kTail = keyPt(tail, tol);
+      if (chain.length > 2 && kTail === keyPt(chain[0], tol)) { closed = true; break; }
+      const candidates = (map.get(kTail) || []).filter(r => !used[r.idx]);
+      if (!candidates.length) break;
+      const cand = candidates[0];
+      used[cand.idx] = true;
+      let pts = edges[cand.idx].pts.slice();
+      if (cand.end === 'e') pts.reverse();
+      chain = chain.concat(pts.slice(1));
+    }
+    const length = polyLength(chain, false);
+    if (closed) loops.push({ length, area: shoelaceArea(chain), bbox: bboxOf(chain) });
+    else leftoverLength += length;
+  }
+  return { loops, leftoverLength };
+}
+
+function classifyLoop(bbox, area) {
+  const w = bbox.w, h = bbox.h;
+  const aspect = Math.max(w, h) / Math.max(0.001, Math.min(w, h));
+  if (aspect <= 1.3) {
+    const diameter = 2 * Math.sqrt(Math.max(area, 0) / Math.PI) || (w + h) / 2;
+    return { kind: 'circle', diameter };
+  }
+  return { kind: 'slot', w: Math.max(w, h), h: Math.min(w, h) };
+}
+
+function groupShapes(shapes) {
+  const map = new Map();
+  shapes.forEach(s => {
+    const key = s.kind === 'circle' ? 'c:' + Math.round(s.diameter * 2) / 2 : 's:' + Math.round(s.w) + 'x' + Math.round(s.h);
+    if (!map.has(key)) map.set(key, { ...s, count: 0 });
+    map.get(key).count++;
+  });
+  return [...map.values()];
+}
+
+function buildAnalysisFromLoops(loops, warnings) {
+  let outer = loops[0];
+  loops.forEach(l => { if (l.area > outer.area) outer = l; });
+  const inner = loops.filter(l => l !== outer);
+  const holes = [], slots = [];
+  inner.forEach(l => {
+    const c = classifyLoop(l.bbox, l.area);
+    if (c.kind === 'circle') holes.push(c); else slots.push(c);
+  });
+  return { contourLength: outer.length, holes: groupShapes(holes), slots: groupShapes(slots), warnings };
+}
+
+// ── Unités / échelle SVG (mm, cm, in, px → mm) ──
+function unitToMM(u) {
+  return { mm:1, cm:10, in:25.4, px:25.4/96, pt:25.4/72, '':1 }[u] ?? 1;
+}
+function parseLengthAttr(str) {
+  const m = /^([\d.]+)\s*([a-z%]*)$/i.exec((str||'').trim());
+  if (!m) return null;
+  return { value: parseFloat(m[1]), unit: m[2].toLowerCase() };
+}
+
+// ── SVG ──
+function analyzeSVG(text) {
+  const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
+  if (doc.querySelector('parsererror')) throw new Error('SVG invalide.');
+  const svgRoot = doc.documentElement;
+
+  // Détection d'échelle : si width/height (avec unité) et viewBox sont tous deux présents
+  // et incohérents (ex : width="450mm" mais viewBox="0 0 1701 3402" en px), on convertit.
+  let scale = 1;
+  const wAttr = parseLengthAttr(svgRoot.getAttribute('width'));
+  const vb = (svgRoot.getAttribute('viewBox') || '').trim().split(/\s+/).map(Number);
+  if (wAttr && wAttr.value > 0 && vb.length === 4 && vb[2] > 0) {
+    const widthMM = wAttr.value * unitToMM(wAttr.unit || 'px');
+    scale = widthMM / vb[2];
+  } else if (wAttr && wAttr.unit && wAttr.unit !== 'px' && wAttr.unit !== '') {
+    scale = unitToMM(wAttr.unit);
+  }
+
+  const host = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  host.style.position = 'absolute'; host.style.left = '-99999px'; host.style.width = '1px'; host.style.height = '1px';
+  document.body.appendChild(host);
+  host.innerHTML = svgRoot.innerHTML;
+
+  const loops = [];
+  const warnings = [];
+
+  host.querySelectorAll('circle').forEach(el => {
+    const r = parseFloat(el.getAttribute('r')) || 0;
+    if (r > 0) loops.push({ length: 2 * Math.PI * r, area: Math.PI * r * r, bbox: { w: 2*r, h: 2*r } });
+  });
+  host.querySelectorAll('ellipse').forEach(el => {
+    const rx = parseFloat(el.getAttribute('rx')) || 0, ry = parseFloat(el.getAttribute('ry')) || 0;
+    if (rx > 0 && ry > 0) {
+      const h = Math.pow((rx-ry)/(rx+ry), 2);
+      const length = Math.PI * (rx+ry) * (1 + 3*h/(10+Math.sqrt(4-3*h)));
+      loops.push({ length, area: Math.PI * rx * ry, bbox: { w: 2*rx, h: 2*ry } });
+    }
+  });
+  host.querySelectorAll('rect').forEach(el => {
+    const w = parseFloat(el.getAttribute('width')) || 0, h = parseFloat(el.getAttribute('height')) || 0;
+    if (w > 0 && h > 0) loops.push({ length: 2*(w+h), area: w*h, bbox: { w, h } });
+  });
+  host.querySelectorAll('polygon, polyline').forEach(el => {
+    const raw = (el.getAttribute('points') || '').trim().split(/\s+/).map(pair => {
+      const [x, y] = pair.split(',').map(Number); return { x, y };
+    }).filter(p => isFinite(p.x) && isFinite(p.y));
+    if (raw.length >= 3) {
+      const closed = el.tagName.toLowerCase() === 'polygon';
+      loops.push({ length: polyLength(raw, closed), area: shoelaceArea(raw), bbox: bboxOf(raw) });
+    }
+  });
+  // Un <path> peut contenir plusieurs sous-tracés (M...Z M...Z, ex. contour + trou en evenodd).
+  // On les sépare pour mesurer chaque boucle indépendamment (sinon l'aire calculée sur
+  // l'ensemble serait fausse : les points échantillonnés sauteraient d'un sous-tracé à l'autre).
+  host.querySelectorAll('path').forEach(el => {
+    const d = el.getAttribute('d') || '';
+    const subpaths = d.match(/[Mm][^Mm]*/g) || [d];
+    subpaths.forEach(sub => {
+      if (!/[a-zA-Z]/.test(sub)) return;
+      const tmp = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      tmp.setAttribute('d', sub);
+      host.appendChild(tmp);
+      try {
+        const len = tmp.getTotalLength();
+        if (len > 1e-6) {
+          const N = Math.min(400, Math.max(24, Math.round(len / 2)));
+          const pts = [];
+          for (let i = 0; i < N; i++) pts.push(tmp.getPointAtLength((i / N) * len));
+          loops.push({ length: len, area: shoelaceArea(pts), bbox: bboxOf(pts) });
+        }
+      } catch { warnings.push('un sous-tracé <path> n\'a pas pu être mesuré'); }
+      host.removeChild(tmp);
+    });
+  });
+
+  document.body.removeChild(host);
+  if (!loops.length) throw new Error('Aucune forme exploitable trouvée dans le SVG.');
+
+  let finalLoops = loops;
+  if (scale !== 1 && isFinite(scale) && scale > 0) {
+    finalLoops = loops.map(l => ({ length: l.length*scale, area: l.area*scale*scale, bbox: { w: l.bbox.w*scale, h: l.bbox.h*scale } }));
+    warnings.push(`échelle appliquée : × ${scale.toFixed(4)} (unités du document converties en mm)`);
+  }
+
+  return buildAnalysisFromLoops(finalLoops, warnings);
+}
+
+// ── DXF (ASCII) : LWPOLYLINE (avec bulge), LINE, ARC, CIRCLE ──
+// Les entités non refermées sont automatiquement rechaînées via chainEdges().
+const DXF_UNIT_TO_MM = { 1: 25.4, 2: 304.8, 4: 1, 5: 10, 6: 1000 };
+
+function analyzeDXF(text) {
+  const lines = text.split(/\r\n|\r|\n/);
+  const pairs = [];
+  for (let i = 0; i < lines.length - 1; i += 2) pairs.push([lines[i].trim(), lines[i+1].trim()]);
+
+  let scale = 1;
+  for (let i = 0; i < pairs.length - 1; i++) {
+    if (pairs[i][0] === '9' && pairs[i][1] === '$INSUNITS') {
+      for (let j = i+1; j < Math.min(i+6, pairs.length); j++) {
+        if (pairs[j][0] === '70') { const u = parseInt(pairs[j][1]); if (DXF_UNIT_TO_MM[u]) scale = DXF_UNIT_TO_MM[u]; break; }
+      }
+    }
+  }
+
+  const selfClosedLoops = [];
+  const openEdges = [];
+  const warnings = [];
+  let i = 0;
+
+  function readLWPolyline() {
+    const verts = [];
+    let closed = false;
+    let curX = null;
+    while (i < pairs.length) {
+      const [code, val] = pairs[i];
+      if (code === '0') break;
+      const n = parseFloat(val);
+      if (code === '70') closed = (parseInt(val) & 1) === 1;
+      else if (code === '10') curX = n;
+      else if (code === '20') verts.push({ x: curX, y: n, bulge: 0 });
+      else if (code === '42') { if (verts.length) verts[verts.length-1].bulge = n; }
+      i++;
+    }
+    if (verts.length < 2) { warnings.push('une LWPOLYLINE avec moins de 2 sommets a été ignorée'); return; }
+    const pts = [verts[0]];
+    for (let k = 0; k < verts.length - 1; k++) pts.push(...bulgeSegmentPoints(verts[k], verts[k+1], verts[k].bulge).slice(1));
+    if (closed) {
+      pts.push(...bulgeSegmentPoints(verts[verts.length-1], verts[0], verts[verts.length-1].bulge).slice(1));
+      selfClosedLoops.push({ length: polyLength(pts, false), area: shoelaceArea(pts), bbox: bboxOf(pts) });
+    } else {
+      openEdges.push({ pts });
+    }
+  }
+
+  function readLine() {
+    let x1,y1,x2,y2;
+    while (i < pairs.length) {
+      const [code, val] = pairs[i];
+      if (code === '0') break;
+      const n = parseFloat(val);
+      if (code === '10') x1 = n; else if (code === '20') y1 = n;
+      else if (code === '11') x2 = n; else if (code === '21') y2 = n;
+      i++;
+    }
+    if (x1 != null && x2 != null) openEdges.push({ pts: [{x:x1,y:y1}, {x:x2,y:y2}] });
+  }
+
+  function readCircle() {
+    let cx,cy,r;
+    while (i < pairs.length) {
+      const [code, val] = pairs[i];
+      if (code === '0') break;
+      const n = parseFloat(val);
+      if (code === '10') cx = n; else if (code === '20') cy = n; else if (code === '40') r = n;
+      i++;
+    }
+    if (r > 0) selfClosedLoops.push({ length: 2*Math.PI*r, area: Math.PI*r*r, bbox: { w: 2*r, h: 2*r } });
+  }
+
+  function readArc() {
+    let cx,cy,r,a1,a2;
+    while (i < pairs.length) {
+      const [code, val] = pairs[i];
+      if (code === '0') break;
+      const n = parseFloat(val);
+      if (code === '10') cx = n; else if (code === '20') cy = n; else if (code === '40') r = n;
+      else if (code === '50') a1 = n; else if (code === '51') a2 = n;
+      i++;
+    }
+    if (r > 0 && a1 != null && a2 != null) openEdges.push({ pts: arcEntityPoints(cx, cy, r, a1, a2) });
+  }
+
+  while (i < pairs.length) {
+    const [code, val] = pairs[i];
+    if (code === '0') {
+      if (val === 'LWPOLYLINE') { i++; readLWPolyline(); continue; }
+      if (val === 'LINE') { i++; readLine(); continue; }
+      if (val === 'CIRCLE') { i++; readCircle(); continue; }
+      if (val === 'ARC') { i++; readArc(); continue; }
+      if (val === 'POLYLINE') { warnings.push('entité POLYLINE (format ancien) ignorée — exporter de préférence en LWPOLYLINE'); }
+    }
+    i++;
+  }
+
+  const { loops: chainedLoops, leftoverLength } = chainEdges(openEdges);
+  if (leftoverLength > 0.5) warnings.push(`${leftoverLength.toFixed(1)} mm de tracé n'ont pas pu être refermés en boucle (segments isolés)`);
+
+  let allLoops = [...selfClosedLoops, ...chainedLoops];
+  if (!allLoops.length) throw new Error('Aucune boucle fermée détectée dans ce DXF (CIRCLE, LWPOLYLINE fermée, ou segments rechaînables).');
+
+  if (scale !== 1) {
+    allLoops = allLoops.map(l => ({ length: l.length*scale, area: l.area*scale*scale, bbox: { w: l.bbox.w*scale, h: l.bbox.h*scale } }));
+    warnings.push(`unités DXF converties en mm (facteur × ${scale})`);
+  }
+
+  return buildAnalysisFromLoops(allLoops, warnings);
+}
 
 function handlePlanFile(evt) {
   const file = evt.target.files[0];
@@ -697,182 +1111,6 @@ function applyAnalysis(a, filename) {
   calc();
 }
 
-function groupShapes(shapes) {
-  // shapes: [{diameter?, w?, h?, kind:'circle'|'slot'}]
-  const map = new Map();
-  shapes.forEach(s => {
-    const key = s.kind === 'circle'
-      ? 'c:' + Math.round(s.diameter * 2) / 2
-      : 's:' + Math.round(s.w) + 'x' + Math.round(s.h);
-    if (!map.has(key)) map.set(key, { ...s, count: 0 });
-    map.get(key).count++;
-  });
-  return [...map.values()];
-}
-
-function classifyLoop(bbox, area) {
-  // Approximates a closed loop as a circle (trou) or an elongated slot (oblong)
-  const w = bbox.w, h = bbox.h;
-  const aspect = Math.max(w, h) / Math.max(0.001, Math.min(w, h));
-  if (aspect <= 1.3) {
-    const diameter = 2 * Math.sqrt(Math.max(area, 0) / Math.PI) || (w + h) / 2;
-    return { kind: 'circle', diameter };
-  }
-  return { kind: 'slot', w: Math.max(w, h), h: Math.min(w, h) };
-}
-
-function shoelaceArea(pts) {
-  let a = 0;
-  for (let i = 0; i < pts.length; i++) {
-    const p1 = pts[i], p2 = pts[(i + 1) % pts.length];
-    a += p1.x * p2.y - p2.x * p1.y;
-  }
-  return Math.abs(a) / 2;
-}
-function polyLength(pts, closed) {
-  let l = 0;
-  for (let i = 0; i < pts.length - 1; i++) l += Math.hypot(pts[i+1].x - pts[i].x, pts[i+1].y - pts[i].y);
-  if (closed) l += Math.hypot(pts[0].x - pts[pts.length-1].x, pts[0].y - pts[pts.length-1].y);
-  return l;
-}
-function bboxOf(pts) {
-  const xs = pts.map(p => p.x), ys = pts.map(p => p.y);
-  return { w: Math.max(...xs) - Math.min(...xs), h: Math.max(...ys) - Math.min(...ys) };
-}
-
-// ── SVG ──
-function analyzeSVG(text) {
-  const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
-  if (doc.querySelector('parsererror')) throw new Error('SVG invalide.');
-  const svgRoot = doc.documentElement;
-
-  const host = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  host.style.position = 'absolute'; host.style.left = '-99999px'; host.style.width = '1px'; host.style.height = '1px';
-  document.body.appendChild(host);
-  host.innerHTML = svgRoot.innerHTML;
-
-  const loops = [];
-  const warnings = [];
-
-  host.querySelectorAll('circle').forEach(el => {
-    const r = parseFloat(el.getAttribute('r')) || 0;
-    if (r > 0) loops.push({ length: 2 * Math.PI * r, area: Math.PI * r * r, bbox: { w: 2*r, h: 2*r } });
-  });
-  host.querySelectorAll('ellipse').forEach(el => {
-    const rx = parseFloat(el.getAttribute('rx')) || 0, ry = parseFloat(el.getAttribute('ry')) || 0;
-    if (rx > 0 && ry > 0) {
-      const h = Math.pow((rx-ry)/(rx+ry), 2);
-      const length = Math.PI * (rx+ry) * (1 + 3*h/(10+Math.sqrt(4-3*h)));
-      loops.push({ length, area: Math.PI * rx * ry, bbox: { w: 2*rx, h: 2*ry } });
-    }
-  });
-  host.querySelectorAll('rect').forEach(el => {
-    const w = parseFloat(el.getAttribute('width')) || 0, h = parseFloat(el.getAttribute('height')) || 0;
-    if (w > 0 && h > 0) loops.push({ length: 2*(w+h), area: w*h, bbox: { w, h } });
-  });
-  host.querySelectorAll('polygon, polyline').forEach(el => {
-    const raw = (el.getAttribute('points') || '').trim().split(/\s+/).map(pair => {
-      const [x, y] = pair.split(',').map(Number); return { x, y };
-    }).filter(p => isFinite(p.x) && isFinite(p.y));
-    if (raw.length >= 3) {
-      const closed = el.tagName.toLowerCase() === 'polygon';
-      loops.push({ length: polyLength(raw, closed), area: shoelaceArea(raw), bbox: bboxOf(raw) });
-    }
-  });
-  host.querySelectorAll('path').forEach(el => {
-    const d = el.getAttribute('d') || '';
-    const closed = /z/i.test(d);
-    try {
-      const len = el.getTotalLength();
-      const N = 48;
-      const pts = [];
-      for (let i = 0; i < N; i++) pts.push(el.getPointAtLength((i / N) * len));
-      loops.push({ length: len, area: shoelaceArea(pts), bbox: bboxOf(pts), closed });
-    } catch { warnings.push('un tracé <path> n\'a pas pu être mesuré'); }
-  });
-
-  document.body.removeChild(host);
-  if (!loops.length) throw new Error('Aucune forme exploitable trouvée dans le SVG.');
-
-  return buildAnalysisFromLoops(loops, warnings);
-}
-
-// ── DXF (ASCII, entités LWPOLYLINE / LINE / ARC / CIRCLE) ──
-function analyzeDXF(text) {
-  const lines = text.split(/\r\n|\r|\n/);
-  const pairs = [];
-  for (let i = 0; i < lines.length - 1; i += 2) pairs.push([lines[i].trim(), lines[i+1].trim()]);
-
-  const loops = [];
-  const warnings = [];
-  let i = 0;
-  function readEntity(type) {
-    const e = { type, pts: [], closed: false };
-    let cx, cy, r, a1, a2;
-    let curX, curY;
-    while (i < pairs.length) {
-      const [code, val] = pairs[i];
-      if (code === '0') break;
-      const n = parseFloat(val);
-      if (type === 'CIRCLE') {
-        if (code === '10') cx = n; else if (code === '20') cy = n; else if (code === '40') r = n;
-      } else if (type === 'ARC') {
-        if (code === '10') cx = n; else if (code === '20') cy = n; else if (code === '40') r = n;
-        else if (code === '50') a1 = n; else if (code === '51') a2 = n;
-      } else if (type === 'LINE') {
-        if (code === '10') e.x1 = n; else if (code === '20') e.y1 = n;
-        else if (code === '11') e.x2 = n; else if (code === '21') e.y2 = n;
-      } else if (type === 'LWPOLYLINE' || type === 'POLYLINE') {
-        if (code === '70') e.closed = (n & 1) === 1;
-        else if (code === '10') curX = n;
-        else if (code === '20') { curY = n; e.pts.push({ x: curX, y: curY }); }
-      }
-      i++;
-    }
-    if (type === 'CIRCLE' && r > 0) loops.push({ length: 2*Math.PI*r, area: Math.PI*r*r, bbox: { w: 2*r, h: 2*r } });
-    if (type === 'ARC' && r > 0 && a1 != null && a2 != null) {
-      let sweep = a2 - a1; if (sweep < 0) sweep += 360;
-      warnings.push('un arc isolé a été ignoré dans le contour (non refermé automatiquement)');
-    }
-    if (type === 'LINE') { /* segments isolés non reliés : ignorés pour le contour, signalé */ warnings.push('des segments LINE isolés existent (non inclus dans le contour détecté)'); }
-    if ((type === 'LWPOLYLINE' || type === 'POLYLINE') && e.pts.length >= 3) {
-      loops.push({ length: polyLength(e.pts, e.closed), area: e.closed ? shoelaceArea(e.pts) : 0, bbox: bboxOf(e.pts), closed: e.closed });
-    }
-  }
-
-  while (i < pairs.length) {
-    const [code, val] = pairs[i];
-    if (code === '0' && ['LWPOLYLINE','POLYLINE','LINE','CIRCLE','ARC'].includes(val)) {
-      i++; readEntity(val);
-    } else i++;
-  }
-
-  const closedLoops = loops.filter(l => l.closed !== false);
-  if (!closedLoops.length) throw new Error('Aucune boucle fermée détectée (CIRCLE ou LWPOLYLINE fermée) dans ce DXF.');
-
-  return buildAnalysisFromLoops(closedLoops, [...new Set(warnings)]);
-}
-
-function buildAnalysisFromLoops(loops, warnings) {
-  // La plus grande boucle (par surface) = contour extérieur de la pièce
-  let outer = loops[0];
-  loops.forEach(l => { if (l.area > outer.area) outer = l; });
-
-  const inner = loops.filter(l => l !== outer);
-  const holes = [], slots = [];
-  inner.forEach(l => {
-    const c = classifyLoop(l.bbox, l.area);
-    if (c.kind === 'circle') holes.push(c); else slots.push(c);
-  });
-
-  return {
-    contourLength: outer.length,
-    holes: groupShapes(holes),
-    slots: groupShapes(slots),
-    warnings,
-  };
-}
-
 // ─── Log / Save ───────────────────────────────
 function getLog() {
   try { return JSON.parse(localStorage.getItem('laser_log') || '[]'); } catch(e) { return []; }
@@ -893,6 +1131,8 @@ function saveEstimation() {
     date: new Date().toLocaleString('fr-FR'),
     result: lastResult,
     inputs: {
+      client: document.getElementById('clientNom').value,
+      ref: document.getElementById('clientRef').value,
       L: document.getElementById('longueur').value,
       W: document.getElementById('largeur').value,
       T: document.getElementById('epaisseur').value,
@@ -990,6 +1230,60 @@ function handleImport(e) {
   };
   reader.readAsText(file);
   e.target.value = '';
+}
+
+// ─── Téléchargement du chiffrage ────────────────────────────────────────────
+function downloadDevis() {
+  if (!lastResult) { alert('Calculez d\'abord l\'estimation avant de télécharger le chiffrage.'); return; }
+  const r = lastResult;
+  const client = escapeHtml(document.getElementById('clientNom').value || '—');
+  const ref = escapeHtml(document.getElementById('clientRef').value || '—');
+  const date = new Date().toLocaleString('fr-FR');
+
+  const html = `<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"><title>Devis découpe laser — ${ref}</title>
+<style>
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#1a1a1a;max-width:700px;margin:40px auto;padding:0 20px;position:relative;}
+  .watermark{position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='200'%3E%3Ctext x='0' y='110' font-size='22' font-family='Segoe UI,Arial,sans-serif' font-weight='700' fill='rgba(44,62,80,0.07)' transform='rotate(-28 170 100)'%3EORTUDEV-UP%3C/text%3E%3C/svg%3E");
+    background-repeat:repeat; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  .content{position:relative;z-index:1;}
+  h1{color:#2c3e50;font-size:1.3rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid #c0a060;padding-bottom:10px;}
+  .meta{font-size:.85rem;color:#6b6b6b;margin:14px 0 24px;}
+  table{width:100%;border-collapse:collapse;margin-bottom:20px;}
+  td{padding:10px 4px;border-bottom:1px dashed #e0ddd8;font-size:.92rem;}
+  td:last-child{text-align:right;font-weight:600;color:#2c3e50;}
+  .total{background:#2c3e50;color:#fff;padding:18px 20px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;font-size:1.1rem;font-weight:700;margin-top:10px;}
+  footer{margin-top:40px;font-size:.72rem;color:#6b6b6b;text-align:center;}
+  @media print{ .watermark{-webkit-print-color-adjust:exact; print-color-adjust:exact;} }
+</style></head>
+<body>
+  <div class="watermark"></div>
+  <div class="content">
+    <h1>Devis — Découpe laser & soudure</h1>
+    <div class="meta">Client : <strong>${client}</strong> — Référence : <strong>${ref}</strong> — Généré le ${date}</div>
+    <table>
+      <tr><td>Coût matière plaque</td><td>${fmt(r.matFinal)}</td></tr>
+      <tr><td>Coût matière tube</td><td>${fmt(r.tubeCost)}</td></tr>
+      <tr><td>Coût découpe laser</td><td>${fmt(r.tempsTotal)}</td></tr>
+      <tr><td>Coût opérationnel</td><td>${fmt(r.opsTotal)}</td></tr>
+      <tr><td>Pointage + Soudure</td><td>${fmt(r.totalPS)}</td></tr>
+      <tr><td>Sous-total HT</td><td>${fmt(r.sousTotal)}</td></tr>
+      <tr><td>Coefficient — ${escapeHtml(r.coefLabel)}</td><td>× ${r.coef.toFixed(2)}</td></tr>
+    </table>
+    <div class="total"><span>Total HT</span><span>${fmt(r.total)}</span></div>
+    <div class="total" style="background:#c0a060;margin-top:12px;"><span>Total TTC (TVA 20%)</span><span>${fmt(r.total*1.2)}</span></div>
+    <footer>© ${new Date().getFullYear()} ORTUDEV-UP — Document généré par l'estimateur de coût. Propriété intellectuelle privée, toute reproduction interdite.</footer>
+  </div>
+</body></html>`;
+
+  const blob = new Blob([html], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const safeRef = (document.getElementById('clientRef').value || 'devis').replace(/[^a-z0-9-_]+/gi, '_');
+  a.download = `chiffrage_laser_${safeRef}_${new Date().toISOString().slice(0,10)}.html`;
+  a.click();
+  URL.revokeObjectURL(a.href);
 }
 
 // Init
