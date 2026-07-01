@@ -128,7 +128,8 @@
   .log-item{display:grid;grid-template-columns:1fr auto auto auto;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;margin-bottom:10px;background:#fafaf8;}
   .log-item-name{font-size:.9rem;font-weight:600;color:var(--accent);}
   .log-item-date{font-size:.73rem;color:var(--text2);}
-  .log-item-price{font-size:.9rem;font-weight:700;color:var(--accent2);}
+  .log-item-price{font-size:.9rem;font-weight:700;color:var(--accent2);text-align:right;}
+  .log-item-price small{display:block;font-size:.68rem;font-weight:400;color:var(--text2);}
   .btn-log{font-size:.76rem;padding:6px 11px;border-radius:6px;cursor:pointer;border:1px solid var(--border);background:#fff;transition:background .15s;}
   .btn-log:hover{background:#eef;}
   .btn-log.del{color:#b00;border-color:#fcc;}
@@ -145,6 +146,26 @@
   .warn-box{margin-top:10px;font-size:.77rem;color:#a34a28;background:#faf1ec;border-radius:8px;padding:10px 12px;display:none;}
 
   footer.legal{text-align:center;margin-top:36px;padding:18px 12px;font-size:.72rem;color:var(--text2);opacity:.85;}
+
+  /* Modal détail d'estimation */
+  .modal-overlay{position:fixed;inset:0;background:rgba(20,15,10,0.55);z-index:10000;display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto;}
+  .modal-overlay.open{display:flex;}
+  .modal-card{background:#fff;border-radius:var(--radius);max-width:640px;width:100%;padding:30px 32px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.3);}
+  .modal-close{position:absolute;top:18px;right:18px;background:none;border:none;font-size:1.4rem;line-height:1;cursor:pointer;color:var(--text2);}
+  .modal-card h3{color:var(--accent);font-size:1.1rem;margin-bottom:2px;}
+  .modal-meta{font-size:.8rem;color:var(--text2);margin-bottom:6px;}
+  .modal-section{margin-top:20px;padding-top:16px;border-top:1px solid var(--border);}
+  .modal-section:first-of-type{margin-top:16px;padding-top:0;border-top:none;}
+  .modal-section-title{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:10px;}
+  .modal-row{display:flex;justify-content:space-between;padding:5px 0;font-size:.86rem;color:var(--text);}
+  .modal-row span:first-child{color:var(--text2);}
+  .modal-total{background:var(--accent);color:#fff;border-radius:10px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-weight:700;}
+  .modal-total.ttc{background:var(--accent2);}
+
+  /* Aperçu du plan importé */
+  .plan-preview{display:none;}
+  .plan-preview.visible{display:block;}
+  .plan-preview svg{width:100%;height:auto;max-height:320px;background:#fafaf8;border:1px solid var(--border);border-radius:10px;}
 
   @media(max-width:560px){
     body{padding:32px 14px;}
@@ -170,13 +191,21 @@
     <div class="accent-line"></div>
   </header>
 
+  <!-- APERÇU DU PLAN IMPORTÉ -->
+  <div class="card plan-preview no-print" id="planPreviewCard">
+    <div class="card-title">Aperçu du plan importé</div>
+    <div id="planPreviewSvg"></div>
+    <p class="sub-note" id="planPreviewCaption"></p>
+  </div>
+
   <!-- 0. CLIENT / RÉFÉRENCE -->
   <div class="card no-print">
     <div class="card-title">Référence du devis</div>
     <div class="grid2">
       <div>
         <label>Client</label>
-        <input type="text" id="clientNom" placeholder="ex : Atelier Dupont">
+        <input type="text" id="clientNom" placeholder="ex : Atelier Dupont" list="clientList" onchange="rememberClient(this.value)">
+        <datalist id="clientList"></datalist>
       </div>
       <div>
         <label>Référence</label>
@@ -399,7 +428,7 @@
       <div class="result-line client-hide"><span class="result-label" id="r-coef-label">Coefficient client</span><span class="result-value" id="r-coef">—</span></div>
     </div>
     <div class="total-box">
-      <div><div class="t-label">Coût final facturé HT</div><div class="t-coef client-hide" id="r-total-detail"></div></div>
+      <div><div class="t-label">Prix final TTC <span style="font-weight:400;opacity:.7;text-transform:none;letter-spacing:0;">(TVA 20%)</span></div><div class="t-coef client-hide" id="r-total-detail"></div></div>
       <div class="t-val" id="r-total">—</div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
@@ -444,6 +473,13 @@
     © 2026 ORTUDEV-UP — Estimateur de coût découpe laser & soudure. Propriété intellectuelle privée.<br>
     Toute reproduction, diffusion ou usage commercial sans autorisation écrite est interdit.
   </footer>
+</div>
+
+<div class="modal-overlay no-print" id="estimModal" onclick="if(event.target===this) closeEstimModal()">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeEstimModal()">✕</button>
+    <div id="estimModalBody"></div>
+  </div>
 </div>
 
 <script>
@@ -616,7 +652,7 @@ function calc(show = false) {
     document.getElementById('r-sous').textContent = fmt(sousTotal);
     document.getElementById('r-coef-label').textContent = `Coefficient — ${coefLabel}`;
     document.getElementById('r-coef').textContent = `× ${coef.toFixed(2)}`;
-    document.getElementById('r-total').textContent = fmt(total);
+    document.getElementById('r-total').textContent = fmt(total * 1.2);
     document.getElementById('r-ht').textContent = fmt(total);
     document.getElementById('r-ttc').textContent = fmt(total * 1.2);
     document.getElementById('r-total-detail').textContent = `${fmt(sousTotal)} × ${coef.toFixed(2)}`;
@@ -777,6 +813,15 @@ function arcEntityPoints(cx, cy, r, a1Deg, a2Deg, segsPerQuarter = 12) {
   return pts;
 }
 
+function ellipsePoints(cx, cy, rx, ry, n = 48) {
+  const pts = [];
+  for (let i = 0; i <= n; i++) {
+    const a = (i / n) * Math.PI * 2;
+    pts.push({ x: cx + rx * Math.cos(a), y: cy + ry * Math.sin(a) });
+  }
+  return pts;
+}
+
 function keyPt(p, tol) { return Math.round(p.x/tol) + ',' + Math.round(p.y/tol); }
 
 // Rechaîne des segments ouverts (LINE/ARC isolés) en boucles fermées par
@@ -811,7 +856,7 @@ function chainEdges(edges, tol = 0.05) {
       chain = chain.concat(pts.slice(1));
     }
     const length = polyLength(chain, false);
-    if (closed) loops.push({ length, area: shoelaceArea(chain), bbox: bboxOf(chain) });
+    if (closed) loops.push({ length, area: shoelaceArea(chain), bbox: bboxOf(chain), pts: chain });
     else leftoverLength += length;
   }
   return { loops, leftoverLength };
@@ -842,11 +887,13 @@ function buildAnalysisFromLoops(loops, warnings) {
   loops.forEach(l => { if (l.area > outer.area) outer = l; });
   const inner = loops.filter(l => l !== outer);
   const holes = [], slots = [];
+  const shapes = outer.pts ? [{ role: 'contour', pts: outer.pts }] : [];
   inner.forEach(l => {
     const c = classifyLoop(l.bbox, l.area);
     if (c.kind === 'circle') holes.push(c); else slots.push(c);
+    if (l.pts) shapes.push({ role: c.kind, pts: l.pts });
   });
-  return { contourLength: outer.length, holes: groupShapes(holes), slots: groupShapes(slots), warnings };
+  return { contourLength: outer.length, holes: groupShapes(holes), slots: groupShapes(slots), warnings, shapes };
 }
 
 // ── Unités / échelle SVG (mm, cm, in, px → mm) ──
@@ -887,19 +934,22 @@ function analyzeSVG(text) {
 
   host.querySelectorAll('circle').forEach(el => {
     const r = parseFloat(el.getAttribute('r')) || 0;
-    if (r > 0) loops.push({ length: 2 * Math.PI * r, area: Math.PI * r * r, bbox: { w: 2*r, h: 2*r } });
+    const cx = parseFloat(el.getAttribute('cx')) || 0, cy = parseFloat(el.getAttribute('cy')) || 0;
+    if (r > 0) loops.push({ length: 2 * Math.PI * r, area: Math.PI * r * r, bbox: { w: 2*r, h: 2*r }, pts: arcEntityPoints(cx, cy, r, 0, 360) });
   });
   host.querySelectorAll('ellipse').forEach(el => {
     const rx = parseFloat(el.getAttribute('rx')) || 0, ry = parseFloat(el.getAttribute('ry')) || 0;
+    const cx = parseFloat(el.getAttribute('cx')) || 0, cy = parseFloat(el.getAttribute('cy')) || 0;
     if (rx > 0 && ry > 0) {
       const h = Math.pow((rx-ry)/(rx+ry), 2);
       const length = Math.PI * (rx+ry) * (1 + 3*h/(10+Math.sqrt(4-3*h)));
-      loops.push({ length, area: Math.PI * rx * ry, bbox: { w: 2*rx, h: 2*ry } });
+      loops.push({ length, area: Math.PI * rx * ry, bbox: { w: 2*rx, h: 2*ry }, pts: ellipsePoints(cx, cy, rx, ry) });
     }
   });
   host.querySelectorAll('rect').forEach(el => {
     const w = parseFloat(el.getAttribute('width')) || 0, h = parseFloat(el.getAttribute('height')) || 0;
-    if (w > 0 && h > 0) loops.push({ length: 2*(w+h), area: w*h, bbox: { w, h } });
+    const x = parseFloat(el.getAttribute('x')) || 0, y = parseFloat(el.getAttribute('y')) || 0;
+    if (w > 0 && h > 0) loops.push({ length: 2*(w+h), area: w*h, bbox: { w, h }, pts: [{x,y},{x:x+w,y},{x:x+w,y:y+h},{x,y:y+h}] });
   });
   host.querySelectorAll('polygon, polyline').forEach(el => {
     const raw = (el.getAttribute('points') || '').trim().split(/\s+/).map(pair => {
@@ -907,7 +957,7 @@ function analyzeSVG(text) {
     }).filter(p => isFinite(p.x) && isFinite(p.y));
     if (raw.length >= 3) {
       const closed = el.tagName.toLowerCase() === 'polygon';
-      loops.push({ length: polyLength(raw, closed), area: shoelaceArea(raw), bbox: bboxOf(raw) });
+      loops.push({ length: polyLength(raw, closed), area: shoelaceArea(raw), bbox: bboxOf(raw), pts: raw });
     }
   });
   // Un <path> peut contenir plusieurs sous-tracés (M...Z M...Z, ex. contour + trou en evenodd).
@@ -927,7 +977,7 @@ function analyzeSVG(text) {
           const N = Math.min(400, Math.max(24, Math.round(len / 2)));
           const pts = [];
           for (let i = 0; i < N; i++) pts.push(tmp.getPointAtLength((i / N) * len));
-          loops.push({ length: len, area: shoelaceArea(pts), bbox: bboxOf(pts) });
+          loops.push({ length: len, area: shoelaceArea(pts), bbox: bboxOf(pts), pts });
         }
       } catch { warnings.push('un sous-tracé <path> n\'a pas pu être mesuré'); }
       host.removeChild(tmp);
@@ -939,7 +989,7 @@ function analyzeSVG(text) {
 
   let finalLoops = loops;
   if (scale !== 1 && isFinite(scale) && scale > 0) {
-    finalLoops = loops.map(l => ({ length: l.length*scale, area: l.area*scale*scale, bbox: { w: l.bbox.w*scale, h: l.bbox.h*scale } }));
+    finalLoops = loops.map(l => ({ length: l.length*scale, area: l.area*scale*scale, bbox: { w: l.bbox.w*scale, h: l.bbox.h*scale }, pts: l.pts.map(p => ({x:p.x*scale, y:p.y*scale})) }));
     warnings.push(`échelle appliquée : × ${scale.toFixed(4)} (unités du document converties en mm)`);
   }
 
@@ -988,7 +1038,7 @@ function analyzeDXF(text) {
     for (let k = 0; k < verts.length - 1; k++) pts.push(...bulgeSegmentPoints(verts[k], verts[k+1], verts[k].bulge).slice(1));
     if (closed) {
       pts.push(...bulgeSegmentPoints(verts[verts.length-1], verts[0], verts[verts.length-1].bulge).slice(1));
-      selfClosedLoops.push({ length: polyLength(pts, false), area: shoelaceArea(pts), bbox: bboxOf(pts) });
+      selfClosedLoops.push({ length: polyLength(pts, false), area: shoelaceArea(pts), bbox: bboxOf(pts), pts });
     } else {
       openEdges.push({ pts });
     }
@@ -1016,7 +1066,7 @@ function analyzeDXF(text) {
       if (code === '10') cx = n; else if (code === '20') cy = n; else if (code === '40') r = n;
       i++;
     }
-    if (r > 0) selfClosedLoops.push({ length: 2*Math.PI*r, area: Math.PI*r*r, bbox: { w: 2*r, h: 2*r } });
+    if (r > 0) selfClosedLoops.push({ length: 2*Math.PI*r, area: Math.PI*r*r, bbox: { w: 2*r, h: 2*r }, pts: arcEntityPoints(cx, cy, r, 0, 360) });
   }
 
   function readArc() {
@@ -1051,9 +1101,13 @@ function analyzeDXF(text) {
   if (!allLoops.length) throw new Error('Aucune boucle fermée détectée dans ce DXF (CIRCLE, LWPOLYLINE fermée, ou segments rechaînables).');
 
   if (scale !== 1) {
-    allLoops = allLoops.map(l => ({ length: l.length*scale, area: l.area*scale*scale, bbox: { w: l.bbox.w*scale, h: l.bbox.h*scale } }));
+    allLoops = allLoops.map(l => ({ length: l.length*scale, area: l.area*scale*scale, bbox: { w: l.bbox.w*scale, h: l.bbox.h*scale }, pts: l.pts.map(p => ({x:p.x*scale, y:p.y*scale})) }));
     warnings.push(`unités DXF converties en mm (facteur × ${scale})`);
   }
+
+  // Le DXF utilise une convention Y vers le haut ; on inverse Y pour l'aperçu (cohérent avec le SVG, Y vers le bas).
+  // Sans effet sur longueur/aire/bbox (invariants par symétrie).
+  allLoops = allLoops.map(l => ({ ...l, pts: l.pts.map(p => ({ x: p.x, y: -p.y })) }));
 
   return buildAnalysisFromLoops(allLoops, warnings);
 }
@@ -1104,7 +1158,59 @@ function applyAnalysis(a, filename) {
     `Oblongs détectés : ${a.slots.reduce((s,h)=>s+h.count,0)} (${a.slots.length} type(s))`;
 
   if (a.warnings && a.warnings.length) showImportWarn('⚠ ' + a.warnings.join(' — '));
+  renderPlanPreview(a.shapes, filename);
   calc();
+}
+
+// ─── Aperçu visuel du plan importé (contour + perçages mesurés) ───────────
+const SHAPE_COLORS = { contour: '#2c3e50', circle: '#a34a28', slot: '#7b5ea7' };
+function renderPlanPreview(shapes, filename) {
+  const card = document.getElementById('planPreviewCard');
+  if (!shapes || !shapes.length) { card.classList.remove('visible'); return; }
+
+  const allPts = shapes.flatMap(s => s.pts);
+  const xs = allPts.map(p => p.x), ys = allPts.map(p => p.y);
+  const minX = Math.min(...xs), maxX = Math.max(...xs);
+  const minY = Math.min(...ys), maxY = Math.max(...ys);
+  const w = Math.max(1, maxX - minX), h = Math.max(1, maxY - minY);
+  const margin = Math.max(w, h) * 0.08;
+
+  const toPath = pts => 'M ' + pts.map(p => `${(p.x - minX).toFixed(2)},${(p.y - minY).toFixed(2)}`).join(' L ') + ' Z';
+
+  const svgShapes = shapes.map(s => {
+    const color = SHAPE_COLORS[s.role] || '#666';
+    const fill = s.role === 'contour' ? 'none' : (s.role === 'circle' ? 'rgba(163,74,40,0.15)' : 'rgba(123,94,167,0.15)');
+    const strokeWidth = s.role === 'contour' ? Math.max(w, h) * 0.004 : Math.max(w, h) * 0.003;
+    return `<path d="${toPath(s.pts)}" fill="${fill}" stroke="${color}" stroke-width="${strokeWidth}"/>`;
+  }).join('');
+
+  const svg = `<svg viewBox="${-margin} ${-margin} ${w + margin*2} ${h + margin*2}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">${svgShapes}</svg>`;
+
+  document.getElementById('planPreviewSvg').innerHTML = svg;
+  const nHoles = shapes.filter(s => s.role === 'circle').length;
+  const nSlots = shapes.filter(s => s.role === 'slot').length;
+  document.getElementById('planPreviewCaption').textContent =
+    `${filename} — contour + ${nHoles} trou(s) + ${nSlots} oblong(s) détectés (aperçu géométrique, hors échelle réelle)`;
+  card.classList.add('visible');
+  card.scrollIntoView({ behavior: 'instant', block: 'start' });
+}
+
+// ─── Mémorisation des noms clients ────────────
+function getClients() {
+  try { return JSON.parse(localStorage.getItem('laser_clients') || '[]'); } catch { return []; }
+}
+function rememberClient(name) {
+  name = (name || '').trim();
+  if (!name) return;
+  let list = getClients().filter(n => n.toLowerCase() !== name.toLowerCase());
+  list.unshift(name);
+  if (list.length > 30) list = list.slice(0, 30);
+  try { localStorage.setItem('laser_clients', JSON.stringify(list)); } catch {}
+  renderClientList();
+}
+function renderClientList() {
+  const dl = document.getElementById('clientList');
+  dl.innerHTML = getClients().map(n => `<option value="${escapeAttr(n)}"></option>`).join('');
 }
 
 // ─── Log / Save ───────────────────────────────
@@ -1120,6 +1226,8 @@ function saveEstimation() {
   if (!name) { showSaveMsg('⚠ Donnez un nom à cette estimation.', 'orange'); return; }
   if (!lastResult) { showSaveMsg('⚠ Calculez d\'abord l\'estimation.', 'orange'); return; }
 
+  rememberClient(document.getElementById('clientNom').value);
+  const getTxt = id => document.getElementById(id)?.textContent || '—';
   const log = getLog();
   const entry = {
     id: Date.now(),
@@ -1135,9 +1243,29 @@ function saveEstimation() {
       coutMat: document.getElementById('coutMat').value,
       contourLongueur: document.getElementById('contourLongueur').value,
       contourVitesse: document.getElementById('contourVitesse').value,
+      contourManuel: document.getElementById('contourManuel').value,
       qtePieces: document.getElementById('qtePieces').value,
       percages,
-    }
+      tubeDistance: document.getElementById('tubeDistance').value,
+      tubePrix6m: document.getElementById('tubePrix6m').value,
+      surfSoudure: document.getElementById('surfSoudure').value,
+      nbPointages: document.querySelectorAll('.pt-row').length,
+    },
+    // Instantané des valeurs déjà calculées à l'écran, pour un affichage détaillé fidèle sans recalcul
+    snapshot: {
+      matiere: getTxt('prix-mat-brut'),
+      contour: getTxt('laser-tcontour'),
+      ttrous: getTxt('laser-ttrous'),
+      toblongs: getTxt('laser-toblongs'),
+      decoupeLaser: getTxt('prix-temps'),
+      ops: {
+        pliage: getTxt('c-pliage'), percage: getTxt('c-percage'), taraudage: getTxt('c-taraudage'),
+        coupe: getTxt('c-coupe'), pointage: getTxt('c-pointage'), finition: getTxt('c-finition'),
+      },
+      tube: getTxt('tube-total'),
+      soudure: getTxt('prix-soudure'),
+      ps: getTxt('prix-ps'),
+    },
   };
   log.unshift(entry);
   if (setLog(log)) {
@@ -1171,33 +1299,85 @@ function renderLog() {
         <div class="log-item-name">${e.name}</div>
         <div class="log-item-date">${e.date}</div>
       </div>
-      <div class="log-item-price">${e.result ? fmt(e.result.total) : '—'}</div>
+      <div class="log-item-price">${e.result ? fmt(e.result.total * 1.2) : '—'}${e.result ? `<small>HT ${fmt(e.result.total)}</small>` : ''}</div>
       <button class="btn-log" onclick="viewEstimation(${e.id})">📋 Voir</button>
       <button class="btn-log del" onclick="deleteEstimation(${e.id})">✕</button>
     </div>
   `).join('');
 }
 
+const OP_LABELS = { pliage: 'Pliage', percage: 'Perçage', taraudage: 'Taraudage', coupe: 'Coupe', pointage: 'Pointage', finition: 'Finition' };
+
 function viewEstimation(id) {
   const e = getLog().find(x => x.id === id);
   if (!e || !e.result) return;
   const r = e.result;
-  const lines = [
-    `📋 ${e.name} — ${e.date}`,
-    `─────────────────────────`,
-    `Matière plaque  : ${fmt(r.matFinal)}`,
-    `Matière tube    : ${fmt(r.tubeCost)}`,
-    `Découpe laser   : ${fmt(r.tempsTotal)}`,
-    `Opérationnel    : ${fmt(r.opsTotal)}`,
-    `Pointage+Soudure: ${fmt(r.totalPS)}`,
-    `Sous-total HT   : ${fmt(r.sousTotal)}`,
-    `Coef. (${r.coefLabel}): × ${r.coef}`,
-    `─────────────────────────`,
-    `TOTAL HT  : ${fmt(r.total)}`,
-    `TOTAL TTC : ${fmt(r.total * 1.2)}`,
-  ];
-  alert(lines.join('\n'));
+  const inp = e.inputs || {};
+  const snap = e.snapshot || {};
+
+  const dims = (inp.L || inp.W) ? `${inp.L || '—'} × ${inp.W || '—'}${inp.T ? ' × ' + inp.T : ''} mm` : '—';
+
+  const percagesRows = (inp.percages || []).filter(h => h.qte || h.temps).map(h => `
+    <div class="modal-row"><span>${h.type === 'oblong' ? 'Oblong' : 'Trou'} — ${escapeHtml(h.label || '—')}</span><span>${h.qte || 0} × ${h.temps || 0} s</span></div>
+  `).join('') || '<div class="modal-row"><span>Aucun perçage renseigné</span><span></span></div>';
+
+  const opsRows = Object.keys(OP_LABELS).filter(k => snap.ops && snap.ops[k] && snap.ops[k] !== '— €').map(k => `
+    <div class="modal-row"><span>${OP_LABELS[k]}</span><span>${snap.ops[k]}</span></div>
+  `).join('') || '<div class="modal-row"><span>Aucune opération chiffrée</span><span></span></div>';
+
+  const hasTube = parseFloat(inp.tubeDistance) > 0;
+  const hasPS = parseFloat(inp.surfSoudure) > 0 || parseInt(inp.nbPointages) > 0;
+
+  document.getElementById('estimModalBody').innerHTML = `
+    <h3>${escapeHtml(e.name)}</h3>
+    <div class="modal-meta">${e.date} — Client : <strong>${escapeHtml(inp.client || '—')}</strong> — Réf. : <strong>${escapeHtml(inp.ref || '—')}</strong></div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">Pièce & matière</div>
+      <div class="modal-row"><span>Dimensions</span><span>${dims}</span></div>
+      <div class="modal-row"><span>Quantité de pièces</span><span>${inp.qtePieces || 1}</span></div>
+      <div class="modal-row"><span>Coût matière plaque</span><span>${snap.matiere || '—'}</span></div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">Découpe laser</div>
+      <div class="modal-row"><span>Contour</span><span>${inp.contourManuel ? inp.contourManuel + ' s (direct)' : (inp.contourLongueur ? inp.contourLongueur + ' mm — ' + snap.contour : '—')}</span></div>
+      ${percagesRows}
+      <div class="modal-row"><span>Σ trous / Σ oblongs</span><span>${snap.ttrous || '—'} / ${snap.toblongs || '—'}</span></div>
+      <div class="modal-row"><span><strong>Coût découpe laser (lot)</strong></span><span><strong>${snap.decoupeLaser || '—'}</strong></span></div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">Opérations</div>
+      ${opsRows}
+    </div>
+
+    ${hasTube ? `
+    <div class="modal-section">
+      <div class="modal-section-title">Matière tube</div>
+      <div class="modal-row"><span>Distance</span><span>${inp.tubeDistance} m</span></div>
+      <div class="modal-row"><span><strong>Coût matière tube</strong></span><span><strong>${snap.tube || '—'}</strong></span></div>
+    </div>` : ''}
+
+    ${hasPS ? `
+    <div class="modal-section">
+      <div class="modal-section-title">Pointage + Soudure</div>
+      <div class="modal-row"><span>Surface à souder</span><span>${inp.surfSoudure || 0} mm</span></div>
+      <div class="modal-row"><span>Pointages</span><span>${inp.nbPointages || 0}</span></div>
+      <div class="modal-row"><span><strong>Total Pointage + Soudure</strong></span><span><strong>${snap.ps || '—'}</strong></span></div>
+    </div>` : ''}
+
+    <div class="modal-section">
+      <div class="modal-section-title">Totaux</div>
+      <div class="modal-row"><span>Sous-total HT</span><span>${fmt(r.sousTotal)}</span></div>
+      <div class="modal-row"><span>Coefficient — ${escapeHtml(r.coefLabel)}</span><span>× ${r.coef.toFixed(2)}</span></div>
+    </div>
+    <div class="modal-total"><span>Total HT</span><span>${fmt(r.total)}</span></div>
+    <div class="modal-total ttc"><span>Total TTC (TVA 20%)</span><span>${fmt(r.total * 1.2)}</span></div>
+  `;
+  document.getElementById('estimModal').classList.add('open');
 }
+function closeEstimModal() { document.getElementById('estimModal').classList.remove('open'); }
 
 function exportLog() {
   const log = getLog();
@@ -1233,41 +1413,93 @@ function downloadDevis() {
   if (!lastResult) { alert('Calculez d\'abord l\'estimation avant de télécharger le chiffrage.'); return; }
   const r = lastResult;
   const client = escapeHtml(document.getElementById('clientNom').value || '—');
-  const ref = escapeHtml(document.getElementById('clientRef').value || '—');
-  const date = new Date().toLocaleString('fr-FR');
+  const ref = document.getElementById('clientRef').value.trim();
+  const refDisplay = escapeHtml(ref || ('DEV-' + new Date().toISOString().slice(0,10)));
+  const date = new Date().toLocaleDateString('fr-FR');
+
+  const L = document.getElementById('longueur').value;
+  const W = document.getElementById('largeur').value;
+  const T = document.getElementById('epaisseur').value;
+  const qtePieces = document.getElementById('qtePieces').value || 1;
+  const matiereDesc = (L && W) ? `Tôle métallique — ${L} × ${W}${T ? ' × ' + T : ''} mm` : 'Pièce métallique';
+
+  const nTrous = percages.filter(h => h.type !== 'oblong').reduce((s,h) => s + (parseFloat(h.qte)||0), 0);
+  const nOblongs = percages.filter(h => h.type === 'oblong').reduce((s,h) => s + (parseFloat(h.qte)||0), 0);
+  const contourLongueur = document.getElementById('contourLongueur').value;
+  const percagesDetail = [
+    contourLongueur ? `contour ${contourLongueur} mm` : '',
+    nTrous ? `${nTrous} trou(s)` : '',
+    nOblongs ? `${nOblongs} oblong(s)` : '',
+    `${qtePieces} pièce(s)`,
+  ].filter(Boolean).join(' · ');
+
+  const opsUsed = ['pliage','percage','taraudage','coupe','pointage','finition']
+    .filter(k => document.getElementById('c-'+k)?.textContent !== '— €')
+    .map(k => OP_LABELS[k]);
+
+  const tubeDistance = document.getElementById('tubeDistance').value;
+  const surfSoudure = document.getElementById('surfSoudure').value;
+  const nbPointages = document.querySelectorAll('.pt-row').length;
+
+  const rows = [];
+  rows.push({ label: 'Matière', detail: matiereDesc, montant: r.matFinal });
+  rows.push({ label: 'Découpe laser', detail: percagesDetail || '—', montant: r.tempsTotal });
+  if (r.opsTotal > 0) rows.push({ label: 'Opérations', detail: opsUsed.join(', ') || '—', montant: r.opsTotal });
+  if (r.tubeCost > 0) rows.push({ label: 'Matière tube', detail: tubeDistance + ' m', montant: r.tubeCost });
+  if (r.totalPS > 0) rows.push({ label: 'Pointage + Soudure', detail: `${surfSoudure||0} mm soudure, ${nbPointages} pointage(s)`, montant: r.totalPS });
+
+  const rowsHtml = rows.map(row => `
+    <tr><td><strong>${escapeHtml(row.label)}</strong><br><span class="detail">${escapeHtml(row.detail)}</span></td><td>${fmt(row.montant)}</td></tr>
+  `).join('');
 
   const html = `<!DOCTYPE html>
-<html lang="fr"><head><meta charset="UTF-8"><title>Devis découpe laser — ${ref}</title>
+<html lang="fr"><head><meta charset="UTF-8"><title>Devis découpe laser — ${refDisplay}</title>
 <style>
-  body{font-family:'Segoe UI',system-ui,sans-serif;color:#1a1a1a;max-width:700px;margin:40px auto;padding:0 20px;position:relative;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#1a1a1a;max-width:720px;margin:40px auto;padding:0 24px;position:relative;background:#fff;}
   .watermark{position:fixed;inset:0;pointer-events:none;z-index:0;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='200'%3E%3Ctext x='0' y='110' font-size='22' font-family='Segoe UI,Arial,sans-serif' font-weight='700' fill='rgba(44,62,80,0.07)' transform='rotate(-28 170 100)'%3EORTUDEV-UP%3C/text%3E%3C/svg%3E");
     background-repeat:repeat; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
   .content{position:relative;z-index:1;}
-  h1{color:#2c3e50;font-size:1.3rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid #c0a060;padding-bottom:10px;}
-  .meta{font-size:.85rem;color:#6b6b6b;margin:14px 0 24px;}
-  table{width:100%;border-collapse:collapse;margin-bottom:20px;}
-  td{padding:10px 4px;border-bottom:1px dashed #e0ddd8;font-size:.92rem;}
-  td:last-child{text-align:right;font-weight:600;color:#2c3e50;}
-  .total{background:#2c3e50;color:#fff;padding:18px 20px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;font-size:1.1rem;font-weight:700;margin-top:10px;}
-  footer{margin-top:40px;font-size:.72rem;color:#6b6b6b;text-align:center;}
+  .head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #2c3e50;padding-bottom:16px;margin-bottom:24px;}
+  .head h1{color:#2c3e50;font-size:1.5rem;text-transform:uppercase;letter-spacing:.06em;}
+  .head .num{font-size:.85rem;color:#6b6b6b;margin-top:6px;}
+  .head .date{font-size:.85rem;color:#6b6b6b;text-align:right;}
+  .client-box{background:#f4f3f0;border-radius:10px;padding:16px 20px;margin-bottom:26px;}
+  .client-box .lbl{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:#a08050;font-weight:700;margin-bottom:4px;}
+  .client-box .name{font-size:1.05rem;font-weight:700;color:#2c3e50;}
+  table{width:100%;border-collapse:collapse;margin-bottom:22px;}
+  th{text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:#a08050;padding:0 4px 10px;border-bottom:2px solid #e0ddd8;}
+  th:last-child{text-align:right;}
+  td{padding:14px 4px;border-bottom:1px solid #e0ddd8;font-size:.92rem;vertical-align:top;}
+  td .detail{font-size:.78rem;color:#6b6b6b;}
+  td:last-child{text-align:right;font-weight:700;color:#2c3e50;white-space:nowrap;padding-top:16px;}
+  .sous-total{display:flex;justify-content:space-between;padding:10px 4px;font-size:.92rem;color:#6b6b6b;border-bottom:1px dashed #e0ddd8;margin-bottom:14px;}
+  .total{background:#2c3e50;color:#fff;padding:18px 22px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;font-size:1.05rem;font-weight:700;margin-bottom:10px;}
+  .total.ttc{background:#c0a060;font-size:1.25rem;}
+  footer{margin-top:36px;font-size:.72rem;color:#6b6b6b;text-align:center;line-height:1.6;}
   @media print{ .watermark{-webkit-print-color-adjust:exact; print-color-adjust:exact;} }
 </style></head>
 <body>
   <div class="watermark"></div>
   <div class="content">
-    <h1>Devis — Découpe laser & soudure</h1>
-    <div class="meta">Client : <strong>${client}</strong> — Référence : <strong>${ref}</strong> — Généré le ${date}</div>
+    <div class="head">
+      <div>
+        <h1>Devis</h1>
+        <div class="num">N° ${refDisplay}</div>
+      </div>
+      <div class="date">${date}</div>
+    </div>
+    <div class="client-box">
+      <div class="lbl">Client</div>
+      <div class="name">${client}</div>
+    </div>
     <table>
-      <tr><td>Coût matière plaque</td><td>${fmt(r.matFinal)}</td></tr>
-      <tr><td>Coût matière tube</td><td>${fmt(r.tubeCost)}</td></tr>
-      <tr><td>Coût découpe laser</td><td>${fmt(r.tempsTotal)}</td></tr>
-      <tr><td>Coût opérationnel</td><td>${fmt(r.opsTotal)}</td></tr>
-      <tr><td>Pointage + Soudure</td><td>${fmt(r.totalPS)}</td></tr>
-      <tr><td>Sous-total HT</td><td>${fmt(r.sousTotal)}</td></tr>
+      <thead><tr><th>Désignation</th><th>Montant</th></tr></thead>
+      <tbody>${rowsHtml}</tbody>
     </table>
+    <div class="sous-total"><span>Sous-total HT</span><span>${fmt(r.sousTotal)}</span></div>
     <div class="total"><span>Total HT</span><span>${fmt(r.total)}</span></div>
-    <div class="total" style="background:#c0a060;margin-top:12px;"><span>Total TTC (TVA 20%)</span><span>${fmt(r.total*1.2)}</span></div>
+    <div class="total ttc"><span>Total TTC (TVA 20%)</span><span>${fmt(r.total*1.2)}</span></div>
     <footer>© ${new Date().getFullYear()} ORTUDEV-UP — Document généré par l'estimateur de coût. Propriété intellectuelle privée, toute reproduction interdite.</footer>
   </div>
 </body></html>`;
@@ -1275,7 +1507,7 @@ function downloadDevis() {
   const blob = new Blob([html], { type: 'text/html' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  const safeRef = (document.getElementById('clientRef').value || 'devis').replace(/[^a-z0-9-_]+/gi, '_');
+  const safeRef = (ref || 'devis').replace(/[^a-z0-9-_]+/gi, '_');
   a.download = `chiffrage_laser_${safeRef}_${new Date().toISOString().slice(0,10)}.html`;
   a.click();
   URL.revokeObjectURL(a.href);
@@ -1283,6 +1515,7 @@ function downloadDevis() {
 
 // Init
 renderLog();
+renderClientList();
 </script>
 </body>
 </html>
