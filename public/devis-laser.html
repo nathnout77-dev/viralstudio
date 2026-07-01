@@ -125,7 +125,7 @@
 
   /* Log */
   .log-empty{text-align:center;color:var(--text2);font-size:.86rem;padding:20px 0;font-style:italic;}
-  .log-item{display:grid;grid-template-columns:1fr auto auto auto;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;margin-bottom:10px;background:#fafaf8;}
+  .log-item{display:grid;grid-template-columns:1fr auto auto auto auto;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;margin-bottom:10px;background:#fafaf8;}
   .log-item-name{font-size:.9rem;font-weight:600;color:var(--accent);}
   .log-item-date{font-size:.73rem;color:var(--text2);}
   .log-item-price{font-size:.9rem;font-weight:700;color:var(--accent2);text-align:right;}
@@ -487,6 +487,7 @@ let coef = 1.05, coefLabel = 'Client régulier', ptId = 0;
 let lastResult = null;
 let holeId = 0;
 let percages = []; // { id, type:'trou'|'oblong', label, qte, temps }
+const OP_LABELS = { pliage: 'Pliage', percage: 'Perçage', taraudage: 'Taraudage', coupe: 'Coupe', pointage: 'Pointage', finition: 'Finition' };
 
 // ─── Coeff ───────────────────────────────────
 function setCoef(el, val) {
@@ -882,18 +883,59 @@ function groupShapes(shapes) {
   return [...map.values()];
 }
 
+// Test point-dans-polygone (ray casting) — utilisé pour détecter quelles boucles
+// sont des perforations (contenues dans une autre) et lesquelles sont des pièces
+// distinctes (non contenues dans aucune autre), pour les plans à plusieurs pièces.
+function pointInPolygon(pt, poly) {
+  let inside = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const xi = poly[i].x, yi = poly[i].y, xj = poly[j].x, yj = poly[j].y;
+    const intersect = ((yi > pt.y) !== (yj > pt.y)) && (pt.x < (xj - xi) * (pt.y - yi) / (yj - yi) + xi);
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
+function centroidOf(pts) {
+  const n = pts.length;
+  return { x: pts.reduce((s,p)=>s+p.x,0)/n, y: pts.reduce((s,p)=>s+p.y,0)/n };
+}
+
+// Regroupe les boucles détectées en pièces distinctes (contours non contenus dans
+// une autre boucle) et attribue chaque perforation (trou/oblong) à la pièce qui la
+// contient immédiatement. Un plan avec une seule pièce se comporte exactement comme
+// avant (une seule pièce, tout le reste = perçages).
 function buildAnalysisFromLoops(loops, warnings) {
-  let outer = loops[0];
-  loops.forEach(l => { if (l.area > outer.area) outer = l; });
-  const inner = loops.filter(l => l !== outer);
-  const holes = [], slots = [];
-  const shapes = outer.pts ? [{ role: 'contour', pts: outer.pts }] : [];
-  inner.forEach(l => {
-    const c = classifyLoop(l.bbox, l.area);
-    if (c.kind === 'circle') holes.push(c); else slots.push(c);
-    if (l.pts) shapes.push({ role: c.kind, pts: l.pts });
+  const centroids = loops.map(l => centroidOf(l.pts));
+  const containers = loops.map((l, i) => loops.map((_, j) => j).filter(j => j !== i && pointInPolygon(centroids[i], loops[j].pts)));
+
+  let pieceIdxs = loops.map((_, i) => i).filter(i => containers[i].length === 0);
+  if (!pieceIdxs.length) {
+    let best = 0;
+    loops.forEach((l, i) => { if (l.area > loops[best].area) best = i; });
+    pieceIdxs = [best];
+  }
+
+  const pieces = pieceIdxs.map(pIdx => {
+    const holesOf = [];
+    loops.forEach((l, i) => {
+      if (pieceIdxs.includes(i)) return;
+      const conts = containers[i];
+      if (!conts.length) return;
+      let immediate = conts[0];
+      conts.forEach(j => { if (loops[j].area < loops[immediate].area) immediate = j; });
+      if (immediate === pIdx) holesOf.push(l);
+    });
+    const holes = [], slots = [];
+    const shapes = [{ role: 'contour', pts: loops[pIdx].pts }];
+    holesOf.forEach(l => {
+      const c = classifyLoop(l.bbox, l.area);
+      if (c.kind === 'circle') holes.push(c); else slots.push(c);
+      shapes.push({ role: c.kind, pts: l.pts });
+    });
+    return { contourLength: loops[pIdx].length, area: loops[pIdx].area, holes: groupShapes(holes), slots: groupShapes(slots), shapes };
   });
-  return { contourLength: outer.length, holes: groupShapes(holes), slots: groupShapes(slots), warnings, shapes };
+
+  return { pieces, warnings };
 }
 
 // ── Unités / échelle SVG (mm, cm, in, px → mm) ──
@@ -1139,36 +1181,63 @@ function showImportWarn(msg) {
 
 function applyAnalysis(a, filename) {
   document.getElementById('importWarn').style.display = 'none';
-  document.getElementById('contourManuel').value = '';
-  document.getElementById('contourLongueur').value = a.contourLength ? a.contourLength.toFixed(1) : '';
+  const pieces = a.pieces || [];
+  if (!pieces.length) { showImportWarn('❌ Aucune pièce détectée dans ce plan.'); return; }
 
-  if (a.contourLength) {
-    percages = [];
-    a.holes.forEach(h => addHole('trou', { label: `Ø${h.diameter.toFixed(1)} mm`, qte: h.count }));
-    a.slots.forEach(s => addHole('oblong', { label: `${s.w.toFixed(1)} × ${s.h.toFixed(1)} mm`, qte: s.count }));
-    if (!percages.length) addHole('trou');
+  // Plusieurs pièces distinctes détectées : si elles sont sensiblement identiques
+  // (même surface à ±5%), c'est un lot de N pièces identiques — on pré-remplit la
+  // quantité. Sinon (pièces différentes), on chiffre la plus grande et on prévient
+  // clairement plutôt que de fournir un résultat composite silencieusement faux.
+  let qty = 1, chosen = pieces[0], multiWarning = '';
+  if (pieces.length > 1) {
+    const maxArea = Math.max(...pieces.map(p => p.area));
+    const allSimilar = pieces.every(p => Math.abs(p.area - maxArea) / maxArea < 0.05);
+    chosen = pieces.reduce((best, p) => p.area > best.area ? p : best, pieces[0]);
+    if (allSimilar) {
+      qty = pieces.length;
+    } else {
+      multiWarning = `${pieces.length} pièces distinctes de tailles différentes détectées dans ce plan — seule la plus grande a servi au chiffrage automatique (contour + perçages ci-dessous) ; ajustez la quantité et traitez les autres pièces séparément si besoin.`;
+    }
   }
+
+  document.getElementById('contourManuel').value = '';
+  document.getElementById('contourLongueur').value = chosen.contourLength.toFixed(1);
+  document.getElementById('qtePieces').value = qty;
+
+  percages = [];
+  chosen.holes.forEach(h => addHole('trou', { label: `Ø${h.diameter.toFixed(1)} mm`, qte: h.count }));
+  chosen.slots.forEach(s => addHole('oblong', { label: `${s.w.toFixed(1)} × ${s.h.toFixed(1)} mm`, qte: s.count }));
+  if (!percages.length) addHole('trou');
 
   const log = document.getElementById('importLog');
   log.style.display = 'block';
   log.textContent =
     `Fichier : ${filename}\n` +
-    `Contour extérieur : ${a.contourLength ? a.contourLength.toFixed(1) + ' mm' : 'non détecté'}\n` +
-    `Trous détectés : ${a.holes.reduce((s,h)=>s+h.count,0)} (${a.holes.length} diamètre(s))\n` +
-    `Oblongs détectés : ${a.slots.reduce((s,h)=>s+h.count,0)} (${a.slots.length} type(s))`;
+    (pieces.length > 1 ? `Pièces détectées : ${pieces.length}${qty > 1 ? ` (identiques → quantité pré-remplie à ${qty})` : ' (différentes — voir avertissement)'}\n` : '') +
+    `Contour extérieur${pieces.length > 1 ? ' (pièce de référence)' : ''} : ${chosen.contourLength.toFixed(1)} mm\n` +
+    `Trous détectés : ${chosen.holes.reduce((s,h)=>s+h.count,0)} (${chosen.holes.length} diamètre(s))\n` +
+    `Oblongs détectés : ${chosen.slots.reduce((s,h)=>s+h.count,0)} (${chosen.slots.length} type(s))`;
 
-  if (a.warnings && a.warnings.length) showImportWarn('⚠ ' + a.warnings.join(' — '));
-  renderPlanPreview(a.shapes, filename);
+  const allWarnings = [...(a.warnings || [])];
+  if (multiWarning) allWarnings.push(multiWarning);
+  if (allWarnings.length) showImportWarn('⚠ ' + allWarnings.join(' — '));
+
+  renderPlanPreview(pieces, filename);
   calc();
 }
 
 // ─── Aperçu visuel du plan importé (contour + perçages mesurés) ───────────
-const SHAPE_COLORS = { contour: '#2c3e50', circle: '#a34a28', slot: '#7b5ea7' };
-function renderPlanPreview(shapes, filename) {
-  const card = document.getElementById('planPreviewCard');
-  if (!shapes || !shapes.length) { card.classList.remove('visible'); return; }
+// Chaque pièce distincte est dessinée à sa position réelle dans le plan, avec sa
+// propre couleur de contour et une étiquette, pour bien les distinguer les unes
+// des autres quand un fichier contient plusieurs pièces.
+const SHAPE_COLORS = { circle: '#a34a28', slot: '#7b5ea7' };
+const PIECE_COLORS = ['#2c3e50', '#1f6f5c', '#7a3b69', '#a34a28', '#3b5f8a', '#6b7a1f', '#8c5a1f'];
 
-  const allPts = shapes.flatMap(s => s.pts);
+function renderPlanPreview(pieces, filename) {
+  const card = document.getElementById('planPreviewCard');
+  if (!pieces || !pieces.length) { card.classList.remove('visible'); return; }
+
+  const allPts = pieces.flatMap(p => p.shapes.flatMap(s => s.pts));
   const xs = allPts.map(p => p.x), ys = allPts.map(p => p.y);
   const minX = Math.min(...xs), maxX = Math.max(...xs);
   const minY = Math.min(...ys), maxY = Math.max(...ys);
@@ -1177,20 +1246,33 @@ function renderPlanPreview(shapes, filename) {
 
   const toPath = pts => 'M ' + pts.map(p => `${(p.x - minX).toFixed(2)},${(p.y - minY).toFixed(2)}`).join(' L ') + ' Z';
 
-  const svgShapes = shapes.map(s => {
-    const color = SHAPE_COLORS[s.role] || '#666';
-    const fill = s.role === 'contour' ? 'none' : (s.role === 'circle' ? 'rgba(163,74,40,0.15)' : 'rgba(123,94,167,0.15)');
-    const strokeWidth = s.role === 'contour' ? Math.max(w, h) * 0.004 : Math.max(w, h) * 0.003;
-    return `<path d="${toPath(s.pts)}" fill="${fill}" stroke="${color}" stroke-width="${strokeWidth}"/>`;
-  }).join('');
+  let svgParts = '';
+  pieces.forEach((piece, idx) => {
+    const pieceColor = pieces.length > 1 ? PIECE_COLORS[idx % PIECE_COLORS.length] : '#2c3e50';
+    piece.shapes.forEach(s => {
+      const isContour = s.role === 'contour';
+      const color = isContour ? pieceColor : (SHAPE_COLORS[s.role] || '#666');
+      const fill = isContour ? 'none' : (s.role === 'circle' ? 'rgba(163,74,40,0.15)' : 'rgba(123,94,167,0.15)');
+      const strokeWidth = isContour ? Math.max(w, h) * 0.004 : Math.max(w, h) * 0.003;
+      svgParts += `<path d="${toPath(s.pts)}" fill="${fill}" stroke="${color}" stroke-width="${strokeWidth}"/>`;
+    });
+    if (pieces.length > 1) {
+      const pb = bboxOf(piece.shapes[0].pts);
+      const pieceMinX = Math.min(...piece.shapes[0].pts.map(p => p.x));
+      const pieceMinY = Math.min(...piece.shapes[0].pts.map(p => p.y));
+      const labelX = pieceMinX + pb.w / 2 - minX;
+      const labelY = pieceMinY - minY - Math.max(w, h) * 0.02;
+      svgParts += `<text x="${labelX.toFixed(2)}" y="${labelY.toFixed(2)}" font-size="${(Math.max(w, h) * 0.035).toFixed(2)}" fill="${pieceColor}" text-anchor="middle" font-weight="700">Pièce ${idx + 1}</text>`;
+    }
+  });
 
-  const svg = `<svg viewBox="${-margin} ${-margin} ${w + margin*2} ${h + margin*2}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">${svgShapes}</svg>`;
+  const svg = `<svg viewBox="${-margin} ${-margin} ${w + margin*2} ${h + margin*2}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">${svgParts}</svg>`;
 
   document.getElementById('planPreviewSvg').innerHTML = svg;
-  const nHoles = shapes.filter(s => s.role === 'circle').length;
-  const nSlots = shapes.filter(s => s.role === 'slot').length;
+  const nHoles = pieces.reduce((s,p) => s + p.shapes.filter(sh => sh.role === 'circle').length, 0);
+  const nSlots = pieces.reduce((s,p) => s + p.shapes.filter(sh => sh.role === 'slot').length, 0);
   document.getElementById('planPreviewCaption').textContent =
-    `${filename} — contour + ${nHoles} trou(s) + ${nSlots} oblong(s) détectés (aperçu géométrique, hors échelle réelle)`;
+    `${filename} — ${pieces.length > 1 ? pieces.length + ' pièces, ' : ''}${nHoles} trou(s) + ${nSlots} oblong(s) détectés au total (aperçu géométrique, hors échelle réelle)`;
   card.classList.add('visible');
   card.scrollIntoView({ behavior: 'instant', block: 'start' });
 }
@@ -1221,6 +1303,96 @@ function setLog(data) {
   try { localStorage.setItem('laser_log', JSON.stringify(data)); return true; } catch(e) { return false; }
 }
 
+// ─── Capture / restauration complète du formulaire (sauvegarde ↔ reprise d'un devis) ───
+function captureFormState() {
+  const ops = {};
+  Object.keys(OP_LABELS).forEach(k => {
+    ops[k] = {
+      op1: document.getElementById('op1-'+k).value,
+      opt: document.getElementById('opt-'+k).value,
+      opq: document.getElementById('opq-'+k).value,
+    };
+  });
+  return {
+    client: document.getElementById('clientNom').value,
+    ref: document.getElementById('clientRef').value,
+    L: document.getElementById('longueur').value,
+    W: document.getElementById('largeur').value,
+    T: document.getElementById('epaisseur').value,
+    coutMat: document.getElementById('coutMat').value,
+    contourLongueur: document.getElementById('contourLongueur').value,
+    contourVitesse: document.getElementById('contourVitesse').value,
+    contourManuel: document.getElementById('contourManuel').value,
+    qtePieces: document.getElementById('qtePieces').value,
+    coefLaser: document.getElementById('coefLaser').value,
+    tarifDecoupe: document.getElementById('tarifDecoupe').value,
+    percages: percages.map(h => ({ ...h })),
+    ops,
+    tubeDistance: document.getElementById('tubeDistance').value,
+    tubePrix6m: document.getElementById('tubePrix6m').value,
+    surfSoudure: document.getElementById('surfSoudure').value,
+    pointages: [...document.querySelectorAll('.pt-row input')].map(i => i.value),
+    coef, coefLabel,
+  };
+}
+
+function restoreFormState(s) {
+  document.getElementById('clientNom').value = s.client || '';
+  document.getElementById('clientRef').value = s.ref || '';
+  document.getElementById('longueur').value = s.L || '';
+  document.getElementById('largeur').value = s.W || '';
+  document.getElementById('epaisseur').value = s.T || '';
+  document.getElementById('coutMat').value = s.coutMat || '';
+  document.getElementById('contourLongueur').value = s.contourLongueur || '';
+  document.getElementById('contourVitesse').value = s.contourVitesse || '';
+  document.getElementById('contourManuel').value = s.contourManuel || '';
+  document.getElementById('qtePieces').value = s.qtePieces || 1;
+  document.getElementById('coefLaser').value = s.coefLaser || '1.20';
+  document.getElementById('tarifDecoupe').value = s.tarifDecoupe || '3.08';
+
+  percages = (s.percages || []).map(h => ({ ...h, id: holeId++ }));
+  renderHoles();
+  if (!percages.length) addHole('trou');
+
+  Object.keys(OP_LABELS).forEach(k => {
+    const o = (s.ops && s.ops[k]) || {};
+    document.getElementById('op1-'+k).value = o.op1 || '';
+    document.getElementById('opt-'+k).value = o.opt || '';
+    document.getElementById('opq-'+k).value = o.opq || '';
+  });
+
+  document.getElementById('tubeDistance').value = s.tubeDistance || '';
+  document.getElementById('tubePrix6m').value = s.tubePrix6m || '';
+  document.getElementById('surfSoudure').value = s.surfSoudure || '';
+
+  document.getElementById('ptList').innerHTML = '';
+  (s.pointages || []).forEach(name => {
+    addPointage();
+    const rows = document.querySelectorAll('.pt-row input');
+    rows[rows.length - 1].value = name;
+  });
+
+  if (s.coef) {
+    coef = s.coef; coefLabel = s.coefLabel || coefLabel;
+    document.querySelectorAll('.coef-btn').forEach(b => {
+      b.classList.toggle('active', b.querySelector('.cb-label').textContent === coefLabel);
+    });
+  }
+
+  onDimChange();
+  calc(true);
+}
+
+function loadEstimation(id) {
+  const e = getLog().find(x => x.id === id);
+  if (!e) return;
+  if (!confirm(`Charger "${e.name}" dans le formulaire ? Les valeurs actuelles du formulaire seront remplacées.`)) return;
+  restoreFormState(e.inputs || {});
+  document.getElementById('estimName').value = e.name;
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  showSaveMsg('✏️ Devis chargé — modifiez puis "Sauvegarder" pour enregistrer une nouvelle version.', 'green');
+}
+
 function saveEstimation() {
   const name = document.getElementById('estimName').value.trim();
   if (!name) { showSaveMsg('⚠ Donnez un nom à cette estimation.', 'orange'); return; }
@@ -1234,23 +1406,7 @@ function saveEstimation() {
     name,
     date: new Date().toLocaleString('fr-FR'),
     result: lastResult,
-    inputs: {
-      client: document.getElementById('clientNom').value,
-      ref: document.getElementById('clientRef').value,
-      L: document.getElementById('longueur').value,
-      W: document.getElementById('largeur').value,
-      T: document.getElementById('epaisseur').value,
-      coutMat: document.getElementById('coutMat').value,
-      contourLongueur: document.getElementById('contourLongueur').value,
-      contourVitesse: document.getElementById('contourVitesse').value,
-      contourManuel: document.getElementById('contourManuel').value,
-      qtePieces: document.getElementById('qtePieces').value,
-      percages,
-      tubeDistance: document.getElementById('tubeDistance').value,
-      tubePrix6m: document.getElementById('tubePrix6m').value,
-      surfSoudure: document.getElementById('surfSoudure').value,
-      nbPointages: document.querySelectorAll('.pt-row').length,
-    },
+    inputs: captureFormState(),
     // Instantané des valeurs déjà calculées à l'écran, pour un affichage détaillé fidèle sans recalcul
     snapshot: {
       matiere: getTxt('prix-mat-brut'),
@@ -1301,12 +1457,11 @@ function renderLog() {
       </div>
       <div class="log-item-price">${e.result ? fmt(e.result.total * 1.2) : '—'}${e.result ? `<small>HT ${fmt(e.result.total)}</small>` : ''}</div>
       <button class="btn-log" onclick="viewEstimation(${e.id})">📋 Voir</button>
+      <button class="btn-log" onclick="loadEstimation(${e.id})">✎ Modifier</button>
       <button class="btn-log del" onclick="deleteEstimation(${e.id})">✕</button>
     </div>
   `).join('');
 }
-
-const OP_LABELS = { pliage: 'Pliage', percage: 'Perçage', taraudage: 'Taraudage', coupe: 'Coupe', pointage: 'Pointage', finition: 'Finition' };
 
 function viewEstimation(id) {
   const e = getLog().find(x => x.id === id);
@@ -1325,8 +1480,9 @@ function viewEstimation(id) {
     <div class="modal-row"><span>${OP_LABELS[k]}</span><span>${snap.ops[k]}</span></div>
   `).join('') || '<div class="modal-row"><span>Aucune opération chiffrée</span><span></span></div>';
 
+  const nbPointages = inp.pointages ? inp.pointages.length : (inp.nbPointages || 0);
   const hasTube = parseFloat(inp.tubeDistance) > 0;
-  const hasPS = parseFloat(inp.surfSoudure) > 0 || parseInt(inp.nbPointages) > 0;
+  const hasPS = parseFloat(inp.surfSoudure) > 0 || nbPointages > 0;
 
   document.getElementById('estimModalBody').innerHTML = `
     <h3>${escapeHtml(e.name)}</h3>
@@ -1363,7 +1519,7 @@ function viewEstimation(id) {
     <div class="modal-section">
       <div class="modal-section-title">Pointage + Soudure</div>
       <div class="modal-row"><span>Surface à souder</span><span>${inp.surfSoudure || 0} mm</span></div>
-      <div class="modal-row"><span>Pointages</span><span>${inp.nbPointages || 0}</span></div>
+      <div class="modal-row"><span>Pointages</span><span>${nbPointages}</span></div>
       <div class="modal-row"><span><strong>Total Pointage + Soudure</strong></span><span><strong>${snap.ps || '—'}</strong></span></div>
     </div>` : ''}
 
