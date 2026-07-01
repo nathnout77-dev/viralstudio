@@ -154,7 +154,7 @@
     .info-grid{grid-template-columns:1fr;}
   }
   @media print {
-    .no-print{display:none !important;}
+    .no-print, .client-hide{display:none !important;}
     body{background:#fff;padding:0;}
     .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid;}
   }
@@ -236,16 +236,8 @@
     <div class="warn-box" id="importWarn"></div>
 
     <div class="subsection">
-      <div class="grid2">
-        <div>
-          <label>Quantité de pièces identiques</label>
-          <input type="number" id="qtePieces" value="1" min="1" step="1" oninput="calc()">
-        </div>
-        <div>
-          <label>Coefficient de marge découpe</label>
-          <input type="number" id="coefLaser" value="1.20" min="1" step="0.01" oninput="calc()">
-        </div>
-      </div>
+      <label>Quantité de pièces identiques</label>
+      <input type="number" id="qtePieces" value="1" min="1" step="1" oninput="calc()" style="max-width:200px;">
     </div>
 
     <div class="subsection">
@@ -268,27 +260,28 @@
     </div>
 
     <div class="subsection">
-      <span class="subsection-title">Trous</span>
+      <span class="subsection-title">Perçages (trous et oblongs)</span>
       <table class="holes-table">
-        <thead><tr><th>Diamètre / type</th><th>Qté</th><th>Temps unit. (s)</th><th></th></tr></thead>
-        <tbody id="trousBody"></tbody>
+        <thead><tr><th>Type</th><th>Diamètre / dimension</th><th>Qté</th><th>Temps unit. (s)</th><th></th></tr></thead>
+        <tbody id="percagesBody"></tbody>
       </table>
-      <button class="btn-add no-print" onclick="addHole('trous')">+ Ajouter un diamètre de trou</button>
+      <button class="btn-add no-print" onclick="addHole('trou')">+ Ajouter un perçage</button>
     </div>
 
-    <div class="subsection">
-      <span class="subsection-title">Oblongs</span>
-      <table class="holes-table">
-        <thead><tr><th>Dimension / type</th><th>Qté</th><th>Temps unit. (s)</th><th></th></tr></thead>
-        <tbody id="oblongsBody"></tbody>
-      </table>
-      <button class="btn-add no-print" onclick="addHole('oblongs')">+ Ajouter un type d'oblong</button>
-    </div>
-
-    <div class="subsection">
-      <label>Taux de découpe (€ / min)</label>
-      <input type="number" id="tarifDecoupe" value="3.08" min="0" step="0.01" oninput="calc()" style="max-width:180px;">
-    </div>
+    <details class="subsection no-print">
+      <summary class="subsection-title" style="cursor:pointer;display:list-item;">Paramètres avancés (marge, tarif horaire)</summary>
+      <div class="grid2" style="margin-top:12px;">
+        <div>
+          <label>Coefficient de marge découpe</label>
+          <input type="number" id="coefLaser" value="1.20" min="1" step="0.01" oninput="calc()">
+        </div>
+        <div>
+          <label>Taux de découpe (€ / min)</label>
+          <input type="number" id="tarifDecoupe" value="3.08" min="0" step="0.01" oninput="calc()">
+        </div>
+      </div>
+      <p class="sub-note">Valeurs par défaut déjà appliquées — à ouvrir uniquement pour les ajuster.</p>
+    </details>
 
     <div class="info-grid" style="margin-top:16px;">
       <div class="info-row"><span>T contour</span><strong id="laser-tcontour">—</strong></div>
@@ -403,10 +396,10 @@
       <div class="result-line"><span class="result-label">Coût opérationnel</span><span class="result-value" id="r-ops">—</span></div>
       <div class="result-line"><span class="result-label">Pointage + Soudure</span><span class="result-value" id="r-ps">—</span></div>
       <div class="result-line"><span class="result-label">Sous-total HT</span><span class="result-value" id="r-sous">—</span></div>
-      <div class="result-line"><span class="result-label" id="r-coef-label">Coefficient client</span><span class="result-value" id="r-coef">—</span></div>
+      <div class="result-line client-hide"><span class="result-label" id="r-coef-label">Coefficient client</span><span class="result-value" id="r-coef">—</span></div>
     </div>
     <div class="total-box">
-      <div><div class="t-label">Coût final facturé HT</div><div class="t-coef" id="r-total-detail"></div></div>
+      <div><div class="t-label">Coût final facturé HT</div><div class="t-coef client-hide" id="r-total-detail"></div></div>
       <div class="t-val" id="r-total">—</div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
@@ -457,8 +450,7 @@
 let coef = 1.05, coefLabel = 'Client régulier', ptId = 0;
 let lastResult = null;
 let holeId = 0;
-let trous = [];
-let oblongs = [];
+let percages = []; // { id, type:'trou'|'oblong', label, qte, temps }
 
 // ─── Coeff ───────────────────────────────────
 function setCoef(el, val) {
@@ -478,42 +470,45 @@ function onDimChange() {
   calc();
 }
 
-// ─── Trous / Oblongs (perçages) ────────────────
-function addHole(kind, prefill) {
+// ─── Perçages (trous + oblongs regroupés dans une seule liste, distingués par un type) ───
+function addHole(type, prefill) {
   const id = holeId++;
-  const item = { id, label: prefill?.label || '', qte: prefill?.qte || '', temps: prefill?.temps || '' };
-  (kind === 'trous' ? trous : oblongs).push(item);
-  renderHoles(kind);
+  const item = { id, type: type === 'oblong' ? 'oblong' : 'trou', label: prefill?.label || '', qte: prefill?.qte || '', temps: prefill?.temps || '' };
+  percages.push(item);
+  renderHoles();
 }
-function removeHole(kind, id) {
-  if (kind === 'trous') trous = trous.filter(h => h.id !== id);
-  else oblongs = oblongs.filter(h => h.id !== id);
-  renderHoles(kind);
+function removeHole(id) {
+  percages = percages.filter(h => h.id !== id);
+  renderHoles();
   calc();
 }
-function updateHole(kind, id, field, value) {
-  const list = kind === 'trous' ? trous : oblongs;
-  const item = list.find(h => h.id === id);
+function updateHole(id, field, value) {
+  const item = percages.find(h => h.id === id);
   if (item) item[field] = value;
   calc();
 }
-function renderHoles(kind) {
-  const list = kind === 'trous' ? trous : oblongs;
-  const body = document.getElementById(kind === 'trous' ? 'trousBody' : 'oblongsBody');
-  body.innerHTML = list.map(h => `
+function renderHoles() {
+  const body = document.getElementById('percagesBody');
+  body.innerHTML = percages.map(h => `
     <tr>
-      <td><input type="text" placeholder="ex : Ø6 mm" value="${escapeAttr(h.label)}" oninput="updateHole('${kind}',${h.id},'label',this.value)"></td>
-      <td><input type="number" min="0" step="1" value="${h.qte}" oninput="updateHole('${kind}',${h.id},'qte',this.value)"></td>
-      <td><input type="number" min="0" step="0.1" value="${h.temps}" oninput="updateHole('${kind}',${h.id},'temps',this.value)"></td>
-      <td><button class="btn-remove no-print" style="width:30px;height:30px;" onclick="removeHole('${kind}',${h.id})">×</button></td>
+      <td>
+        <select onchange="updateHole(${h.id},'type',this.value)" style="padding:7px 9px;border:1px solid var(--border);border-radius:8px;background:#fafaf8;">
+          <option value="trou" ${h.type==='trou'?'selected':''}>Trou</option>
+          <option value="oblong" ${h.type==='oblong'?'selected':''}>Oblong</option>
+        </select>
+      </td>
+      <td><input type="text" placeholder="ex : Ø6 mm" value="${escapeAttr(h.label)}" oninput="updateHole(${h.id},'label',this.value)"></td>
+      <td><input type="number" min="0" step="1" value="${h.qte}" oninput="updateHole(${h.id},'qte',this.value)"></td>
+      <td><input type="number" min="0" step="0.1" value="${h.temps}" oninput="updateHole(${h.id},'temps',this.value)"></td>
+      <td><button class="btn-remove no-print" style="width:30px;height:30px;" onclick="removeHole(${h.id})">×</button></td>
     </tr>
   `).join('');
 }
 function escapeAttr(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
 function escapeHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-// seed one empty row of each on load
-addHole('trous'); addHole('oblongs');
+// seed one empty row on load
+addHole('trou');
 
 // ─── Pointage ────────────────────────────────
 function addPointage() {
@@ -556,10 +551,12 @@ function calc(show = false) {
   const contourVitesse = parseFloat(document.getElementById('contourVitesse').value) || 0;
   const tContour = contourManuel > 0 ? contourManuel : (contourVitesse > 0 ? contourLongueur / contourVitesse : 0);
 
-  let tTrous = 0, nTrous = 0;
-  trous.forEach(h => { const q = parseFloat(h.qte) || 0, t = parseFloat(h.temps) || 0; tTrous += q * t; nTrous += q; });
-  let tOblongs = 0, nOblongs = 0;
-  oblongs.forEach(h => { const q = parseFloat(h.qte) || 0, t = parseFloat(h.temps) || 0; tOblongs += q * t; nOblongs += q; });
+  let tTrous = 0, nTrous = 0, tOblongs = 0, nOblongs = 0;
+  percages.forEach(h => {
+    const q = parseFloat(h.qte) || 0, t = parseFloat(h.temps) || 0;
+    if (h.type === 'oblong') { tOblongs += q * t; nOblongs += q; }
+    else { tTrous += q * t; nTrous += q; }
+  });
 
   const nTotal = nTrous + nOblongs;
   const tPercage = nTotal * 1;
@@ -1092,11 +1089,10 @@ function applyAnalysis(a, filename) {
   document.getElementById('contourLongueur').value = a.contourLength ? a.contourLength.toFixed(1) : '';
 
   if (a.contourLength) {
-    trous = []; oblongs = [];
-    a.holes.forEach(h => addHole('trous', { label: `Ø${h.diameter.toFixed(1)} mm`, qte: h.count }));
-    a.slots.forEach(s => addHole('oblongs', { label: `${s.w.toFixed(1)} × ${s.h.toFixed(1)} mm`, qte: s.count }));
-    if (!a.holes.length) addHole('trous');
-    if (!a.slots.length) addHole('oblongs');
+    percages = [];
+    a.holes.forEach(h => addHole('trou', { label: `Ø${h.diameter.toFixed(1)} mm`, qte: h.count }));
+    a.slots.forEach(s => addHole('oblong', { label: `${s.w.toFixed(1)} × ${s.h.toFixed(1)} mm`, qte: s.count }));
+    if (!percages.length) addHole('trou');
   }
 
   const log = document.getElementById('importLog');
@@ -1140,7 +1136,7 @@ function saveEstimation() {
       contourLongueur: document.getElementById('contourLongueur').value,
       contourVitesse: document.getElementById('contourVitesse').value,
       qtePieces: document.getElementById('qtePieces').value,
-      trous, oblongs,
+      percages,
     }
   };
   log.unshift(entry);
@@ -1269,7 +1265,6 @@ function downloadDevis() {
       <tr><td>Coût opérationnel</td><td>${fmt(r.opsTotal)}</td></tr>
       <tr><td>Pointage + Soudure</td><td>${fmt(r.totalPS)}</td></tr>
       <tr><td>Sous-total HT</td><td>${fmt(r.sousTotal)}</td></tr>
-      <tr><td>Coefficient — ${escapeHtml(r.coefLabel)}</td><td>× ${r.coef.toFixed(2)}</td></tr>
     </table>
     <div class="total"><span>Total HT</span><span>${fmt(r.total)}</span></div>
     <div class="total" style="background:#c0a060;margin-top:12px;"><span>Total TTC (TVA 20%)</span><span>${fmt(r.total*1.2)}</span></div>
