@@ -774,7 +774,8 @@ function polyLength(pts, closed) {
 }
 function bboxOf(pts) {
   const xs = pts.map(p => p.x), ys = pts.map(p => p.y);
-  return { w: Math.max(...xs) - Math.min(...xs), h: Math.max(...ys) - Math.min(...ys) };
+  const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys);
+  return { w: maxX - minX, h: maxY - minY, minX, minY, maxX, maxY };
 }
 
 // Segment d'arc défini par bulge DXF (bulge = tan(angle_inclus / 4))
@@ -1227,9 +1228,11 @@ function applyAnalysis(a, filename) {
 }
 
 // ─── Aperçu visuel du plan importé (contour + perçages mesurés) ───────────
-// Chaque pièce distincte est dessinée à sa position réelle dans le plan, avec sa
-// propre couleur de contour et une étiquette, pour bien les distinguer les unes
-// des autres quand un fichier contient plusieurs pièces.
+// Chaque pièce est d'abord ramenée à son propre repère local (indépendamment de
+// sa position réelle dans le fichier, où plusieurs pièces peuvent se chevaucher),
+// puis replacée dans une grille avec un espacement garanti pour bien les séparer
+// visuellement. Les cotes (largeur/hauteur de la pièce, diamètre des trous,
+// dimensions des oblongs) sont annotées directement sur le dessin.
 const SHAPE_COLORS = { circle: '#a34a28', slot: '#7b5ea7' };
 const PIECE_COLORS = ['#2c3e50', '#1f6f5c', '#7a3b69', '#a34a28', '#3b5f8a', '#6b7a1f', '#8c5a1f'];
 
@@ -1237,33 +1240,74 @@ function renderPlanPreview(pieces, filename) {
   const card = document.getElementById('planPreviewCard');
   if (!pieces || !pieces.length) { card.classList.remove('visible'); return; }
 
-  const allPts = pieces.flatMap(p => p.shapes.flatMap(s => s.pts));
-  const xs = allPts.map(p => p.x), ys = allPts.map(p => p.y);
-  const minX = Math.min(...xs), maxX = Math.max(...xs);
-  const minY = Math.min(...ys), maxY = Math.max(...ys);
-  const w = Math.max(1, maxX - minX), h = Math.max(1, maxY - minY);
-  const margin = Math.max(w, h) * 0.08;
+  // 1. Normalise chaque pièce dans son propre repère (bbox de son contour à l'origine)
+  const normalized = pieces.map(piece => {
+    const bb = bboxOf(piece.shapes[0].pts);
+    return {
+      w: bb.w, h: bb.h,
+      shapes: piece.shapes.map(s => ({ role: s.role, pts: s.pts.map(p => ({ x: p.x - bb.minX, y: p.y - bb.minY })) })),
+    };
+  });
 
-  const toPath = pts => 'M ' + pts.map(p => `${(p.x - minX).toFixed(2)},${(p.y - minY).toFixed(2)}`).join(' L ') + ' Z';
+  // 2. Disposition en grille (séparation garantie, quelle que soit la disposition d'origine)
+  const maxDim = Math.max(...normalized.map(p => Math.max(p.w, p.h)), 1);
+  const gap = maxDim * 0.35;
+  const cols = Math.max(1, Math.ceil(Math.sqrt(normalized.length)));
+  const placed = [];
+  let offsetY = 0;
+  for (let r = 0; r * cols < normalized.length; r++) {
+    const row = normalized.slice(r * cols, r * cols + cols);
+    let offsetX = 0;
+    const rowHeight = Math.max(...row.map(p => p.h));
+    row.forEach(piece => {
+      placed.push({ ...piece, offsetX, offsetY });
+      offsetX += piece.w + gap;
+    });
+    offsetY += rowHeight + gap * 1.4; // marge supplémentaire pour les cotes sous chaque rangée
+  }
+
+  const w = Math.max(...placed.map(p => p.offsetX + p.w));
+  const h = Math.max(...placed.map(p => p.offsetY + p.h));
+  const margin = Math.max(w, h) * 0.1;
+  const fontSize = Math.max(w, h) * 0.028;
+  const dimOffset = maxDim * 0.1;
+
+  const toPath = pts => 'M ' + pts.map(p => `${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(' L ') + ' Z';
 
   let svgParts = '';
-  pieces.forEach((piece, idx) => {
-    const pieceColor = pieces.length > 1 ? PIECE_COLORS[idx % PIECE_COLORS.length] : '#2c3e50';
+  placed.forEach((piece, idx) => {
+    const pieceColor = placed.length > 1 ? PIECE_COLORS[idx % PIECE_COLORS.length] : '#2c3e50';
+
     piece.shapes.forEach(s => {
+      const pts = s.pts.map(p => ({ x: p.x + piece.offsetX, y: p.y + piece.offsetY }));
       const isContour = s.role === 'contour';
       const color = isContour ? pieceColor : (SHAPE_COLORS[s.role] || '#666');
       const fill = isContour ? 'none' : (s.role === 'circle' ? 'rgba(163,74,40,0.15)' : 'rgba(123,94,167,0.15)');
       const strokeWidth = isContour ? Math.max(w, h) * 0.004 : Math.max(w, h) * 0.003;
-      svgParts += `<path d="${toPath(s.pts)}" fill="${fill}" stroke="${color}" stroke-width="${strokeWidth}"/>`;
+      svgParts += `<path d="${toPath(pts)}" fill="${fill}" stroke="${color}" stroke-width="${strokeWidth}"/>`;
+
+      if (!isContour) {
+        const bb = bboxOf(s.pts);
+        const cx = piece.offsetX + bb.minX + bb.w / 2, cy = piece.offsetY + bb.minY + bb.h / 2;
+        const label = s.role === 'circle' ? `Ø${((bb.w + bb.h) / 2).toFixed(0)}` : `${Math.max(bb.w, bb.h).toFixed(0)}×${Math.min(bb.w, bb.h).toFixed(0)}`;
+        svgParts += `<text x="${cx.toFixed(2)}" y="${(cy + fontSize * 0.25).toFixed(2)}" font-size="${(fontSize * 0.6).toFixed(2)}" fill="${SHAPE_COLORS[s.role]}" text-anchor="middle">${label}</text>`;
+      }
     });
-    if (pieces.length > 1) {
-      const pb = bboxOf(piece.shapes[0].pts);
-      const pieceMinX = Math.min(...piece.shapes[0].pts.map(p => p.x));
-      const pieceMinY = Math.min(...piece.shapes[0].pts.map(p => p.y));
-      const labelX = pieceMinX + pb.w / 2 - minX;
-      const labelY = pieceMinY - minY - Math.max(w, h) * 0.02;
-      svgParts += `<text x="${labelX.toFixed(2)}" y="${labelY.toFixed(2)}" font-size="${(Math.max(w, h) * 0.035).toFixed(2)}" fill="${pieceColor}" text-anchor="middle" font-weight="700">Pièce ${idx + 1}</text>`;
+
+    if (placed.length > 1) {
+      svgParts += `<text x="${(piece.offsetX + piece.w / 2).toFixed(2)}" y="${(piece.offsetY - dimOffset * 0.6).toFixed(2)}" font-size="${fontSize.toFixed(2)}" fill="${pieceColor}" text-anchor="middle" font-weight="700">Pièce ${idx + 1}</text>`;
     }
+
+    // Cotes : largeur sous la pièce, hauteur à gauche
+    const dimColor = '#8a8a8a';
+    const dimStroke = (w * 0.0012).toFixed(2);
+    const dimY = piece.offsetY + piece.h + dimOffset;
+    svgParts += `<line x1="${piece.offsetX.toFixed(2)}" y1="${dimY.toFixed(2)}" x2="${(piece.offsetX + piece.w).toFixed(2)}" y2="${dimY.toFixed(2)}" stroke="${dimColor}" stroke-width="${dimStroke}"/>`;
+    svgParts += `<text x="${(piece.offsetX + piece.w / 2).toFixed(2)}" y="${(dimY + fontSize * 0.9).toFixed(2)}" font-size="${(fontSize * 0.75).toFixed(2)}" fill="${dimColor}" text-anchor="middle">${piece.w.toFixed(0)} mm</text>`;
+
+    const dimX = piece.offsetX - dimOffset;
+    svgParts += `<line x1="${dimX.toFixed(2)}" y1="${piece.offsetY.toFixed(2)}" x2="${dimX.toFixed(2)}" y2="${(piece.offsetY + piece.h).toFixed(2)}" stroke="${dimColor}" stroke-width="${dimStroke}"/>`;
+    svgParts += `<text x="${dimX.toFixed(2)}" y="${(piece.offsetY + piece.h / 2).toFixed(2)}" font-size="${(fontSize * 0.75).toFixed(2)}" fill="${dimColor}" text-anchor="middle" transform="rotate(-90 ${dimX.toFixed(2)} ${(piece.offsetY + piece.h / 2).toFixed(2)})">${piece.h.toFixed(0)} mm</text>`;
   });
 
   const svg = `<svg viewBox="${-margin} ${-margin} ${w + margin*2} ${h + margin*2}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">${svgParts}</svg>`;
@@ -1272,7 +1316,7 @@ function renderPlanPreview(pieces, filename) {
   const nHoles = pieces.reduce((s,p) => s + p.shapes.filter(sh => sh.role === 'circle').length, 0);
   const nSlots = pieces.reduce((s,p) => s + p.shapes.filter(sh => sh.role === 'slot').length, 0);
   document.getElementById('planPreviewCaption').textContent =
-    `${filename} — ${pieces.length > 1 ? pieces.length + ' pièces, ' : ''}${nHoles} trou(s) + ${nSlots} oblong(s) détectés au total (aperçu géométrique, hors échelle réelle)`;
+    `${filename} — ${pieces.length > 1 ? pieces.length + ' pièces (séparées, disposition d\'origine non conservée), ' : ''}${nHoles} trou(s) + ${nSlots} oblong(s) détectés au total (aperçu géométrique, hors échelle réelle)`;
   card.classList.add('visible');
   card.scrollIntoView({ behavior: 'instant', block: 'start' });
 }
