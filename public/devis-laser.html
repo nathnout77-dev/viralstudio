@@ -139,6 +139,12 @@
   .btn-export:hover{background:#eef2f7;}
 
   .sub-note{font-size:.76rem;color:var(--text2);margin-top:10px;font-style:italic;line-height:1.5;}
+  .auto-badge{display:inline-block;font-size:.65rem;font-weight:700;font-style:normal;letter-spacing:.04em;text-transform:uppercase;color:#a34a28;background:#faf1ec;border:1px solid rgba(163,74,40,0.35);border-radius:5px;padding:1px 6px;vertical-align:middle;}
+  input.auto-filled{border-color:#a34a28;background:#fdf6f2;}
+  .method-doc{font-size:.83rem;color:var(--text);line-height:1.65;margin-top:10px;}
+  .method-doc ol{padding-left:20px;}
+  .method-doc li{margin-bottom:10px;}
+  .method-doc code{background:#f4f3f0;border-radius:4px;padding:1px 5px;font-size:.85em;}
   .import-drop{border:1px dashed var(--accent2);border-radius:10px;padding:20px;text-align:center;background:#fdfaf3;cursor:pointer;transition:background .15s;}
   .import-drop:hover{background:#fdf6e8;}
   .import-drop input{display:none;}
@@ -235,6 +241,16 @@
         <input type="number" id="coutMat" placeholder="ex : 48.00" min="0" step="any" oninput="calc()">
       </div>
     </div>
+    <div class="grid2" style="margin-top:14px;">
+      <div>
+        <label>Matériau</label>
+        <select id="materiau" onchange="onMateriauChange()" style="width:100%;padding:10px 13px;border:1px solid var(--border);border-radius:8px;font-size:.93rem;color:var(--text);background:#fafaf8;">
+          <option value="acier">Acier doux</option>
+          <option value="inox">Inox</option>
+          <option value="alu">Aluminium</option>
+        </select>
+      </div>
+    </div>
     <div class="info-grid">
       <div class="info-row"><span>Plaque standard</span><strong>1500 × 3000 mm</strong></div>
       <div class="info-row"><span>Surface calculée</span><strong id="surface-display">— mm²</strong></div>
@@ -256,13 +272,44 @@
 
     <div class="import-drop no-print" id="importDrop" onclick="document.getElementById('planFile').click()">
       <input type="file" id="planFile" accept=".svg,.dxf" onchange="handlePlanFile(event)">
-      <strong style="color:var(--accent2);font-size:.86rem;">📐 Importer un plan (.SVG ou .DXF)</strong>
+      <strong style="color:var(--accent2);font-size:.86rem;">📐 Importer un plan (.SVG ou .DXF) — chiffrage automatique</strong>
       <div class="sub-note" style="margin-top:6px;">
-        Contour extérieur, trous et oblongs sont mesurés géométriquement (y compris arcs / rayons de perçage) et pré-remplis ci-dessous. Les segments épars d'un DXF sont automatiquement rechaînés en boucles fermées. Les temps unitaires restent à saisir (dépendent de la matière/machine).
+        Contour extérieur, trous et oblongs sont mesurés géométriquement (y compris arcs / rayons de perçage). La vitesse de découpe et les temps de perçage sont ensuite déduits automatiquement du <strong>Matériau</strong> et de l'<strong>Épaisseur</strong> (section 1) via la table de coupe ci-dessous. Les champs ainsi pré-remplis sont marqués <span class="auto-badge">auto</span> — <u>à vérifier avant envoi commercial</u> ; ils redeviennent des valeurs normales dès que vous les modifiez.
       </div>
     </div>
     <div class="import-log" id="importLog"></div>
     <div class="warn-box" id="importWarn"></div>
+
+    <details class="subsection no-print">
+      <summary class="subsection-title" style="cursor:pointer;display:list-item;">📖 Méthode de chiffrage automatique — à lire avant usage commercial</summary>
+      <div class="method-doc">
+        <ol>
+          <li><strong>Lecture du plan :</strong> le contour extérieur et les perçages (trous, oblongs) sont mesurés géométriquement à partir du fichier SVG/DXF (longueurs, arcs discrétisés analytiquement, segments isolés rechaînés en boucles). Limites connues : les anciennes entités DXF <code>POLYLINE</code> ne sont pas lues, et un plan avec plusieurs pièces de tailles différentes n'auto-remplit que la plus grande (avertissement affiché).</li>
+          <li><strong>Vitesse de découpe & temps de perçage :</strong> déduits du couple Matériau + Épaisseur via la <em>table de coupe</em> ci-dessous, par interpolation linéaire entre les épaisseurs connues. <u>Ces valeurs par défaut sont indicatives (ordre de grandeur laser fibre standard) et ne reflètent pas forcément votre machine</u> — à calibrer avec l'atelier avant toute utilisation commerciale. Elles sont modifiables et sauvegardées dans le navigateur.</li>
+          <li><strong>Temps facturé :</strong> T_facturé = coefficient × [T_contour + Σ(N_trous×T_trou) + Σ(N_oblongs×T_oblong) + N_total×1s], converti en coût via le tarif de découpe (€/min).</li>
+          <li><strong>Prix final :</strong> somme des postes (matière, découpe laser, opérations, tube, soudure), puis coefficient client, puis TVA 20 %.</li>
+          <li><strong>Champs marqués <span class="auto-badge">auto</span> :</strong> pré-remplis par la table de coupe, jamais garantis — à valider (ou corriger) avant d'envoyer un devis basé dessus. Ils redeviennent des champs normaux dès qu'ils sont modifiés manuellement.</li>
+        </ol>
+      </div>
+    </details>
+
+    <details class="subsection no-print" id="cutTechDetails">
+      <summary class="subsection-title" style="cursor:pointer;display:list-item;">🛠️ Table de coupe (vitesse & perçage par épaisseur) — <span id="cutTechMateriauLabel">Acier doux</span>, à calibrer</summary>
+      <p class="sub-note" style="margin-top:0;">Valeurs indicatives de départ (laser fibre standard) — à ajuster avec l'atelier. Utilisées pour l'auto-remplissage après import d'un plan (interpolation entre les épaisseurs listées).</p>
+      <table class="holes-table" style="margin-top:10px;">
+        <thead><tr><th>Épaisseur (mm)</th><th>Vitesse (mm/s)</th><th>Perçage (s)</th><th></th></tr></thead>
+        <tbody id="cutTechBody"></tbody>
+      </table>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn-add no-print" onclick="addCutTechRow()">+ Ajouter une épaisseur</button>
+        <button class="btn-add no-print" onclick="resetCutTech()" style="border-color:#b00;color:#b00;">↺ Réinitialiser ce matériau</button>
+      </div>
+    </details>
+
+    <div class="subsection">
+      <button class="btn-add no-print" onclick="applyAutoCutTech(true)" style="background:var(--accent);color:#fff;border:none;">⚡ Remplir vitesse / temps depuis la table de coupe</button>
+      <p class="sub-note">Ne remplace que les champs vides ou déjà marqués <span class="auto-badge">auto</span> — jamais une valeur saisie manuellement.</p>
+    </div>
 
     <div class="subsection">
       <label>Quantité de pièces identiques</label>
@@ -278,7 +325,7 @@
         </div>
         <div>
           <label>Vitesse de coupe (mm/s)</label>
-          <input type="number" id="contourVitesse" placeholder="ex : 25" min="0" step="any" oninput="calc()">
+          <input type="number" id="contourVitesse" placeholder="ex : 25" min="0" step="any" oninput="clearAutoFilled('contourVitesse'); calc()">
         </div>
         <div>
           <label>ou temps direct (s)</label>
@@ -489,6 +536,138 @@ let holeId = 0;
 let percages = []; // { id, type:'trou'|'oblong', label, qte, temps }
 const OP_LABELS = { pliage: 'Pliage', percage: 'Perçage', taraudage: 'Taraudage', coupe: 'Coupe', pointage: 'Pointage', finition: 'Finition' };
 
+// ══════════════════════════════════════════════════════════════════════════
+// Table de coupe (vitesse de découpe / temps de perçage par matériau+épaisseur)
+//
+// Valeurs INDICATIVES de départ (ordre de grandeur laser fibre standard) — elles
+// ne reflètent pas forcément la machine réellement utilisée et DOIVENT être
+// calibrées avec l'atelier avant tout usage commercial. Éditables dans l'UI et
+// sauvegardées dans le navigateur ; l'interpolation se fait linéairement entre
+// les deux épaisseurs connues les plus proches (bornée aux extrémités du tableau).
+// ══════════════════════════════════════════════════════════════════════════
+const CUT_TECH_DEFAULTS = {
+  acier: [ {t:1,v:60,p:0.3}, {t:2,v:40,p:0.4}, {t:3,v:30,p:0.5}, {t:4,v:22,p:0.6}, {t:5,v:18,p:0.8}, {t:6,v:14,p:1.0}, {t:8,v:9,p:1.5}, {t:10,v:6,p:2.0}, {t:12,v:4,p:2.5} ],
+  inox:  [ {t:1,v:45,p:0.4}, {t:2,v:28,p:0.5}, {t:3,v:20,p:0.7}, {t:4,v:14,p:0.9}, {t:5,v:10,p:1.2}, {t:6,v:7,p:1.5}, {t:8,v:4,p:2.2}, {t:10,v:2.5,p:3.0} ],
+  alu:   [ {t:1,v:50,p:0.4}, {t:2,v:35,p:0.5}, {t:3,v:25,p:0.7}, {t:4,v:18,p:0.9}, {t:5,v:13,p:1.1}, {t:6,v:10,p:1.4}, {t:8,v:6,p:2.0}, {t:10,v:4,p:2.8} ],
+};
+const MATERIAU_LABELS = { acier: 'Acier doux', inox: 'Inox', alu: 'Aluminium' };
+let autoFilledFields = new Set(); // ids de champs actuellement pré-remplis par la table de coupe
+
+function getCutTech() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('laser_cuttech') || 'null');
+    if (saved && saved.acier && saved.inox && saved.alu) return saved;
+  } catch {}
+  return JSON.parse(JSON.stringify(CUT_TECH_DEFAULTS));
+}
+function setCutTechData(tech) { try { localStorage.setItem('laser_cuttech', JSON.stringify(tech)); } catch {} }
+
+function lookupCutTech(materiau, epaisseur) {
+  const tech = getCutTech();
+  const rows = (tech[materiau] || tech.acier).slice().sort((a,b) => a.t - b.t);
+  if (!rows.length || !epaisseur || epaisseur <= 0) return null;
+  if (epaisseur <= rows[0].t) return { vitesse: rows[0].v, percage: rows[0].p };
+  if (epaisseur >= rows[rows.length-1].t) return { vitesse: rows[rows.length-1].v, percage: rows[rows.length-1].p };
+  for (let i = 0; i < rows.length - 1; i++) {
+    if (epaisseur >= rows[i].t && epaisseur <= rows[i+1].t) {
+      const ratio = (epaisseur - rows[i].t) / (rows[i+1].t - rows[i].t);
+      return {
+        vitesse: rows[i].v + (rows[i+1].v - rows[i].v) * ratio,
+        percage: rows[i].p + (rows[i+1].p - rows[i].p) * ratio,
+      };
+    }
+  }
+  return null;
+}
+
+function renderCutTechTable() {
+  const materiau = document.getElementById('materiau').value;
+  document.getElementById('cutTechMateriauLabel').textContent = MATERIAU_LABELS[materiau];
+  const tech = getCutTech();
+  const rows = (tech[materiau] || []).slice().sort((a,b) => a.t - b.t);
+  const body = document.getElementById('cutTechBody');
+  body.innerHTML = rows.map((r, i) => `
+    <tr>
+      <td><input type="number" min="0" step="0.5" value="${r.t}" oninput="updateCutTechRow(${i},'t',this.value)"></td>
+      <td><input type="number" min="0" step="0.1" value="${r.v}" oninput="updateCutTechRow(${i},'v',this.value)"></td>
+      <td><input type="number" min="0" step="0.1" value="${r.p}" oninput="updateCutTechRow(${i},'p',this.value)"></td>
+      <td><button class="btn-remove no-print" style="width:30px;height:30px;" onclick="removeCutTechRow(${i})">×</button></td>
+    </tr>
+  `).join('');
+}
+function updateCutTechRow(idx, field, value) {
+  const materiau = document.getElementById('materiau').value;
+  const tech = getCutTech();
+  const sorted = tech[materiau].slice().sort((a,b) => a.t - b.t);
+  if (!sorted[idx]) return;
+  sorted[idx][field] = parseFloat(value) || 0;
+  tech[materiau] = sorted;
+  setCutTechData(tech);
+}
+function addCutTechRow() {
+  const materiau = document.getElementById('materiau').value;
+  const tech = getCutTech();
+  tech[materiau].push({ t: 0, v: 0, p: 0 });
+  setCutTechData(tech);
+  renderCutTechTable();
+}
+function removeCutTechRow(idx) {
+  const materiau = document.getElementById('materiau').value;
+  const tech = getCutTech();
+  const sorted = tech[materiau].slice().sort((a,b) => a.t - b.t);
+  sorted.splice(idx, 1);
+  tech[materiau] = sorted;
+  setCutTechData(tech);
+  renderCutTechTable();
+}
+function resetCutTech() {
+  const materiau = document.getElementById('materiau').value;
+  if (!confirm(`Réinitialiser la table de coupe pour ${MATERIAU_LABELS[materiau]} aux valeurs par défaut ?`)) return;
+  const tech = getCutTech();
+  tech[materiau] = JSON.parse(JSON.stringify(CUT_TECH_DEFAULTS[materiau]));
+  setCutTechData(tech);
+  renderCutTechTable();
+}
+
+function onMateriauChange() {
+  renderCutTechTable();
+  applyAutoCutTech(false);
+}
+
+function markAutoFilled(id) {
+  autoFilledFields.add(id);
+  document.getElementById(id)?.classList.add('auto-filled');
+}
+function clearAutoFilled(id) {
+  autoFilledFields.delete(id);
+  document.getElementById(id)?.classList.remove('auto-filled');
+}
+
+// Remplit vitesse de découpe + temps unitaires de perçage vides (ou déjà marqués
+// "auto") depuis la table de coupe — ne touche jamais un champ saisi manuellement.
+function applyAutoCutTech(forceNotify) {
+  const materiau = document.getElementById('materiau').value;
+  const epaisseur = parseFloat(document.getElementById('epaisseur').value) || 0;
+  const tech = lookupCutTech(materiau, epaisseur);
+  if (!tech) { if (forceNotify) alert('Renseignez l\'épaisseur (section 1) pour déduire la vitesse/temps de la table de coupe.'); return; }
+
+  const vitesseField = document.getElementById('contourVitesse');
+  if (!vitesseField.value || autoFilledFields.has('contourVitesse')) {
+    vitesseField.value = tech.vitesse.toFixed(1);
+    markAutoFilled('contourVitesse');
+  }
+
+  percages.forEach(h => {
+    const fieldId = 'percage-temps-' + h.id;
+    if (!h.temps || autoFilledFields.has(fieldId)) {
+      h.temps = tech.percage.toFixed(2);
+      markAutoFilled(fieldId);
+    }
+  });
+  renderHoles();
+  calc();
+}
+
 // ─── Coeff ───────────────────────────────────
 function setCoef(el, val) {
   document.querySelectorAll('.coef-btn').forEach(b => b.classList.remove('active'));
@@ -522,6 +701,7 @@ function removeHole(id) {
 function updateHole(id, field, value) {
   const item = percages.find(h => h.id === id);
   if (item) item[field] = value;
+  if (field === 'temps') clearAutoFilled('percage-temps-' + id);
   calc();
 }
 function renderHoles() {
@@ -536,7 +716,7 @@ function renderHoles() {
       </td>
       <td><input type="text" placeholder="ex : Ø6 mm" value="${escapeAttr(h.label)}" oninput="updateHole(${h.id},'label',this.value)"></td>
       <td><input type="number" min="0" step="1" value="${h.qte}" oninput="updateHole(${h.id},'qte',this.value)"></td>
-      <td><input type="number" min="0" step="0.1" value="${h.temps}" oninput="updateHole(${h.id},'temps',this.value)"></td>
+      <td><input type="number" id="percage-temps-${h.id}" class="${autoFilledFields.has('percage-temps-'+h.id) ? 'auto-filled' : ''}" min="0" step="0.1" value="${h.temps}" oninput="updateHole(${h.id},'temps',this.value)"></td>
       <td><button class="btn-remove no-print" style="width:30px;height:30px;" onclick="removeHole(${h.id})">×</button></td>
     </tr>
   `).join('');
@@ -1224,7 +1404,7 @@ function applyAnalysis(a, filename) {
   if (allWarnings.length) showImportWarn('⚠ ' + allWarnings.join(' — '));
 
   renderPlanPreview(pieces, filename);
-  calc();
+  applyAutoCutTech(false); // chiffrage automatique : déduit vitesse/temps du matériau+épaisseur, appelle calc()
 }
 
 // ─── Aperçu visuel du plan importé (contour + perçages mesurés) ───────────
@@ -1363,6 +1543,7 @@ function captureFormState() {
     L: document.getElementById('longueur').value,
     W: document.getElementById('largeur').value,
     T: document.getElementById('epaisseur').value,
+    materiau: document.getElementById('materiau').value,
     coutMat: document.getElementById('coutMat').value,
     contourLongueur: document.getElementById('contourLongueur').value,
     contourVitesse: document.getElementById('contourVitesse').value,
@@ -1386,6 +1567,7 @@ function restoreFormState(s) {
   document.getElementById('longueur').value = s.L || '';
   document.getElementById('largeur').value = s.W || '';
   document.getElementById('epaisseur').value = s.T || '';
+  document.getElementById('materiau').value = s.materiau || 'acier';
   document.getElementById('coutMat').value = s.coutMat || '';
   document.getElementById('contourLongueur').value = s.contourLongueur || '';
   document.getElementById('contourVitesse').value = s.contourVitesse || '';
@@ -1423,6 +1605,7 @@ function restoreFormState(s) {
     });
   }
 
+  renderCutTechTable();
   onDimChange();
   calc(true);
 }
@@ -1534,6 +1717,7 @@ function viewEstimation(id) {
 
     <div class="modal-section">
       <div class="modal-section-title">Pièce & matière</div>
+      <div class="modal-row"><span>Matériau</span><span>${MATERIAU_LABELS[inp.materiau] || '—'}</span></div>
       <div class="modal-row"><span>Dimensions</span><span>${dims}</span></div>
       <div class="modal-row"><span>Quantité de pièces</span><span>${inp.qtePieces || 1}</span></div>
       <div class="modal-row"><span>Coût matière plaque</span><span>${snap.matiere || '—'}</span></div>
@@ -1620,8 +1804,9 @@ function downloadDevis() {
   const L = document.getElementById('longueur').value;
   const W = document.getElementById('largeur').value;
   const T = document.getElementById('epaisseur').value;
+  const materiauLabel = MATERIAU_LABELS[document.getElementById('materiau').value] || '';
   const qtePieces = document.getElementById('qtePieces').value || 1;
-  const matiereDesc = (L && W) ? `Tôle métallique — ${L} × ${W}${T ? ' × ' + T : ''} mm` : 'Pièce métallique';
+  const matiereDesc = (L && W) ? `Tôle ${materiauLabel} — ${L} × ${W}${T ? ' × ' + T : ''} mm` : `Pièce ${materiauLabel}`.trim();
 
   const nTrous = percages.filter(h => h.type !== 'oblong').reduce((s,h) => s + (parseFloat(h.qte)||0), 0);
   const nOblongs = percages.filter(h => h.type === 'oblong').reduce((s,h) => s + (parseFloat(h.qte)||0), 0);
@@ -1716,6 +1901,7 @@ function downloadDevis() {
 // Init
 renderLog();
 renderClientList();
+renderCutTechTable();
 </script>
 </body>
 </html>
