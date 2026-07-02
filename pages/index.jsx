@@ -11,6 +11,8 @@ import GuideView        from '../components/GuideView'
 import BibliothequeView from '../components/BibliothequeView'
 import LandingPage      from '../components/LandingPage'
 import CeSoirMode       from '../components/CeSoirMode'
+import AssistantView    from '../components/AssistantView'
+import { Sparkles }     from 'lucide-react'
 
 const InteractiveMap = dynamic(() => import('../components/InteractiveMap'), { ssr: false })
 
@@ -72,6 +74,7 @@ export default function App() {
   const [showForm, setShowForm]       = useState(false)
   const [editWine, setEditWine]       = useState(null)
   const [showCeSoir, setShowCeSoir]   = useState(false)
+  const [showAssistant, setShowAssistant] = useState(false)
 
   useEffect(() => {
     const saved = localStorage.getItem('oenotheque-v2')
@@ -223,6 +226,20 @@ export default function App() {
             onClose={() => setShowCeSoir(false)}
             onOpenBibliotheque={() => setTab('vins')}
           />
+        )}
+        {showAssistant && <AssistantView onClose={() => setShowAssistant(false)} />}
+
+        {/* Bulle flottante Assistant Œno */}
+        {!showAssistant && (
+          <button
+            onClick={() => setShowAssistant(true)}
+            className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-40 w-14 h-14 rounded-full flex items-center justify-center text-cream shadow-wine-lg hover:scale-110 active:scale-95 transition-all cursor-pointer animate-pulse-gold"
+            style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
+            aria-label="Ouvrir l'assistant Œno"
+            title="Œno, votre assistant"
+          >
+            <Sparkles size={22} className="text-gold-400" />
+          </button>
         )}
       </div>
     </>
