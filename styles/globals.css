@@ -4,11 +4,14 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+html { scroll-behavior: smooth; }
+
 body {
   background-color: #0f0508;
   color: #f5ede0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 ::-webkit-scrollbar { width: 4px; height: 4px; }
@@ -17,5 +20,56 @@ body {
 
 input, select, textarea, button { font-family: inherit; }
 
+/* Accessibilité : focus visible doré sur tous les éléments interactifs */
+:focus-visible {
+  outline: 2px solid #c9a84c;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+button:focus-visible, a:focus-visible {
+  outline: 2px solid #e8c96a;
+  outline-offset: 3px;
+}
+
+/* Respect des préférences de mouvement réduit */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Animations */
+@keyframes slideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.anim-slide-up { animation: slideUp 0.32s cubic-bezier(0.16, 1, 0.3, 1); }
+.anim-fade-in  { animation: fadeIn 0.2s ease; }
+
+/* ── Responsive mobile ── */
+@media (max-width: 640px) {
+  .form-grid   { grid-template-columns: 1fr !important; }
+  .stats-4     { grid-template-columns: repeat(2, 1fr) !important; }
+  .grid-2      { grid-template-columns: 1fr !important; }
+  .cards-grid  { grid-template-columns: 1fr !important; }
+  .carte-flex  { flex-direction: column !important; }
+  .carte-map   { max-width: 100% !important; }
+}
+
+@media (min-width: 641px) and (max-width: 900px) {
+  .cards-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* Tap targets confortables sur mobile */
+@media (pointer: coarse) {
+  button { min-height: 42px; }
+  nav button { min-height: 56px; }
+}

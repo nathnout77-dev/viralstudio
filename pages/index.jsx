@@ -390,11 +390,11 @@ function Modal({ open, onClose, title, children }) {
   }, [open])
   if (!open) return null
   return (
-    <div style={{ position:'fixed', inset:0, zIndex:50, display:'flex', alignItems:'flex-end', justifyContent:'center', background:'rgba(5,2,3,0.92)', backdropFilter:'blur(8px)' }}>
-      <div style={{ position:'relative', width:'100%', maxWidth:720, maxHeight:'92vh', overflowY:'auto', borderRadius:'24px 24px 0 0', background:`linear-gradient(160deg, ${SURF} 0%, ${BG} 100%)`, border:`1px solid ${BORD}`, boxShadow:`0 -8px 60px rgba(140,32,48,0.22)` }}>
+    <div className="anim-fade-in" onClick={onClose} style={{ position:'fixed', inset:0, zIndex:50, display:'flex', alignItems:'flex-end', justifyContent:'center', background:'rgba(5,2,3,0.92)', backdropFilter:'blur(8px)' }}>
+      <div className="anim-slide-up" role="dialog" aria-modal="true" aria-label={title} onClick={e=>e.stopPropagation()} style={{ position:'relative', width:'100%', maxWidth:720, maxHeight:'92vh', overflowY:'auto', borderRadius:'24px 24px 0 0', background:`linear-gradient(160deg, ${SURF} 0%, ${BG} 100%)`, border:`1px solid ${BORD}`, boxShadow:`0 -8px 60px rgba(140,32,48,0.22)` }}>
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'18px 22px', borderBottom:`1px solid ${BORD}`, position:'sticky', top:0, background:SURF, zIndex:1, borderRadius:'24px 24px 0 0' }}>
           <h2 style={{ fontSize:17, fontWeight:700, color:TEXT, fontFamily:'Georgia, serif', letterSpacing:'0.01em' }}>{title}</h2>
-          <button onClick={onClose} style={{ padding:8, borderRadius:10, background:`rgba(201,168,76,0.08)`, border:`1px solid ${BORD}`, color:SUB, cursor:'pointer', display:'flex' }}>
+          <button onClick={onClose} aria-label="Fermer" style={{ padding:8, borderRadius:10, background:`rgba(201,168,76,0.08)`, border:`1px solid ${BORD}`, color:SUB, cursor:'pointer', display:'flex' }}>
             <CloseIcon />
           </button>
         </div>
@@ -465,7 +465,7 @@ function WineForm({ initial, onSave, onClose, wines = [] }) {
   }
 
   const wineNames = [...new Set(wines.map(w=>w.name))].sort()
-  const wineDomains = [...new Set(wines.map(w=>w.domain))].sort()
+  const wineDomains = [...new Set([...wines.map(w=>w.domain), ...ALL_DOMAINES])].sort()
 
   const inp ={ width:'100%', background:`rgba(255,255,255,0.05)`, border:`1px solid ${BORD}`, borderRadius:10, padding:'10px 14px', color:TEXT, fontSize:14, outline:'none', fontFamily:'inherit' }
   const lbl = { display:'block', fontSize:10, color:MUTED, marginBottom:5, fontWeight:700, textTransform:'uppercase', letterSpacing:'0.09em' }
@@ -509,7 +509,7 @@ function WineForm({ initial, onSave, onClose, wines = [] }) {
         {oenoSearch && <div style={{ fontSize:11, color:MUTED, marginTop:5 }}>↑ Sélectionner un résultat remplit automatiquement le formulaire</div>}
       </div>
 
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 }}>
+      <div className="form-grid" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 }}>
         <div style={{ gridColumn:'1/-1' }}>
           <label style={lbl}>Nom du vin *</label>
           <AutocompleteInput style={inp} value={form.name} placeholder="Gevrey-Chambertin 1er Cru"
@@ -701,11 +701,11 @@ function WineCard({ wine, onClick, onEdit, onDelete }) {
         overflow:'hidden',
       }}>
 
-      {/* Actions hover */}
-      {hov && (
-        <div style={{ position:'absolute', top:10, right:10, display:'flex', gap:5, zIndex:2 }} onClick={e=>e.stopPropagation()}>
-          <button onClick={()=>onEdit(wine)} style={{ padding:'5px 7px', background:SURF, border:`1px solid ${BORD}`, borderRadius:7, color:SUB, cursor:'pointer', display:'flex' }}><EditIcon /></button>
-          <button onClick={()=>onDelete(wine.id)} style={{ padding:'5px 7px', background:'rgba(248,113,113,0.12)', border:'1px solid rgba(248,113,113,0.3)', borderRadius:7, color:'#f87171', cursor:'pointer', display:'flex' }}><TrashIcon /></button>
+      {/* Actions : toujours visibles (tactile), accentuées au survol */}
+      {(
+        <div style={{ position:'absolute', top:10, right:10, display:'flex', gap:5, zIndex:2, opacity: hov ? 1 : 0.55, transition:'opacity 0.15s' }} onClick={e=>e.stopPropagation()}>
+          <button onClick={()=>onEdit(wine)} aria-label={`Modifier ${wine.name}`} style={{ padding:'5px 7px', background:SURF, border:`1px solid ${BORD}`, borderRadius:7, color:SUB, cursor:'pointer', display:'flex' }}><EditIcon /></button>
+          <button onClick={()=>onDelete(wine.id)} aria-label={`Supprimer ${wine.name}`} style={{ padding:'5px 7px', background:'rgba(248,113,113,0.12)', border:'1px solid rgba(248,113,113,0.3)', borderRadius:7, color:'#f87171', cursor:'pointer', display:'flex' }}><TrashIcon /></button>
         </div>
       )}
 
@@ -814,7 +814,7 @@ function WineDetail({ wine, onEdit, onUpdate, onDelete }) {
       </div>
 
       {/* Stats */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:8, marginBottom:18 }}>
+      <div className="stats-4" style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:8, marginBottom:18 }}>
         {[
           { l:'Millésime', v:wine.vintage, c:GOLD },
           { l:'Quantité', v:`${wine.quantity} btl`, c:GOLD },
@@ -1022,8 +1022,19 @@ function Dashboard({ wines, searchQ, setSearchQ, onSelectWine, onGoToCave }) {
   const cardStyle = { padding:18, borderRadius:16, background:`linear-gradient(145deg,${CARD},${SURF})`, border:`1px solid ${BORD}` }
   const secTitle = { fontSize:10, color:MUTED, textTransform:'uppercase', letterSpacing:'0.1em', fontWeight:700, marginBottom:12 }
 
+  const hour = new Date().getHours()
+  const greeting = hour < 12 ? { t:'Bonjour', e:'☀️', s:'Un œil sur votre cave avec le café ?' }
+    : hour < 18 ? { t:'Bel après-midi', e:'🍇', s:'Le bon moment pour préparer la soirée.' }
+    : { t:'Bonsoir', e:'🌙', s:'Que débouchons-nous ce soir ?' }
+
   return (
     <div>
+      {/* Salutation */}
+      <div style={{ marginBottom:16 }}>
+        <div style={{ fontSize:22, fontWeight:800, color:TEXT, fontFamily:'Georgia,serif' }}>{greeting.t} {greeting.e}</div>
+        <div style={{ fontSize:13, color:SUB, marginTop:3 }}>{greeting.s}</div>
+      </div>
+
       {/* Barre de recherche */}
       <div style={{ position:'relative', marginBottom:20 }}>
         <div style={{ position:'absolute', left:14, top:'50%', transform:'translateY(-50%)', color:MUTED, pointerEvents:'none' }}><SearchIcon /></div>
@@ -1133,7 +1144,7 @@ function Dashboard({ wines, searchQ, setSearchQ, onSelectWine, onGoToCave }) {
         </div>
       )}
 
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14, marginBottom:22 }}>
+      <div className="grid-2" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14, marginBottom:22 }}>
         {/* Par type */}
         <div style={cardStyle}>
           <div style={secTitle}>Répartition</div>
@@ -1361,6 +1372,10 @@ function CaveView({ wines, onAdd, onEdit, onDelete, onSelect }) {
   const [type, setType] = useState('all')
   const [statusF, setStatusF] = useState('all')
   const [sort, setSort] = useState('name')
+  const [showGuide, setShowGuide] = useState(true)
+
+  const readyCount  = wines.filter(w=>getDrinkStatus(w).label==='À maturité').length
+  const urgentCount = wines.filter(w=>getDrinkStatus(w).label==='À consommer vite').length
 
   const list = wines
     .filter(w => {
@@ -1387,10 +1402,37 @@ function CaveView({ wines, onAdd, onEdit, onDelete, onSelect }) {
 
   return (
     <div>
+      {/* ── Guide néophyte ── */}
+      {showGuide && wines.length > 0 && (
+        <div style={{ marginBottom:16, padding:'16px 18px', borderRadius:16, background:`linear-gradient(135deg, rgba(201,168,76,0.09), rgba(140,32,48,0.07))`, border:`1px solid ${BORD}`, position:'relative' }}>
+          <button onClick={()=>setShowGuide(false)} aria-label="Masquer le guide" style={{ position:'absolute', top:10, right:12, background:'none', border:'none', color:MUTED, cursor:'pointer', fontSize:14 }}>✕</button>
+          <div style={{ fontSize:13, fontWeight:700, color:GOLD, fontFamily:'Georgia,serif', marginBottom:8 }}>💡 Comment lire votre cave ?</div>
+          <div style={{ display:'flex', gap:10, flexWrap:'wrap', marginBottom:10 }}>
+            {[
+              { c:'#60a5fa', bg:'rgba(96,165,250,0.12)', l:'Trop jeune', d:'patientez, il se bonifie' },
+              { c:'#4ade80', bg:'rgba(74,222,128,0.12)', l:'À maturité', d:'c\'est le moment idéal !' },
+              { c:'#fbbf24', bg:'rgba(251,191,36,0.12)', l:'Apogée imminente', d:'à ouvrir bientôt' },
+              { c:'#f87171', bg:'rgba(248,113,113,0.12)', l:'À consommer vite', d:'ne tardez plus' },
+            ].map(s=>(
+              <div key={s.l} style={{ display:'flex', alignItems:'center', gap:7 }}>
+                <span style={{ fontSize:10, padding:'3px 9px', borderRadius:10, background:s.bg, color:s.c, fontWeight:700 }}>{s.l}</span>
+                <span style={{ fontSize:11, color:SUB }}>{s.d}</span>
+              </div>
+            ))}
+          </div>
+          {(readyCount > 0 || urgentCount > 0) && (
+            <div style={{ fontSize:12, color:TEXT, lineHeight:1.6 }}>
+              {readyCount > 0 && <>🍷 Bonne nouvelle : <strong style={{ color:'#4ade80' }}>{readyCount} vin{readyCount>1?'s sont':' est'} à maturité</strong> — parfait pour ce soir. </>}
+              {urgentCount > 0 && <>⏳ <strong style={{ color:'#f87171' }}>{urgentCount} vin{urgentCount>1?'s attendent':' attend'}</strong> d'être bu{urgentCount>1?'s':''} sans tarder.</>}
+            </div>
+          )}
+        </div>
+      )}
+
       <div style={{ display:'flex', gap:8, marginBottom:16, flexWrap:'wrap' }}>
         <div style={{ position:'relative', flex:'1 1 200px' }}>
           <div style={{ position:'absolute', left:11, top:'50%', transform:'translateY(-50%)', color:MUTED, pointerEvents:'none' }}><SearchIcon /></div>
-          <input style={{ ...sel, width:'100%', paddingLeft:34 }} placeholder="Vin, domaine, région…" value={q} onChange={e=>setQ(e.target.value)} />
+          <input style={{ ...sel, width:'100%', paddingLeft:34 }} placeholder="Vin, domaine, région…" aria-label="Rechercher dans la cave" value={q} onChange={e=>setQ(e.target.value)} />
         </div>
         <select style={sel} value={type} onChange={e=>setType(e.target.value)}>
           <option value="all">Tous types</option>
@@ -1415,10 +1457,21 @@ function CaveView({ wines, onAdd, onEdit, onDelete, onSelect }) {
       </div>
 
       {list.length === 0 ? (
-        <div style={{ textAlign:'center', padding:'60px 20px' }}>
-          <div style={{ fontSize:52, marginBottom:14, opacity:0.3 }}>🍾</div>
-          <div style={{ fontSize:15, color:SUB }}>Cave vide ou aucun résultat</div>
-          <div style={{ fontSize:12, color:MUTED, marginTop:6 }}>Ajoutez votre premier vin pour commencer</div>
+        <div style={{ textAlign:'center', padding:'50px 20px', borderRadius:18, background:`linear-gradient(145deg,${CARD},${SURF})`, border:`1px dashed rgba(201,168,76,0.3)` }}>
+          <div style={{ fontSize:52, marginBottom:14 }}>🍾</div>
+          <div style={{ fontSize:17, color:TEXT, fontFamily:'Georgia,serif', fontWeight:700, marginBottom:8 }}>
+            {wines.length === 0 ? 'Votre cave vous attend' : 'Aucun vin ne correspond'}
+          </div>
+          <div style={{ fontSize:13, color:SUB, maxWidth:380, margin:'0 auto 18px', lineHeight:1.6 }}>
+            {wines.length === 0
+              ? 'Commencez par ajouter une bouteille — même un simple vin du dimanche. L\'appli vous dira quand le boire, avec quoi l\'accorder, et suivra sa valeur.'
+              : 'Essayez d\'élargir vos filtres ou de modifier votre recherche.'}
+          </div>
+          {wines.length === 0 && (
+            <button onClick={onAdd} style={{ padding:'12px 26px', background:`linear-gradient(135deg,${WINE},${WINE2})`, border:'none', borderRadius:12, color:'#fff', cursor:'pointer', fontSize:14, fontWeight:700, boxShadow:'0 4px 18px rgba(140,32,48,0.4)' }}>
+              + Ajouter mon premier vin
+            </button>
+          )}
         </div>
       ) : (
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(290px,1fr))', gap:12 }}>
@@ -1592,6 +1645,26 @@ function ChoisirView() {
       score += (w.score - 85) * 2
       return { ...w, matchScore: score }
     }).filter(Boolean).sort((a,b) => b.matchScore - a.matchScore)
+
+    // Garantir au moins 5 propositions : compléter avec les meilleurs vins proches des critères
+    if (scored.length < 5) {
+      const names = new Set(scored.map(w => w.name))
+      const backfill = WINE_DB
+        .filter(w => !names.has(w.name))
+        .filter(w => !sel.type || sel.type === 'all' || w.type === sel.type)
+        .map(w => ({ ...w, matchScore: (w.score - 85) * 2, suggestion: true }))
+        .sort((a,b) => b.matchScore - a.matchScore)
+      scored = [...scored, ...backfill.slice(0, 5 - scored.length)]
+      // Si le filtre type élimine encore tout, ouvrir à tous les types
+      if (scored.length < 5) {
+        const names2 = new Set(scored.map(w => w.name))
+        const extra = WINE_DB.filter(w => !names2.has(w.name))
+          .map(w => ({ ...w, matchScore: (w.score - 85) * 2, suggestion: true }))
+          .sort((a,b) => b.matchScore - a.matchScore)
+        scored = [...scored, ...extra.slice(0, 5 - scored.length)]
+      }
+    }
+
     setResults(scored.slice(0, 6))
     setStep(4)
   }
@@ -1775,6 +1848,7 @@ function ChoisirView() {
                       </span>
                       <span style={{ fontSize:10, color:'#6b7280' }}>{w.appellation}</span>
                       {i === 0 && <span style={{ fontSize:10, padding:'2px 8px', borderRadius:20, background:'rgba(212,160,23,0.15)', color:'#d4a017', fontWeight:700 }}>★ Meilleur choix</span>}
+                      {w.suggestion && <span style={{ fontSize:10, padding:'2px 8px', borderRadius:20, background:'rgba(96,165,250,0.12)', color:'#60a5fa', fontWeight:600 }}>Découverte hors critères</span>}
                     </div>
                     <div style={{ fontSize:15, fontWeight:800, color:'#e8e0d5', fontFamily:'Georgia,serif', marginBottom:3 }}>{w.name}</div>
                     <div style={{ fontSize:12, color:'#9ca3af', marginBottom:8, lineHeight:1.5 }}>{w.desc}</div>
@@ -1842,6 +1916,23 @@ const CARTE_REGIONS = [
   { id:'Corse',      label:'Corse',             x:448, y:482, color:'#d4406a', oeno:['Corse'] },
 ]
 
+// Domaines emblématiques par région viticole
+const DOMAINES_FRANCE = {
+  Champagne:  ['Dom Pérignon (Moët & Chandon)','Krug','Bollinger','Louis Roederer','Ruinart','Veuve Clicquot','Taittinger','Pol Roger','Billecart-Salmon','Jacques Selosse','Egly-Ouriet','Salon'],
+  Alsace:     ['Domaine Zind-Humbrecht','Maison Trimbach','Domaine Weinbach','Hugel & Fils','Domaine Marcel Deiss','Domaine Ostertag','Léon Beyer','Domaine Albert Boxler'],
+  Bourgogne:  ['Domaine de la Romanée-Conti','Domaine Leroy','Domaine Leflaive','Domaine Armand Rousseau','Domaine Georges Roumier','Domaine Coche-Dury','Domaine Rossignol-Trapet','Domaine Dujac','Maison Louis Jadot','Domaine Méo-Camuzet','Domaine Comte de Vogüé','Bouchard Père & Fils'],
+  Jura:       ['Domaine Jean-François Ganevat','Domaine Macle','Domaine Tissot (Stéphane Tissot)','Domaine Overnoy-Houillon','Domaine Berthet-Bondet'],
+  Beaujolais: ['Château des Jacques (Louis Jadot)','Domaine Marcel Lapierre','Domaine Jean Foillard','Château Thivin','Domaine Yvon Métras','Domaine du Vissoux'],
+  Loire:      ['Domaine Didier Dagueneau','Clos Rougeard','Domaine Huet','Henri Bourgeois','Domaine Vacheron','Domaine Alphonse Mellot','Château de Fesles','Domaine des Baumard','Nicolas Joly (Coulée de Serrant)'],
+  Bordeaux:   ['Château Margaux','Château Latour','Château Lafite Rothschild','Château Mouton Rothschild','Château Haut-Brion','Petrus','Château d\'Yquem','Château Cheval Blanc','Château Ausone','Château Pichon Baron','Château Palmer','Château Lynch-Bages'],
+  SudOuest:   ['Château Montus (Alain Brumont)','Clos Triguedina','Château du Cèdre','Domaine Cauhapé','Château Tirecul La Gravière','Domaine de Souch'],
+  Languedoc:  ['Mas de Daumas Gassac','Domaine de la Grange des Pères','Mas Jullien','Domaine Gauby','Château de la Négly','Domaine Peyre Rose','Domaine du Mas Blanc (Banyuls)'],
+  Rhone:      ['E. Guigal','M. Chapoutier','Domaine Jean-Louis Chave','Château de Beaucastel','Domaine du Vieux Télégraphe','Château Rayas','Paul Jaboulet Aîné','Domaine Georges Vernay','Clos des Papes','Delas Frères'],
+  Provence:   ['Domaine Tempier','Château Simone','Domaines Ott','Château d\'Esclans (Whispering Angel)','Domaine de Trévallon','Château Pradeaux','Clos Sainte Magdeleine'],
+  Corse:      ['Domaine Antoine Arena','Clos Canarelli','Domaine Comte Abbatucci','Domaine Vaccelli','Clos Nicrosi','Domaine Yves Leccia'],
+}
+const ALL_DOMAINES = Object.values(DOMAINES_FRANCE).flat().sort()
+
 const CARTE_WINE_ALIASES = {
   Champagne:  ['champagne'],
   Alsace:     ['alsace'],
@@ -1883,10 +1974,10 @@ function CarteView({ wines, onSelectWine, onDelete }) {
         </div>
       </div>
 
-      <div style={{ display:'flex', gap:18, flexWrap:'wrap', alignItems:'flex-start' }}>
+      <div className="carte-flex" style={{ display:'flex', gap:18, flexWrap:'wrap', alignItems:'flex-start' }}>
 
         {/* ── SVG Map ── */}
-        <div style={{ flex:'0 0 auto', width:'100%', maxWidth:480 }}>
+        <div className="carte-map" style={{ flex:'0 0 auto', width:'100%', maxWidth:480 }}>
           <svg viewBox="0 0 480 520" style={{ width:'100%', display:'block', filter:'drop-shadow(0 6px 28px rgba(140,32,48,0.18))' }}>
             {/* Fond léger */}
             <rect width="480" height="520" fill="transparent" />
@@ -2038,6 +2129,19 @@ function CarteView({ wines, onSelectWine, onDelete }) {
                   </div>
                 )}
               </div>
+
+              {/* Domaines emblématiques */}
+              {DOMAINES_FRANCE[sel]?.length > 0 && (
+                <div style={{ marginBottom:16, padding:'14px 16px', borderRadius:13, background:'rgba(201,168,76,0.05)', border:`1px solid ${BORD}` }}>
+                  <div style={{ fontSize:10, color:GOLD, textTransform:'uppercase', letterSpacing:'0.09em', fontWeight:700, marginBottom:10 }}>🏛️ Domaines emblématiques</div>
+                  <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+                    {DOMAINES_FRANCE[sel].map(d=>(
+                      <span key={d} style={{ fontSize:11, padding:'4px 11px', borderRadius:16, background:'rgba(201,168,76,0.09)', border:'1px solid rgba(201,168,76,0.22)', color:'#e0c887' }}>{d}</span>
+                    ))}
+                  </div>
+                  <div style={{ fontSize:10, color:MUTED, marginTop:9, fontStyle:'italic' }}>Ces domaines apparaissent dans l'autocomplétion du formulaire d'ajout.</div>
+                </div>
+              )}
 
               {/* Vins de la cave */}
               {selWines.length > 0 ? (
@@ -2207,7 +2311,10 @@ export default function App() {
           <div style={{ fontSize:13, fontWeight:700, color:GOLD, textTransform:'uppercase', letterSpacing:'0.1em' }}>{tabLabel[tab]||''}</div>
 
           {/* Add button */}
-          <button onClick={()=>setShowAdd(true)} style={{ width:36, height:36, background:`linear-gradient(135deg,${WINE},${WINE2})`, border:'none', borderRadius:10, color:'#fff', cursor:'pointer', fontSize:20, display:'flex', alignItems:'center', justifyContent:'center', boxShadow:`0 4px 14px rgba(140,32,48,0.4)` }}>
+          <button onClick={()=>setShowAdd(true)} aria-label="Ajouter un vin à la cave" style={{ width:38, height:38, background:`linear-gradient(135deg,${WINE},${WINE2})`, border:'none', borderRadius:12, color:'#fff', cursor:'pointer', fontSize:20, display:'flex', alignItems:'center', justifyContent:'center', boxShadow:`0 4px 14px rgba(140,32,48,0.45)`, transition:'transform 0.15s' }}
+            onMouseEnter={e=>e.currentTarget.style.transform='scale(1.08)'}
+            onMouseLeave={e=>e.currentTarget.style.transform='scale(1)'}
+          >
             +
           </button>
         </div>
@@ -2223,10 +2330,10 @@ export default function App() {
       </main>
 
       {/* ── Bottom navigation ── */}
-      <nav style={{ position:'fixed', bottom:0, left:0, right:0, zIndex:40, background:`rgba(15,5,8,0.97)`, backdropFilter:'blur(20px)', borderTop:`1px solid ${BORD}`, paddingBottom:'env(safe-area-inset-bottom)' }}>
+      <nav aria-label="Navigation principale" style={{ position:'fixed', bottom:0, left:0, right:0, zIndex:40, background:`rgba(15,5,8,0.97)`, backdropFilter:'blur(20px)', borderTop:`1px solid ${BORD}`, paddingBottom:'env(safe-area-inset-bottom)' }}>
         <div style={{ maxWidth:960, margin:'0 auto', display:'flex', height:60 }}>
           {BOTTOM_TABS.map(t => (
-            <button key={t.id} onClick={()=>setTab(t.id)} style={{
+            <button key={t.id} onClick={()=>setTab(t.id)} aria-label={t.label} aria-current={tab===t.id ? 'page' : undefined} style={{
               flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:3,
               background:'none', border:'none', cursor:'pointer', transition:'all 0.15s',
               color: tab===t.id ? GOLD : MUTED,
