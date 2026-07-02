@@ -1127,47 +1127,6 @@ export const WINE_DB = [
     description: 'Le Sciaccarello sur granit : léger en couleur, intense en parfums. Un Pinot Noir des îles, en somme.',
   }),
 
-  // ═══ CHAMPAGNE ══════════════════════════════════════════════════════════
-  vin({
-    id: 'champagne', region: 'Champagne', appellation: 'Champagne', type: 'sparkling',
-    cepages: ['Chardonnay', 'Pinot Noir', 'Pinot Meunier'],
-    aromes: 'Pomme, brioche, amande, agrumes',
-    emoji: '🥂', enUneMot: 'La fête en bouteille',
-    pourQui: 'Tout le monde — mais apprenez à choisir au-delà des marques',
-    jauges: { puissance: 2, douceur: 1, tanins: 1 },
-    difficulte: 'facile', prixMoyen: 35,
-    bonsMilsimes: [2008, 2012, 2013, 2018, 2019],
-    garde: '5-25 ans', drinkFrom: 0, drinkUntil: 25,
-    temperature: '8-10°C', serviceTemp: 9,
-    accords: ['Apéritif', 'Huîtres', 'Volaille aux morilles', 'Parmesan'],
-    domaines: [
-      { name: 'Champagnes de vignerons', note: 'Le secret : 2x moins cher que les marques' },
-      { name: 'Bollinger', note: 'La Grande Année — style vineux' },
-      { name: 'Salon', note: '100% Chardonnay mythique' },
-    ],
-    lat: 49.05, lng: 4.03,
-    description: 'Astuce de néophyte : cherchez "RM" (récoltant-manipulant) sur l\'étiquette — des champagnes de vignerons souvent meilleurs et moins chers que les grandes marques.',
-  }),
-  vin({
-    id: 'cremant-loire', region: 'Loire', appellation: 'Crémant de Loire', type: 'sparkling',
-    cepages: ['Chenin Blanc', 'Chardonnay', 'Cabernet Franc'],
-    aromes: 'Pomme, brioche légère, fleurs',
-    emoji: '🍾', enUneMot: 'Les bulles malines',
-    pourQui: 'Ceux qui veulent des bulles de qualité à 10€',
-    jauges: { puissance: 2, douceur: 1, tanins: 1 },
-    difficulte: 'facile', prixMoyen: 10,
-    bonsMilsimes: [2020, 2021, 2022],
-    garde: '1-5 ans', drinkFrom: 0, drinkUntil: 5,
-    temperature: '7-9°C', serviceTemp: 8,
-    accords: ['Apéritif', 'Desserts aux fruits', 'Brunch'],
-    domaines: [
-      { name: 'Langlois-Château', note: 'Maison de Saumur fiable' },
-      { name: 'Domaine de la Taille aux Loups', note: 'Triple Zéro culte' },
-    ],
-    lat: 47.26, lng: -0.08,
-    description: 'Même méthode que le champagne, prix divisé par trois. Le plan bulles du quotidien.',
-  }),
-
   // ═══ INTERNATIONAL ══════════════════════════════════════════════════════
   vin({
     id: 'rioja', region: 'Espagne', appellation: 'Rioja Reserva', type: 'red',
