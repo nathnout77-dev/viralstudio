@@ -1,397 +1,260 @@
 import { useEffect, useRef, useState } from 'react'
-import { Wine, MapPin, Sparkles, GlassWater, BookOpen, ChevronDown, Star, Users, Award, Globe } from 'lucide-react'
+import { Wine, Library, MapPin, Sparkles, BookOpen, ChevronDown, Utensils, ArrowRight } from 'lucide-react'
+import { WINE_DB } from '../data/wineDatabase'
 
-// ── Animated counter hook ────────────────────────────────────────────────────
-function useCountUp(target, duration = 1800, start = false) {
+// ── Compteur animé ────────────────────────────────────────────────────────────
+function useCountUp(target, duration = 1600, start = false) {
   const [count, setCount] = useState(0)
   useEffect(() => {
     if (!start) return
-    let startTime = null
-    const animate = (time) => {
-      if (!startTime) startTime = time
-      const progress = Math.min((time - startTime) / duration, 1)
-      const eased = 1 - Math.pow(1 - progress, 3)
-      setCount(Math.floor(eased * target))
-      if (progress < 1) requestAnimationFrame(animate)
+    let t0 = null
+    const tick = (t) => {
+      if (!t0) t0 = t
+      const p = Math.min((t - t0) / duration, 1)
+      setCount(Math.floor((1 - Math.pow(1 - p, 3)) * target))
+      if (p < 1) requestAnimationFrame(tick)
     }
-    requestAnimationFrame(animate)
+    requestAnimationFrame(tick)
   }, [start, target, duration])
   return count
 }
 
-// ── Floating particle ────────────────────────────────────────────────────────
-function Particle({ style }) {
+// ── Verre qui se remplit au scroll ────────────────────────────────────────────
+function VerreAnime({ fillLevel }) {
+  // fillLevel : 0 → 1
+  const h = 34 * fillLevel
   return (
-    <div
-      className="absolute rounded-full opacity-20 pointer-events-none"
-      style={style}
-    />
-  )
-}
-
-// ── Feature card ─────────────────────────────────────────────────────────────
-function FeatureCard({ icon: Icon, title, desc, color, delay, onTabClick, tab }) {
-  return (
-    <button
-      onClick={() => onTabClick(tab)}
-      className="reveal card-glass text-left p-6 transition-all duration-500 hover:-translate-y-2 hover:shadow-glow-gold cursor-pointer group w-full"
-      style={{ transitionDelay: `${delay}ms` }}
-    >
-      <div
-        className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110"
-        style={{ background: color }}
-      >
-        <Icon size={22} className="text-cream" />
-      </div>
-      <h3 className="font-serif text-lg font-semibold text-cream mb-2 group-hover:text-gradient-gold transition-colors">
-        {title}
-      </h3>
-      <p className="text-sm text-anthracite-300 leading-relaxed">{desc}</p>
-      <div className="mt-4 flex items-center gap-1.5 text-gold-400 text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <span>Explorer</span>
-        <ChevronDown size={12} className="-rotate-90" />
-      </div>
-    </button>
-  )
-}
-
-// ── Stat box ─────────────────────────────────────────────────────────────────
-function StatBox({ value, suffix, label, started, duration }) {
-  const count = useCountUp(value, duration || 1800, started)
-  return (
-    <div className="text-center reveal">
-      <div className="font-serif text-4xl sm:text-5xl font-bold text-gradient-gold">
-        {count.toLocaleString('fr-FR')}{suffix}
-      </div>
-      <div className="text-sm text-anthracite-400 mt-1 uppercase tracking-widest">{label}</div>
-    </div>
-  )
-}
-
-// ── Wine glass SVG animated ──────────────────────────────────────────────────
-function WineGlassSVG({ fill = '#72102a', className = '' }) {
-  return (
-    <svg viewBox="0 0 80 120" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M20 8 L60 8 L52 52 Q40 70 40 80 L40 108 M28 108 L52 108" stroke="rgba(201,168,76,0.4)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <ellipse cx="40" cy="52" rx="18" ry="4" fill={fill} opacity="0.6"/>
-      <path d="M22 10 Q22 48 40 56 Q58 48 58 10" fill={fill} opacity="0.25"/>
+    <svg viewBox="0 0 100 150" className="w-full h-full" fill="none">
+      <defs>
+        <clipPath id="bowl">
+          <path d="M25 10 L75 10 Q74 55 50 62 Q26 55 25 10 Z" />
+        </clipPath>
+        <linearGradient id="wineGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#a63d4a" />
+          <stop offset="100%" stopColor="#5c0d22" />
+        </linearGradient>
+      </defs>
+      {/* Vin (clippé dans le bol) */}
+      <g clipPath="url(#bowl)">
+        <rect x="20" y={62 - h} width="60" height={h + 5} fill="url(#wineGrad)" style={{ transition: 'all 0.3s ease-out' }} />
+        {/* Reflet */}
+        <ellipse cx="50" cy={62 - h} rx="24" ry="2.5" fill="#c9727e" opacity={fillLevel > 0.05 ? 0.6 : 0} style={{ transition: 'all 0.3s ease-out' }} />
+      </g>
+      {/* Verre */}
+      <path d="M25 10 L75 10 Q74 55 50 62 Q26 55 25 10 Z" stroke="rgba(201,168,76,0.7)" strokeWidth="2.5" strokeLinejoin="round" />
+      <line x1="50" y1="62" x2="50" y2="120" stroke="rgba(201,168,76,0.7)" strokeWidth="2.5" strokeLinecap="round" />
+      <line x1="32" y1="126" x2="68" y2="126" stroke="rgba(201,168,76,0.7)" strokeWidth="2.5" strokeLinecap="round" />
     </svg>
   )
 }
 
-// ── Main component ────────────────────────────────────────────────────────────
-export default function LandingPage({ onEnter, onTabChange }) {
-  const heroRef     = useRef(null)
-  const statsRef    = useRef(null)
-  const featuresRef = useRef(null)
-  const [statsVisible, setStatsVisible]   = useState(false)
-  const [scrollY, setScrollY] = useState(0)
+// ── Landing ───────────────────────────────────────────────────────────────────
+export default function LandingPage({ onEnter, onTabChange, onCeSoir }) {
+  const [scrollP, setScrollP]   = useState(0)
+  const [statsOn, setStatsOn]   = useState(false)
+  const statsRef  = useRef(null)
+  const revealRefs = useRef(null)
 
-  // Intersection observer for reveal animations
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.querySelectorAll('.reveal').forEach((el, i) => {
-              setTimeout(() => el.classList.add('visible'), i * 80)
-            })
-            if (entry.target === statsRef.current) setStatsVisible(true)
-          }
-        })
-      },
-      { threshold: 0.15 }
-    )
-    ;[heroRef, statsRef, featuresRef].forEach(r => r.current && observer.observe(r.current))
-    return () => observer.disconnect()
-  }, [])
-
-  // Parallax
-  useEffect(() => {
-    const onScroll = () => setScrollY(window.scrollY)
+    const onScroll = () => {
+      const max = Math.max(1, document.body.scrollHeight - window.innerHeight)
+      setScrollP(Math.min(1, window.scrollY / (max * 0.4)))
+    }
     window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const particles = [
-    { width: 6,  height: 6,  background: '#c9a84c', top: '15%', left: '8%',  animation: 'float 8s ease-in-out infinite' },
-    { width: 4,  height: 4,  background: '#72102a', top: '25%', right: '12%', animation: 'float 6s ease-in-out infinite 1s' },
-    { width: 8,  height: 8,  background: '#c9a84c', top: '60%', left: '5%',  animation: 'float 10s ease-in-out infinite 2s' },
-    { width: 3,  height: 3,  background: '#d4a847', top: '70%', right: '8%', animation: 'float 7s ease-in-out infinite 0.5s' },
-    { width: 5,  height: 5,  background: '#72102a', top: '40%', left: '90%', animation: 'float 9s ease-in-out infinite 3s' },
-    { width: 4,  height: 4,  background: '#c9a84c', top: '80%', left: '20%', animation: 'float 8s ease-in-out infinite 1.5s' },
-    { width: 6,  height: 6,  background: '#b81d3c', top: '10%', right: '25%', animation: 'float 11s ease-in-out infinite 4s' },
-  ]
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      entries => entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.querySelectorAll('.reveal').forEach((el, i) => setTimeout(() => el.classList.add('visible'), i * 90))
+          if (e.target === statsRef.current) setStatsOn(true)
+        }
+      }),
+      { threshold: 0.15 }
+    )
+    document.querySelectorAll('[data-reveal-zone]').forEach(z => observer.observe(z))
+    return () => observer.disconnect()
+  }, [])
+
+  const nVins = useCountUp(WINE_DB.length, 1400, statsOn)
+  const nRegions = useCountUp(new Set(WINE_DB.map(w => w.region)).size, 1700, statsOn)
+  const nFaciles = useCountUp(WINE_DB.filter(w => w.difficulte === 'facile').length, 2000, statsOn)
 
   const features = [
-    {
-      icon: Wine,
-      tab: 'cave',
-      title: 'Ma Cave Privée',
-      desc: 'Gérez votre collection avec précision : millésimes, apogées, valeur estimée. Votre cave numérique, toujours à portée de main.',
-      color: 'linear-gradient(135deg, #72102a 0%, #9a1633 100%)',
-      delay: 0,
-    },
-    {
-      icon: MapPin,
-      tab: 'carte',
-      title: 'Carte des Vignobles',
-      desc: 'Explorez les grandes appellations sur une carte interactive. Cliquez sur une région pour découvrir ses terroirs et ajouter des vins.',
-      color: 'linear-gradient(135deg, #1e2426 0%, #3d4547 100%)',
-      delay: 100,
-    },
-    {
-      icon: Sparkles,
-      tab: 'sommelier',
-      title: 'Sommelier Virtuel',
-      desc: 'Un guide personnalisé selon votre occasion, budget et profil aromatique. L\'expertise d\'un sommelier, accessible à tous.',
-      color: 'linear-gradient(135deg, #b8962a 0%, #c9a84c 100%)',
-      delay: 200,
-    },
-    {
-      icon: GlassWater,
-      tab: 'accords',
-      title: 'Accords Mets-Vins',
-      desc: 'Trouvez le vin parfait pour chaque plat. Notre base d\'accords couvre toutes les cuisines et tous les styles de vins.',
-      color: 'linear-gradient(135deg, #059669 0%, #0d9488 100%)',
-      delay: 300,
-    },
-    {
-      icon: BookOpen,
-      tab: 'millésimes',
-      title: 'Guide des Millésimes',
-      desc: 'Consultez la base œnologique complète : qualités, fenêtres de dégustation, recommandations par région et appellation.',
-      color: 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)',
-      delay: 400,
-    },
+    { icon: Utensils, title: '« Ce soir, je bois quoi ? »', desc: 'Dites-nous juste ce que vous mangez. 3 vins, 10 secondes, zéro jargon.', action: onCeSoir, cta: 'Essayer', color: '#8c2f39' },
+    { icon: Sparkles, title: 'Le Goût-o-mètre', desc: 'Café ou thé ? Confiture ou citron ? Répondez sur VOS goûts, on trouve VOS vins.', action: () => onTabChange('sommelier'), cta: 'Faire le test', color: '#b8722c' },
+    { icon: Library, title: `${WINE_DB.length} vins décodés`, desc: 'Chaque appellation expliquée simplement : jauges de goût, prix moyen, "pour qui ?".', action: () => onTabChange('vins'), cta: 'Explorer', color: '#4d7c50' },
+    { icon: MapPin, title: 'La carte des vignobles', desc: 'Voyagez dans les régions, cliquez, découvrez, ajoutez à votre cave.', action: () => onTabChange('carte'), cta: 'Voyager', color: '#3d5a80' },
+    { icon: Wine, title: 'Votre cave, simplifiée', desc: 'Suivez vos bouteilles et sachez toujours laquelle ouvrir ce soir.', action: onEnter, cta: 'Ma cave', color: '#5c0d22' },
+    { icon: BookOpen, title: 'Le lexique décodé', desc: 'Tanins, millésime, carafage… tous les mots compliqués expliqués comme à un ami.', action: () => onTabChange('guide'), cta: 'Apprendre', color: '#6b4a3a' },
   ]
 
   return (
-    <div className="min-h-screen overflow-x-hidden" style={{ background: '#0d1011' }}>
+    <div className="min-h-screen overflow-x-hidden" style={{ background: '#12100e' }}>
 
       {/* ── HERO ── */}
-      <section
-        ref={heroRef}
-        className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-noise"
-        style={{ background: 'linear-gradient(160deg, #0d1011 0%, #111516 40%, #1a0a10 70%, #0d1011 100%)' }}
-      >
-        {/* Radial glow behind hero */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full"
-               style={{
-                 background: 'radial-gradient(circle, rgba(114,16,42,0.25) 0%, rgba(201,168,76,0.08) 40%, transparent 70%)',
-                 transform: `translate(-50%, calc(-50% + ${scrollY * 0.2}px))`,
-               }} />
-        </div>
+      <section className="relative min-h-screen flex items-center overflow-hidden bg-noise"
+               style={{ background: 'radial-gradient(ellipse 80% 60% at 70% 20%, #2a1218 0%, #12100e 55%)' }}>
+        <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-10 w-full grid md:grid-cols-2 gap-10 items-center py-20">
 
-        {/* Floating particles */}
-        {particles.map((p, i) => (
-          <Particle key={i} style={{ ...p }} />
-        ))}
-
-        {/* Floating wine glasses — decorative */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute top-10 right-16 opacity-10 animate-float-slow">
-            <WineGlassSVG className="w-16 h-24" />
-          </div>
-          <div className="absolute bottom-24 left-12 opacity-10 animate-float-delayed">
-            <WineGlassSVG fill="#c9a84c" className="w-12 h-18" />
-          </div>
-          <div className="absolute top-1/3 right-6 opacity-5 animate-float">
-            <WineGlassSVG className="w-24 h-36" />
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 text-center max-w-4xl mx-auto px-6 sm:px-8">
-
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gold-500/25 bg-gold-500/8 mb-8 animate-fade-in-down">
-            <Star size={12} className="text-gold-400" fill="currentColor" />
-            <span className="text-gold-400 text-xs font-semibold tracking-widest uppercase">L\'Œnologie pour tous</span>
-            <Star size={12} className="text-gold-400" fill="currentColor" />
-          </div>
-
-          {/* Title */}
-          <h1
-            className="font-serif font-bold mb-6 leading-[1.05] tracking-tight animate-fade-in-up"
-            style={{
-              fontSize: 'clamp(3rem, 8vw, 6.5rem)',
-              animationDelay: '0.15s',
-            }}
-          >
-            <span className="text-cream">L'Art du</span>
-            <br />
-            <span className="shimmer-text">Vin Accessible</span>
-          </h1>
-
-          {/* Subtitle */}
-          <p
-            className="text-anthracite-300 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed mb-10 animate-fade-in-up"
-            style={{ animationDelay: '0.3s' }}
-          >
-            Gérez votre cave, explorez les vignobles du monde, consultez votre sommelier virtuel.
-            L'expertise œnologique distillée en une expérience élégante et intuitive.
-          </p>
-
-          {/* CTAs */}
-          <div
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up"
-            style={{ animationDelay: '0.45s' }}
-          >
-            <button
-              onClick={onEnter}
-              className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-xl font-semibold text-anthracite-950 shadow-gold-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-glow-gold cursor-pointer overflow-hidden"
-              style={{ background: 'linear-gradient(135deg, #d4a847 0%, #c9a84c 50%, #b8962a 100%)' }}
-            >
-              <Wine size={18} />
-              <span>Explorer ma Cave</span>
-              <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </button>
-
-            <button
-              onClick={() => onTabChange('carte')}
-              className="inline-flex items-center gap-3 px-8 py-4 rounded-xl font-semibold text-cream border border-white/15 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
-            >
-              <MapPin size={18} />
-              <span>Carte des Vignobles</span>
-            </button>
-          </div>
-
-          {/* Scroll hint */}
-          <div className="mt-20 flex flex-col items-center gap-2 opacity-50 animate-bounce-subtle">
-            <span className="text-xs text-anthracite-400 uppercase tracking-widest">Découvrir</span>
-            <ChevronDown size={16} className="text-gold-500" />
-          </div>
-        </div>
-
-        {/* Bottom gradient fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
-             style={{ background: 'linear-gradient(to bottom, transparent, #0d1011)' }} />
-      </section>
-
-      {/* ── PHILOSOPHY ── */}
-      <section className="py-24 px-6 sm:px-8" style={{ background: '#0d1011' }}>
-        <div className="max-w-5xl mx-auto">
-          <div ref={statsRef} className="grid grid-cols-2 sm:grid-cols-4 gap-8 sm:gap-12">
-            <StatBox value={15} suffix="+"   label="Régions viticoles"    started={statsVisible} duration={1200} />
-            <StatBox value={65} suffix=""    label="Appellations"          started={statsVisible} duration={1600} />
-            <StatBox value={500} suffix="+"  label="Millésimes analysés"   started={statsVisible} duration={2000} />
-            <StatBox value={100} suffix="%"  label="Gratuit & privé"       started={statsVisible} duration={1000} />
-          </div>
-
-          <div className="divider-gold my-16" />
-
-          <div className="grid sm:grid-cols-2 gap-12 items-center">
-            <div>
-              <p className="text-gold-400 text-xs font-semibold uppercase tracking-widest mb-3">Notre philosophie</p>
-              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-cream mb-6 leading-tight">
-                L'œnologie n'est pas
-                <br />
-                <span className="text-gradient-gold">réservée aux experts</span>
-              </h2>
-              <p className="text-anthracite-300 leading-relaxed mb-4">
-                Le monde du vin peut sembler intimidant — millésimes, appellations, accords, températures…
-                Nous avons conçu L'Œnothèque pour démocratiser cette connaissance et la rendre accessible,
-                intuitive et surtout <em className="text-cream">plaisante</em>.
-              </p>
-              <p className="text-anthracite-300 leading-relaxed">
-                Que vous soyez amateur curieux ou collectionneur averti, notre plateforme s'adapte à vous.
-                Gérez votre cave, explorez les terroirs, et laissez notre sommelier virtuel vous guider
-                vers le vin parfait pour chaque moment.
-              </p>
+          {/* Texte */}
+          <div>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gold-500/25 bg-gold-500/8 mb-8 animate-fade-in-down">
+              <span className="text-gold-400 text-xs font-bold tracking-widest uppercase">Le vin, enfin simple</span>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { icon: Award, label: 'Expertise', text: 'Base œnologique de référence' },
-                { icon: Users, label: 'Simplicité', text: 'Interface pensée pour tous' },
-                { icon: Globe, label: 'Complète',   text: '15 régions, 65 appellations' },
-                { icon: Star,  label: 'Élégante',   text: 'Design inspiré des grandes maisons' },
-              ].map(({ icon: Icon, label, text }, i) => (
-                <div key={label} className="reveal card-glass-warm p-4" style={{ transitionDelay: `${i * 100}ms` }}>
-                  <Icon size={18} className="text-gold-400 mb-2" />
-                  <div className="text-cream font-semibold text-sm mb-1">{label}</div>
-                  <div className="text-anthracite-400 text-xs leading-relaxed">{text}</div>
-                </div>
-              ))}
+            <h1 className="font-serif font-bold leading-[1.03] tracking-tight animate-fade-in-up"
+                style={{ fontSize: 'clamp(2.8rem, 7vw, 5.5rem)', animationDelay: '0.1s' }}>
+              <span className="text-cream">Vous n'y connaissez</span>
+              <br />
+              <span className="text-cream">rien en vin ?</span>
+              <br />
+              <span className="shimmer-text">Parfait.</span>
+            </h1>
+
+            <p className="text-anthracite-300 text-lg max-w-md leading-relaxed mt-6 mb-10 animate-fade-in-up" style={{ animationDelay: '0.25s' }}>
+              Œno traduit le monde du vin en langage humain. Pas de jargon, pas de snobisme —
+              juste les bonnes bouteilles pour vos vrais moments.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+              <button
+                onClick={onCeSoir}
+                className="group inline-flex items-center justify-center gap-3 px-7 py-4 rounded-2xl font-bold text-cream shadow-wine-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                style={{ background: 'linear-gradient(135deg, #a63d4a 0%, #5c0d22 100%)' }}
+              >
+                <Utensils size={18} />
+                Ce soir, je bois quoi ?
+                <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
+              </button>
+              <button
+                onClick={onEnter}
+                className="inline-flex items-center justify-center gap-3 px-7 py-4 rounded-2xl font-semibold text-cream border border-white/15 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+              >
+                <Wine size={17} />
+                Entrer dans l'app
+              </button>
+            </div>
+          </div>
+
+          {/* Verre animé */}
+          <div className="hidden md:flex items-center justify-center relative">
+            <div className="absolute w-72 h-72 rounded-full"
+                 style={{ background: 'radial-gradient(circle, rgba(140,47,57,0.3) 0%, transparent 70%)' }} />
+            <div className="w-64 h-96 animate-float">
+              <VerreAnime fillLevel={0.25 + scrollP * 0.75} />
+            </div>
+            <div className="absolute bottom-8 text-center">
+              <span className="text-[10px] text-gold-500/60 uppercase tracking-[0.2em]">Scrollez pour remplir le verre</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 animate-bounce-subtle">
+          <ChevronDown size={16} className="text-gold-500" />
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none"
+             style={{ background: 'linear-gradient(to bottom, transparent, #12100e)' }} />
+      </section>
+
+      {/* ── MANIFESTO + STATS ── */}
+      <section data-reveal-zone className="py-24 px-6 sm:px-10" style={{ background: '#12100e' }}>
+        <div className="max-w-4xl mx-auto text-center">
+          <p className="text-gold-400 text-xs font-bold uppercase tracking-widest mb-4 reveal">Notre conviction</p>
+          <h2 className="font-serif text-3xl sm:text-5xl font-bold text-cream leading-tight reveal reveal-delay-1">
+            L'œnologie n'a jamais été
+            <br />
+            <span className="text-gradient-gold">une affaire d'experts.</span>
+          </h2>
+          <p className="text-anthracite-300 text-lg leading-relaxed mt-8 max-w-2xl mx-auto reveal reveal-delay-2">
+            C'est une affaire de plaisir. Le reste — les appellations, les millésimes, les tanins —
+            on vous l'explique au fur et à mesure, simplement, quand vous en avez besoin.
+          </p>
+
+          <div ref={statsRef} className="grid grid-cols-3 gap-8 mt-16 reveal reveal-delay-3">
+            <div>
+              <div className="font-serif text-4xl sm:text-5xl font-bold text-gradient-gold">{nVins}</div>
+              <div className="text-xs text-anthracite-400 mt-2 uppercase tracking-widest">Vins décodés</div>
+            </div>
+            <div>
+              <div className="font-serif text-4xl sm:text-5xl font-bold text-gradient-gold">{nRegions}</div>
+              <div className="text-xs text-anthracite-400 mt-2 uppercase tracking-widest">Régions</div>
+            </div>
+            <div>
+              <div className="font-serif text-4xl sm:text-5xl font-bold text-gradient-gold">{nFaciles}</div>
+              <div className="text-xs text-anthracite-400 mt-2 uppercase tracking-widest">« Faciles à aimer »</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* ── FEATURES ── */}
-      <section
-        ref={featuresRef}
-        className="py-24 px-6 sm:px-8"
-        style={{ background: 'linear-gradient(180deg, #0d1011 0%, #111516 100%)' }}
-      >
+      <section data-reveal-zone className="py-24 px-6 sm:px-10"
+               style={{ background: 'linear-gradient(180deg, #12100e 0%, #17130f 100%)' }}>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-14">
-            <p className="text-gold-400 text-xs font-semibold uppercase tracking-widest mb-3 reveal">Fonctionnalités</p>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-cream reveal reveal-delay-1">
-              Tout ce dont vous avez besoin
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-cream reveal">
+              Six façons de trouver <span className="text-gradient-gold">votre</span> vin
             </h2>
-            <p className="text-anthracite-400 mt-3 max-w-xl mx-auto reveal reveal-delay-2">
-              Cinq outils pensés pour vous accompagner de la cave au verre.
-            </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {features.slice(0, 3).map(f => (
-              <FeatureCard key={f.tab} {...f} onTabClick={onTabChange} />
+            {features.map(({ icon: Icon, title, desc, action, cta, color }, i) => (
+              <button
+                key={title}
+                onClick={action}
+                className="reveal card-glass text-left p-6 transition-all duration-500 hover:-translate-y-2 cursor-pointer group w-full"
+                style={{ transitionDelay: `${i * 80}ms` }}
+              >
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3"
+                     style={{ background: color }}>
+                  <Icon size={20} className="text-cream" />
+                </div>
+                <h3 className="font-serif text-lg font-bold text-cream mb-2">{title}</h3>
+                <p className="text-sm text-anthracite-300 leading-relaxed mb-4">{desc}</p>
+                <span className="inline-flex items-center gap-1.5 text-gold-400 text-xs font-bold opacity-60 group-hover:opacity-100 transition-opacity">
+                  {cta} <ArrowRight size={11} className="transition-transform group-hover:translate-x-1" />
+                </span>
+              </button>
             ))}
-            <div className="sm:col-span-2 lg:col-span-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-5">
-              {features.slice(3).map(f => (
-                <FeatureCard key={f.tab} {...f} onTabClick={onTabChange} />
-              ))}
-            </div>
           </div>
         </div>
       </section>
 
-      {/* ── QUOTE ── */}
-      <section
-        className="py-24 px-6 sm:px-8 text-center relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #1a0a10 0%, #111516 50%, #0d1011 100%)' }}
-      >
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0"
-               style={{ background: 'radial-gradient(ellipse 70% 50% at 50% 50%, rgba(114,16,42,0.15) 0%, transparent 70%)' }} />
-        </div>
-
-        <div className="relative max-w-3xl mx-auto">
-          <div className="text-6xl text-gold-500/30 font-serif mb-4">&ldquo;</div>
-          <blockquote className="font-serif text-2xl sm:text-3xl text-cream font-light leading-relaxed mb-6">
-            Le vin est la plus saine et la plus hygiénique des boissons.
-          </blockquote>
-          <cite className="text-anthracite-400 text-sm not-italic">— Louis Pasteur</cite>
-
-          <div className="divider-gold my-12" />
-
+      {/* ── CTA FINAL ── */}
+      <section data-reveal-zone className="py-28 px-6 text-center relative overflow-hidden"
+               style={{ background: 'radial-gradient(ellipse 70% 60% at 50% 100%, #2a1218 0%, #12100e 70%)' }}>
+        <div className="relative max-w-2xl mx-auto">
+          <div className="text-5xl mb-6 reveal">🍷</div>
+          <h2 className="font-serif text-3xl sm:text-4xl text-cream font-bold leading-tight mb-4 reveal reveal-delay-1">
+            La meilleure bouteille,
+            <br />c'est celle qu'on ose ouvrir.
+          </h2>
+          <p className="text-anthracite-400 mb-10 reveal reveal-delay-2">Gratuit. Privé. Vos données restent chez vous.</p>
           <button
             onClick={onEnter}
-            className="group inline-flex items-center gap-3 px-10 py-4 rounded-xl font-bold text-anthracite-950 text-base shadow-gold-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+            className="reveal reveal-delay-3 inline-flex items-center gap-3 px-10 py-4 rounded-2xl font-bold text-anthracite-950 text-base shadow-gold-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer"
             style={{ background: 'linear-gradient(135deg, #d4a847 0%, #c9a84c 50%, #b8962a 100%)' }}
           >
             <Wine size={20} />
-            Commencer l'exploration
+            C'est parti
           </button>
         </div>
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="py-8 px-6 border-t border-white/5 text-center" style={{ background: '#0d1011' }}>
-        <div className="flex items-center justify-center gap-3 mb-3">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-               style={{ background: 'linear-gradient(135deg, #72102a, #9a1633)' }}>
+      <footer className="py-8 px-6 border-t border-white/5 text-center" style={{ background: '#12100e' }}>
+        <div className="flex items-center justify-center gap-3 mb-2">
+          <div className="w-8 h-8 rounded-xl flex items-center justify-center"
+               style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}>
             <Wine size={14} className="text-gold-400" />
           </div>
-          <span className="font-serif text-cream font-semibold">L'Œnothèque</span>
+          <span className="font-serif text-cream font-bold">Œno</span>
         </div>
-        <p className="text-anthracite-500 text-xs">
-          Votre cave numérique personnelle — données stockées localement, vie privée garantie.
-        </p>
+        <p className="text-anthracite-500 text-xs">Le vin, enfin simple. L'abus d'alcool est dangereux pour la santé.</p>
       </footer>
     </div>
   )
