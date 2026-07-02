@@ -8,7 +8,14 @@ const TABS = [
   { id: 'guide',     label: 'Guide',     Icon: BookOpen },
 ]
 
-export default function Navbar({ tab, setTab, total, onAdd, onLanding, onCeSoir }) {
+const MODE_BADGE = {
+  debutant: { emoji: '🌱', label: 'Débutant' },
+  amateur:  { emoji: '🍷', label: 'Amateur' },
+  expert:   { emoji: '🎓', label: 'Expert' },
+}
+
+export default function Navbar({ tab, setTab, total, mode, onProfil, onAdd, onLanding, onCeSoir }) {
+  const badge = MODE_BADGE[mode]
   return (
     <>
       {/* Top header */}
@@ -45,6 +52,18 @@ export default function Navbar({ tab, setTab, total, onAdd, onLanding, onCeSoir 
           </nav>
 
           <div className="flex items-center gap-2">
+            {/* Badge mode (cliquable → refaire le profil) */}
+            {badge && (
+              <button
+                onClick={onProfil}
+                title="Changer de mode / refaire mon profil"
+                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-gold-400 border border-gold-500/25 bg-gold-500/10 hover:bg-gold-500/20 transition-all cursor-pointer"
+              >
+                <span>{badge.emoji}</span>
+                Mode {badge.label}
+              </button>
+            )}
+
             {/* Ce soir ? */}
             <button
               onClick={onCeSoir}

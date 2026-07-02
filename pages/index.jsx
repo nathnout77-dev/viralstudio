@@ -12,6 +12,7 @@ import BibliothequeView from '../components/BibliothequeView'
 import LandingPage      from '../components/LandingPage'
 import CeSoirMode       from '../components/CeSoirMode'
 import AssistantView    from '../components/AssistantView'
+import OnboardingProfil, { loadProfil } from '../components/OnboardingProfil'
 import { Sparkles }     from 'lucide-react'
 
 const InteractiveMap = dynamic(() => import('../components/InteractiveMap'), { ssr: false })
@@ -75,14 +76,27 @@ export default function App() {
   const [editWine, setEditWine]       = useState(null)
   const [showCeSoir, setShowCeSoir]   = useState(false)
   const [showAssistant, setShowAssistant] = useState(false)
+  const [profil, setProfil]           = useState(null)
+  const [showOnboarding, setShowOnboarding] = useState(false)
 
   useEffect(() => {
     const saved = localStorage.getItem('oenotheque-v2')
     setWines(saved ? JSON.parse(saved) : DEMO_WINES)
     const seen = sessionStorage.getItem('landing-seen')
     if (seen) setShowLanding(false)
+    setProfil(loadProfil())
     setReady(true)
   }, [])
+
+  // Mode global : 'debutant' | 'amateur' | 'expert'
+  const mode = profil?.niveau || null
+
+  const completeOnboarding = useCallback((p) => {
+    setProfil(p)
+    setShowOnboarding(false)
+  }, [])
+
+  const redoProfil = useCallback(() => setShowOnboarding(true), [])
 
   useEffect(() => {
     if (ready) localStorage.setItem('oenotheque-v2', JSON.stringify(wines))
@@ -91,12 +105,14 @@ export default function App() {
   const enterApp = useCallback(() => {
     sessionStorage.setItem('landing-seen', '1')
     setShowLanding(false)
+    if (!loadProfil()) setShowOnboarding(true)
   }, [])
 
   const handleTabChange = useCallback((newTab) => {
     sessionStorage.setItem('landing-seen', '1')
     setShowLanding(false)
     setTab(newTab)
+    if (!loadProfil()) setShowOnboarding(true)
   }, [])
 
   const openCeSoir = useCallback(() => {
@@ -165,6 +181,7 @@ export default function App() {
         <LandingPage onEnter={enterApp} onTabChange={handleTabChange} onCeSoir={openCeSoir} />
         {showCeSoir && (
           <CeSoirMode
+            mode={mode}
             onClose={() => setShowCeSoir(false)}
             onOpenBibliotheque={() => handleTabChange('vins')}
           />
@@ -185,6 +202,8 @@ export default function App() {
           tab={tab}
           setTab={setTab}
           total={total}
+          mode={mode}
+          onProfil={redoProfil}
           onAdd={() => setShowForm(true)}
           onLanding={() => setShowLanding(true)}
           onCeSoir={() => setShowCeSoir(true)}
@@ -201,7 +220,7 @@ export default function App() {
               onUpdateQty={updateQty}
             />
           )}
-          {tab === 'vins'      && <BibliothequeView onAddWine={saveWine} />}
+          {tab === 'vins'      && <BibliothequeView onAddWine={saveWine} mode={mode} />}
           {tab === 'carte'     && <InteractiveMap onAddWine={saveWine} />}
           {tab === 'sommelier' && <SommelierForm onOpenBibliotheque={() => setTab('vins')} />}
           {tab === 'guide'     && <GuideView />}
@@ -223,11 +242,13 @@ export default function App() {
         )}
         {showCeSoir && (
           <CeSoirMode
+            mode={mode}
             onClose={() => setShowCeSoir(false)}
             onOpenBibliotheque={() => setTab('vins')}
           />
         )}
         {showAssistant && <AssistantView onClose={() => setShowAssistant(false)} />}
+        {showOnboarding && <OnboardingProfil onComplete={completeOnboarding} />}
 
         {/* Bulle flottante Assistant Œno */}
         {!showAssistant && (

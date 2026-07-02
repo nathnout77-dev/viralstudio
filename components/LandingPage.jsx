@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Wine, Library, MapPin, Sparkles, BookOpen, ChevronDown, Utensils, ArrowRight } from 'lucide-react'
-import { WINE_DB } from '../data/wineDatabase'
+import { WINE_DB, MILLESIMES_DB } from '../data/wineDatabase'
 
 // ── Compteur animé ────────────────────────────────────────────────────────────
 function useCountUp(target, duration = 1600, start = false) {
@@ -76,12 +76,16 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir }) {
       { threshold: 0.15 }
     )
     document.querySelectorAll('[data-reveal-zone]').forEach(z => observer.observe(z))
+    if (statsRef.current) observer.observe(statsRef.current)
     return () => observer.disconnect()
   }, [])
 
-  const nVins = useCountUp(WINE_DB.length, 1400, statsOn)
-  const nRegions = useCountUp(new Set(WINE_DB.map(w => w.region)).size, 1700, statsOn)
-  const nFaciles = useCountUp(WINE_DB.filter(w => w.difficulte === 'facile').length, 2000, statsOn)
+  const nVins      = useCountUp(WINE_DB.length, 1400, statsOn)
+  const nRegions   = useCountUp(new Set(WINE_DB.map(w => w.region)).size, 1700, statsOn)
+  const nFaciles   = useCountUp(WINE_DB.filter(w => w.difficulte === 'facile').length, 2000, statsOn)
+  const nDomaines  = useCountUp(WINE_DB.reduce((s, w) => s + w.domaines.length, 0), 1800, statsOn)
+  const nMillesimes = useCountUp(MILLESIMES_DB.length, 2100, statsOn)
+  const nCepages   = useCountUp(new Set(WINE_DB.flatMap(w => w.cepages)).size, 1600, statsOn)
 
   const features = [
     { icon: Utensils, title: '« Ce soir, je bois quoi ? »', desc: 'Dites-nous juste ce que vous mangez. 3 vins, 10 secondes, zéro jargon.', action: onCeSoir, cta: 'Essayer', color: '#8c2f39' },
@@ -174,19 +178,20 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir }) {
             on vous l'explique au fur et à mesure, simplement, quand vous en avez besoin.
           </p>
 
-          <div ref={statsRef} className="grid grid-cols-3 gap-8 mt-16 reveal reveal-delay-3">
-            <div>
-              <div className="font-serif text-4xl sm:text-5xl font-bold text-gradient-gold">{nVins}</div>
-              <div className="text-xs text-anthracite-400 mt-2 uppercase tracking-widest">Vins décodés</div>
-            </div>
-            <div>
-              <div className="font-serif text-4xl sm:text-5xl font-bold text-gradient-gold">{nRegions}</div>
-              <div className="text-xs text-anthracite-400 mt-2 uppercase tracking-widest">Régions</div>
-            </div>
-            <div>
-              <div className="font-serif text-4xl sm:text-5xl font-bold text-gradient-gold">{nFaciles}</div>
-              <div className="text-xs text-anthracite-400 mt-2 uppercase tracking-widest">« Faciles à aimer »</div>
-            </div>
+          <div ref={statsRef} className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-12 mt-16 reveal reveal-delay-3">
+            {[
+              [nVins,       'Vins décodés'],
+              [nRegions,    'Régions viticoles'],
+              [nCepages,    'Cépages expliqués'],
+              [nMillesimes, 'Millésimes analysés'],
+              [nDomaines,   'Domaines recommandés'],
+              [nFaciles,    '« Faciles à aimer »'],
+            ].map(([n, label]) => (
+              <div key={label}>
+                <div className="font-serif text-4xl sm:text-5xl font-bold text-gradient-gold">{n}</div>
+                <div className="text-xs text-anthracite-400 mt-2 uppercase tracking-widest">{label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

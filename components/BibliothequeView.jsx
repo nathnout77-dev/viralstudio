@@ -234,11 +234,12 @@ function VinCard({ wine, onClick, index }) {
 }
 
 // ── Vue principale ─────────────────────────────────────────────────────────────
-export default function BibliothequeView({ onAddWine }) {
+export default function BibliothequeView({ onAddWine, mode }) {
   const [search, setSearch]   = useState('')
   const [type, setType]       = useState('all')
   const [budget, setBudget]   = useState('all')
-  const [diff, setDiff]       = useState('all')
+  // Mode Débutant : vins « faciles à aimer » proposés en premier (filtre modifiable)
+  const [diff, setDiff]       = useState(mode === 'debutant' ? 'facile' : 'all')
   const [region, setRegion]   = useState('all')
   const [selected, setSelected] = useState(null)
   const [added, setAdded]     = useState(new Set())
