@@ -1,11 +1,11 @@
 {
-  "name": "Cave à Vin",
-  "short_name": "Cave à Vin",
-  "description": "Gérez votre cave à vin : millésimes, arômes, accords mets & vins",
+  "name": "Œno — Le vin, enfin simple",
+  "short_name": "Œno",
+  "description": "Votre cave, la carte des vignobles, un Goût-o-mètre et 55+ vins décodés pour néophytes.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0a0a0f",
-  "theme_color": "#8c2030",
+  "background_color": "#12100e",
+  "theme_color": "#5c0d22",
   "orientation": "portrait",
   "icons": [
     {
