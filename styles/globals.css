@@ -92,7 +92,16 @@
   }
 
   .section-title {
-    @apply font-serif text-2xl font-semibold text-anthracite-900 tracking-tight;
+    @apply text-4xl font-bold text-anthracite-900;
+    font-family: 'Tangerine', cursive;
+    line-height: 1;
+  }
+  /* Noms de bouteilles, domaines, millésimes — calligraphie Tangerine.
+     La police rend petit : les tailles sont systématiquement augmentées. */
+  .font-wine-name {
+    font-family: 'Tangerine', cursive;
+    font-weight: 700;
+    line-height: 1.05;
   }
   .section-sub {
     @apply text-sm text-anthracite-500 mt-1;
@@ -172,3 +181,8 @@
   from { background-position: -200% center; }
   to   { background-position:  200% center; }
 }
+
+/* Leaflet : empêcher la carte de passer au-dessus des modals/quiz.
+   Le conteneur de la carte est isolé (isolation: isolate sur la card) :
+   les z-index internes de Leaflet (200-1000) ne peuvent plus s'échapper. */
+.leaflet-container { z-index: 0 !important; }

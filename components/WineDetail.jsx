@@ -76,7 +76,7 @@ export default function WineDetail({ wine, onClose, onEdit }) {
           <div className="absolute inset-0 flex flex-col justify-end p-5">
             <div className="flex items-end justify-between">
               <div>
-                <h2 className="font-serif text-xl font-semibold text-cream leading-tight">{wine.name}</h2>
+                <h2 className="font-wine-name text-4xl text-cream">{wine.name}</h2>
                 <p className="text-sm text-anthracite-300 mt-0.5">{wine.domain}</p>
               </div>
               {wine.rating && (

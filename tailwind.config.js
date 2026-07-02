@@ -40,8 +40,9 @@ module.exports = {
         cream: '#f5f0e8',
       },
       fontFamily: {
-        serif: ['Playfair Display', 'Georgia', 'serif'],
-        sans:  ['Inter', 'system-ui', 'sans-serif'],
+        serif:  ['Playfair Display', 'Georgia', 'serif'],
+        sans:   ['Inter', 'system-ui', 'sans-serif'],
+        script: ['Tangerine', 'cursive'],
       },
       boxShadow: {
         'gold':        '0 4px 24px rgba(201,168,76,0.25)',

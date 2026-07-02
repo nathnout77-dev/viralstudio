@@ -53,7 +53,7 @@ export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty
             <Wine size={16} className="text-white/60" />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="font-serif text-sm font-semibold text-anthracite-900 truncate">{wine.name}</div>
+            <div className="font-wine-name text-2xl text-anthracite-900 truncate">{wine.name}</div>
             <div className="text-xs text-anthracite-500 truncate">{wine.domain}</div>
             <div className="flex items-center gap-2 mt-1">
               <TypeBadge type={wine.type} />
@@ -83,7 +83,7 @@ export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty
           <div className="flex-1 min-w-0">
             <button
               onClick={() => onSelect?.(wine)}
-              className="font-serif text-base font-semibold text-anthracite-900 hover:text-wine-800 transition-colors text-left leading-snug cursor-pointer"
+              className="font-wine-name text-3xl text-anthracite-900 hover:text-wine-800 transition-colors text-left cursor-pointer"
             >
               {wine.name}
             </button>

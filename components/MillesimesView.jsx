@@ -48,7 +48,7 @@ function TableRow({ row, index }) {
       }}
     >
       <td className="px-4 py-3 pl-5">
-        <span className="font-bold font-serif text-anthracite-900 text-base">{row[0]}</span>
+        <span className="font-wine-name text-2xl text-anthracite-900">{row[0]}</span>
       </td>
       <td className="px-4 py-3">
         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${TYPE_STYLE[row[1]] || 'bg-anthracite-100 text-anthracite-600'}`}>
@@ -88,7 +88,7 @@ function HighlightCard({ year, label, region, color }) {
         <Award size={14} style={{ color }} />
         <span className="text-[10px] font-semibold uppercase tracking-wider text-anthracite-400">{label}</span>
       </div>
-      <div className="font-bold font-serif text-2xl text-anthracite-900">{year}</div>
+      <div className="font-wine-name text-4xl text-anthracite-900">{year}</div>
       <div className="text-xs text-anthracite-500 mt-1">{region}</div>
     </div>
   )

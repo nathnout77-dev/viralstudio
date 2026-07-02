@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
-import { X, Wine, Grape, MapPin, Plus, Thermometer, Clock, Star, BookOpen, Check, ChevronRight } from 'lucide-react'
+import { X, Wine, Grape, MapPin, Plus, Thermometer, Clock, Star, BookOpen, Check, ChevronRight, ExternalLink } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import { WINE_DB } from '../data/wineDatabase'
 
@@ -45,7 +45,7 @@ function WinePanel({ wine, onClose, onAddToCave, addedIds }) {
              style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%)' }} />
         <div className="relative flex items-start justify-between gap-2">
           <div>
-            <div className="font-serif text-lg font-semibold leading-tight">{wine.appellation}</div>
+            <div className="font-wine-name text-4xl">{wine.appellation}</div>
             <div className="text-sm opacity-75 mt-0.5">{wine.region}</div>
           </div>
           <button onClick={onClose}
@@ -149,10 +149,20 @@ function WinePanel({ wine, onClose, onAddToCave, addedIds }) {
             {wine.domaines.map(d => (
               <div key={d.name} className="flex items-start gap-2">
                 <Wine size={10} className="mt-0.5 flex-shrink-0" style={{ color: wine.color }} />
-                <div>
-                  <div className="text-xs font-semibold text-anthracite-800">{d.name}</div>
+                <div className="min-w-0 flex-1">
+                  <div className="font-wine-name text-xl text-anthracite-800">{d.name}</div>
                   <div className="text-[10px] text-anthracite-400">{d.note}</div>
                 </div>
+                <a
+                  href={`https://www.google.com/search?q=${encodeURIComponent(`${d.name} ${wine.appellation} site officiel`)}`}
+                  target="_blank" rel="noopener noreferrer"
+                  onClick={e => e.stopPropagation()}
+                  className="flex-shrink-0 flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
+                  title={`Visiter le site de ${d.name}`}
+                >
+                  <ExternalLink size={9} />
+                  Site
+                </a>
               </div>
             ))}
           </div>
@@ -258,7 +268,7 @@ export default function InteractiveMap({ onAddWine }) {
         ))}
       </div>
 
-      <div className="card overflow-hidden">
+      <div className="card overflow-hidden" style={{ isolation: 'isolate', zIndex: 0, position: 'relative' }}>
         <div className="relative" style={{ height: '560px' }}>
           {!MapComponents ? (
             <div className="absolute inset-0 flex items-center justify-center bg-anthracite-50">

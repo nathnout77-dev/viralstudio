@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { Library, Search, X, Plus, Check, Thermometer, Clock, Wine, MapPin, ChevronDown } from 'lucide-react'
+import { Library, Search, X, Plus, Check, Thermometer, Clock, Wine, MapPin, ChevronDown, ExternalLink } from 'lucide-react'
 import { WINE_DB, REGIONS_LIST, DIFFICULTE_CONFIG, MILLESIMES_DB } from '../data/wineDatabase'
 import JaugesGout from './JaugesGout'
 import Terme from './Tooltip'
@@ -52,7 +52,7 @@ function FicheVin({ wine, onClose, onAddToCave, added }) {
             <div className="flex items-start justify-between gap-3">
               <div>
                 <div className="text-3xl mb-1.5">{wine.emoji}</div>
-                <h3 className="font-serif text-2xl font-bold text-cream leading-tight">{wine.appellation}</h3>
+                <h3 className="font-wine-name text-5xl text-cream">{wine.appellation}</h3>
                 <p className="text-cream/70 text-sm mt-1 flex items-center gap-1.5">
                   <MapPin size={11} /> {wine.region} · {wine.typeLabel}
                 </p>
@@ -143,10 +143,20 @@ function FicheVin({ wine, onClose, onAddToCave, added }) {
                 {wine.domaines.map(d => (
                   <div key={d.name} className="flex items-start gap-2">
                     <Wine size={10} className="mt-1 flex-shrink-0" style={{ color: wine.color }} />
-                    <div>
-                      <span className="text-xs font-semibold text-anthracite-800">{d.name}</span>
+                    <div className="min-w-0 flex-1">
+                      <span className="font-wine-name text-xl text-anthracite-800">{d.name}</span>
                       <span className="text-[11px] text-anthracite-400"> — {d.note}</span>
                     </div>
+                    <a
+                      href={`https://www.google.com/search?q=${encodeURIComponent(`${d.name} ${wine.appellation} site officiel`)}`}
+                      target="_blank" rel="noopener noreferrer"
+                      onClick={e => e.stopPropagation()}
+                      className="flex-shrink-0 flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
+                      title={`Visiter le site de ${d.name}`}
+                    >
+                      <ExternalLink size={9} />
+                      Site
+                    </a>
                   </div>
                 ))}
               </div>
@@ -214,7 +224,7 @@ function VinCard({ wine, onClick, index }) {
           {wine.emoji}
         </div>
         <div className="min-w-0">
-          <div className="font-serif text-sm font-bold text-anthracite-900 leading-tight truncate">{wine.appellation}</div>
+          <div className="font-wine-name text-2xl text-anthracite-900 truncate">{wine.appellation}</div>
           <div className="text-[11px] text-anthracite-400 mt-0.5">{wine.region} · ~{wine.prixMoyen} €</div>
         </div>
       </div>
