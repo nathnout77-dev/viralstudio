@@ -20,6 +20,7 @@ function LexiqueView() {
           <GraduationCap size={18} className="text-gold-400" />
         </div>
         <div>
+          <span className="eyebrow mb-1">Le lexique</span>
           <h2 className="section-title">Le vin, décodé</h2>
           <p className="section-sub">Tous les mots compliqués, expliqués comme à un ami</p>
         </div>

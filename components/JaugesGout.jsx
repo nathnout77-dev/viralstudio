@@ -23,7 +23,7 @@ export default function JaugesGout({ jauges, compact = false, animate = true }) 
                   key={i}
                   className="flex-1 rounded-full transition-all duration-500"
                   style={{
-                    background: i <= val ? color : '#e5e0d8',
+                    background: i <= val ? color : '#e7e5e4',
                     opacity: i <= val ? 0.5 + (i / 10) : 1,
                     transitionDelay: animate ? `${idx * 120 + i * 60}ms` : '0ms',
                   }}

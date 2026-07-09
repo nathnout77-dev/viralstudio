@@ -160,21 +160,22 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
   return (
     <div
       className="fixed inset-0 z-[80] flex items-end sm:items-center justify-center p-0 sm:p-4"
-      style={{ background: 'rgba(30,25,20,0.65)', backdropFilter: 'blur(6px)' }}
+      style={{ background: 'rgba(12,10,9,0.55)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
       onClick={onClose}
       role="dialog" aria-modal="true" aria-label="Ce soir, je bois quoi ?"
     >
       <div
-        className="bg-cream w-full sm:max-w-lg rounded-t-[2rem] sm:rounded-[2rem] overflow-hidden max-h-[92vh] flex flex-col animate-slide-up"
+        className="modal-panel sm:max-w-lg max-h-[92vh] shadow-card-hover"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
         <div className="p-6 pb-5 flex-shrink-0 text-cream relative overflow-hidden"
-             style={{ background: 'linear-gradient(135deg, #5c0d22 0%, #8c2f39 100%)' }}>
+             style={{ background: 'linear-gradient(135deg, #0C0A09 0%, #3a0616 60%, #5c0d22 100%)' }}>
           <div className="absolute -top-6 -right-4 text-[100px] opacity-10 select-none leading-none">🍽️</div>
           <div className="relative flex items-start justify-between">
             <div>
-              <h3 className="font-serif text-2xl font-bold">Ce soir, je bois quoi ?</h3>
+              <span className="eyebrow-dark mb-2">Sommelier express</span>
+              <h3 className="font-serif text-2xl font-medium">Ce soir, je bois quoi ?</h3>
               <p className="text-cream/70 text-sm mt-1">
                 {results ? 'Vos 3 vins, choisis pour vous.' : '5 petites questions → le vin parfait pour votre soirée.'}
               </p>
@@ -195,7 +196,7 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
                 {QUESTIONS.map((_, i) => (
                   <span key={i} className="rounded-full transition-all duration-300"
                         style={{ width: i === step ? 24 : 7, height: 7,
-                                 background: i <= step ? '#8c2f39' : '#e5e0d8' }} />
+                                 background: i <= step ? '#5c0d22' : '#e7e5e4' }} />
                 ))}
               </div>
 
@@ -208,13 +209,13 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
                     <button
                       key={o.label}
                       onClick={() => select(o.v)}
-                      className={`card p-4 text-center hover:-translate-y-1 hover:border-wine-300 transition-all cursor-pointer animate-scale-in ${
-                        answers[current.id] === o.v ? 'border-wine-700 bg-wine-50' : ''
+                      className={`choice-btn p-4 text-center animate-scale-in ${
+                        answers[current.id] === o.v ? 'selected' : ''
                       }`}
                       style={{ animationDelay: `${i * 50}ms`, animationFillMode: 'both' }}
                     >
                       <div className="text-2xl mb-1.5">{o.emoji}</div>
-                      <div className="text-xs font-semibold text-anthracite-800 leading-snug">{o.label}</div>
+                      <div className="text-xs font-semibold leading-snug">{o.label}</div>
                     </button>
                   ))}
                 </div>
@@ -244,7 +245,7 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
               {results.map((w, i) => {
                 const diff = DIFFICULTE_CONFIG[w.difficulte]
                 return (
-                  <div key={w.id} className={`card p-4 animate-slide-up ${i === 0 ? 'ring-2 ring-gold-500/50' : ''}`}
+                  <div key={w.id} className={`card p-4 animate-slide-up ${i === 0 ? 'ring-1 ring-gold-600/60' : ''}`}
                        style={{ animationDelay: `${i * 90}ms`, animationFillMode: 'both' }}>
                     {i === 0 && (
                       <div className="text-[10px] font-bold text-gold-600 uppercase tracking-wider mb-2 flex items-center gap-1">
@@ -283,7 +284,7 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
               {results.length > 0 && (
                 <button
                   onClick={() => { onClose(); onOpenBibliotheque?.() }}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold text-cream cursor-pointer transition-all hover:brightness-110"
+                  className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full text-sm font-semibold text-cream cursor-pointer transition-all duration-300 hover:brightness-110 active:scale-[0.98]"
                   style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
                 >
                   <Sparkles size={14} />

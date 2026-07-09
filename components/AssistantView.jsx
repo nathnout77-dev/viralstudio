@@ -332,17 +332,17 @@ export default function AssistantView({ onClose }) {
   return (
     <div
       className="fixed inset-0 z-[90] flex items-end sm:items-center justify-center p-0 sm:p-4"
-      style={{ background: 'rgba(20,15,12,0.7)', backdropFilter: 'blur(6px)' }}
+      style={{ background: 'rgba(12,10,9,0.55)', backdropFilter: 'blur(8px)' }}
       onClick={onClose}
       role="dialog" aria-modal="true" aria-label="Assistant Œno"
     >
       <div
-        className="bg-cream w-full sm:max-w-2xl h-[92vh] sm:h-[85vh] rounded-t-[2rem] sm:rounded-[2rem] overflow-hidden flex flex-col animate-slide-up shadow-card-hover"
+        className="modal-panel sm:max-w-2xl h-[92vh] sm:h-[85vh] shadow-card-hover"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
         <div className="px-5 py-4 flex items-center justify-between flex-shrink-0 text-cream"
-             style={{ background: 'linear-gradient(135deg, #5c0d22 0%, #8c2f39 100%)' }}>
+             style={{ background: 'linear-gradient(135deg, #0C0A09 0%, #3a0616 60%, #5c0d22 100%)' }}>
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-2xl bg-white/15 flex items-center justify-center">
               <Sparkles size={16} className="text-gold-400" />
@@ -409,7 +409,7 @@ export default function AssistantView({ onClose }) {
                 {questions.map((_, i) => (
                   <span key={i} className="rounded-full transition-all"
                         style={{ width: i === profilStep ? 22 : 7, height: 7,
-                                 background: i <= profilStep ? '#8c2f39' : '#e5e0d8' }} />
+                                 background: i <= profilStep ? '#8c2f39' : '#e7e5e4' }} />
                 ))}
               </div>
               <h3 className="font-serif text-lg font-bold text-anthracite-900 text-center mb-5">{currentQ.q}</h3>
@@ -483,7 +483,7 @@ export default function AssistantView({ onClose }) {
               className="flex items-center gap-2"
             >
               <input
-                className="flex-1 px-4 py-3 bg-white border border-anthracite-200 rounded-2xl text-sm placeholder-anthracite-400 focus:outline-none focus:ring-2 focus:ring-gold-500/40 focus:border-gold-500 transition-all"
+                className="flex-1 px-4 py-3 bg-white border border-anthracite-200 rounded-2xl text-sm placeholder-anthracite-400 focus:outline-none focus:ring-2 focus:ring-gold-600/40 focus:border-gold-500 transition-all"
                 placeholder="Posez votre question sur le vin…"
                 value={input}
                 onChange={e => setInput(e.target.value)}

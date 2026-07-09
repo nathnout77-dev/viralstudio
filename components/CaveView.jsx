@@ -18,7 +18,7 @@ function SelectFilter({ value, onChange, options, label }) {
       <select
         value={value}
         onChange={e => onChange(e.target.value)}
-        className="pl-3 pr-8 py-2 bg-white border border-anthracite-200 rounded-lg text-xs text-anthracite-700 focus:outline-none focus:ring-2 focus:ring-gold-500/40 cursor-pointer appearance-none"
+        className="pl-3 pr-8 py-2 bg-white border border-anthracite-900/10 rounded-full text-xs text-anthracite-700 focus:outline-none focus:ring-2 focus:ring-gold-600/40 cursor-pointer appearance-none"
         aria-label={label}
       >
         {options.map(o => <option key={o.value || o} value={o.value || o}>{o.label || o}</option>)}
@@ -119,7 +119,7 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
             Filtres
             {hasFilters && <span className="w-1.5 h-1.5 rounded-full bg-wine-700" />}
           </button>
-          <div className="flex border border-anthracite-200 rounded-lg overflow-hidden">
+          <div className="flex border border-anthracite-900/10 rounded-full overflow-hidden">
             {[['grid', LayoutGrid], ['list', List]].map(([v, Icon]) => (
               <button key={v} onClick={() => setView(v)}
                       className={`px-2.5 py-2 transition-all cursor-pointer ${view === v ? 'bg-wine-800 text-cream' : 'bg-white text-anthracite-400 hover:text-anthracite-700'}`}

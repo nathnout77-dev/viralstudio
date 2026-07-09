@@ -106,48 +106,46 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir }) {
   ]
 
   return (
-    <div className="min-h-screen overflow-x-hidden" style={{ background: '#12100e' }}>
+    <div className="min-h-screen overflow-x-hidden" style={{ background: '#0C0A09' }}>
 
       {/* ── HERO ── */}
       <section className="relative min-h-screen flex items-center overflow-hidden bg-noise"
-               style={{ background: 'radial-gradient(ellipse 80% 60% at 70% 20%, #2a1218 0%, #12100e 55%)' }}>
-        <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-10 w-full grid md:grid-cols-2 gap-10 items-center py-20">
+               style={{ background: 'radial-gradient(ellipse 90% 70% at 70% 15%, #3a0616 0%, #1C1917 45%, #0C0A09 80%)' }}>
+        <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-10 w-full grid md:grid-cols-2 gap-12 items-center py-24">
 
           {/* Texte */}
           <div>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gold-500/25 bg-gold-500/8 mb-8 animate-fade-in-down">
-              <span className="text-gold-400 text-xs font-bold tracking-widest uppercase">Le vin, enfin simple</span>
-            </div>
+            <span className="eyebrow-dark mb-10 animate-fade-in-down">Le vin, enfin simple</span>
 
-            <h1 className="font-serif font-bold leading-[1.03] tracking-tight animate-fade-in-up"
-                style={{ fontSize: 'clamp(2.8rem, 7vw, 5.5rem)', animationDelay: '0.1s' }}>
+            <h1 className="font-serif font-medium leading-[1.05] tracking-tight animate-fade-in-up"
+                style={{ fontSize: 'clamp(3rem, 8vw, 6.5rem)', animationDelay: '0.15s' }}>
               <span className="text-cream">Vous n'y connaissez</span>
               <br />
               <span className="text-cream">rien en vin ?</span>
               <br />
-              <span className="shimmer-text">Parfait.</span>
+              <span className="shimmer-text italic">Parfait.</span>
             </h1>
 
-            <p className="text-anthracite-300 text-lg max-w-md leading-relaxed mt-6 mb-10 animate-fade-in-up" style={{ animationDelay: '0.25s' }}>
+            <p className="text-anthracite-300 text-lg font-light max-w-md leading-relaxed mt-8 mb-12 animate-fade-in-up" style={{ animationDelay: '0.35s' }}>
               Œno traduit le monde du vin en langage humain. Pas de jargon, pas de snobisme —
               juste les bonnes bouteilles pour vos vrais moments.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+            <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up" style={{ animationDelay: '0.55s' }}>
               <button
                 onClick={onCeSoir}
-                className="group inline-flex items-center justify-center gap-3 px-7 py-4 rounded-2xl font-bold text-cream shadow-wine-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer"
-                style={{ background: 'linear-gradient(135deg, #a63d4a 0%, #5c0d22 100%)' }}
+                className="group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full font-semibold text-anthracite-950 shadow-gold-lg transition-all duration-500 hover:-translate-y-1 active:scale-[0.98] cursor-pointer"
+                style={{ background: 'linear-gradient(135deg, #d4a847 0%, #c9a84c 50%, #b8962a 100%)' }}
               >
-                <Utensils size={18} />
+                <Utensils size={17} />
                 Ce soir, je bois quoi ?
-                <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
+                <ArrowRight size={15} className="transition-transform duration-500 group-hover:translate-x-1" />
               </button>
               <button
                 onClick={onEnter}
-                className="inline-flex items-center justify-center gap-3 px-7 py-4 rounded-2xl font-semibold text-cream border border-white/15 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full font-medium text-cream border border-white/20 bg-white/[0.04] backdrop-blur-sm hover:bg-white/10 transition-all duration-500 hover:-translate-y-1 active:scale-[0.98] cursor-pointer"
               >
-                <Wine size={17} />
+                <Wine size={16} />
                 Entrer dans l'app
               </button>
             </div>
@@ -161,7 +159,7 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir }) {
               <VerreAnime fillLevel={0.25 + scrollP * 0.75} />
             </div>
             <div className="absolute bottom-8 text-center">
-              <span className="text-[10px] text-gold-500/60 uppercase tracking-[0.2em]">Scrollez pour remplir le verre</span>
+              <span className="text-[10px] text-gold-500/60 uppercase tracking-[0.25em]">Scrollez pour remplir le verre</span>
             </div>
           </div>
         </div>
@@ -169,25 +167,25 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir }) {
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 animate-bounce-subtle">
           <ChevronDown size={16} className="text-gold-500" />
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none"
-             style={{ background: 'linear-gradient(to bottom, transparent, #12100e)' }} />
+        <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
+             style={{ background: 'linear-gradient(to bottom, transparent, #FAFAF9)' }} />
       </section>
 
-      {/* ── MANIFESTO + STATS ── */}
-      <section data-reveal-zone className="py-24 px-6 sm:px-10" style={{ background: '#12100e' }}>
+      {/* ── MANIFESTO + STATS — section crème ── */}
+      <section data-reveal-zone className="py-28 sm:py-36 px-6 sm:px-10" style={{ background: '#FAFAF9' }}>
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-gold-400 text-xs font-bold uppercase tracking-widest mb-4 reveal">Notre conviction</p>
-          <h2 className="font-serif text-3xl sm:text-5xl font-bold text-cream leading-tight reveal reveal-delay-1">
+          <span className="eyebrow mb-6 reveal">Notre conviction</span>
+          <h2 className="font-serif text-4xl sm:text-6xl font-medium text-anthracite-950 leading-[1.1] tracking-tight reveal reveal-delay-1">
             L'œnologie n'a jamais été
             <br />
-            <span className="text-gradient-gold">une affaire d'experts.</span>
+            <span className="italic text-wine-900">une affaire d'experts.</span>
           </h2>
-          <p className="text-anthracite-300 text-lg leading-relaxed mt-8 max-w-2xl mx-auto reveal reveal-delay-2">
+          <p className="text-anthracite-600 text-lg font-light leading-relaxed mt-10 max-w-2xl mx-auto reveal reveal-delay-2">
             C'est une affaire de plaisir. Le reste — les appellations, les millésimes, les tanins —
             on vous l'explique au fur et à mesure, simplement, quand vous en avez besoin.
           </p>
 
-          <div ref={statsRef} className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-12 mt-16 reveal reveal-delay-3">
+          <div ref={statsRef} className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-14 mt-24 reveal reveal-delay-3">
             {[
               [nVins,       'Vins décodés'],
               [nRegions,    'Régions viticoles'],
@@ -197,8 +195,8 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir }) {
               [nFaciles,    '« Faciles à aimer »'],
             ].map(([n, label]) => (
               <div key={label}>
-                <div className="font-serif text-4xl sm:text-5xl font-bold text-gradient-gold">{n}</div>
-                <div className="text-xs text-anthracite-400 mt-2 uppercase tracking-widest">{label}</div>
+                <div className="font-serif text-5xl sm:text-6xl font-light text-anthracite-950 tabular-nums">{n}</div>
+                <div className="text-[11px] text-gold-600 mt-3 uppercase tracking-[0.2em] font-semibold">{label}</div>
               </div>
             ))}
           </div>
@@ -207,61 +205,58 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir }) {
 
       {/* ── DOMAINE DU MOMENT ── */}
       {domaineDuMoment && domaineWine && (
-        <section data-reveal-zone className="py-20 px-6 sm:px-10" style={{ background: '#17130f' }}>
-          <div className="max-w-4xl mx-auto">
-            <p className="text-gold-400 text-xs font-bold uppercase tracking-widest mb-4 reveal text-center">Aujourd'hui, on met en lumière</p>
-            <div className="reveal reveal-delay-1 card-glass-warm p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6">
-              <div className="flex-shrink-0">
-                <WineGlassAnim color={domaineWine.color} fillLevel={fillLevelFromJauges(domaineWine.jauges)} size={64} />
-              </div>
-              <div className="min-w-0 flex-1 text-center sm:text-left">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-gold-500/15 text-gold-400 mb-2">
-                  <Sparkles size={10} /> Petit domaine
-                </div>
-                <h3 className="font-wine-name text-4xl text-cream">{domaineDuMoment.name}</h3>
-                <p className="text-anthracite-400 text-xs mt-1">{domaineDuMoment.appellations.join(', ')} · {domaineDuMoment.regions.join(', ')}</p>
-                <p className="text-anthracite-300 text-sm leading-relaxed mt-3 italic">« {domaineDuMoment.histoire} »</p>
-                <button
-                  onClick={() => onTabChange('vins', domaineDuMoment.name)}
-                  className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm text-anthracite-950 cursor-pointer hover:-translate-y-0.5 transition-all"
-                  style={{ background: 'linear-gradient(135deg, #d4a847 0%, #c9a84c 50%, #b8962a 100%)' }}
-                >
-                  <Wine size={14} />
-                  Découvrir sa fiche
-                  <ArrowRight size={13} />
-                </button>
-              </div>
+        <section data-reveal-zone className="section-dark py-28 sm:py-36 px-6 sm:px-10 relative overflow-hidden"
+                 style={{ background: 'radial-gradient(ellipse 80% 90% at 50% 0%, #1C1917 0%, #0C0A09 70%)' }}>
+          <div className="max-w-4xl mx-auto text-center">
+            <span className="eyebrow-dark mb-6 reveal">Domaine du moment</span>
+            <div className="reveal reveal-delay-1 flex justify-center mb-8">
+              <WineGlassAnim color={domaineWine.color} fillLevel={fillLevelFromJauges(domaineWine.jauges)} size={80} />
             </div>
+            <h3 className="font-wine-name text-6xl sm:text-7xl text-cream reveal reveal-delay-1">{domaineDuMoment.name}</h3>
+            <p className="text-anthracite-400 text-[11px] uppercase tracking-[0.2em] mt-4 reveal reveal-delay-2">
+              {domaineDuMoment.appellations.join(', ')} · {domaineDuMoment.regions.join(', ')}
+            </p>
+            <p className="text-anthracite-300 text-lg font-light leading-relaxed italic mt-8 max-w-2xl mx-auto reveal reveal-delay-2">
+              « {domaineDuMoment.histoire} »
+            </p>
+            <button
+              onClick={() => onTabChange('vins', domaineDuMoment.name)}
+              className="reveal reveal-delay-3 mt-12 inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full font-medium text-sm text-cream border border-gold-500/40 hover:bg-gold-500/10 hover:border-gold-500/70 active:scale-[0.98] transition-all duration-500 cursor-pointer"
+            >
+              <Wine size={14} className="text-gold-400" />
+              Découvrir sa fiche
+              <ArrowRight size={13} />
+            </button>
           </div>
         </section>
       )}
 
-      {/* ── FEATURES ── */}
-      <section data-reveal-zone className="py-24 px-6 sm:px-10"
-               style={{ background: 'linear-gradient(180deg, #12100e 0%, #17130f 100%)' }}>
+      {/* ── FEATURES — section crème ── */}
+      <section data-reveal-zone className="py-28 sm:py-36 px-6 sm:px-10" style={{ background: '#FAFAF9' }}>
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-cream reveal">
-              Six façons de trouver <span className="text-gradient-gold">votre</span> vin
+          <div className="text-center mb-20">
+            <span className="eyebrow mb-6 reveal">L'expérience Œno</span>
+            <h2 className="font-serif text-4xl sm:text-5xl font-medium text-anthracite-950 tracking-tight reveal reveal-delay-1">
+              Six façons de trouver <span className="italic text-wine-900">votre</span> vin
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map(({ icon: Icon, title, desc, action, cta, color }, i) => (
               <button
                 key={title}
                 onClick={action}
-                className="reveal card-glass text-left p-6 transition-all duration-500 hover:-translate-y-2 cursor-pointer group w-full"
-                style={{ transitionDelay: `${i * 80}ms` }}
+                className="reveal card text-left p-8 hover:-translate-y-2 active:scale-[0.98] cursor-pointer group w-full"
+                style={{ transitionDelay: `${i * 90}ms` }}
               >
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3"
+                <div className="w-12 h-12 rounded-full flex items-center justify-center mb-6 transition-transform duration-500 group-hover:scale-110"
                      style={{ background: color }}>
-                  <Icon size={20} className="text-cream" />
+                  <Icon size={19} className="text-cream" strokeWidth={1.75} />
                 </div>
-                <h3 className="font-serif text-lg font-bold text-cream mb-2">{title}</h3>
-                <p className="text-sm text-anthracite-300 leading-relaxed mb-4">{desc}</p>
-                <span className="inline-flex items-center gap-1.5 text-gold-400 text-xs font-bold opacity-60 group-hover:opacity-100 transition-opacity">
-                  {cta} <ArrowRight size={11} className="transition-transform group-hover:translate-x-1" />
+                <h3 className="font-serif text-xl font-semibold text-anthracite-950 mb-3">{title}</h3>
+                <p className="text-sm text-anthracite-600 font-light leading-relaxed mb-6">{desc}</p>
+                <span className="inline-flex items-center gap-1.5 text-gold-600 text-[11px] font-semibold uppercase tracking-[0.15em] opacity-70 group-hover:opacity-100 transition-opacity duration-500">
+                  {cta} <ArrowRight size={11} className="transition-transform duration-500 group-hover:translate-x-1" />
                 </span>
               </button>
             ))}
@@ -269,37 +264,37 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir }) {
         </div>
       </section>
 
-      {/* ── CTA FINAL ── */}
-      <section data-reveal-zone className="py-28 px-6 text-center relative overflow-hidden"
-               style={{ background: 'radial-gradient(ellipse 70% 60% at 50% 100%, #2a1218 0%, #12100e 70%)' }}>
+      {/* ── CTA FINAL — section sombre ── */}
+      <section data-reveal-zone className="section-dark py-32 sm:py-44 px-6 text-center relative overflow-hidden"
+               style={{ background: 'radial-gradient(ellipse 70% 70% at 50% 100%, #3a0616 0%, #0C0A09 70%)' }}>
         <div className="relative max-w-2xl mx-auto">
-          <div className="text-5xl mb-6 reveal">🍷</div>
-          <h2 className="font-serif text-3xl sm:text-4xl text-cream font-bold leading-tight mb-4 reveal reveal-delay-1">
+          <span className="eyebrow-dark mb-8 reveal">Œno</span>
+          <h2 className="font-serif text-4xl sm:text-6xl text-cream font-medium leading-[1.1] tracking-tight mb-6 reveal reveal-delay-1">
             La meilleure bouteille,
-            <br />c'est celle qu'on ose ouvrir.
+            <br /><span className="italic">c'est celle qu'on ose ouvrir.</span>
           </h2>
-          <p className="text-anthracite-400 mb-10 reveal reveal-delay-2">Gratuit. Privé. Vos données restent chez vous.</p>
+          <p className="text-anthracite-400 font-light mb-14 reveal reveal-delay-2">Gratuit. Privé. Vos données restent chez vous.</p>
           <button
             onClick={onEnter}
-            className="reveal reveal-delay-3 inline-flex items-center gap-3 px-10 py-4 rounded-2xl font-bold text-anthracite-950 text-base shadow-gold-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+            className="reveal reveal-delay-3 inline-flex items-center gap-3 px-12 py-4 rounded-full font-semibold text-anthracite-950 text-base shadow-gold-lg hover:-translate-y-1 active:scale-[0.98] transition-all duration-500 cursor-pointer"
             style={{ background: 'linear-gradient(135deg, #d4a847 0%, #c9a84c 50%, #b8962a 100%)' }}
           >
-            <Wine size={20} />
+            <Wine size={19} />
             C'est parti
           </button>
         </div>
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="py-8 px-6 border-t border-white/5 text-center" style={{ background: '#12100e' }}>
-        <div className="flex items-center justify-center gap-3 mb-2">
-          <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-               style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}>
+      <footer className="py-12 px-6 border-t border-white/[0.06] text-center" style={{ background: '#0C0A09' }}>
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <div className="w-9 h-9 rounded-full flex items-center justify-center"
+               style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)', boxShadow: '0 0 0 1px rgba(201,168,76,0.25)' }}>
             <Wine size={14} className="text-gold-400" />
           </div>
-          <span className="font-serif text-cream font-bold">Œno</span>
+          <span className="font-serif text-cream text-lg">Œno</span>
         </div>
-        <p className="text-anthracite-500 text-xs">Le vin, enfin simple. L'abus d'alcool est dangereux pour la santé.</p>
+        <p className="text-anthracite-500 text-xs font-light tracking-wide">Le vin, enfin simple. L'abus d'alcool est dangereux pour la santé.</p>
       </footer>
     </div>
   )

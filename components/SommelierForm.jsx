@@ -223,7 +223,7 @@ export default function SommelierForm({ onOpenBibliotheque }) {
           <button onClick={reset} className="btn-ghost flex-1 justify-center">Refaire le test</button>
           <button
             onClick={onOpenBibliotheque}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold text-cream cursor-pointer transition-all hover:brightness-110"
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-semibold text-cream cursor-pointer transition-all duration-300 hover:brightness-110 active:scale-[0.98]"
             style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
           >
             Explorer la bibliothèque
@@ -238,7 +238,7 @@ export default function SommelierForm({ onOpenBibliotheque }) {
     <div className="max-w-2xl mx-auto animate-fade-in">
       <div className="text-center mb-8">
         <div className="inline-flex w-14 h-14 rounded-3xl items-center justify-center shadow-wine text-2xl mb-3"
-             style={{ background: 'linear-gradient(135deg, #8c2f39 0%, #5c0d22 100%)' }}>
+             style={{ background: 'linear-gradient(135deg, #0C0A09 0%, #3a0616 60%, #5c0d22 100%)' }}>
           <Sparkles size={22} className="text-gold-400" />
         </div>
         <h2 className="font-serif text-2xl font-bold text-anthracite-900">Le Goût-o-mètre</h2>
@@ -256,7 +256,7 @@ export default function SommelierForm({ onOpenBibliotheque }) {
             style={{
               width: i === step ? 28 : 8,
               height: 8,
-              background: i < step ? '#8c2f39' : i === step ? 'linear-gradient(to right, #8c2f39, #c9a84c)' : '#e5e0d8',
+              background: i < step ? '#8c2f39' : i === step ? 'linear-gradient(to right, #8c2f39, #c9a84c)' : '#e7e5e4',
             }}
           />
         ))}

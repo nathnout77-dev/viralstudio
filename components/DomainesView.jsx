@@ -117,6 +117,7 @@ export default function DomainesView({ onAddWine }) {
           <MapPin size={18} className="text-gold-400" />
         </div>
         <div>
+          <span className="eyebrow mb-1">Les producteurs</span>
           <h2 className="section-title">Où trouver nos vins</h2>
           <p className="section-sub">{WINE_DB_DOMAINES.length} domaines et châteaux — cherchez, filtrez, trouvez le vôtre</p>
         </div>
@@ -126,7 +127,7 @@ export default function DomainesView({ onAddWine }) {
       <div className="relative mb-4">
         <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-anthracite-400" />
         <input
-          className="w-full pl-11 pr-4 py-3 bg-white border border-anthracite-200 rounded-2xl text-sm placeholder-anthracite-400 focus:outline-none focus:ring-2 focus:ring-gold-500/40 focus:border-gold-500 transition-all"
+          className="w-full pl-11 pr-4 py-3 bg-white border border-anthracite-200 rounded-2xl text-sm placeholder-anthracite-400 focus:outline-none focus:ring-2 focus:ring-gold-600/40 focus:border-gold-500 transition-all"
           placeholder="Cherchez un domaine, une appellation, une région…"
           value={search}
           onChange={e => setSearch(e.target.value)}
@@ -144,7 +145,7 @@ export default function DomainesView({ onAddWine }) {
           <select
             value={region}
             onChange={e => setRegion(e.target.value)}
-            className="pl-3 pr-8 py-2 bg-white border border-anthracite-200 rounded-xl text-xs text-anthracite-700 focus:outline-none focus:ring-2 focus:ring-gold-500/40 cursor-pointer appearance-none font-medium"
+            className="pl-3 pr-8 py-2 bg-white border border-anthracite-200 rounded-xl text-xs text-anthracite-700 focus:outline-none focus:ring-2 focus:ring-gold-600/40 cursor-pointer appearance-none font-medium"
           >
             <option value="all">Toutes régions</option>
             {REGIONS_LIST.map(r => <option key={r} value={r}>{r}</option>)}

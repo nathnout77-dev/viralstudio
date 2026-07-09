@@ -42,12 +42,12 @@ export function FicheVin({ wine, onClose, onAddToCave, added }) {
   return (
     <div
       className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center p-0 sm:p-4"
-      style={{ background: 'rgba(30,25,20,0.6)', backdropFilter: 'blur(6px)' }}
+      style={{ background: 'rgba(12,10,9,0.55)', backdropFilter: 'blur(8px)' }}
       onClick={onClose}
       role="dialog" aria-modal="true"
     >
       <div
-        className="bg-cream w-full sm:max-w-xl rounded-t-[2rem] sm:rounded-[2rem] overflow-hidden max-h-[92vh] flex flex-col animate-slide-up shadow-card-hover"
+        className="modal-panel sm:max-w-xl max-h-[92vh] shadow-card-hover"
         onClick={e => e.stopPropagation()}
       >
         {/* Header coloré */}
@@ -349,6 +349,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '' }
           <Library size={18} className="text-gold-400" />
         </div>
         <div>
+          <span className="eyebrow mb-1">La collection</span>
           <h2 className="section-title">Bibliothèque des Vins</h2>
           <p className="section-sub">{WINE_DB.length} appellations décodées pour vous — cliquez pour tout comprendre</p>
         </div>
@@ -358,7 +359,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '' }
       <div className="relative mb-4">
         <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-anthracite-400" />
         <input
-          className="w-full pl-11 pr-4 py-3 bg-white border border-anthracite-200 rounded-2xl text-sm placeholder-anthracite-400 focus:outline-none focus:ring-2 focus:ring-gold-500/40 focus:border-gold-500 transition-all"
+          className="w-full pl-11 pr-4 py-3 bg-white border border-anthracite-200 rounded-2xl text-sm placeholder-anthracite-400 focus:outline-none focus:ring-2 focus:ring-gold-600/40 focus:border-gold-500 transition-all"
           placeholder="Cherchez un vin, une région, un cépage, un arôme…"
           value={search}
           onChange={e => setSearch(e.target.value)}
@@ -396,7 +397,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '' }
             <select
               value={value}
               onChange={e => set(e.target.value)}
-              className="pl-3 pr-8 py-2 bg-white border border-anthracite-200 rounded-xl text-xs text-anthracite-700 focus:outline-none focus:ring-2 focus:ring-gold-500/40 cursor-pointer appearance-none font-medium"
+              className="pl-3 pr-8 py-2 bg-white border border-anthracite-200 rounded-xl text-xs text-anthracite-700 focus:outline-none focus:ring-2 focus:ring-gold-600/40 cursor-pointer appearance-none font-medium"
             >
               {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>

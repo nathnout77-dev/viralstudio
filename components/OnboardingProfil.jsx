@@ -194,18 +194,18 @@ export default function OnboardingProfil({ onComplete }) {
   return (
     <div
       className="fixed inset-0 z-[95] flex items-end sm:items-center justify-center p-0 sm:p-4"
-      style={{ background: 'rgba(18,16,14,0.85)', backdropFilter: 'blur(8px)' }}
+      style={{ background: 'rgba(12,10,9,0.75)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' }}
       role="dialog" aria-modal="true" aria-label="Bienvenue — faisons connaissance"
     >
-      <div className="bg-cream w-full sm:max-w-md rounded-t-[2rem] sm:rounded-[2rem] overflow-hidden max-h-[92vh] flex flex-col animate-slide-up shadow-card-hover">
+      <div className="modal-panel sm:max-w-md max-h-[92vh] shadow-card-hover">
 
         {/* Header */}
         <div className="px-6 py-5 flex-shrink-0 text-cream text-center"
-             style={{ background: 'linear-gradient(135deg, #5c0d22 0%, #8c2f39 100%)' }}>
+             style={{ background: 'linear-gradient(135deg, #0C0A09 0%, #3a0616 60%, #5c0d22 100%)' }}>
           <div className="w-10 h-10 rounded-2xl bg-white/15 flex items-center justify-center mx-auto mb-2">
             <Wine size={18} className="text-gold-400" />
           </div>
-          <h3 className="font-serif text-xl font-bold">Bienvenue sur Œno !</h3>
+          <h3 className="font-serif text-xl font-medium">Bienvenue sur Œno !</h3>
           <p className="text-cream/70 text-xs mt-1">
             {results ? 'Voici 3 vins pour démarrer, choisis pour vous' : niveau ? `Encore ${questions.length - step} petite${questions.length - step > 1 ? 's' : ''} question${questions.length - step > 1 ? 's' : ''}…` : '5 questions max pour tout personnaliser pour vous.'}
           </p>
@@ -238,7 +238,7 @@ export default function OnboardingProfil({ onComplete }) {
               </div>
               <button
                 onClick={finish}
-                className="w-full mt-6 flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold text-cream bg-wine-800 shadow-wine hover:brightness-110 active:scale-[0.99] transition-all cursor-pointer"
+                className="w-full mt-6 flex items-center justify-center gap-2 py-3.5 rounded-full text-sm font-semibold text-cream bg-anthracite-950 hover:bg-anthracite-800 active:scale-[0.98] transition-all duration-300 cursor-pointer"
               >
                 Découvrir Œno <ArrowRight size={15} />
               </button>
@@ -253,7 +253,7 @@ export default function OnboardingProfil({ onComplete }) {
                   <button
                     key={o.id}
                     onClick={() => setNiveau(o.id)}
-                    className="w-full card p-4 flex items-center gap-4 text-left hover:-translate-y-0.5 hover:border-wine-300 transition-all cursor-pointer animate-scale-in"
+                    className="w-full choice-btn p-4 flex items-center gap-4 animate-scale-in"
                     style={{ animationDelay: `${i * 80}ms`, animationFillMode: 'both' }}
                   >
                     <span className="text-2xl">{o.emoji}</span>
@@ -271,7 +271,7 @@ export default function OnboardingProfil({ onComplete }) {
                 {questions.map((_, i) => (
                   <span key={i} className="rounded-full transition-all"
                         style={{ width: i === step ? 22 : 7, height: 7,
-                                 background: i <= step ? '#8c2f39' : '#e5e0d8' }} />
+                                 background: i <= step ? '#5c0d22' : '#e7e5e4' }} />
                 ))}
               </div>
               <h4 className="font-serif text-base font-bold text-anthracite-900 text-center mb-5">{currentQ.q}</h4>
@@ -280,7 +280,7 @@ export default function OnboardingProfil({ onComplete }) {
                   <button
                     key={o.label}
                     onClick={() => answer(currentQ.id, o.label)}
-                    className="w-full card p-3.5 flex items-center gap-3 text-left hover:-translate-y-0.5 hover:border-wine-300 transition-all cursor-pointer animate-scale-in"
+                    className="w-full choice-btn p-4 flex items-center gap-3 animate-scale-in"
                     style={{ animationDelay: `${i * 60}ms`, animationFillMode: 'both' }}
                   >
                     <span className="text-xl">{o.emoji}</span>

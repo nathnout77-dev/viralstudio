@@ -208,7 +208,7 @@ function WinePanel({ wine, onClose, onAddToCave, addedIds }) {
           Ajouter — millésime {millesime}
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1 border border-anthracite-200 rounded-lg bg-white overflow-hidden">
+          <div className="flex items-center gap-1 border border-anthracite-900/10 rounded-full bg-white overflow-hidden">
             <button onClick={() => setQty(q => Math.max(1, q - 1))}
                     className="w-8 h-8 flex items-center justify-center text-anthracite-500 hover:text-wine-700 hover:bg-anthracite-50 transition-all cursor-pointer text-lg leading-none">−</button>
             <span className="w-8 text-center text-sm font-semibold text-anthracite-900">{qty}</span>
@@ -301,6 +301,7 @@ export default function InteractiveMap({ onAddWine }) {
           <MapPin size={18} className="text-gold-400" />
         </div>
         <div>
+          <span className="eyebrow mb-1">Le voyage</span>
           <h2 className="section-title">Carte des Vignobles</h2>
           <p className="section-sub">{WINE_DB.length} appellations — cliquez pour explorer et ajouter à votre cave</p>
         </div>

@@ -92,6 +92,7 @@ export default function AccordsView() {
           <UtensilsCrossed size={18} className="text-gold-400" />
         </div>
         <div>
+          <span className="eyebrow mb-1">L'art de la table</span>
           <h2 className="section-title">Accords Mets-Vins</h2>
           <p className="section-sub">Sélectionnez un plat pour découvrir les meilleurs accords</p>
         </div>

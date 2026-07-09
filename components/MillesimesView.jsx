@@ -129,6 +129,7 @@ export default function MillesimesView() {
           <BookOpen size={18} className="text-gold-400" />
         </div>
         <div>
+          <span className="eyebrow mb-1">Les grandes années</span>
           <h2 className="section-title">Guide des Millésimes</h2>
           <p className="section-sub">Base œnologique complète — {MILLESIMES_DB.length} millésimes analysés</p>
         </div>
@@ -194,7 +195,7 @@ export default function MillesimesView() {
               <select
                 value={value}
                 onChange={e => onChange(e.target.value)}
-                className="pl-3 pr-8 py-2 bg-white border border-anthracite-200 rounded-lg text-xs text-anthracite-700 focus:outline-none focus:ring-2 focus:ring-gold-500/40 cursor-pointer appearance-none transition-all"
+                className="pl-3 pr-8 py-2 bg-white border border-anthracite-900/10 rounded-full text-xs text-anthracite-700 focus:outline-none focus:ring-2 focus:ring-gold-600/40 cursor-pointer appearance-none transition-all"
               >
                 {options.map(o => <option key={o}>{o}</option>)}
               </select>

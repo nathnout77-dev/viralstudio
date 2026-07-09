@@ -2,18 +2,18 @@ import { Wine, Star, Clock, Thermometer, Edit2, Trash2, Plus, Minus } from 'luci
 import { useState } from 'react'
 
 const TYPE_CONFIG = {
-  red:       { label: 'Rouge',       color: '#72102a', bg: 'bg-wine-100',    text: 'text-wine-800',     dot: 'bg-wine-700' },
-  white:     { label: 'Blanc',       color: '#b8962a', bg: 'bg-amber-50',    text: 'text-amber-800',    dot: 'bg-amber-500' },
-  rosé:      { label: 'Rosé',        color: '#e45872', bg: 'bg-pink-50',     text: 'text-pink-700',     dot: 'bg-pink-400' },
-  sparkling: { label: 'Effervescent',color: '#3b82f6', bg: 'bg-blue-50',     text: 'text-blue-700',     dot: 'bg-blue-400' },
-  sweet:     { label: 'Liquoreux',   color: '#92400e', bg: 'bg-amber-100',   text: 'text-amber-900',    dot: 'bg-amber-700' },
+  red:       { label: 'Rouge',       color: '#72102a', cls: 'border-wine-800/25 text-wine-800',   dot: 'bg-wine-700' },
+  white:     { label: 'Blanc',       color: '#b8962a', cls: 'border-gold-600/30 text-gold-700',   dot: 'bg-gold-500' },
+  rosé:      { label: 'Rosé',        color: '#e45872', cls: 'border-pink-700/25 text-pink-800',   dot: 'bg-pink-400' },
+  sparkling: { label: 'Effervescent',color: '#3b82f6', cls: 'border-blue-700/25 text-blue-800',   dot: 'bg-blue-400' },
+  sweet:     { label: 'Liquoreux',   color: '#92400e', cls: 'border-amber-800/30 text-amber-900', dot: 'bg-amber-700' },
 }
 
 function TypeBadge({ type }) {
   const cfg = TYPE_CONFIG[type] || TYPE_CONFIG.red
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${cfg.bg} ${cfg.text}`}>
-      <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
+    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.12em] border ${cfg.cls}`}>
+      <span className={`w-1 h-1 rounded-full ${cfg.dot}`} />
       {cfg.label}
     </span>
   )
@@ -24,9 +24,9 @@ function DrinkingWindow({ wine }) {
   const start = wine.vintage + (wine.drinkFrom || 2)
   const end   = wine.vintage + (wine.drinkUntil || 8)
 
-  if (now < start)  return <span className="text-[10px] font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">Trop jeune · {start - now} ans</span>
-  if (now > end)    return <span className="text-[10px] font-medium text-anthracite-400 bg-anthracite-100 px-2 py-0.5 rounded-full">Passé l'apogée</span>
-  return <span className="text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">À boire · jusqu'à {end}</span>
+  if (now < start)  return <span className="inline-flex px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.1em] border border-blue-700/25 text-blue-800">Trop jeune · {start - now} ans</span>
+  if (now > end)    return <span className="inline-flex px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.1em] border border-anthracite-900/15 text-anthracite-500">Passé l'apogée</span>
+  return <span className="inline-flex px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.1em] border border-emerald-800/25 text-emerald-800">À boire · jusqu'à {end}</span>
 }
 
 export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty, compact = false }) {
@@ -42,7 +42,7 @@ export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty
     return (
       <div
         onClick={() => onSelect?.(wine)}
-        className="card p-4 cursor-pointer hover:border-gold-500/30 group animate-fade-in"
+        className="card p-5 cursor-pointer hover:border-anthracite-900/20 hover:-translate-y-0.5 active:scale-[0.98] group animate-fade-in"
         role="button" tabIndex={0}
         onKeyDown={e => e.key === 'Enter' && onSelect?.(wine)}
         aria-label={`${wine.name} ${wine.vintage}`}
@@ -70,10 +70,10 @@ export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty
   }
 
   return (
-    <div className="card group animate-slide-up overflow-hidden hover:border-gold-500/20">
+    <div className="card group animate-slide-up overflow-hidden hover:border-anthracite-900/15">
       {/* Bottle visual strip */}
       <div
-        className="h-1.5 w-full"
+        className="h-1 w-full"
         style={{ background: `linear-gradient(90deg, ${bottleColor} 0%, ${bottleColor}88 100%)` }}
       />
 
@@ -100,11 +100,11 @@ export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty
         {/* Badges */}
         <div className="flex flex-wrap items-center gap-1.5 mb-3">
           <TypeBadge type={wine.type} />
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-anthracite-100 text-anthracite-700">
+          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.12em] border border-anthracite-900/15 text-anthracite-600">
             {wine.vintage}
           </span>
           {wine.appellation && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-anthracite-50 text-anthracite-600 border border-anthracite-200">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.12em] border border-anthracite-900/15 text-anthracite-500">
               {wine.appellation}
             </span>
           )}
@@ -140,7 +140,7 @@ export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty
             <button
               onClick={(e) => { e.stopPropagation(); onUpdateQty?.(wine, -1) }}
               disabled={wine.quantity <= 0}
-              className="w-7 h-7 flex items-center justify-center rounded-lg border border-anthracite-200 text-anthracite-600 hover:border-wine-300 hover:text-wine-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
+              className="w-7 h-7 flex items-center justify-center rounded-full border border-anthracite-900/15 text-anthracite-600 hover:border-anthracite-900/40 hover:text-anthracite-950 disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
               aria-label="Retirer une bouteille"
             >
               <Minus size={11} />
@@ -151,7 +151,7 @@ export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty
             </div>
             <button
               onClick={(e) => { e.stopPropagation(); onUpdateQty?.(wine, +1) }}
-              className="w-7 h-7 flex items-center justify-center rounded-lg border border-anthracite-200 text-anthracite-600 hover:border-wine-300 hover:text-wine-700 transition-all cursor-pointer"
+              className="w-7 h-7 flex items-center justify-center rounded-full border border-anthracite-900/15 text-anthracite-600 hover:border-anthracite-900/40 hover:text-anthracite-950 transition-all cursor-pointer"
               aria-label="Ajouter une bouteille"
             >
               <Plus size={11} />
@@ -168,14 +168,14 @@ export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty
           <div className="flex items-center gap-1">
             <button
               onClick={(e) => { e.stopPropagation(); onEdit?.(wine) }}
-              className="w-8 h-8 flex items-center justify-center rounded-lg text-anthracite-400 hover:text-wine-700 hover:bg-wine-50 transition-all cursor-pointer"
+              className="w-8 h-8 flex items-center justify-center rounded-full text-anthracite-400 hover:text-wine-800 hover:bg-wine-50 transition-all cursor-pointer"
               aria-label="Modifier"
             >
               <Edit2 size={13} />
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); onDelete?.(wine.id) }}
-              className="w-8 h-8 flex items-center justify-center rounded-lg text-anthracite-400 hover:text-red-600 hover:bg-red-50 transition-all cursor-pointer"
+              className="w-8 h-8 flex items-center justify-center rounded-full text-anthracite-400 hover:text-red-700 hover:bg-red-50 transition-all cursor-pointer"
               aria-label="Supprimer"
             >
               <Trash2 size={13} />

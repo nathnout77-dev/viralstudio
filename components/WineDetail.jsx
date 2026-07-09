@@ -60,12 +60,12 @@ export default function WineDetail({ wine, onClose, onEdit }) {
   return (
     <div
       className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4"
-      style={{ background: 'rgba(17,21,22,0.7)', backdropFilter: 'blur(4px)' }}
+      style={{ background: 'rgba(12,10,9,0.55)', backdropFilter: 'blur(8px)' }}
       onClick={onClose}
       role="dialog" aria-modal="true" aria-label={`Fiche : ${wine.name}`}
     >
       <div
-        className="bg-cream w-full sm:max-w-lg rounded-t-3xl sm:rounded-2xl overflow-hidden max-h-[92vh] flex flex-col animate-slide-up"
+        className="modal-panel sm:max-w-lg max-h-[92vh] shadow-card-hover"
         onClick={e => e.stopPropagation()}
       >
         {/* Hero */}
