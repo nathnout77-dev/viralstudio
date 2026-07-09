@@ -218,6 +218,25 @@
   .choice-btn.selected { background: #1C1917; border-color: #1C1917; color: #FAFAF9; }
 }
 
+/* ── Landing cinématique (préfixe .lp- pour éviter les collisions) ──────────
+   Scènes épinglées façon keynote : wrapper haut (250-300vh) + écran sticky.
+   100svh (fallback 100vh) pour rester juste sur mobile avec barres d'outils. */
+.lp-screen {
+  height: 100vh;
+  height: 100svh;
+}
+.lp-min-screen {
+  min-height: 100vh;
+  min-height: 100svh;
+}
+.lp-pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+
 /* Landing page noise overlay */
 .bg-noise::after {
   content: '';
