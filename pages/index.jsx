@@ -78,6 +78,7 @@ export default function App() {
   const [showAssistant, setShowAssistant] = useState(false)
   const [profil, setProfil]           = useState(null)
   const [showOnboarding, setShowOnboarding] = useState(false)
+  const [librarySearch, setLibrarySearch] = useState('')
 
   useEffect(() => {
     const saved = localStorage.getItem('oenotheque-v2')
@@ -108,9 +109,10 @@ export default function App() {
     if (!loadProfil()) setShowOnboarding(true)
   }, [])
 
-  const handleTabChange = useCallback((newTab) => {
+  const handleTabChange = useCallback((newTab, searchTerm) => {
     sessionStorage.setItem('landing-seen', '1')
     setShowLanding(false)
+    setLibrarySearch(searchTerm || '')
     setTab(newTab)
     if (!loadProfil()) setShowOnboarding(true)
   }, [])
@@ -220,10 +222,10 @@ export default function App() {
               onUpdateQty={updateQty}
             />
           )}
-          {tab === 'vins'      && <BibliothequeView onAddWine={saveWine} mode={mode} />}
+          {tab === 'vins'      && <BibliothequeView onAddWine={saveWine} mode={mode} initialSearch={librarySearch} />}
           {tab === 'carte'     && <InteractiveMap onAddWine={saveWine} />}
           {tab === 'sommelier' && <SommelierForm onOpenBibliotheque={() => setTab('vins')} />}
-          {tab === 'guide'     && <GuideView />}
+          {tab === 'guide'     && <GuideView onAddWine={saveWine} />}
         </main>
 
         {detailWine && (

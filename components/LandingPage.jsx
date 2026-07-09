@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Wine, Library, MapPin, Sparkles, BookOpen, ChevronDown, Utensils, ArrowRight } from 'lucide-react'
-import { WINE_DB, MILLESIMES_DB } from '../data/wineDatabase'
+import { WINE_DB, MILLESIMES_DB, CONFIDENTIEL_DOMAINES } from '../data/wineDatabase'
+import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
 
 // ── Compteur animé ────────────────────────────────────────────────────────────
 function useCountUp(target, duration = 1600, start = false) {
@@ -86,6 +87,14 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir }) {
   const nDomaines  = useCountUp(WINE_DB.reduce((s, w) => s + w.domaines.length, 0), 1800, statsOn)
   const nMillesimes = useCountUp(MILLESIMES_DB.length, 2100, statsOn)
   const nCepages   = useCountUp(new Set(WINE_DB.flatMap(w => w.cepages)).size, 1600, statsOn)
+
+  // ── Domaine du moment ── rotation déterministe par jour du mois, stable dans la journée.
+  const domaineDuMoment = CONFIDENTIEL_DOMAINES.length
+    ? CONFIDENTIEL_DOMAINES[new Date().getDate() % CONFIDENTIEL_DOMAINES.length]
+    : null
+  const domaineWine = domaineDuMoment
+    ? WINE_DB.find(w => w.id === domaineDuMoment.wines[0].id)
+    : null
 
   const features = [
     { icon: Utensils, title: '« Ce soir, je bois quoi ? »', desc: 'Dites-nous juste ce que vous mangez. 3 vins, 10 secondes, zéro jargon.', action: onCeSoir, cta: 'Essayer', color: '#8c2f39' },
@@ -195,6 +204,37 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir }) {
           </div>
         </div>
       </section>
+
+      {/* ── DOMAINE DU MOMENT ── */}
+      {domaineDuMoment && domaineWine && (
+        <section data-reveal-zone className="py-20 px-6 sm:px-10" style={{ background: '#17130f' }}>
+          <div className="max-w-4xl mx-auto">
+            <p className="text-gold-400 text-xs font-bold uppercase tracking-widest mb-4 reveal text-center">Aujourd'hui, on met en lumière</p>
+            <div className="reveal reveal-delay-1 card-glass-warm p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6">
+              <div className="flex-shrink-0">
+                <WineGlassAnim color={domaineWine.color} fillLevel={fillLevelFromJauges(domaineWine.jauges)} size={64} />
+              </div>
+              <div className="min-w-0 flex-1 text-center sm:text-left">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-gold-500/15 text-gold-400 mb-2">
+                  <Sparkles size={10} /> Petit domaine
+                </div>
+                <h3 className="font-wine-name text-4xl text-cream">{domaineDuMoment.name}</h3>
+                <p className="text-anthracite-400 text-xs mt-1">{domaineDuMoment.appellations.join(', ')} · {domaineDuMoment.regions.join(', ')}</p>
+                <p className="text-anthracite-300 text-sm leading-relaxed mt-3 italic">« {domaineDuMoment.histoire} »</p>
+                <button
+                  onClick={() => onTabChange('vins', domaineDuMoment.name)}
+                  className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm text-anthracite-950 cursor-pointer hover:-translate-y-0.5 transition-all"
+                  style={{ background: 'linear-gradient(135deg, #d4a847 0%, #c9a84c 50%, #b8962a 100%)' }}
+                >
+                  <Wine size={14} />
+                  Découvrir sa fiche
+                  <ArrowRight size={13} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── FEATURES ── */}
       <section data-reveal-zone className="py-24 px-6 sm:px-10"

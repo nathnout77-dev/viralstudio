@@ -1,8 +1,9 @@
 import { useState, useMemo } from 'react'
-import { Library, Search, X, Plus, Check, Thermometer, Clock, Wine, MapPin, ChevronDown, ExternalLink } from 'lucide-react'
+import { Library, Search, X, Plus, Check, Thermometer, Clock, Wine, MapPin, ChevronDown, ExternalLink, Sparkles } from 'lucide-react'
 import { WINE_DB, REGIONS_LIST, DIFFICULTE_CONFIG, MILLESIMES_DB, gardeForMillesime } from '../data/wineDatabase'
 import JaugesGout from './JaugesGout'
 import Terme from './Tooltip'
+import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
 
 const TYPE_FILTERS = [
   { value: 'all',       label: 'Tous' },
@@ -35,6 +36,8 @@ export function FicheVin({ wine, onClose, onAddToCave, added }) {
   const addedSet = added || new Set()
   const isAdded = addedSet.has(`${wine.id}-${millesime}`)
   const garde = gardeForMillesime(wine, millesime)
+  const petitsDomaines = wine.domaines.filter(d => d.confidentiel)
+  const hasPetitDomaine = petitsDomaines.length > 0
 
   return (
     <div
@@ -48,24 +51,37 @@ export function FicheVin({ wine, onClose, onAddToCave, added }) {
         onClick={e => e.stopPropagation()}
       >
         {/* Header coloré */}
-        <div className="p-6 pb-5 flex-shrink-0 relative overflow-hidden" style={{ background: wine.color }}>
+        <div
+          className="p-6 pb-5 flex-shrink-0 relative overflow-hidden"
+          style={{ background: `linear-gradient(150deg, ${wine.color} 0%, ${wine.color}cc 55%, #1e2426 145%)` }}
+        >
           <div className="absolute -top-8 -right-8 text-[120px] opacity-15 select-none leading-none">{wine.emoji}</div>
-          <div className="relative">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <div className="text-3xl mb-1.5">{wine.emoji}</div>
-                <h3 className="font-wine-name text-5xl text-cream">{wine.appellation}</h3>
-                <p className="text-cream/70 text-sm mt-1 flex items-center gap-1.5">
-                  <MapPin size={11} /> {wine.region} · {wine.typeLabel}
-                </p>
+          <div className="relative flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className="text-3xl mb-1.5">{wine.emoji}</div>
+                  <h3 className="font-wine-name text-5xl text-cream">{wine.appellation}</h3>
+                  <p className="text-cream/70 text-sm mt-1 flex items-center gap-1.5">
+                    <MapPin size={11} /> {wine.region} · {wine.typeLabel}
+                  </p>
+                </div>
               </div>
+              <p className="text-cream/90 font-medium italic mt-3 text-sm">« {wine.enUneMot} »</p>
+              {hasPetitDomaine && (
+                <span className="inline-flex items-center gap-1 mt-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/20 text-cream backdrop-blur-sm">
+                  <Sparkles size={10} /> Petit domaine
+                </span>
+              )}
+            </div>
+            <div className="flex flex-col items-center gap-2 flex-shrink-0">
+              <WineGlassAnim color="#f5f0e8" fillLevel={fillLevelFromJauges(wine.jauges)} size={44} />
               <button onClick={onClose}
                       className="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/35 text-cream transition-all cursor-pointer"
                       aria-label="Fermer">
                 <X size={14} />
               </button>
             </div>
-            <p className="text-cream/90 font-medium italic mt-3 text-sm">« {wine.enUneMot} »</p>
           </div>
         </div>
 
@@ -141,13 +157,23 @@ export function FicheVin({ wine, onClose, onAddToCave, added }) {
           {wine.domaines.length > 0 && (
             <div>
               <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-2">Noms à retenir chez le caviste</div>
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 {wine.domaines.map(d => (
                   <div key={d.name} className="flex items-start gap-2">
                     <Wine size={10} className="mt-1 flex-shrink-0" style={{ color: wine.color }} />
                     <div className="min-w-0 flex-1">
-                      <span className="font-wine-name text-xl text-anthracite-800">{d.name}</span>
-                      <span className="text-[11px] text-anthracite-400"> — {d.note}</span>
+                      <div>
+                        <span className="font-wine-name text-xl text-anthracite-800">{d.name}</span>
+                        <span className="text-[11px] text-anthracite-400"> — {d.note}</span>
+                        {d.confidentiel && (
+                          <span className="ml-1.5 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-gold-500/15 text-gold-700 align-middle">
+                            <Sparkles size={8} /> Petit domaine
+                          </span>
+                        )}
+                      </div>
+                      {d.histoire && (
+                        <p className="text-[11px] text-anthracite-500 italic mt-0.5 leading-relaxed">{d.histoire}</p>
+                      )}
                     </div>
                     <a
                       href={`https://www.google.com/search?q=${encodeURIComponent(`${d.name} ${wine.appellation} site officiel`)}`}
@@ -219,6 +245,7 @@ export function FicheVin({ wine, onClose, onAddToCave, added }) {
 // ── Card compacte ──────────────────────────────────────────────────────────────
 function VinCard({ wine, onClick, index }) {
   const diff = DIFFICULTE_CONFIG[wine.difficulte]
+  const hasPetitDomaine = wine.domaines.some(d => d.confidentiel)
   return (
     <button
       onClick={onClick}
@@ -239,22 +266,29 @@ function VinCard({ wine, onClick, index }) {
       </div>
       <p className="text-xs text-anthracite-500 italic mb-3 line-clamp-1">« {wine.enUneMot} »</p>
       <JaugesGout jauges={wine.jauges} compact animate={false} />
-      <div className="flex items-center justify-between mt-3">
+      <div className="flex items-center justify-between mt-3 gap-2">
         <span
           className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold"
           style={{ background: diff.bg, color: diff.color }}
         >
           {diff.emoji} {diff.label}
         </span>
-        <span className="w-2.5 h-2.5 rounded-full" style={{ background: wine.color }} title={wine.typeLabel} />
+        <div className="flex items-center gap-1.5">
+          {hasPetitDomaine && (
+            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-gold-500/15 text-gold-700" title="Contient un petit domaine">
+              ✨
+            </span>
+          )}
+          <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: wine.color }} title={wine.typeLabel} />
+        </div>
       </div>
     </button>
   )
 }
 
 // ── Vue principale ─────────────────────────────────────────────────────────────
-export default function BibliothequeView({ onAddWine, mode }) {
-  const [search, setSearch]   = useState('')
+export default function BibliothequeView({ onAddWine, mode, initialSearch = '' }) {
+  const [search, setSearch]   = useState(initialSearch)
   const [type, setType]       = useState('all')
   const [budget, setBudget]   = useState('all')
   // Mode Débutant : vins « faciles à aimer » proposés en premier (filtre modifiable)

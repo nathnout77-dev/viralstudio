@@ -1,12 +1,14 @@
 import { useState } from 'react'
-import { GlassWater, BookOpen, GraduationCap } from 'lucide-react'
+import { GlassWater, BookOpen, GraduationCap, MapPin } from 'lucide-react'
 import AccordsView from './AccordsView'
 import MillesimesView from './MillesimesView'
+import DomainesView from './DomainesView'
 import { GLOSSAIRE_LIST } from '../data/glossaire'
 
 const SUBTABS = [
   { id: 'accords',    label: 'Accords mets-vins', Icon: GlassWater },
   { id: 'millesimes', label: 'Millésimes',        Icon: BookOpen },
+  { id: 'domaines',   label: 'Domaines',          Icon: MapPin },
   { id: 'lexique',    label: 'Lexique décodé',    Icon: GraduationCap },
 ]
 
@@ -34,7 +36,7 @@ function LexiqueView() {
   )
 }
 
-export default function GuideView() {
+export default function GuideView({ onAddWine }) {
   const [sub, setSub] = useState('accords')
 
   return (
@@ -59,6 +61,7 @@ export default function GuideView() {
 
       {sub === 'accords'    && <AccordsView />}
       {sub === 'millesimes' && <MillesimesView />}
+      {sub === 'domaines'   && <DomainesView onAddWine={onAddWine} />}
       {sub === 'lexique'    && <LexiqueView />}
     </div>
   )

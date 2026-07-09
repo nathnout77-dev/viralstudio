@@ -402,7 +402,7 @@ export const WINE_DB = [
     accords: ['Grillades', 'Saucisse-lentilles', 'Fromages moyens'],
     domaines: [
       { name: 'Alain Graillot', note: 'La référence du cru' },
-      { name: 'Domaine Combier', note: 'Bio, fruité éclatant' },
+      { name: 'Domaine Combier', note: 'Bio, fruité éclatant', confidentiel: true, histoire: 'Une poignée d\'hectares sur les coteaux de Crozes, vinifiés à la main par une équipe qui tient encore sur les doigts d\'une main.' },
     ],
     lat: 45.05, lng: 4.87,
     description: 'Le petit frère de l\'Hermitage : mêmes cépages, prix divisé par cinq. Excellent premier vin du Rhône.',
@@ -477,7 +477,7 @@ export const WINE_DB = [
     temperature: '16-17°C', serviceTemp: 16,
     accords: ['Grillades', 'Pizza', 'Plats mijotés'],
     domaines: [
-      { name: 'Domaine La Monardière', note: 'Bio, excellent rapport Q/P' },
+      { name: 'Domaine La Monardière', note: 'Bio, excellent rapport Q/P', confidentiel: true, histoire: 'La famille Archimbaud cultive ses vieilles vignes en bio depuis des décennies, loin des projecteurs du Rhône.' },
       { name: 'Domaine Le Sang des Cailloux', note: 'Caractère authentique' },
     ],
     lat: 44.14, lng: 4.98,
@@ -537,7 +537,7 @@ export const WINE_DB = [
     accords: ['Volaille à la crème', 'Fromages de chèvre', 'Tarte Tatin'],
     domaines: [
       { name: 'Domaine Huet', note: 'Biodynamie légendaire' },
-      { name: 'Vincent Carême', note: 'Nouvelle génération brillante' },
+      { name: 'Vincent Carême', note: 'Nouvelle génération brillante', confidentiel: true, histoire: 'Un vigneron parti de zéro à Vouvray, qui a bâti son petit domaine parcelle après parcelle.' },
     ],
     lat: 47.41, lng: 0.80,
     description: 'Sec, demi-sec, moelleux ou bulles : Vouvray fait tout, et vieillit mieux que presque tous les blancs de France.',
@@ -575,7 +575,7 @@ export const WINE_DB = [
     accords: ['Viandes blanches', 'Charcuterie', 'Lentilles'],
     domaines: [
       { name: 'Domaine Yannick Amirault', note: 'Le maître du cru' },
-      { name: 'Domaine de la Butte', note: 'Jacky Blot — précision' },
+      { name: 'Domaine de la Butte', note: 'Jacky Blot — précision', confidentiel: true, histoire: 'Jacky Blot vinifie ses vignes de Bourgueil à la main, sur un domaine resté artisanal malgré sa renommée.' },
     ],
     lat: 47.28, lng: 0.17,
     description: 'Même cépage que Chinon, un peu plus de mâche. Excellent rouge de table au quotidien.',
@@ -594,7 +594,7 @@ export const WINE_DB = [
     accords: ['Huîtres', 'Moules-frites', 'Poisson grillé'],
     domaines: [
       { name: 'Domaine de la Pépière', note: 'Le Muscadet devenu culte' },
-      { name: 'Jo Landron', note: 'Bio, précis, salin' },
+      { name: 'Jo Landron', note: 'Bio, précis, salin', confidentiel: true, histoire: 'Un vigneron nantais qui a converti son domaine en bio dès les années 90, quand personne n\'y croyait encore.' },
     ],
     lat: 47.13, lng: -1.35,
     description: 'Léger, salin, à 7€ : le compagnon parfait des huîtres. Les meilleures cuvées vieillissent étonnamment bien.',
@@ -712,7 +712,7 @@ export const WINE_DB = [
     accords: ['Charcuterie lyonnaise', 'Volaille', 'Pot-au-feu'],
     domaines: [
       { name: 'Jean Foillard', note: 'Côte du Py — culte absolu' },
-      { name: 'Marcel Lapierre', note: 'Pionnier du vin nature' },
+      { name: 'Marcel Lapierre', note: 'Pionnier du vin nature', confidentiel: true, histoire: 'Le domaine qui a inventé le Beaujolais nature dans un garage du village, sans jamais chercher à grossir.' },
     ],
     lat: 46.15, lng: 4.67,
     description: 'Le cru star du Beaujolais. Structure, profondeur, et ce fruit éclatant du Gamay. Rapport plaisir/prix imbattable.',
@@ -769,7 +769,7 @@ export const WINE_DB = [
     accords: ['Apéritif', 'Barbecue', 'Charcuterie', 'Pizza'],
     domaines: [
       { name: 'Château Thivin', note: 'Côte de Brouilly remarquable' },
-      { name: 'Domaine Laurent Martray', note: 'Fruit croquant' },
+      { name: 'Domaine Laurent Martray', note: 'Fruit croquant', confidentiel: true, histoire: 'Un petit domaine familial du Beaujolais qui vend l\'essentiel de sa production en direct, à la propriété.' },
     ],
     lat: 46.10, lng: 4.65,
     description: 'Le plus grand cru en surface, le plus facile à boire. Servez-le frais : c\'est le rouge de l\'été.',
@@ -828,7 +828,7 @@ export const WINE_DB = [
     accords: ['Bouillabaisse', 'Poissons grillés', 'Aïoli'],
     domaines: [
       { name: 'Clos Sainte Magdeleine', note: 'Face aux calanques' },
-      { name: 'Domaine du Bagnol', note: 'Précision saline' },
+      { name: 'Domaine du Bagnol', note: 'Précision saline', confidentiel: true, histoire: 'Le plus discret des deux domaines de Cassis, quelques hectares en terrasses face à la mer.' },
     ],
     lat: 43.21, lng: 5.54,
     description: 'Le village des calanques produit un blanc iodé rare. LE vin de la bouillabaisse depuis toujours.',
@@ -867,7 +867,7 @@ export const WINE_DB = [
     temperature: '15-17°C', serviceTemp: 16,
     accords: ['Grillades', 'Cassoulet', 'Fromages de caractère'],
     domaines: [
-      { name: 'Domaine Léon Barral', note: 'Nature, culte' },
+      { name: 'Domaine Léon Barral', note: 'Nature, culte', confidentiel: true, histoire: 'Un vigneron biodynamiste qui laboure encore avec ses chevaux, sur un domaine minuscule devenu culte malgré lui.' },
       { name: 'Château des Estanilles', note: 'Modernité maîtrisée' },
     ],
     lat: 43.57, lng: 3.19,
@@ -886,8 +886,8 @@ export const WINE_DB = [
     temperature: '15-16°C', serviceTemp: 15,
     accords: ['Pizza', 'Pâtes bolognaise', 'Grillades', 'Tajine'],
     domaines: [
-      { name: 'Mas Champart', note: 'Finesse rare dans la région' },
-      { name: 'Domaine Rimbert', note: 'Carignan de schiste plein de vie' },
+      { name: 'Mas Champart', note: 'Finesse rare dans la région', confidentiel: true, histoire: 'Un couple de vignerons installé sur quelques hectares isolés, loin des grandes caves coopératives du secteur.' },
+      { name: 'Domaine Rimbert', note: 'Carignan de schiste plein de vie', confidentiel: true, histoire: 'Jean-Marie Rimbert vinifie seul ses vieilles vignes de Carignan plantées sur les pentes de schiste.' },
     ],
     lat: 43.42, lng: 2.95,
     description: 'Simple, généreux, ensoleillé : le rouge du mardi soir qui met tout le monde d\'accord.',
@@ -906,7 +906,7 @@ export const WINE_DB = [
     accords: ['Cassoulet', 'Confit de canard', 'Viandes en sauce'],
     domaines: [
       { name: 'Domaine Gayda', note: 'Modernité internationale' },
-      { name: 'Clos Centeilles', note: 'Cépages oubliés ressuscités' },
+      { name: 'Clos Centeilles', note: 'Cépages oubliés ressuscités', confidentiel: true, histoire: 'Un couple d\'agronomes qui a replanté des cépages disparus sur quelques parcelles oubliées du Minervois.' },
     ],
     lat: 43.34, lng: 2.62,
     description: 'Premier "cru" officiel du Languedoc. Profondeur et velours à prix encore confidentiel.',
@@ -965,7 +965,7 @@ export const WINE_DB = [
     accords: ['Côte de bœuf', 'Garbure', 'Fromages de brebis puissants'],
     domaines: [
       { name: 'Château Montus', note: 'Alain Brumont — le "Pétrus du Sud-Ouest"' },
-      { name: 'Domaine Berthoumieu', note: 'Tradition généreuse' },
+      { name: 'Domaine Berthoumieu', note: 'Tradition généreuse', confidentiel: true, histoire: 'Une famille de vignerons du Madiran qui cultive ses parcelles de génération en génération, sans jamais s\'agrandir.' },
     ],
     lat: 43.55, lng: -0.06,
     description: 'Le Tannat porte bien son nom : tanins XXL. Carafez-le longtemps, servez une côte de bœuf, et c\'est la fête.',
@@ -984,7 +984,7 @@ export const WINE_DB = [
     accords: ['Foie gras', 'Fromage de brebis + confiture de cerise', 'Desserts aux fruits exotiques'],
     domaines: [
       { name: 'Domaine Cauhapé', note: 'Quintessence légendaire' },
-      { name: 'Clos Lapeyre', note: 'Bio, montagne, précision' },
+      { name: 'Clos Lapeyre', note: 'Bio, montagne, précision', confidentiel: true, histoire: 'Un petit clos accroché aux coteaux du Jurançon, cultivé en bio par une seule famille depuis toujours.' },
     ],
     lat: 43.28, lng: -0.42,
     description: 'Face aux Pyrénées, un vin doux plein de fruits exotiques ET de fraîcheur. L\'accord brebis-confiture est culte.',
@@ -1002,8 +1002,8 @@ export const WINE_DB = [
     temperature: '15-16°C', serviceTemp: 15,
     accords: ['Saucisse de Toulouse', 'Cassoulet', 'Charcuterie'],
     domaines: [
-      { name: 'Domaine Plageoles', note: 'Gardien des cépages anciens' },
-      { name: 'Domaine Rotier', note: 'Modernité soignée' },
+      { name: 'Domaine Plageoles', note: 'Gardien des cépages anciens', confidentiel: true, histoire: 'La famille Plageoles a passé sa vie à sauver des cépages tarnais oubliés, sur un domaine resté à taille humaine.' },
+      { name: 'Domaine Rotier', note: 'Modernité soignée', confidentiel: true, histoire: 'Un domaine familial du Gaillac qui cultive ses vignes en agriculture raisonnée, à taille humaine.' },
     ],
     lat: 43.90, lng: 1.90,
     description: 'Un des plus vieux vignobles de France avec des cépages introuvables ailleurs : Braucol, Duras, Mauzac…',
@@ -1021,7 +1021,7 @@ export const WINE_DB = [
     temperature: '16-17°C', serviceTemp: 16,
     accords: ['Axoa de veau', 'Piperade', 'Ossau-Iraty'],
     domaines: [
-      { name: 'Domaine Arretxea', note: 'Biodynamie en terrasses' },
+      { name: 'Domaine Arretxea', note: 'Biodynamie en terrasses', confidentiel: true, histoire: 'Un couple de vignerons basques qui cultive à la main des parcelles en terrasses trop pentues pour les tracteurs.' },
       { name: 'Domaine Brana', note: 'Pionnier de la renaissance' },
     ],
     lat: 43.18, lng: -1.28,
@@ -1043,7 +1043,7 @@ export const WINE_DB = [
     accords: ['Poulet aux morilles et vin jaune', 'Comté vieux', 'Curry'],
     domaines: [
       { name: 'Domaine Macle', note: 'Château-Chalon de légende' },
-      { name: 'Domaine Berthet-Bondet', note: 'Référence accessible' },
+      { name: 'Domaine Berthet-Bondet', note: 'Référence accessible', confidentiel: true, histoire: 'Un domaine familial installé à Château-Chalon qui produit son vin jaune en toute discrétion depuis les années 80.' },
     ],
     lat: 46.75, lng: 5.59,
     description: '6 ans et 3 mois sous un voile de levures, sans ouillage. Goût de noix et curry unique au monde. Garde quasi illimitée.',
@@ -1489,8 +1489,8 @@ export const WINE_DB = [
     temperature: '10-12°C', serviceTemp: 11,
     accords: ['Fruits de mer', 'Asperges', 'Chèvre frais'],
     domaines: [
-      { name: 'Domaine Mardon', note: 'Précision aromatique' },
-      { name: 'Domaine Jacques Rouzé', note: 'Fruité éclatant' },
+      { name: 'Domaine Mardon', note: 'Précision aromatique', confidentiel: true, histoire: 'Une famille de vignerons installée sur cette minuscule appellation depuis plusieurs générations.' },
+      { name: 'Domaine Jacques Rouzé', note: 'Fruité éclatant', confidentiel: true, histoire: 'Un petit domaine familial de Quincy, la plus confidentielle des appellations du Cher.' },
     ],
     lat: 47.05, lng: 2.15,
     description: 'La plus ancienne AOC du Cher, presque confidentielle. Un Sauvignon très aromatique, à découvrir.',
@@ -1547,7 +1547,7 @@ export const WINE_DB = [
     accords: ['Volaille à la crème', 'Fromages de chèvre', 'Poisson de rivière'],
     domaines: [
       { name: 'Domaine de la Taille aux Loups', note: 'Jacky Blot — précision magistrale' },
-      { name: 'Domaine Delétang', note: 'Style pur, bio' },
+      { name: 'Domaine Delétang', note: 'Style pur, bio', confidentiel: true, histoire: 'Un petit domaine bio de Montlouis, tenu par une famille qui préfère la précision au volume.' },
     ],
     lat: 47.36, lng: 0.85,
     description: 'De l\'autre côté de la Loire face à Vouvray, même Chenin, un style souvent plus vif et pointu.',
@@ -1645,8 +1645,8 @@ export const WINE_DB = [
     temperature: '9-11°C', serviceTemp: 10,
     accords: ['Apéritif', 'Asperges', 'Poisson léger'],
     domaines: [
-      { name: 'Domaine Sylvie Spielmann', note: 'Style pur et précis' },
-      { name: 'Domaine Kreydenweiss', note: 'Biodynamie, grande finesse' },
+      { name: 'Domaine Sylvie Spielmann', note: 'Style pur et précis', confidentiel: true, histoire: 'Une vigneronne indépendante d\'Alsace qui vinifie seule, sur un tout petit domaine familial.' },
+      { name: 'Domaine Kreydenweiss', note: 'Biodynamie, grande finesse', confidentiel: true, histoire: 'Un domaine alsacien en biodynamie depuis les années 80, resté volontairement à taille artisanale.' },
     ],
     lat: 48.20, lng: 7.35,
     description: 'Seul Muscat vinifié entièrement sec en France. Bluffant : ça sent le raisin frais alors que c\'est un vin sec.',
@@ -1665,7 +1665,7 @@ export const WINE_DB = [
     accords: ['Charcuterie', 'Volaille', 'Tarte flambée'],
     domaines: [
       { name: 'Domaine Marcel Deiss', note: 'Rouge de terroir ambitieux' },
-      { name: 'Domaine Barmès-Buecher', note: 'Bio, fruité pur' },
+      { name: 'Domaine Barmès-Buecher', note: 'Bio, fruité pur', confidentiel: true, histoire: 'Une famille de vignerons alsaciens en biodynamie, attachée à ses parcelles plus qu\'à sa taille.' },
     ],
     lat: 48.10, lng: 7.30,
     description: 'Longtemps discret, le Pinot Noir alsacien monte en gamme. Un rouge frais et digeste, servi légèrement frais.',
@@ -1686,7 +1686,7 @@ export const WINE_DB = [
     accords: ['Charcuterie', 'Volaille rôtie', 'Coq au vin'],
     domaines: [
       { name: 'Château des Capitans', note: 'Style classique et généreux' },
-      { name: 'Domaine Pascal Granger', note: 'Fruité pur' },
+      { name: 'Domaine Pascal Granger', note: 'Fruité pur', confidentiel: true, histoire: 'Un vigneron indépendant de Juliénas qui vinifie seul ses quelques hectares, sans intermédiaire.' },
     ],
     lat: 46.23, lng: 4.68,
     description: 'Un des crus les plus toniques du Beaujolais, épicé et charpenté. Excellent avec la cuisine lyonnaise.',
@@ -1704,7 +1704,7 @@ export const WINE_DB = [
     temperature: '13-14°C', serviceTemp: 13,
     accords: ['Charcuterie fine', 'Apéritif', 'Volaille froide'],
     domaines: [
-      { name: 'Domaine Cheysson', note: 'Fruité pur et gourmand' },
+      { name: 'Domaine Cheysson', note: 'Fruité pur et gourmand', confidentiel: true, histoire: 'Un domaine familial perché sur les hauteurs de Chiroubles, où l\'on vendange encore à la main.' },
       { name: 'Domaine de la Grosse Pierre', note: 'Fraîcheur d\'altitude' },
     ],
     lat: 46.18, lng: 4.65,
@@ -1726,7 +1726,7 @@ export const WINE_DB = [
     accords: ['Cassoulet', 'Grillades', 'Charcuterie'],
     domaines: [
       { name: 'Château de Lastours', note: 'Terroir spectaculaire' },
-      { name: 'Domaine du Grand Arc', note: 'Style moderne et généreux' },
+      { name: 'Domaine du Grand Arc', note: 'Style moderne et généreux', confidentiel: true, histoire: 'Une petite exploitation nichée dans les Corbières sauvages, portée par une poignée de passionnés.' },
     ],
     lat: 43.05, lng: 2.68,
     description: 'Le plus vaste vignoble du Languedoc, entre garrigue et vieux Carignan. Rouges chaleureux et rustiques.',
@@ -1745,7 +1745,7 @@ export const WINE_DB = [
     accords: ['Daube', 'Gibier', 'Fromages de brebis'],
     domaines: [
       { name: 'Mont Tauch', note: 'Coopérative de référence' },
-      { name: 'Domaine Bertrand-Bergé', note: 'Vieilles vignes de Carignan' },
+      { name: 'Domaine Bertrand-Bergé', note: 'Vieilles vignes de Carignan', confidentiel: true, histoire: 'Un domaine familial du Fitou qui préserve des parcelles de Carignan centenaires plantées face à la mer.' },
     ],
     lat: 42.95, lng: 2.87,
     description: 'La toute première AOC du Languedoc (1948). Un rouge dense et solaire, entre mer et Corbières.',
@@ -1822,7 +1822,7 @@ export const WINE_DB = [
     temperature: '15-17°C', serviceTemp: 16,
     accords: ['Confit de canard', 'Charcuterie', 'Grillades'],
     domaines: [
-      { name: 'Château Tour des Gendres', note: 'Bio, très belle matière' },
+      { name: 'Château Tour des Gendres', note: 'Bio, très belle matière', confidentiel: true, histoire: 'La famille de Conti cultive ce domaine bergeracois en bio, loin des grands noms bordelais voisins.' },
       { name: 'Château Court-les-Mûts', note: 'Régularité fiable' },
     ],
     lat: 44.85, lng: 0.48,
@@ -1882,7 +1882,7 @@ export const WINE_DB = [
     accords: ['Charcuterie savoyarde', 'Diots', 'Fromages de montagne'],
     domaines: [
       { name: 'Domaine Louis Magnin', note: 'Précision alpine' },
-      { name: 'Domaine Giachino', note: 'Bio, fruité pur' },
+      { name: 'Domaine Giachino', note: 'Bio, fruité pur', confidentiel: true, histoire: 'Une petite propriété familiale de Savoie qui cultive ses vignes en bio sur les pentes du massif des Bauges.' },
     ],
     lat: 45.57, lng: 5.91,
     description: 'Cépage rare et ancien de Savoie, poivré comme une Syrah de montagne. Une pépite pour curieux.',
@@ -2169,6 +2169,41 @@ export const WINE_DB_APPELLATIONS = WINE_DB.map(w => ({
 }))
 
 export const REGIONS_LIST = [...new Set(WINE_DB.map(w => w.region))]
+
+// WINE_DB_DOMAINES — annuaire dédupliqué de tous les domaines cités dans WINE_DB,
+// avec les vins/appellations/régions dans lesquels chacun apparaît.
+export const WINE_DB_DOMAINES = (() => {
+  const map = new Map()
+  for (const w of WINE_DB) {
+    for (const d of w.domaines) {
+      if (!map.has(d.name)) {
+        map.set(d.name, {
+          name: d.name,
+          notes: [],
+          wines: [],
+          regions: new Set(),
+          appellations: new Set(),
+          confidentiel: false,
+          histoire: null,
+        })
+      }
+      const entry = map.get(d.name)
+      entry.notes.push(d.note)
+      entry.wines.push({ id: w.id, appellation: w.appellation, region: w.region, type: w.type, color: w.color })
+      entry.regions.add(w.region)
+      entry.appellations.add(w.appellation)
+      if (d.confidentiel) entry.confidentiel = true
+      if (d.histoire && !entry.histoire) entry.histoire = d.histoire
+    }
+  }
+  return [...map.values()]
+    .map(e => ({ ...e, regions: [...e.regions], appellations: [...e.appellations] }))
+    .sort((a, b) => a.name.localeCompare(b.name, 'fr'))
+})()
+
+// CONFIDENTIEL_DOMAINES — les petits domaines mis en avant (badge "Petit domaine",
+// section "Domaine du moment" sur la landing page).
+export const CONFIDENTIEL_DOMAINES = WINE_DB_DOMAINES.filter(d => d.confidentiel)
 
 export const DIFFICULTE_CONFIG = {
   facile:   { label: 'Facile à aimer', emoji: '😊', color: '#4d7c50', bg: '#e8f0e8' },

@@ -1,4 +1,5 @@
 import { X, Star, Thermometer, Clock, Wine, MapPin, Grape, TrendingUp, UtensilsCrossed, Edit2 } from 'lucide-react'
+import WineGlassAnim from './WineGlassAnim'
 
 const ACCORD_ICONS = { '🥩':'🥩','🐟':'🐟','🧀':'🧀','🍮':'🍮','🍄':'🍄','🦞':'🦞','🍗':'🍗' }
 
@@ -53,7 +54,8 @@ export default function WineDetail({ wine, onClose, onEdit }) {
   if (!wine) return null
 
   const typeLabels = { red:'Rouge', white:'Blanc', rosé:'Rosé', sparkling:'Effervescent', sweet:'Liquoreux' }
-  const bottleColor = { red:'#4a0f1f', white:'#d4b896', rosé:'#e8a0b0', sparkling:'#c8d8e8', sweet:'#c4a060' }[wine.type] || '#4a0f1f'
+  const bottleColor = { red:'#8c2f39', white:'#c9a84c', rosé:'#e58f8f', sparkling:'#5b8db8', sweet:'#b8860b' }[wine.type] || '#8c2f39'
+  const fillLevel = wine.rating ? Math.min(1, Math.max(0.15, wine.rating / 20)) : 0.6
 
   return (
     <div
@@ -68,23 +70,22 @@ export default function WineDetail({ wine, onClose, onEdit }) {
       >
         {/* Hero */}
         <div className="relative h-40 flex-shrink-0 overflow-hidden"
-             style={{ background: `linear-gradient(135deg, #1e2426 0%, #2c3234 100%)` }}>
-          <div className="absolute inset-0 flex items-center justify-center opacity-20">
-            <div className="w-20 h-40 rounded-full"
-                 style={{ background: `radial-gradient(circle, ${bottleColor}88 0%, transparent 70%)` }} />
-          </div>
+             style={{ background: `linear-gradient(150deg, ${bottleColor} 0%, ${bottleColor}99 45%, #1e2426 130%)` }}>
           <div className="absolute inset-0 flex flex-col justify-end p-5">
-            <div className="flex items-end justify-between">
-              <div>
+            <div className="flex items-end justify-between gap-3">
+              <div className="min-w-0">
                 <h2 className="font-wine-name text-4xl text-cream">{wine.name}</h2>
-                <p className="text-sm text-anthracite-300 mt-0.5">{wine.domain}</p>
+                <p className="text-sm text-cream/70 mt-0.5">{wine.domain}</p>
               </div>
-              {wine.rating && (
-                <div className="flex items-center gap-1 bg-gold-500/20 backdrop-blur rounded-lg px-2.5 py-1.5">
-                  <Star size={12} className="text-gold-400 fill-gold-400" />
-                  <span className="text-sm font-semibold text-gold-400">{wine.rating}</span>
-                </div>
-              )}
+              <div className="flex items-center gap-2 flex-shrink-0">
+                {wine.rating && (
+                  <div className="flex items-center gap-1 bg-white/15 backdrop-blur rounded-lg px-2.5 py-1.5">
+                    <Star size={12} className="text-gold-300 fill-gold-300" />
+                    <span className="text-sm font-semibold text-cream">{wine.rating}</span>
+                  </div>
+                )}
+                <WineGlassAnim color="#f5f0e8" fillLevel={fillLevel} size={30} />
+              </div>
             </div>
           </div>
           <div className="absolute top-4 right-4 flex gap-2">

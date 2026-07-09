@@ -1,7 +1,9 @@
-import { useEffect, useState, useCallback } from 'react'
-import { X, Wine, Grape, MapPin, Plus, Thermometer, Clock, Star, BookOpen, Check, ChevronRight, ExternalLink } from 'lucide-react'
+import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
+import { X, Wine, Grape, MapPin, Plus, Thermometer, Clock, Star, BookOpen, Check, ChevronRight, ExternalLink, Sparkles } from 'lucide-react'
 import dynamic from 'next/dynamic'
-import { WINE_DB, gardeForMillesime } from '../data/wineDatabase'
+import { WINE_DB, WINE_DB_DOMAINES, gardeForMillesime } from '../data/wineDatabase'
+import { regionInfo } from '../data/regionsInfo'
+import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
 
 const TYPE_COLORS = {
   red:       { bg: 'bg-wine-100',  text: 'text-wine-800',  label: 'Rouge' },
@@ -16,6 +18,7 @@ function WinePanel({ wine, onClose, onAddToCave, addedIds }) {
   const [millesime, setMillesime] = useState(wine.bonsMilsimes[wine.bonsMilsimes.length - 1])
   const [qty, setQty] = useState(1)
   const isAdded = addedIds.has(`${wine.id}-${millesime}`)
+  const hasPetitDomaine = wine.domaines.some(d => d.confidentiel)
 
   const handleAdd = () => {
     onAddToCave({
@@ -40,25 +43,34 @@ function WinePanel({ wine, onClose, onAddToCave, addedIds }) {
   return (
     <div className="absolute top-3 right-3 bottom-3 z-[1000] w-80 sm:w-96 bg-cream rounded-xl shadow-card-hover border border-anthracite-200 overflow-hidden flex flex-col animate-slide-up">
       {/* Header */}
-      <div className="p-4 flex-shrink-0 text-cream relative" style={{ background: wine.color }}>
+      <div className="p-4 flex-shrink-0 text-cream relative overflow-hidden"
+           style={{ background: `linear-gradient(150deg, ${wine.color} 0%, ${wine.color}cc 55%, #1e2426 150%)` }}>
         <div className="absolute inset-0 opacity-20"
              style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%)' }} />
         <div className="relative flex items-start justify-between gap-2">
-          <div>
+          <div className="min-w-0">
             <div className="font-wine-name text-4xl">{wine.appellation}</div>
             <div className="text-sm opacity-75 mt-0.5">{wine.region}</div>
           </div>
-          <button onClick={onClose}
-                  className="w-7 h-7 flex-shrink-0 flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/35 transition-all cursor-pointer"
-                  aria-label="Fermer">
-            <X size={13} />
-          </button>
+          <div className="flex flex-col items-center gap-1.5 flex-shrink-0">
+            <WineGlassAnim color="#f5f0e8" fillLevel={fillLevelFromJauges(wine.jauges)} size={32} />
+            <button onClick={onClose}
+                    className="w-7 h-7 flex-shrink-0 flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/35 transition-all cursor-pointer"
+                    aria-label="Fermer">
+              <X size={13} />
+            </button>
+          </div>
         </div>
-        <div className="mt-2 relative">
+        <div className="mt-2 relative flex items-center gap-1.5 flex-wrap">
           <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20">
             <span className="w-1.5 h-1.5 rounded-full bg-white" />
             {wine.typeLabel}
           </span>
+          {hasPetitDomaine && (
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-white/20">
+              <Sparkles size={10} /> Petit domaine
+            </span>
+          )}
         </div>
       </div>
 
@@ -158,8 +170,16 @@ function WinePanel({ wine, onClose, onAddToCave, addedIds }) {
               <div key={d.name} className="flex items-start gap-2">
                 <Wine size={10} className="mt-0.5 flex-shrink-0" style={{ color: wine.color }} />
                 <div className="min-w-0 flex-1">
-                  <div className="font-wine-name text-xl text-anthracite-800">{d.name}</div>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="font-wine-name text-xl text-anthracite-800">{d.name}</span>
+                    {d.confidentiel && (
+                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-gold-500/15 text-gold-700">
+                        <Sparkles size={8} /> Petit domaine
+                      </span>
+                    )}
+                  </div>
                   <div className="text-[10px] text-anthracite-400">{d.note}</div>
+                  {d.histoire && <div className="text-[10px] text-anthracite-500 italic mt-0.5">{d.histoire}</div>}
                 </div>
                 <a
                   href={`https://www.google.com/search?q=${encodeURIComponent(`${d.name} ${wine.appellation} site officiel`)}`}
@@ -225,12 +245,19 @@ export default function InteractiveMap({ onAddWine }) {
   const [MapComponents, setMap] = useState(null)
   const [addedIds, setAddedIds] = useState(new Set())
   const [activeRegion, setActiveRegion] = useState('Toutes')
+  const mapRef = useRef(null)
 
   const regions = ['Toutes', ...new Set(WINE_DB.map(w => w.region))]
 
   const visibleWines = activeRegion === 'Toutes'
     ? WINE_DB
     : WINE_DB.filter(w => w.region === activeRegion)
+
+  // Domaines du terroir sélectionné, pour la carte narrative.
+  const regionDomaines = useMemo(() => {
+    if (activeRegion === 'Toutes') return []
+    return WINE_DB_DOMAINES.filter(d => d.regions.includes(activeRegion))
+  }, [activeRegion])
 
   useEffect(() => {
     import('react-leaflet').then(m => setMap({
@@ -241,10 +268,30 @@ export default function InteractiveMap({ onAddWine }) {
     }))
   }, [])
 
+  // Zoom animé (flyTo) quand la région sélectionnée change.
+  useEffect(() => {
+    if (!mapRef.current) return
+    if (activeRegion === 'Toutes') {
+      mapRef.current.flyTo([46.8, 2.5], 6, { duration: 1.3 })
+      return
+    }
+    const wines = WINE_DB.filter(w => w.region === activeRegion)
+    if (!wines.length) return
+    const lat = wines.reduce((s, w) => s + w.lat, 0) / wines.length
+    const lng = wines.reduce((s, w) => s + w.lng, 0) / wines.length
+    mapRef.current.flyTo([lat, lng], wines.length === 1 ? 9 : 7.5, { duration: 1.3 })
+  }, [activeRegion, MapComponents])
+
   const handleAddToCave = useCallback((wineObj, wineId, millesime) => {
     onAddWine?.(wineObj)
     setAddedIds(prev => new Set([...prev, `${wineId}-${millesime}`]))
   }, [onAddWine])
+
+  const openDomaineWine = useCallback((domaineWines) => {
+    const ref = domaineWines.find(w => w.region === activeRegion) || domaineWines[0]
+    const full = WINE_DB.find(w => w.id === ref.id)
+    if (full) setSelected(full)
+  }, [activeRegion])
 
   return (
     <div className="animate-fade-in">
@@ -276,6 +323,38 @@ export default function InteractiveMap({ onAddWine }) {
         ))}
       </div>
 
+      {/* Carte narrative : blurb + domaines du terroir sélectionné */}
+      {activeRegion !== 'Toutes' && (
+        <div className="card p-4 mb-4 animate-fade-in-up" style={{ animationFillMode: 'both' }}>
+          <div className="flex items-start gap-3">
+            <span className="text-2xl flex-shrink-0">{regionInfo(activeRegion).emoji}</span>
+            <div className="min-w-0">
+              <div className="font-serif text-base font-bold text-anthracite-900 mb-1">{activeRegion}</div>
+              <p className="text-sm text-anthracite-600 leading-relaxed">{regionInfo(activeRegion).blurb}</p>
+            </div>
+          </div>
+          {regionDomaines.length > 0 && (
+            <div className="mt-3 pt-3 border-t border-anthracite-100">
+              <div className="text-[10px] uppercase tracking-wider font-semibold text-anthracite-400 mb-2">
+                Domaines de la région — cliquez pour ouvrir la fiche
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {regionDomaines.map(d => (
+                  <button
+                    key={d.name}
+                    onClick={() => openDomaineWine(d.wines)}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs border border-anthracite-200 bg-white text-anthracite-700 hover:border-wine-300 hover:text-wine-700 transition-all cursor-pointer"
+                  >
+                    {d.confidentiel && <Sparkles size={9} className="text-gold-600" />}
+                    {d.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="card overflow-hidden" style={{ isolation: 'isolate', zIndex: 0, position: 'relative' }}>
         <div className="relative" style={{ height: '560px' }}>
           {!MapComponents ? (
@@ -288,6 +367,7 @@ export default function InteractiveMap({ onAddWine }) {
           ) : (
             <>
               <MapComponents.MapContainer
+                ref={mapRef}
                 center={[46.8, 2.5]}
                 zoom={6}
                 style={{ height: '100%', width: '100%' }}
