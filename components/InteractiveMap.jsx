@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { X, Wine, Grape, MapPin, Plus, Thermometer, Clock, Star, BookOpen, Check, ChevronRight, ExternalLink } from 'lucide-react'
 import dynamic from 'next/dynamic'
-import { WINE_DB } from '../data/wineDatabase'
+import { WINE_DB, gardeForMillesime } from '../data/wineDatabase'
 
 const TYPE_COLORS = {
   red:       { bg: 'bg-wine-100',  text: 'text-wine-800',  label: 'Rouge' },
@@ -130,6 +130,14 @@ function WinePanel({ wine, onClose, onAddToCave, addedIds }) {
               </button>
             ))}
           </div>
+          {(() => {
+            const garde = gardeForMillesime(wine, millesime)
+            return garde ? (
+              <p className="text-[11px] text-anthracite-500 mt-2">
+                🕰️ À boire entre <span className="font-semibold text-anthracite-700">{garde.from}</span> et <span className="font-semibold text-anthracite-700">{garde.until}</span>
+              </p>
+            ) : null
+          })()}
         </div>
 
         {/* Accords */}

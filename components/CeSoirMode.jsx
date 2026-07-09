@@ -145,12 +145,12 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
     if (step < QUESTIONS.length - 1) {
       setTimeout(() => setStep(s => s + 1), 180)
     } else {
-      const top = WINE_DB
+      const scored = WINE_DB
         .map(w => ({ w, s: score(w, next, mode) }))
-        .filter(x => x.s > -5)
         .sort((a, b) => b.s - a.s)
-        .slice(0, 3)
-        .map(x => x.w)
+      let filtered = scored.filter(x => x.s > -5)
+      if (filtered.length < 3) filtered = scored // fallback : garantir toujours 3 vins
+      const top = filtered.slice(0, 3).map(x => x.w)
       setResults(top)
     }
   }

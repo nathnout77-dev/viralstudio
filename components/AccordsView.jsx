@@ -1,5 +1,17 @@
 import { useState } from 'react'
 import { UtensilsCrossed, Wine } from 'lucide-react'
+import { WINE_DB } from '../data/wineDatabase'
+import { FicheVin } from './BibliothequeView'
+
+function findWine(appellation) {
+  if (!appellation) return null
+  const q = appellation.toLowerCase()
+  return (
+    WINE_DB.find(w => w.appellation.toLowerCase() === q) ||
+    WINE_DB.find(w => q.includes(w.appellation.toLowerCase()) || w.appellation.toLowerCase().includes(q)) ||
+    null
+  )
+}
 
 const PLATS = [
   { id: 'viande_rouge',   label: 'Viande rouge',    emoji: '🥩', types: ['red'],          desc: 'Bœuf, agneau, gibier, canard' },
@@ -70,6 +82,7 @@ const TYPE_LABELS = { red:'Rouge', white:'Blanc', rosé:'Rosé', sparkling:'Effe
 
 export default function AccordsView() {
   const [selected, setSelected] = useState(null)
+  const [wineSelected, setWineSelected] = useState(null)
   const accords = selected ? (ACCORDS[selected] || []) : []
 
   return (
@@ -125,9 +138,16 @@ export default function AccordsView() {
             Accords recommandés · {PLATS.find(p => p.id === selected)?.label}
           </h3>
           <div className="space-y-3">
-            {accords.map((a, i) => (
-              <div key={i} className="card p-4 hover:border-gold-500/30 transition-all animate-slide-up"
-                   style={{ animationDelay: `${i * 60}ms` }}>
+            {accords.map((a, i) => {
+              const matchedWine = findWine(a.appellation)
+              return (
+              <button
+                type="button"
+                key={i}
+                onClick={() => matchedWine && setWineSelected(matchedWine)}
+                disabled={!matchedWine}
+                className={`card p-4 w-full text-left transition-all animate-slide-up ${matchedWine ? 'hover:border-gold-500/30 cursor-pointer' : 'cursor-default'}`}
+                style={{ animationDelay: `${i * 60}ms` }}>
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -135,6 +155,11 @@ export default function AccordsView() {
                       <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${TYPE_COLORS[a.type]}`}>
                         {TYPE_LABELS[a.type]}
                       </span>
+                      {matchedWine && (
+                        <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-wine-50 text-wine-700 border border-wine-200">
+                          Voir la fiche
+                        </span>
+                      )}
                     </div>
                     <div className="text-xs text-anthracite-500 mb-1.5">{a.region} · {a.cepages}</div>
                     <p className="text-xs text-anthracite-600 leading-relaxed">{a.reason}</p>
@@ -147,10 +172,18 @@ export default function AccordsView() {
                     {a.note}
                   </div>
                 </div>
-              </div>
-            ))}
+              </button>
+              )
+            })}
           </div>
         </div>
+      )}
+
+      {wineSelected && (
+        <FicheVin
+          wine={wineSelected}
+          onClose={() => setWineSelected(null)}
+        />
       )}
     </div>
   )

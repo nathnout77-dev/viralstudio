@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { Library, Search, X, Plus, Check, Thermometer, Clock, Wine, MapPin, ChevronDown, ExternalLink } from 'lucide-react'
-import { WINE_DB, REGIONS_LIST, DIFFICULTE_CONFIG, MILLESIMES_DB } from '../data/wineDatabase'
+import { WINE_DB, REGIONS_LIST, DIFFICULTE_CONFIG, MILLESIMES_DB, gardeForMillesime } from '../data/wineDatabase'
 import JaugesGout from './JaugesGout'
 import Terme from './Tooltip'
 
@@ -29,10 +29,12 @@ const DIFF_FILTERS = [
 ]
 
 // ── Fiche détaillée ────────────────────────────────────────────────────────────
-function FicheVin({ wine, onClose, onAddToCave, added }) {
+export function FicheVin({ wine, onClose, onAddToCave, added }) {
   const [millesime, setMillesime] = useState(wine.bonsMilsimes[wine.bonsMilsimes.length - 1])
   const diff = DIFFICULTE_CONFIG[wine.difficulte]
-  const isAdded = added.has(`${wine.id}-${millesime}`)
+  const addedSet = added || new Set()
+  const isAdded = addedSet.has(`${wine.id}-${millesime}`)
+  const garde = gardeForMillesime(wine, millesime)
 
   return (
     <div
@@ -189,6 +191,12 @@ function FicheVin({ wine, onClose, onAddToCave, added }) {
               </button>
             ))}
           </div>
+          {garde && (
+            <p className="text-[11px] text-anthracite-500 mb-3">
+              🕰️ À boire entre <span className="font-semibold text-anthracite-700">{garde.from}</span> et <span className="font-semibold text-anthracite-700">{garde.until}</span>
+            </p>
+          )}
+          {onAddToCave && (
           <button
             onClick={() => onAddToCave(wine, millesime)}
             disabled={isAdded}
@@ -201,6 +209,7 @@ function FicheVin({ wine, onClose, onAddToCave, added }) {
           >
             {isAdded ? <><Check size={15} /> Ajouté à ma cave</> : <><Plus size={15} /> Ajouter à ma cave ({millesime})</>}
           </button>
+          )}
         </div>
       </div>
     </div>

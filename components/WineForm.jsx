@@ -53,23 +53,35 @@ export default function WineForm({ initial, onSave, onClose }) {
     notes:          initial?.notes || '',
   })
   const [errors, setErrors] = useState({})
-  const [appellSuggestions, setAppellSuggestions] = useState([])
+  // 'Autre (saisie libre)' est sélectionné dès le départ si l'appellation actuelle
+  // ne correspond à aucune entrée connue de la base
+  const [useFreeText, setUseFreeText] = useState(
+    !!initial?.appellation && !WINE_DB_APPELLATIONS.some(a => a.appellation === initial.appellation)
+  )
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
-  // Autocomplete appellation depuis la base de données
-  const handleAppellationChange = (val) => {
-    set('appellation', val)
-    if (val.length > 1) {
-      const q = val.toLowerCase()
-      setAppellSuggestions(
-        WINE_DB_APPELLATIONS.filter(a =>
-          a.appellation.toLowerCase().includes(q) || a.region.toLowerCase().includes(q)
-        ).slice(0, 5)
-      )
-    } else {
-      setAppellSuggestions([])
+  // Groupe les appellations par région, triées alphabétiquement
+  const appellationsByRegion = useMemo(() => {
+    const sorted = [...WINE_DB_APPELLATIONS].sort((a, b) => a.appellation.localeCompare(b.appellation, 'fr'))
+    const groups = {}
+    sorted.forEach(a => {
+      if (!groups[a.region]) groups[a.region] = []
+      groups[a.region].push(a)
+    })
+    return Object.entries(groups).sort(([r1], [r2]) => r1.localeCompare(r2, 'fr'))
+  }, [])
+
+  const handleAppellationSelect = (val) => {
+    if (val === '__autre__') {
+      setUseFreeText(true)
+      set('appellation', '')
+      return
     }
+    setUseFreeText(false)
+    const a = WINE_DB_APPELLATIONS.find(x => x.appellation === val)
+    if (a) applyAppellation(a)
+    else set('appellation', val)
   }
 
   const applyAppellation = (a) => {
@@ -85,7 +97,6 @@ export default function WineForm({ initial, onSave, onClose }) {
       drinkUntil:  a.drinkUntil || f.drinkUntil,
       foodPairings: a.accords || f.foodPairings,
     }))
-    setAppellSuggestions([])
   }
 
   const toggleFood = (f) => set('foodPairings', form.foodPairings.includes(f)
@@ -185,34 +196,42 @@ export default function WineForm({ initial, onSave, onClose }) {
               </SelectWrapper>
             </Field>
             <Field label="Appellation">
-              <div className="relative">
-                <input
-                  className="input-field pr-8"
-                  value={form.appellation}
-                  onChange={e => handleAppellationChange(e.target.value)}
-                  onBlur={() => setTimeout(() => setAppellSuggestions([]), 200)}
-                  placeholder="ex: Gevrey-Chambertin"
-                  autoComplete="off"
-                />
-                {appellSuggestions.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-white border border-anthracite-200 rounded-lg shadow-card-hover overflow-hidden">
-                    {appellSuggestions.map(a => (
-                      <button
-                        key={a.appellation}
-                        type="button"
-                        onMouseDown={() => applyAppellation(a)}
-                        className="w-full px-3 py-2.5 text-left hover:bg-anthracite-50 flex items-center gap-2 cursor-pointer"
-                      >
-                        <Sparkles size={10} className="text-gold-500 flex-shrink-0" />
-                        <div>
-                          <div className="text-xs font-semibold text-anthracite-900">{a.appellation}</div>
-                          <div className="text-[10px] text-anthracite-400">{a.region} · {a.cepages.join(', ')}</div>
-                        </div>
-                      </button>
+              {useFreeText ? (
+                <div className="space-y-1.5">
+                  <input
+                    className="input-field"
+                    value={form.appellation}
+                    onChange={e => set('appellation', e.target.value)}
+                    placeholder="ex: Gevrey-Chambertin"
+                    autoComplete="off"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setUseFreeText(false)}
+                    className="text-[11px] text-wine-700 hover:underline cursor-pointer flex items-center gap-1"
+                  >
+                    <Sparkles size={10} className="text-gold-500" /> Choisir dans la liste
+                  </button>
+                </div>
+              ) : (
+                <SelectWrapper>
+                  <select
+                    className="select-field"
+                    value={form.appellation}
+                    onChange={e => handleAppellationSelect(e.target.value)}
+                  >
+                    <option value="">Sélectionner…</option>
+                    {appellationsByRegion.map(([region, list]) => (
+                      <optgroup key={region} label={region}>
+                        {list.map(a => (
+                          <option key={a.appellation} value={a.appellation}>{a.appellation}</option>
+                        ))}
+                      </optgroup>
                     ))}
-                  </div>
-                )}
-              </div>
+                    <option value="__autre__">Autre (saisie libre)</option>
+                  </select>
+                </SelectWrapper>
+              )}
             </Field>
           </div>
 

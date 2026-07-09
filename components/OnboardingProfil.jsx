@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Wine } from 'lucide-react'
+import { Wine, ArrowRight } from 'lucide-react'
+import { WINE_DB } from '../data/wineDatabase'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Profilage à l'arrivée (≤ 5 questions) → active le Mode Débutant ou Expert
@@ -103,10 +104,66 @@ const QUESTIONS = {
   ],
 }
 
+// Budget max en euros déduit du libellé choisi par l'utilisateur
+function budgetMax(label) {
+  if (!label) return null
+  if (label.includes('Moins de 10')) return 10
+  if (label.includes('10 à 20') || label.includes('10 a 20')) return 20
+  if (label.includes('20 à 50')) return 50
+  if (label.includes('Plus de 20')) return 999
+  if (label.includes('50 € et plus') || label.includes('50 €')) return 999
+  return null
+}
+
+// Score un vin en fonction du niveau + goûts + budget récoltés pendant l'onboarding
+function scoreWine(w, niveau, gouts) {
+  let s = 0
+
+  if (niveau === 'debutant' && w.difficulte === 'facile') s += 3
+  if (niveau === 'amateur' && w.difficulte === 'explorer') s += 2
+  if (niveau === 'expert' && (w.difficulte === 'pointu' || w.difficulte === 'explorer')) s += 3
+
+  if (gouts.sucre === 'Doux, comme un jus de fruit' && (w.type === 'sweet' || w.jauges.douceur >= 3)) s += 3
+  if (gouts.sucre === 'Sec et frais' && w.jauges.douceur <= 2) s += 3
+
+  if (gouts.intensite === 'Léger et facile à boire' && w.jauges.puissance <= 2) s += 3
+  if (gouts.intensite === 'Équilibré' && w.jauges.puissance === 3) s += 2
+  if (gouts.intensite === 'Costaud, qui a du corps' && w.jauges.puissance >= 4) s += 3
+
+  if (gouts.fruits) {
+    const aromes = w.aromes.toLowerCase()
+    if (gouts.fruits.includes('rouges') && /fraise|cerise|framboise|groseille/.test(aromes)) s += 2
+    if (gouts.fruits.includes('jaunes') && /pêche|abricot|coing/.test(aromes)) s += 2
+    if (gouts.fruits.includes('Agrumes') && /citron|agrume|pamplemousse/.test(aromes)) s += 2
+    if (gouts.fruits.includes('noirs') && /mûre|cassis|prune/.test(aromes)) s += 2
+  }
+
+  if (gouts.bouche === 'Puissant et corsé' && w.jauges.puissance >= 4) s += 3
+  if (gouts.bouche === 'Léger et élégant' && w.jauges.puissance <= 2) s += 3
+  if (gouts.bouche === 'Tannique, avec de la mâche' && w.jauges.tanins >= 4) s += 3
+  if (gouts.bouche === 'Minéral et tendu' && w.type === 'white' && w.jauges.tanins <= 1) s += 3
+
+  if (gouts.regions) {
+    if (gouts.regions.includes('Bordeaux') && /Bordeaux|Sud-Ouest/.test(w.region)) s += 2
+    if (gouts.regions.includes('Bourgogne') && /Bourgogne|Beaujolais/.test(w.region)) s += 2
+    if (gouts.regions.includes('Rhône') && /Rhône|Languedoc|Roussillon|Provence/.test(w.region)) s += 2
+  }
+
+  const max = budgetMax(gouts.budget)
+  if (max != null) {
+    if (w.prixMoyen <= max) s += 2
+    else s -= 3
+  }
+
+  return s
+}
+
 export default function OnboardingProfil({ onComplete }) {
   const [niveau, setNiveau] = useState(null)
   const [step, setStep]     = useState(0)
   const [answers, setAnswers] = useState({})
+  const [results, setResults] = useState(null)
+  const [pendingProfil, setPendingProfil] = useState(null)
 
   const questions = niveau ? QUESTIONS[niveau === 'debutant' ? 'debutant' : 'expert'] : []
   const currentQ  = niveau && step < questions.length ? questions[step] : null
@@ -118,9 +175,20 @@ export default function OnboardingProfil({ onComplete }) {
       setStep(s => s + 1)
     } else {
       const profil = { niveau, gouts: next }
-      try { localStorage.setItem(PROFIL_KEY, JSON.stringify(profil)) } catch {}
-      onComplete(profil)
+      const top3 = [...WINE_DB]
+        .map(w => ({ w, s: scoreWine(w, niveau, next) }))
+        .sort((a, b) => b.s - a.s)
+        .slice(0, 3)
+        .map(x => x.w)
+      setPendingProfil(profil)
+      setResults(top3)
     }
+  }
+
+  const finish = () => {
+    if (!pendingProfil) return
+    try { localStorage.setItem(PROFIL_KEY, JSON.stringify(pendingProfil)) } catch {}
+    onComplete(pendingProfil)
   }
 
   return (
@@ -139,12 +207,43 @@ export default function OnboardingProfil({ onComplete }) {
           </div>
           <h3 className="font-serif text-xl font-bold">Bienvenue sur Œno !</h3>
           <p className="text-cream/70 text-xs mt-1">
-            {niveau ? `Encore ${questions.length - step} petite${questions.length - step > 1 ? 's' : ''} question${questions.length - step > 1 ? 's' : ''}…` : '5 questions max pour tout personnaliser pour vous.'}
+            {results ? 'Voici 3 vins pour démarrer, choisis pour vous' : niveau ? `Encore ${questions.length - step} petite${questions.length - step > 1 ? 's' : ''} question${questions.length - step > 1 ? 's' : ''}…` : '5 questions max pour tout personnaliser pour vous.'}
           </p>
         </div>
 
         <div className="flex-1 overflow-y-auto p-6">
-          {!niveau ? (
+          {results ? (
+            <div className="animate-fade-in-up">
+              <h4 className="font-serif text-base font-bold text-anthracite-900 text-center mb-1">
+                🎉 3 vins pour démarrer
+              </h4>
+              <p className="text-xs text-anthracite-400 text-center mb-5">
+                Sélectionnés selon vos réponses — vous les retrouverez dans la Bibliothèque
+              </p>
+              <div className="space-y-3">
+                {results.map((w, i) => (
+                  <div
+                    key={w.id}
+                    className="card p-4 flex items-center gap-3 animate-scale-in"
+                    style={{ animationDelay: `${i * 90}ms`, animationFillMode: 'both' }}
+                  >
+                    <span className="text-2xl flex-shrink-0">{w.emoji}</span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-bold text-anthracite-900 truncate">{w.appellation}</span>
+                      <span className="block text-xs text-anthracite-400 truncate">{w.region} · ~{w.prixMoyen} €</span>
+                      <span className="block text-xs text-anthracite-500 italic mt-0.5">« {w.enUneMot} »</span>
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={finish}
+                className="w-full mt-6 flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold text-cream bg-wine-800 shadow-wine hover:brightness-110 active:scale-[0.99] transition-all cursor-pointer"
+              >
+                Découvrir Œno <ArrowRight size={15} />
+              </button>
+            </div>
+          ) : !niveau ? (
             <div className="animate-fade-in-up">
               <h4 className="font-serif text-base font-bold text-anthracite-900 text-center mb-5">
                 Le vin et vous, c'est… ?
