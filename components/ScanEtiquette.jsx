@@ -1,0 +1,640 @@
+import { useRef, useState } from 'react'
+import { X, Camera, Image as ImageIcon, RefreshCw, Sparkles, Plus, Check, MapPin, BookOpen } from 'lucide-react'
+import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
+import { regionInfo } from '../data/regionsInfo'
+import { normaliser } from '../data/aromes'
+import JaugesGout from './JaugesGout'
+import { FicheVin } from './BibliothequeView'
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ScanEtiquette — photographiez une étiquette, Œno la décode.
+// idle → preview → analyse (Claude vision via /api/claude) → résultat / erreur.
+// Si l'appellation est dans WINE_DB : fiche simplifiée + fiche complète.
+// Sinon : fiche générique construite depuis la lecture, ton simple et rassurant.
+// ═══════════════════════════════════════════════════════════════════════════
+
+const TYPE_LABELS = { red: 'Rouge', white: 'Blanc', 'rosé': 'Rosé', sweet: 'Liquoreux', sparkling: 'Effervescent' }
+
+// Cépages expliqués simplement (une phrase, ton Œno)
+const CEPAGES_SIMPLE = {
+  'pinot noir': 'délicat — cerise, sous-bois',
+  'cabernet sauvignon': 'puissant — cassis, belle structure',
+  'cabernet franc': 'frais — framboise, poivron',
+  'merlot': 'rond et velouté — fruits mûrs',
+  'syrah': 'épicé — poivre, fruits noirs',
+  'grenache': 'chaleureux et gourmand',
+  'mourvedre': 'sombre et sauvage, fait pour la garde',
+  'gamay': 'léger et croquant — fruits rouges',
+  'malbec': 'dense — violette, mûre',
+  'tannat': 'costaud, taillé pour la garde',
+  'nebbiolo': 'tanins fins — rose, goudron',
+  'sangiovese': 'cerise acidulée, très italien',
+  'tempranillo': "l'âme de l'Espagne — cuir, fruits noirs",
+  'chardonnay': 'blanc caméléon — du beurré au minéral',
+  'sauvignon blanc': 'vif — agrumes, buis',
+  'riesling': 'tendu — citron, minéralité',
+  'chenin': 'du sec au moelleux — pomme, miel',
+  'viognier': 'opulent — abricot, fleurs',
+  'semillon': 'gras et miellé',
+  'gewurztraminer': 'exubérant — litchi, rose',
+  'pinot gris': 'riche et légèrement fumé',
+  'carignan': 'vieilles vignes — garrigue',
+  'cinsault': 'souple et frais',
+}
+const noteCepage = c => CEPAGES_SIMPLE[normaliser(c)] || null
+
+const SYSTEM_PROMPT = `Tu es un sommelier expert qui lit des étiquettes de vin françaises et internationales.
+On te montre la photo d'une étiquette de bouteille. Réponds STRICTEMENT avec un objet JSON valide, sans aucun texte autour, sans balises markdown :
+{"appellation": string|null, "region": string|null, "cepages": string[], "type": "red"|"white"|"rosé"|"sweet"|null, "millesime": number|null, "domaine": string|null, "confiance": "haute"|"moyenne"|"basse"}
+Règles :
+- "appellation" : l'appellation d'origine (ex. "Gevrey-Chambertin", "Chianti Classico"), pas le nom de cuvée.
+- "region" : la région viticole, si possible parmi "Bordeaux", "Bourgogne", "Rhône Nord", "Rhône Sud", "Loire", "Alsace", "Beaujolais", "Provence", "Languedoc", "Roussillon", "Sud-Ouest", "Jura", "Savoie", "Corse", "Champagne", "Italie", "Espagne", "Portugal".
+- "cepages" : les cépages probables, même s'ils ne figurent pas sur l'étiquette (déduis-les de l'appellation).
+- "type" : la couleur du vin ("red", "white", "rosé", ou "sweet" pour un liquoreux).
+- "confiance" : ton niveau de certitude global sur la lecture.
+Si l'image n'est pas une étiquette de vin ou est illisible, réponds exactement : {"appellation":null,"region":null,"cepages":[],"type":null,"millesime":null,"domaine":null,"confiance":"basse"}`
+
+// Redimensionnement côté client : max 1024px de large, JPEG qualité 0.8
+function resizeImage(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file)
+    const img = new Image()
+    img.onload = () => {
+      try {
+        const scale = Math.min(1, 1024 / img.width, 1536 / img.height)
+        const w = Math.max(1, Math.round(img.width * scale))
+        const h = Math.max(1, Math.round(img.height * scale))
+        const canvas = document.createElement('canvas')
+        canvas.width = w
+        canvas.height = h
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h)
+        URL.revokeObjectURL(url)
+        resolve(canvas.toDataURL('image/jpeg', 0.8))
+      } catch (e) {
+        URL.revokeObjectURL(url)
+        reject(e)
+      }
+    }
+    img.onerror = () => {
+      URL.revokeObjectURL(url)
+      reject(new Error('image_error'))
+    }
+    img.src = url
+  })
+}
+
+// Matching insensible à la casse/accents, inclusion partielle, contre WINE_DB
+function matchWine(parsed) {
+  const napp = normaliser(parsed?.appellation)
+  if (napp && napp.length >= 4) {
+    const hit = WINE_DB.find(w => {
+      const na = normaliser(w.appellation)
+      return na === napp || na.includes(napp) || napp.includes(na)
+    })
+    if (hit) return hit
+  }
+  return null
+}
+
+// Vins de la bibliothèque « proches » de la lecture (même région, ou cépage commun)
+function vinsProches(parsed, max = 3) {
+  const nreg = normaliser(parsed?.region)
+  const ncepages = (parsed?.cepages || []).map(normaliser).filter(Boolean)
+  const scored = WINE_DB
+    .map(w => {
+      let s = 0
+      const nwr = normaliser(w.region)
+      if (nreg && (nwr === nreg || nwr.includes(nreg) || nreg.includes(nwr))) s += 3
+      if (parsed?.type && w.type === parsed.type) s += 1
+      if (ncepages.length && w.cepages.some(c => ncepages.includes(normaliser(c)))) s += 2
+      return { w, s }
+    })
+    .filter(x => x.s >= 2)
+    .sort((a, b) => b.s - a.s)
+  return scored.slice(0, max).map(x => x.w)
+}
+
+// Millésime à proposer pour l'ajout en cave
+function pickMillesime(wine, parsed) {
+  const lu = Number(parsed?.millesime)
+  if (lu && wine.bonsMilsimes?.includes(lu)) return lu
+  if (lu && lu > 1950 && lu < 2100) return lu
+  return wine.bonsMilsimes?.[wine.bonsMilsimes.length - 1] || new Date().getFullYear() - 2
+}
+
+const CONFIANCE_LABEL = {
+  haute: null,
+  moyenne: 'Lecture à confirmer',
+  basse: 'Lecture incertaine',
+}
+
+export default function ScanEtiquette({ onClose, onAddWine }) {
+  // step : 'idle' | 'preview' | 'loading' | 'result' | 'error'
+  const [step, setStep] = useState('idle')
+  const [photo, setPhoto] = useState(null)        // dataURL JPEG redimensionné
+  const [parsed, setParsed] = useState(null)      // réponse JSON de Claude
+  const [matched, setMatched] = useState(null)    // vin WINE_DB correspondant
+  const [errType, setErrType] = useState(null)    // 'unreadable' | 'api'
+  const [ficheWine, setFicheWine] = useState(null)
+  const [added, setAdded] = useState(false)
+  const cameraRef = useRef(null)
+  const galleryRef = useRef(null)
+
+  const onFile = async e => {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    try {
+      const dataUrl = await resizeImage(file)
+      setPhoto(dataUrl)
+      setStep('preview')
+    } catch {
+      setErrType('unreadable')
+      setStep('error')
+    }
+  }
+
+  const analyser = async () => {
+    if (!photo) return
+    setStep('loading')
+    try {
+      const base64 = photo.split(',')[1]
+      const res = await fetch('/api/claude', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-5',
+          max_tokens: 400,
+          system: SYSTEM_PROMPT,
+          messages: [
+            {
+              role: 'user',
+              content: [
+                { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: base64 } },
+                { type: 'text', text: "Lis cette étiquette de vin et renvoie uniquement le JSON." },
+              ],
+            },
+          ],
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok || data.error || data.type === 'error') {
+        setErrType('api')
+        setStep('error')
+        return
+      }
+      const text = (data.content || []).find(b => b.type === 'text')?.text || ''
+      const cleaned = text.replace(/```json|```/g, '').trim()
+      const jsonStart = cleaned.indexOf('{')
+      const jsonEnd = cleaned.lastIndexOf('}')
+      const json = JSON.parse(cleaned.slice(jsonStart, jsonEnd + 1))
+
+      if (!json.appellation && !json.region && !json.domaine) {
+        setErrType('unreadable')
+        setStep('error')
+        return
+      }
+      setParsed(json)
+      setMatched(matchWine(json))
+      setAdded(false)
+      setStep('result')
+    } catch {
+      setErrType('unreadable')
+      setStep('error')
+    }
+  }
+
+  const recommencer = () => {
+    setStep('idle')
+    setPhoto(null)
+    setParsed(null)
+    setMatched(null)
+    setErrType(null)
+    setAdded(false)
+  }
+
+  // Ajout direct à la cave (vin de la bibliothèque ou lecture générique)
+  const ajouterCave = () => {
+    if (!onAddWine || added) return
+    if (matched) {
+      const millesime = pickMillesime(matched, parsed)
+      onAddWine({
+        id: `${matched.id}-${millesime}-${Date.now()}`,
+        name: matched.appellation,
+        domain: parsed?.domaine || '',
+        appellation: matched.appellation,
+        region: matched.region,
+        type: matched.type,
+        cepages: matched.cepages,
+        vintage: millesime,
+        quantity: 1,
+        drinkFrom: matched.drinkFrom,
+        drinkUntil: matched.drinkUntil,
+        serviceTemp: matched.serviceTemp,
+        carafage: matched.carafage,
+        estimatedValue: matched.prixMoyen,
+        foodPairings: matched.accords,
+        notes: `${matched.emoji} ${matched.enUneMot} — ajouté via le scan d'étiquette`,
+      })
+    } else if (parsed) {
+      const vintage = Number(parsed.millesime) || new Date().getFullYear() - 2
+      onAddWine({
+        id: `scan-${Date.now()}`,
+        name: parsed.appellation || parsed.domaine || 'Vin scanné',
+        domain: parsed.domaine || '',
+        appellation: parsed.appellation || '',
+        region: parsed.region || '',
+        type: parsed.type || 'red',
+        cepages: parsed.cepages || [],
+        vintage,
+        quantity: 1,
+        drinkFrom: 1,
+        drinkUntil: 8,
+        serviceTemp: parsed.type === 'white' || parsed.type === 'rosé' ? 10 : 16,
+        carafage: null,
+        estimatedValue: 0,
+        foodPairings: [],
+        notes: '📷 Ajouté via le scan d\'étiquette',
+      })
+    }
+    setAdded(true)
+  }
+
+  const proches = step === 'result' && !matched && parsed ? vinsProches(parsed) : []
+  const region = parsed?.region ? regionInfo(parsed.region) : null
+  const confiance = parsed ? CONFIANCE_LABEL[parsed.confiance] : null
+
+  const sousTitre = {
+    idle: "Une bouteille vous intrigue ? Photographiez son étiquette.",
+    preview: 'Votre photo est prête à être lue.',
+    loading: 'Un instant, notre sommelier lit votre étiquette…',
+    result: matched ? 'Bonne nouvelle : on connaît ce vin.' : "Voici ce qu'on peut vous en dire.",
+    error: 'Petit contretemps…',
+  }[step]
+
+  return (
+    <div
+      className="fixed inset-0 z-[65] flex items-end sm:items-center justify-center p-0 sm:p-4"
+      style={{ background: 'rgba(12,10,9,0.55)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+      onClick={onClose}
+      role="dialog" aria-modal="true" aria-label="Scanner une étiquette de vin"
+    >
+      <div
+        className="modal-panel sm:max-w-lg max-h-[92vh] shadow-card-hover"
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Header sombre luxe */}
+        <div className="p-6 pb-5 flex-shrink-0 text-cream relative overflow-hidden"
+             style={{ background: 'linear-gradient(135deg, #0C0A09 0%, #3a0616 60%, #5c0d22 100%)' }}>
+          <div className="absolute -top-5 -right-3 opacity-10 select-none pointer-events-none" aria-hidden="true">
+            <Camera size={110} strokeWidth={1} />
+          </div>
+          <div className="relative flex items-start justify-between">
+            <div>
+              <span className="eyebrow-dark mb-2">Sommelier de poche</span>
+              <h3 className="font-serif text-2xl font-medium">Scannez une étiquette</h3>
+              <p className="text-cream/70 text-sm mt-1">{sousTitre}</p>
+            </div>
+            <button onClick={onClose}
+                    className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/35 transition-all duration-300 cursor-pointer"
+                    aria-label="Fermer">
+              <X size={14} />
+            </button>
+          </div>
+        </div>
+
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto p-5 sm:p-6">
+
+          {/* ── IDLE : prendre / choisir une photo ─────────────────────── */}
+          {step === 'idle' && (
+            <div className="space-y-3 animate-fade-in">
+              <button
+                onClick={() => cameraRef.current?.click()}
+                className="w-full flex flex-col items-center justify-center gap-3 py-10 rounded-2xl text-cream cursor-pointer transition-all duration-300 hover:brightness-110 active:scale-[0.99] shadow-wine"
+                style={{ background: 'linear-gradient(150deg, #8c2f39 0%, #5c0d22 100%)' }}
+              >
+                <span className="w-14 h-14 rounded-full border border-gold-500/50 flex items-center justify-center">
+                  <Camera size={24} className="text-gold-400" strokeWidth={1.75} />
+                </span>
+                <span className="font-serif text-lg font-medium">Photographier l'étiquette</span>
+                <span className="text-cream/60 text-xs">Au restaurant, chez le caviste, dans votre cave…</span>
+              </button>
+
+              <button
+                onClick={() => galleryRef.current?.click()}
+                className="w-full min-h-[52px] flex items-center justify-center gap-2.5 rounded-2xl border border-anthracite-900/15 text-sm font-medium text-anthracite-700 hover:border-anthracite-900/40 hover:bg-white active:scale-[0.99] transition-all duration-300 cursor-pointer"
+              >
+                <ImageIcon size={16} className="text-gold-600" />
+                Choisir une photo dans la galerie
+              </button>
+
+              <p className="text-[11px] text-anthracite-400 text-center pt-1 leading-relaxed">
+                Cadrez l'étiquette bien en face, avec un maximum de lumière.
+                <br />La photo est analysée puis oubliée — rien n'est conservé.
+              </p>
+
+              {/* Inputs cachés : caméra (mobile) + galerie */}
+              <input ref={cameraRef} type="file" accept="image/*" capture="environment"
+                     className="hidden" onChange={onFile} aria-hidden="true" tabIndex={-1} />
+              <input ref={galleryRef} type="file" accept="image/*"
+                     className="hidden" onChange={onFile} aria-hidden="true" tabIndex={-1} />
+            </div>
+          )}
+
+          {/* ── PREVIEW : photo prête ───────────────────────────────────── */}
+          {step === 'preview' && photo && (
+            <div className="space-y-4 animate-fade-in">
+              <div className="rounded-2xl overflow-hidden flex items-center justify-center" style={{ background: '#1C1917' }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={photo} alt="Aperçu de l'étiquette photographiée" className="max-h-72 w-auto max-w-full object-contain" />
+              </div>
+              <button
+                onClick={analyser}
+                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full text-sm font-semibold text-cream cursor-pointer transition-all duration-300 hover:brightness-110 active:scale-[0.98] shadow-wine"
+                style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
+              >
+                <Sparkles size={15} className="text-gold-400" />
+                Lire l'étiquette
+              </button>
+              <button
+                onClick={recommencer}
+                className="w-full min-h-[44px] flex items-center justify-center gap-2 rounded-full text-xs font-medium text-anthracite-500 hover:text-anthracite-800 transition-colors duration-300 cursor-pointer"
+              >
+                <RefreshCw size={12} /> Changer de photo
+              </button>
+            </div>
+          )}
+
+          {/* ── LOADING : lecture en cours ──────────────────────────────── */}
+          {step === 'loading' && (
+            <div className="py-12 flex flex-col items-center text-center animate-fade-in" aria-live="polite">
+              <div className="relative w-16 h-16 mb-6">
+                <span className="absolute inset-0 rounded-full border-2 border-gold-500/20" />
+                <span className="absolute inset-0 rounded-full border-2 border-transparent border-t-gold-500 animate-spin" />
+                <span className="absolute inset-0 flex items-center justify-center text-2xl" aria-hidden="true">🍷</span>
+              </div>
+              <div className="font-serif text-lg text-anthracite-900">Lecture de l'étiquette…</div>
+              <p className="text-xs text-anthracite-400 mt-2 max-w-[16rem] leading-relaxed">
+                Notre sommelier déchiffre l'appellation, le millésime et les cépages.
+              </p>
+            </div>
+          )}
+
+          {/* ── ERROR : douce, avec retry ───────────────────────────────── */}
+          {step === 'error' && (
+            <div className="py-8 flex flex-col items-center text-center animate-fade-in">
+              <div className="text-4xl mb-4" aria-hidden="true">{errType === 'api' ? '🫥' : '🔍'}</div>
+              <div className="font-serif text-lg text-anthracite-900">
+                {errType === 'api' ? 'Notre sommelier fait une courte pause' : 'Étiquette illisible'}
+              </div>
+              <p className="text-sm text-anthracite-500 mt-2 max-w-[19rem] leading-relaxed">
+                {errType === 'api'
+                  ? "Le service de lecture est momentanément indisponible. Toutes nos excuses — réessayez dans un instant."
+                  : "Réessayez avec plus de lumière, l'étiquette bien à plat et cadrée en entier."}
+              </p>
+              <button
+                onClick={recommencer}
+                className="mt-6 min-h-[48px] inline-flex items-center gap-2 px-8 rounded-full text-sm font-semibold text-cream cursor-pointer transition-all duration-300 hover:brightness-110 active:scale-[0.98]"
+                style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
+              >
+                <RefreshCw size={14} /> Réessayer
+              </button>
+            </div>
+          )}
+
+          {/* ── RESULT : vin reconnu dans la bibliothèque ───────────────── */}
+          {step === 'result' && matched && (
+            <div className="space-y-4 animate-slide-up">
+              {/* Fiche simplifiée */}
+              <div className="rounded-2xl overflow-hidden border border-anthracite-900/[0.07] shadow-card">
+                <div className="p-5 relative overflow-hidden"
+                     style={{ background: `linear-gradient(150deg, ${matched.color} 0%, ${matched.color}cc 60%, #1e2426 150%)` }}>
+                  <div className="absolute -top-6 -right-6 text-[90px] opacity-15 select-none leading-none" aria-hidden="true">{matched.emoji}</div>
+                  <div className="relative">
+                    <div className="text-2xl mb-1">{matched.emoji}</div>
+                    <div className="font-wine-name text-4xl text-cream">{matched.appellation}</div>
+                    <p className="text-cream/70 text-xs mt-1 flex items-center gap-1.5">
+                      <MapPin size={10} /> {matched.region} · {matched.typeLabel}
+                      {parsed?.millesime ? ` · millésime lu : ${parsed.millesime}` : ''}
+                    </p>
+                    <p className="text-cream/90 italic text-sm mt-2.5">« {matched.enUneMot} »</p>
+                  </div>
+                </div>
+
+                <div className="p-5 space-y-4 bg-white">
+                  {confiance && (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-gold-500/15 text-gold-700">
+                      ⚠️ {confiance}
+                    </span>
+                  )}
+
+                  {parsed?.domaine && (
+                    <p className="text-sm text-anthracite-600">
+                      <span className="font-semibold text-anthracite-800">Domaine lu : </span>
+                      <span className="font-wine-name text-xl align-middle">{parsed.domaine}</span>
+                    </p>
+                  )}
+
+                  <div>
+                    <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-2.5">Profil de goût</div>
+                    <JaugesGout jauges={matched.jauges} />
+                  </div>
+
+                  <div>
+                    <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-1.5">Les cépages, simplement</div>
+                    <div className="space-y-1">
+                      {matched.cepages.map(c => (
+                        <div key={c} className="text-sm text-anthracite-700">
+                          <span className="font-semibold">{c}</span>
+                          {noteCepage(c) && <span className="text-anthracite-500"> — {noteCepage(c)}</span>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {matched.region && (
+                    <div className="rounded-xl p-3.5" style={{ background: '#f0e9dd' }}>
+                      <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-1">
+                        {regionInfo(matched.region).emoji} {matched.region}
+                      </div>
+                      <p className="text-xs text-anthracite-600 leading-relaxed">{regionInfo(matched.region).blurb}</p>
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-anthracite-100 text-anthracite-700">
+                      ~ {matched.prixMoyen} € la bouteille
+                    </span>
+                    <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold"
+                          style={{ background: DIFFICULTE_CONFIG[matched.difficulte].bg, color: DIFFICULTE_CONFIG[matched.difficulte].color }}>
+                      {DIFFICULTE_CONFIG[matched.difficulte].emoji} {DIFFICULTE_CONFIG[matched.difficulte].label}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <button
+                onClick={() => setFicheWine(matched)}
+                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full text-sm font-semibold text-cream cursor-pointer transition-all duration-300 hover:brightness-110 active:scale-[0.98] shadow-wine"
+                style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
+              >
+                <BookOpen size={15} />
+                Voir la fiche complète
+              </button>
+              {onAddWine && (
+                <button
+                  onClick={ajouterCave}
+                  disabled={added}
+                  className={`w-full flex items-center justify-center gap-2 py-3 rounded-full text-sm font-semibold transition-all duration-300 cursor-pointer ${
+                    added
+                      ? 'bg-emerald-100 text-emerald-700'
+                      : 'border border-anthracite-900/15 text-anthracite-700 hover:border-anthracite-900/40 active:scale-[0.98]'
+                  }`}
+                >
+                  {added
+                    ? <><Check size={15} /> Ajouté à ma cave</>
+                    : <><Plus size={15} /> Ajouter à ma cave{parsed?.millesime ? ` (${pickMillesime(matched, parsed)})` : ''}</>}
+                </button>
+              )}
+              <button
+                onClick={recommencer}
+                className="w-full min-h-[44px] flex items-center justify-center gap-2 rounded-full text-xs font-medium text-anthracite-500 hover:text-anthracite-800 transition-colors duration-300 cursor-pointer"
+              >
+                <Camera size={12} /> Scanner une autre étiquette
+              </button>
+            </div>
+          )}
+
+          {/* ── RESULT : fiche générique (pas dans la bibliothèque) ─────── */}
+          {step === 'result' && !matched && parsed && (
+            <div className="space-y-4 animate-slide-up">
+              <div className="rounded-2xl overflow-hidden border border-anthracite-900/[0.07] shadow-card">
+                <div className="p-5 relative overflow-hidden text-cream"
+                     style={{ background: 'linear-gradient(150deg, #1C1917 0%, #3a0616 80%, #5c0d22 140%)' }}>
+                  <div className="absolute -top-6 -right-6 text-[90px] opacity-10 select-none leading-none" aria-hidden="true">🍷</div>
+                  <div className="relative">
+                    {parsed.domaine && <div className="font-wine-name text-4xl text-cream">{parsed.domaine}</div>}
+                    <div className={parsed.domaine ? 'text-cream/80 text-sm mt-1' : 'font-wine-name text-4xl text-cream'}>
+                      {parsed.appellation || 'Appellation non identifiée'}
+                    </div>
+                    <p className="text-cream/70 text-xs mt-2 flex items-center gap-1.5 flex-wrap">
+                      {parsed.region && <span className="inline-flex items-center gap-1"><MapPin size={10} /> {parsed.region}</span>}
+                      {parsed.type && <span>· {TYPE_LABELS[parsed.type] || parsed.type}</span>}
+                      {parsed.millesime && <span>· {parsed.millesime}</span>}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-5 space-y-4 bg-white">
+                  {confiance && (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-gold-500/15 text-gold-700">
+                      ⚠️ {confiance}
+                    </span>
+                  )}
+
+                  <p className="text-sm text-anthracite-600 leading-relaxed">
+                    Cette bouteille n'est pas encore dans notre bibliothèque —
+                    mais pas d'inquiétude, voici ce que l'étiquette nous apprend.
+                  </p>
+
+                  {parsed.cepages?.length > 0 && (
+                    <div>
+                      <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-1.5">Les cépages probables, simplement</div>
+                      <div className="space-y-1">
+                        {parsed.cepages.map(c => (
+                          <div key={c} className="text-sm text-anthracite-700">
+                            <span className="font-semibold">{c}</span>
+                            {noteCepage(c) && <span className="text-anthracite-500"> — {noteCepage(c)}</span>}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {region && parsed.region && (
+                    <div className="rounded-xl p-3.5" style={{ background: '#f0e9dd' }}>
+                      <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-1">
+                        {region.emoji} {parsed.region}
+                      </div>
+                      <p className="text-xs text-anthracite-600 leading-relaxed">{region.blurb}</p>
+                    </div>
+                  )}
+
+                  {proches.length > 0 && (
+                    <div>
+                      <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-2">Dans le même esprit, chez nous</div>
+                      <div className="flex flex-wrap gap-2">
+                        {proches.map(w => (
+                          <button
+                            key={w.id}
+                            onClick={() => setFicheWine(w)}
+                            className="min-h-[44px] inline-flex items-center gap-2 pl-3 pr-3.5 rounded-full bg-cream border border-anthracite-900/10 hover:border-gold-500/60 active:scale-[0.98] transition-all duration-300 cursor-pointer"
+                            title={`Ouvrir la fiche ${w.appellation}`}
+                          >
+                            <span aria-hidden="true">{w.emoji}</span>
+                            <span className="text-xs font-semibold text-anthracite-800">{w.appellation}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {onAddWine && (parsed.appellation || parsed.domaine) && (
+                <button
+                  onClick={ajouterCave}
+                  disabled={added}
+                  className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-full text-sm font-semibold transition-all duration-300 cursor-pointer ${
+                    added
+                      ? 'bg-emerald-100 text-emerald-700'
+                      : 'text-cream shadow-wine hover:brightness-110 active:scale-[0.98]'
+                  }`}
+                  style={!added ? { background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' } : {}}
+                >
+                  {added ? <><Check size={15} /> Ajouté à ma cave</> : <><Plus size={15} /> Ajouter à ma cave</>}
+                </button>
+              )}
+              <button
+                onClick={recommencer}
+                className="w-full min-h-[44px] flex items-center justify-center gap-2 rounded-full text-xs font-medium text-anthracite-500 hover:text-anthracite-800 transition-colors duration-300 cursor-pointer"
+              >
+                <Camera size={12} /> Scanner une autre étiquette
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Fiche complète (z-[70], passe au-dessus du scan) */}
+      {ficheWine && (
+        <FicheVin
+          wine={ficheWine}
+          onClose={() => setFicheWine(null)}
+          onAddToCave={onAddWine ? (w, m) => {
+            onAddWine({
+              id: `${w.id}-${m}-${Date.now()}`,
+              name: w.appellation,
+              domain: '',
+              appellation: w.appellation,
+              region: w.region,
+              type: w.type,
+              cepages: w.cepages,
+              vintage: m,
+              quantity: 1,
+              drinkFrom: w.drinkFrom,
+              drinkUntil: w.drinkUntil,
+              serviceTemp: w.serviceTemp,
+              carafage: w.carafage,
+              estimatedValue: w.prixMoyen,
+              foodPairings: w.accords,
+              notes: `${w.emoji} ${w.enUneMot} — Arômes : ${w.aromes}`,
+            })
+          } : undefined}
+        />
+      )}
+    </div>
+  )
+}

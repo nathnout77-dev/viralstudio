@@ -1,4 +1,4 @@
-import { Wine, Library, MapPin, Sparkles, BookOpen, Plus, Utensils } from 'lucide-react'
+import { Wine, Library, MapPin, Sparkles, BookOpen, Plus, Utensils, ScanLine } from 'lucide-react'
 
 const TABS = [
   { id: 'cave',      label: 'Ma Cave',   Icon: Wine },
@@ -14,7 +14,7 @@ const MODE_BADGE = {
   expert:   { emoji: '🎓', label: 'Expert' },
 }
 
-export default function Navbar({ tab, setTab, total, mode, onProfil, onAdd, onLanding, onCeSoir }) {
+export default function Navbar({ tab, setTab, total, mode, onProfil, onAdd, onLanding, onCeSoir, onScan }) {
   const badge = MODE_BADGE[mode]
   return (
     <>
@@ -64,6 +64,16 @@ export default function Navbar({ tab, setTab, total, mode, onProfil, onAdd, onLa
                 {badge.label}
               </button>
             )}
+
+            {/* Scanner une étiquette (desktop) */}
+            <button
+              onClick={onScan}
+              title="Scanner une étiquette de vin"
+              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[11px] font-semibold uppercase tracking-[0.1em] text-anthracite-700 border border-anthracite-900/15 hover:border-gold-500/70 hover:text-anthracite-950 active:scale-[0.98] transition-all duration-300 cursor-pointer"
+            >
+              <ScanLine size={12} className="text-gold-600" />
+              Scanner
+            </button>
 
             {/* Ce soir ? */}
             <button
@@ -123,6 +133,18 @@ export default function Navbar({ tab, setTab, total, mode, onProfil, onAdd, onLa
               )}
             </button>
           ))}
+
+          {/* Scanner une étiquette (mobile) — action, pas un onglet */}
+          <button
+            onClick={onScan}
+            className="flex-1 flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all duration-300 relative"
+            aria-label="Scanner une étiquette de vin"
+          >
+            <ScanLine size={19} strokeWidth={1.5} className="text-gold-600" />
+            <span className="text-[10px] uppercase tracking-[0.1em] font-medium text-gold-600">
+              Scanner
+            </span>
+          </button>
         </div>
       </nav>
     </>

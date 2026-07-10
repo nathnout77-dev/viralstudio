@@ -11,6 +11,7 @@ import GuideView        from '../components/GuideView'
 import BibliothequeView from '../components/BibliothequeView'
 import LandingPage      from '../components/LandingPage'
 import CeSoirMode       from '../components/CeSoirMode'
+import ScanEtiquette    from '../components/ScanEtiquette'
 import AssistantView    from '../components/AssistantView'
 import OnboardingProfil, { loadProfil } from '../components/OnboardingProfil'
 import { Sparkles }     from 'lucide-react'
@@ -75,6 +76,7 @@ export default function App() {
   const [showForm, setShowForm]       = useState(false)
   const [editWine, setEditWine]       = useState(null)
   const [showCeSoir, setShowCeSoir]   = useState(false)
+  const [showScan, setShowScan]       = useState(false)
   const [showAssistant, setShowAssistant] = useState(false)
   const [profil, setProfil]           = useState(null)
   const [showOnboarding, setShowOnboarding] = useState(false)
@@ -121,6 +123,12 @@ export default function App() {
     sessionStorage.setItem('landing-seen', '1')
     setShowLanding(false)
     setShowCeSoir(true)
+  }, [])
+
+  const openScan = useCallback(() => {
+    sessionStorage.setItem('landing-seen', '1')
+    setShowLanding(false)
+    setShowScan(true)
   }, [])
 
   const saveWine = useCallback(w => {
@@ -180,12 +188,18 @@ export default function App() {
           <meta name="description" content="Vous n'y connaissez rien en vin ? Parfait. Œno traduit l'œnologie en langage humain : 55+ vins décodés, quiz de goût, carte des vignobles." />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
-        <LandingPage onEnter={enterApp} onTabChange={handleTabChange} onCeSoir={openCeSoir} />
+        <LandingPage onEnter={enterApp} onTabChange={handleTabChange} onCeSoir={openCeSoir} onScan={openScan} />
         {showCeSoir && (
           <CeSoirMode
             mode={mode}
             onClose={() => setShowCeSoir(false)}
             onOpenBibliotheque={() => handleTabChange('vins')}
+          />
+        )}
+        {showScan && (
+          <ScanEtiquette
+            onClose={() => setShowScan(false)}
+            onAddWine={saveWine}
           />
         )}
       </>
@@ -209,6 +223,7 @@ export default function App() {
           onAdd={() => setShowForm(true)}
           onLanding={() => setShowLanding(true)}
           onCeSoir={() => setShowCeSoir(true)}
+          onScan={() => setShowScan(true)}
         />
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-10">
@@ -247,6 +262,12 @@ export default function App() {
             mode={mode}
             onClose={() => setShowCeSoir(false)}
             onOpenBibliotheque={() => setTab('vins')}
+          />
+        )}
+        {showScan && (
+          <ScanEtiquette
+            onClose={() => setShowScan(false)}
+            onAddWine={saveWine}
           />
         )}
         {showAssistant && <AssistantView onClose={() => setShowAssistant(false)} />}
