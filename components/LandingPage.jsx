@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { Wine, Library, MapPin, Sparkles, BookOpen, ChevronDown, Utensils, ArrowRight, Gauge, Hourglass } from 'lucide-react'
+import { Wine, Library, MapPin, Sparkles, BookOpen, ChevronDown, Utensils, ArrowRight, Gauge, Hourglass, Camera } from 'lucide-react'
 import { WINE_DB, MILLESIMES_DB, CONFIDENTIEL_DOMAINES, WINE_DB_BY_REGION } from '../data/wineDatabase'
 import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
+import RoueAromes from './RoueAromes'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ŒNO — Landing cinématique scroll-driven (façon keynote produit)
@@ -121,7 +122,7 @@ function FeatCard({ f, i, hidden }) {
 }
 
 // ── Landing ───────────────────────────────────────────────────────────────────
-export default function LandingPage({ onEnter, onTabChange, onCeSoir }) {
+export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) {
   const [reduced, setReduced] = useState(false)
   const [statsOn, setStatsOn] = useState(false)
   const statsRef = useRef(null)
@@ -273,6 +274,7 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir }) {
   // ── Cartes du carrousel : moments (features) + régions phares ───────────
   const features = [
     { icon: Utensils, title: '« Ce soir, je bois quoi ? »', desc: 'Dites-nous juste ce que vous mangez. 3 vins, 10 secondes, zéro jargon.', action: onCeSoir, cta: 'Essayer', color: '#8c2f39' },
+    { icon: Camera, title: 'Scannez une étiquette', desc: 'Une bouteille vous intrigue au restaurant ? Photographiez l\'étiquette : Œno vous la décode en quelques secondes.', action: onScan, cta: 'Scanner', color: '#a16207' },
     { icon: Sparkles, title: 'Le Goût-o-mètre', desc: 'Café ou thé ? Confiture ou citron ? Répondez sur VOS goûts, on trouve VOS vins.', action: () => onTabChange('sommelier'), cta: 'Faire le test', color: '#b8722c' },
     { icon: Library, title: `${WINE_DB.length} vins décodés`, desc: 'Chaque appellation expliquée simplement : jauges de goût, prix moyen, "pour qui ?".', action: () => onTabChange('vins'), cta: 'Explorer', color: '#4d7c50' },
     { icon: MapPin, title: 'La carte des vignobles', desc: `Voyagez dans ${totRegions} régions, cliquez, découvrez, ajoutez à votre cave.`, action: () => onTabChange('carte'), cta: 'Voyager', color: '#3d5a80' },
@@ -431,6 +433,27 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir }) {
             <div className="md:hidden grid grid-cols-2 gap-x-4 gap-y-6 mt-8">
               {bottleFeats.map((f, i) => <FeatCard key={f.t} f={f} i={i} hidden={hiddenFeat} />)}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════ SCÈNE 3bis — ROUE DES ARÔMES (crème, non épinglée, reveal) ════ */}
+      <section data-reveal-zone className="relative overflow-hidden py-28 sm:py-36 px-6 sm:px-10" style={{ background: '#FAFAF9' }}
+               aria-label="Apprenez à sentir — la roue des arômes">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <span className="eyebrow mb-6 reveal">Apprenez à sentir</span>
+            <h2 className="font-serif text-4xl sm:text-6xl font-medium text-anthracite-950 leading-[1.1] tracking-tight reveal reveal-delay-1">
+              Votre nez sait déjà
+              <br /><span className="italic text-wine-900">tout faire.</span>
+            </h2>
+            <p className="reveal reveal-delay-2 text-anthracite-500 font-light mt-6 max-w-xl mx-auto">
+              Huit familles d'arômes suffisent pour décrire presque tous les vins du monde.
+              Touchez la roue : on vous explique chacune, sans jargon.
+            </p>
+          </div>
+          <div className="reveal reveal-delay-2">
+            <RoueAromes />
           </div>
         </div>
       </section>
