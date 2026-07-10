@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { Library, Search, X, Plus, Check, Thermometer, Clock, Wine, MapPin, ChevronDown, ExternalLink, Sparkles } from 'lucide-react'
+import { Library, Search, X, Plus, Check, Thermometer, Clock, Wine, MapPin, ChevronDown, ExternalLink, Sparkles, NotebookPen } from 'lucide-react'
 import { WINE_DB, REGIONS_LIST, DIFFICULTE_CONFIG, MILLESIMES_DB, gardeForMillesime } from '../data/wineDatabase'
 import JaugesGout from './JaugesGout'
 import Terme from './Tooltip'
@@ -30,7 +30,7 @@ const DIFF_FILTERS = [
 ]
 
 // ── Fiche détaillée ────────────────────────────────────────────────────────────
-export function FicheVin({ wine, onClose, onAddToCave, added }) {
+export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
   const [millesime, setMillesime] = useState(wine.bonsMilsimes[wine.bonsMilsimes.length - 1])
   const diff = DIFFICULTE_CONFIG[wine.difficulte]
   const addedSet = added || new Set()
@@ -236,6 +236,14 @@ export function FicheVin({ wine, onClose, onAddToCave, added }) {
             {isAdded ? <><Check size={15} /> Ajouté à ma cave</> : <><Plus size={15} /> Ajouter à ma cave ({millesime})</>}
           </button>
           )}
+          {onNoter && (
+            <button
+              onClick={() => onNoter({ name: wine.appellation, domain: wine.domaines?.[0]?.name || '', vintage: millesime, type: wine.type })}
+              className="w-full flex items-center justify-center gap-1.5 py-2.5 mt-2 rounded-xl text-xs font-semibold text-anthracite-500 hover:text-wine-700 transition-colors cursor-pointer"
+            >
+              <NotebookPen size={13} /> Noter cette dégustation
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -287,7 +295,7 @@ function VinCard({ wine, onClick, index }) {
 }
 
 // ── Vue principale ─────────────────────────────────────────────────────────────
-export default function BibliothequeView({ onAddWine, mode, initialSearch = '' }) {
+export default function BibliothequeView({ onAddWine, mode, initialSearch = '', onNoter }) {
   const [search, setSearch]   = useState(initialSearch)
   const [type, setType]       = useState('all')
   const [budget, setBudget]   = useState('all')
@@ -430,6 +438,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '' }
           onClose={() => setSelected(null)}
           onAddToCave={handleAdd}
           added={added}
+          onNoter={onNoter}
         />
       )}
     </div>

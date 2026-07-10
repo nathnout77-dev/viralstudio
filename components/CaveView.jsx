@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react'
-import { Search, SlidersHorizontal, LayoutGrid, List, Wine, Plus, X, ChevronDown } from 'lucide-react'
+import { useState, useMemo, useEffect } from 'react'
+import { Search, SlidersHorizontal, LayoutGrid, List, Wine, Plus, X, ChevronDown, BookHeart } from 'lucide-react'
 import WineCard from './WineCard'
+import JournalDegustation from './JournalDegustation'
 
 const TYPES = ['Tous', 'Rouge', 'Blanc', 'Rosé', 'Effervescent', 'Liquoreux']
 const TYPE_MAP = { 'Rouge':'red', 'Blanc':'white', 'Rosé':'rosé', 'Effervescent':'sparkling', 'Liquoreux':'sweet' }
@@ -28,13 +29,19 @@ function SelectFilter({ value, onChange, options, label }) {
   )
 }
 
-export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onUpdateQty }) {
+export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onUpdateQty, journalPrefill, onConsumeJournalPrefill }) {
   const [search, setSearch]   = useState('')
   const [typeFilter, setType] = useState('Tous')
   const [region, setRegion]   = useState('Toutes')
   const [sort, setSort]       = useState('name')
   const [view, setView]       = useState('grid')
   const [showFilters, setShowFilters] = useState(false)
+  const [sub, setSub]         = useState('cave')
+
+  // Si une note pré-remplie arrive (depuis « Noter cette dégustation »), on bascule sur le journal
+  useEffect(() => {
+    if (journalPrefill) setSub('journal')
+  }, [journalPrefill])
 
   const filtered = useMemo(() => {
     let list = wines.filter(w => {
@@ -71,6 +78,33 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
 
   return (
     <div className="animate-fade-in">
+      {/* Sous-onglets : Ma Cave / Mémoires de Vin */}
+      <div className="flex gap-2 mb-6 overflow-x-auto hide-scrollbar">
+        {[
+          { id: 'cave',    label: 'Ma Cave',        Icon: Wine },
+          { id: 'journal', label: 'Mémoires de Vin', Icon: BookHeart },
+        ].map(({ id, label, Icon }) => (
+          <button
+            key={id}
+            onClick={() => setSub(id)}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+              sub === id
+                ? 'bg-wine-800 text-cream shadow-wine'
+                : 'bg-white text-anthracite-600 border border-anthracite-200 hover:border-wine-300'
+            }`}
+          >
+            <Icon size={13} />
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {sub === 'journal' && (
+        <JournalDegustation prefill={journalPrefill} onConsumePrefill={onConsumeJournalPrefill} />
+      )}
+
+      {sub === 'cave' && (
+      <>
       {/* Stats strip */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         {[
@@ -191,6 +225,8 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
             />
           ))}
         </div>
+      )}
+      </>
       )}
     </div>
   )

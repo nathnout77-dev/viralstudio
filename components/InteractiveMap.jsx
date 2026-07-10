@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
-import { X, Wine, Grape, MapPin, Plus, Thermometer, Clock, Star, BookOpen, Check, ChevronRight, ExternalLink, Sparkles } from 'lucide-react'
+import { X, Wine, Grape, MapPin, Plus, Thermometer, Clock, Star, BookOpen, Check, ChevronRight, ExternalLink, Sparkles, NotebookPen } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import { WINE_DB, WINE_DB_DOMAINES, gardeForMillesime } from '../data/wineDatabase'
 import { regionInfo } from '../data/regionsInfo'
@@ -14,7 +14,7 @@ const TYPE_COLORS = {
 }
 
 // ── Wine detail panel ──────────────────────────────────────────────────────────
-function WinePanel({ wine, onClose, onAddToCave, addedIds }) {
+function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
   const [millesime, setMillesime] = useState(wine.bonsMilsimes[wine.bonsMilsimes.length - 1])
   const [qty, setQty] = useState(1)
   const isAdded = addedIds.has(`${wine.id}-${millesime}`)
@@ -234,6 +234,14 @@ function WinePanel({ wine, onClose, onAddToCave, addedIds }) {
             }
           </button>
         </div>
+        {onNoter && (
+          <button
+            onClick={() => onNoter({ name: wine.appellation, domain: wine.domaines?.[0]?.name || '', vintage: millesime, type: wine.type })}
+            className="w-full flex items-center justify-center gap-1.5 py-2 mt-2 rounded-lg text-xs font-semibold text-anthracite-500 hover:text-wine-700 transition-colors cursor-pointer"
+          >
+            <NotebookPen size={12} /> Noter cette dégustation
+          </button>
+        )}
       </div>
     </div>
   )
