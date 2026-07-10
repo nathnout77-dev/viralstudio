@@ -376,15 +376,16 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
       {/* ════ L'ŒNOLOGIE, EXPLIQUÉE SIMPLEMENT ════ */}
       <section data-reveal-zone className="relative overflow-hidden py-24 sm:py-32 px-6 sm:px-10" style={{ background: '#FAFAF9' }}>
         <div className="max-w-4xl mx-auto text-center">
-          <span className="eyebrow reveal">L'œnologie, sans le snobisme</span>
+          <span className="eyebrow reveal">L'œnologie, une idée de vie</span>
           <h2 className="font-serif text-3xl sm:text-5xl font-medium text-anthracite-950 leading-[1.15] tracking-tight mt-5 reveal reveal-delay-1">
-            L'œnologie, c'est juste <span className="italic text-wine-900">la science du vin</span> —
-            <br className="hidden sm:block" /> comprendre ce qu'on boit, pour mieux l'apprécier.
+            L'œnologie, c'est <span className="italic text-wine-900">la science du vin</span> —
+            <br className="hidden sm:block" /> mais surtout, un art de vivre au quotidien.
           </h2>
           <p className="reveal reveal-delay-2 text-anthracite-500 font-light text-lg mt-7 max-w-2xl mx-auto leading-relaxed">
-            Comment un raisin devient un vin, pourquoi deux bouteilles de la même appellation n'ont pas
-            le même goût selon l'année, ce que veut dire « tanins » ou « garde »… Œno traduit tout cela
-            en langage clair. Pas besoin d'être expert pour commencer — juste curieux.
+            Elle étudie comment un raisin devient un vin, pourquoi deux bouteilles de la même appellation
+            n'ont pas le même goût selon l'année, et ce qui distingue un grand vin d'un vin simplement bon.
+            S'y intéresser, ce n'est pas apprendre par cœur — c'est prendre le temps de goûter, d'observer,
+            et de savourer chaque bouteille comme un moment à part entière.
           </p>
 
           <div className="reveal reveal-delay-3 grid sm:grid-cols-3 gap-6 sm:gap-8 mt-16 text-left">
