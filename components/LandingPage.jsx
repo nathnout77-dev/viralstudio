@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Wine, Library, MapPin, Sparkles, BookOpen, ChevronDown, Utensils, ArrowRight, Gauge, Hourglass, Camera } from 'lucide-react'
+import { Wine, Library, MapPin, Sparkles, BookOpen, ChevronDown, Utensils, ArrowRight, Gauge, Hourglass, Camera, GraduationCap, Compass, NotebookPen, Users } from 'lucide-react'
 import { WINE_DB, MILLESIMES_DB, CONFIDENTIEL_DOMAINES, WINE_DB_BY_REGION } from '../data/wineDatabase'
 import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
 import RoueAromes from './RoueAromes'
@@ -369,6 +369,36 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
           <div data-lp-hint className="lp-hero-hint relative z-10 pb-4 flex-shrink-0 flex flex-col items-center gap-1.5 text-gold-500/70">
             <span className="text-[10px] uppercase tracking-[0.3em]">Faites défiler</span>
             <ChevronDown size={15} className="animate-bounce-subtle" />
+          </div>
+        </div>
+      </section>
+
+      {/* ════ L'ŒNOLOGIE, EXPLIQUÉE SIMPLEMENT ════ */}
+      <section data-reveal-zone className="relative overflow-hidden py-24 sm:py-32 px-6 sm:px-10" style={{ background: '#FAFAF9' }}>
+        <div className="max-w-4xl mx-auto text-center">
+          <span className="eyebrow reveal">L'œnologie, sans le snobisme</span>
+          <h2 className="font-serif text-3xl sm:text-5xl font-medium text-anthracite-950 leading-[1.15] tracking-tight mt-5 reveal reveal-delay-1">
+            L'œnologie, c'est juste <span className="italic text-wine-900">la science du vin</span> —
+            <br className="hidden sm:block" /> comprendre ce qu'on boit, pour mieux l'apprécier.
+          </h2>
+          <p className="reveal reveal-delay-2 text-anthracite-500 font-light text-lg mt-7 max-w-2xl mx-auto leading-relaxed">
+            Comment un raisin devient un vin, pourquoi deux bouteilles de la même appellation n'ont pas
+            le même goût selon l'année, ce que veut dire « tanins » ou « garde »… Œno traduit tout cela
+            en langage clair. Pas besoin d'être expert pour commencer — juste curieux.
+          </p>
+
+          <div className="reveal reveal-delay-3 grid sm:grid-cols-3 gap-6 sm:gap-8 mt-16 text-left">
+            {[
+              { icon: Compass,    t: 'Goûtez, sans pression',   d: "Ouvrez une bouteille, observez sa couleur, respirez, goûtez. Il n'y a pas de mauvaise réponse — seulement votre ressenti." },
+              { icon: GraduationCap, t: 'Apprenez un mot à la fois', d: 'Le lexique Œno explique chaque terme technique simplement, dès que vous le croisez sur une fiche vin.' },
+              { icon: NotebookPen, t: 'Gardez une trace',        d: 'Notez vos dégustations dans Mémoires de Vin : avec le temps, vous découvrirez ce que vous aimez vraiment.' },
+            ].map((f, i) => (
+              <div key={f.t} className="flex flex-col items-start gap-3 p-6 rounded-2xl border border-anthracite-100 bg-white/60">
+                <f.icon size={22} className="text-gold-600" strokeWidth={1.6} />
+                <h3 className="font-serif text-lg font-medium text-anthracite-900">{f.t}</h3>
+                <p className="text-sm text-anthracite-500 font-light leading-relaxed">{f.d}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
