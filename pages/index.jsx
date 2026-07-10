@@ -81,6 +81,7 @@ export default function App() {
   const [profil, setProfil]           = useState(null)
   const [showOnboarding, setShowOnboarding] = useState(false)
   const [librarySearch, setLibrarySearch] = useState('')
+  const [journalPrefill, setJournalPrefill] = useState(null)
 
   useEffect(() => {
     const saved = localStorage.getItem('oenotheque-v2')
@@ -129,6 +130,14 @@ export default function App() {
     sessionStorage.setItem('landing-seen', '1')
     setShowLanding(false)
     setShowScan(true)
+  }, [])
+
+  // « Noter cette dégustation » depuis la fiche vin (bibliothèque) ou la carte
+  const noterDegustation = useCallback((seed) => {
+    sessionStorage.setItem('landing-seen', '1')
+    setShowLanding(false)
+    setJournalPrefill({ ...seed, _key: Date.now() })
+    setTab('cave')
   }, [])
 
   const saveWine = useCallback(w => {
@@ -235,10 +244,12 @@ export default function App() {
               onDelete={deleteWine}
               onSelect={setDetailWine}
               onUpdateQty={updateQty}
+              journalPrefill={journalPrefill}
+              onConsumeJournalPrefill={() => setJournalPrefill(null)}
             />
           )}
-          {tab === 'vins'      && <BibliothequeView onAddWine={saveWine} mode={mode} initialSearch={librarySearch} />}
-          {tab === 'carte'     && <InteractiveMap onAddWine={saveWine} />}
+          {tab === 'vins'      && <BibliothequeView onAddWine={saveWine} mode={mode} initialSearch={librarySearch} onNoter={noterDegustation} />}
+          {tab === 'carte'     && <InteractiveMap onAddWine={saveWine} onNoter={noterDegustation} />}
           {tab === 'sommelier' && <SommelierForm onOpenBibliotheque={() => setTab('vins')} />}
           {tab === 'guide'     && <GuideView onAddWine={saveWine} />}
         </main>

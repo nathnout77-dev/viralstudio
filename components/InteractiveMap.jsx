@@ -248,7 +248,7 @@ function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
 }
 
 // ── Map component ─────────────────────────────────────────────────────────────
-export default function InteractiveMap({ onAddWine }) {
+export default function InteractiveMap({ onAddWine, onNoter }) {
   const [selected, setSelected] = useState(null)
   const [MapComponents, setMap] = useState(null)
   const [addedIds, setAddedIds] = useState(new Set())
@@ -420,6 +420,7 @@ export default function InteractiveMap({ onAddWine }) {
                   onClose={() => setSelected(null)}
                   onAddToCave={handleAddToCave}
                   addedIds={addedIds}
+                  onNoter={onNoter}
                 />
               )}
             </>
