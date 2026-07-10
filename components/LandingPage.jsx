@@ -263,9 +263,12 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
   const nMillesimes = useCountUp(MILLESIMES_DB.length, statsOn, reduced)
   const nCepages    = useCountUp(new Set(WINE_DB.flatMap(w => w.cepages)).size, statsOn, reduced)
 
-  // ── Domaine du moment — rotation déterministe par jour du mois ──────────
+  // ── Domaine du moment — un nouveau domaine à chaque visite de la page ──
+  const [domaineIdx] = useState(() =>
+    CONFIDENTIEL_DOMAINES.length ? Math.floor(Math.random() * CONFIDENTIEL_DOMAINES.length) : 0
+  )
   const domaineDuMoment = CONFIDENTIEL_DOMAINES.length
-    ? CONFIDENTIEL_DOMAINES[new Date().getDate() % CONFIDENTIEL_DOMAINES.length]
+    ? CONFIDENTIEL_DOMAINES[domaineIdx]
     : null
   const domaineWine = domaineDuMoment
     ? WINE_DB.find(w => w.id === domaineDuMoment.wines[0].id)
