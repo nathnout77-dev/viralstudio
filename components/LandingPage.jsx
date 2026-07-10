@@ -322,13 +322,13 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
           </header>
 
           {/* Contenu central */}
-          <div className="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-6 gap-[2.5svh]">
+          <div className="lp-hero-content relative z-10 flex-1 flex flex-col items-center justify-center text-center px-6 gap-[2svh] py-2 min-h-0">
             <h1 data-lp-title className="font-serif font-medium text-cream tracking-tight leading-none will-change-transform"
-                style={{ fontSize: 'clamp(5rem, 19vw, 12rem)' }}>
+                style={{ fontSize: 'clamp(3.2rem, 16vw, 12rem)' }}>
               Œno
             </h1>
 
-            <div className="relative flex items-center justify-center" style={{ height: 'min(34svh, 20rem)' }}>
+            <div className="lp-hero-glass relative flex items-center justify-center" style={{ height: 'min(26svh, 18rem)' }}>
               <div data-lp-glow aria-hidden="true" className="absolute w-[130%] aspect-square rounded-full"
                    style={{ opacity: reduced ? 0.9 : 0.35, background: 'radial-gradient(circle, rgba(140,47,57,0.4) 0%, transparent 70%)' }} />
               <GrandVerre id="hero" staticFill={reduced ? 0.85 : 0.06} className="relative h-full w-auto" />
@@ -366,7 +366,7 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
           </div>
 
           {/* Indice de scroll */}
-          <div data-lp-hint className="relative z-10 pb-5 flex flex-col items-center gap-1.5 text-gold-500/70">
+          <div data-lp-hint className="lp-hero-hint relative z-10 pb-4 flex-shrink-0 flex flex-col items-center gap-1.5 text-gold-500/70">
             <span className="text-[10px] uppercase tracking-[0.3em]">Faites défiler</span>
             <ChevronDown size={15} className="animate-bounce-subtle" />
           </div>

@@ -237,6 +237,16 @@
   overflow: hidden;
 }
 
+/* Sur les fenêtres basses (portable en mode paysage, fenêtre navigateur réduite),
+   le contenu du hero peut dépasser 100svh : on autorise le débordement plutôt
+   que de couper les CTA, et on resserre les espacements. */
+@media (max-height: 700px) {
+  .lp-hero-content { gap: 1.1svh !important; }
+  .lp-hero-glass { height: min(20svh, 12rem) !important; }
+  .lp-hero-hint { display: none; }
+}
+
+
 /* Landing page noise overlay */
 .bg-noise::after {
   content: '';
