@@ -1965,6 +1965,141 @@ export const WINE_DB = [
     lat: 41.17, lng: -7.75,
     description: 'Les mêmes cépages que le Porto, vinifiés secs : un rouge dense et épicé né sur les terrasses vertigineuses du Douro.',
   }),
+
+  // ═══ APPELLATIONS GÉNÉRIQUES COMPLÉMENTAIRES ═══════════════════════════════
+  vin({
+    id: 'cotes-du-rhone', region: 'Rhône Sud', appellation: 'Côtes du Rhône', type: 'red',
+    cepages: ['Grenache', 'Syrah', 'Mourvèdre'],
+    aromes: 'Fruits rouges mûrs, garrigue, poivre noir',
+    emoji: '🍇', enUneMot: 'Le rouge du Sud accessible au quotidien',
+    pourQui: 'Ceux qui veulent un rouge chaleureux et facile, sans se ruiner',
+    jauges: { puissance: 3, douceur: 1, tanins: 2 },
+    difficulte: 'facile', prixMoyen: 8,
+    bonsMilsimes: [2019, 2020, 2021, 2022],
+    garde: '2-6 ans', drinkFrom: 0, drinkUntil: 6,
+    temperature: '15-16°C', serviceTemp: 16,
+    accords: ['Grillades', 'Charcuterie', 'Pizza', 'Plats mijotés'],
+    domaines: [
+      { name: 'Famille Perrin', note: 'Grande régularité, bio' },
+      { name: 'Domaine Chapoutier', note: 'Belles cuvées d\'entrée de gamme' },
+    ],
+    lat: 44.35, lng: 4.80,
+    description: 'L\'appellation régionale qui couvre toute la vallée du Rhône Sud. Simple, fruité, généreux : le rouge de tous les jours par excellence.',
+  }),
+  vin({
+    id: 'medoc', region: 'Bordeaux', appellation: 'Médoc', type: 'red',
+    cepages: ['Cabernet Sauvignon', 'Merlot'],
+    aromes: 'Cassis, fruits noirs, notes boisées légères',
+    emoji: '🍷', enUneMot: 'Le Bordeaux d\'entrée de gamme du Médoc',
+    pourQui: 'Ceux qui veulent goûter le style Médoc sans le prix des grands crus',
+    jauges: { puissance: 3, douceur: 1, tanins: 3 },
+    difficulte: 'facile', prixMoyen: 10,
+    bonsMilsimes: [2018, 2019, 2020, 2022],
+    garde: '4-10 ans', drinkFrom: 2, drinkUntil: 10,
+    temperature: '16-17°C', serviceTemp: 16,
+    accords: ['Entrecôte', 'Rôti de bœuf', 'Fromages moyens'],
+    domaines: [
+      { name: 'Château Rollan de By', note: 'Belle régularité' },
+      { name: 'Château Greysac', note: 'Style classique et digeste' },
+    ],
+    lat: 45.35, lng: -0.90,
+    description: 'L\'appellation générique du Médoc, au nord de Bordeaux. Le même style que les grands crus (Cabernet Sauvignon dominant) mais taillé pour boire jeune.',
+  }),
+  vin({
+    id: 'graves-de-vayres', region: 'Bordeaux', appellation: 'Graves de Vayres', type: 'red',
+    cepages: ['Merlot', 'Cabernet Franc'],
+    aromes: 'Fruits rouges, prune, légère note terreuse',
+    emoji: '🍒', enUneMot: 'Le petit Bordeaux rond et discret',
+    pourQui: 'Ceux qui cherchent un Bordeaux simple, souple, pas cher',
+    jauges: { puissance: 2, douceur: 1, tanins: 2 },
+    difficulte: 'facile', prixMoyen: 8,
+    bonsMilsimes: [2018, 2019, 2020, 2022],
+    garde: '2-6 ans', drinkFrom: 0, drinkUntil: 6,
+    temperature: '15-16°C', serviceTemp: 15,
+    accords: ['Charcuterie', 'Volaille', 'Plats du quotidien'],
+    domaines: [
+      { name: 'Château Bel Air Perponcher', note: 'Bonne petite adresse locale' },
+      { name: 'Château Le Bouquey', note: 'Style franc et fruité' },
+    ],
+    lat: 44.89, lng: -0.30,
+    description: 'Petite appellation méconnue sur la rive droite de la Dordogne, face à Libourne. Merlot rond et facile à boire jeune.',
+  }),
+  vin({
+    id: 'petit-chablis', region: 'Bourgogne', appellation: 'Petit Chablis', type: 'white',
+    cepages: ['Chardonnay'],
+    aromes: 'Citron, pomme verte, craie',
+    emoji: '🍋', enUneMot: 'Le petit frère vif de Chablis',
+    pourQui: 'Ceux qui veulent la fraîcheur de Chablis à petit prix',
+    jauges: { puissance: 1, douceur: 1, tanins: 1 },
+    difficulte: 'facile', prixMoyen: 13,
+    bonsMilsimes: [2020, 2021, 2022],
+    garde: '2-5 ans', drinkFrom: 0, drinkUntil: 5,
+    temperature: '10-12°C', serviceTemp: 11,
+    accords: ['Fruits de mer', 'Charcuterie', 'Apéritif'],
+    domaines: [
+      { name: 'Domaine Séguinot-Bordet', note: 'Fraîcheur et précision' },
+      { name: 'Domaine Gérard Tremblay', note: 'Belle régularité' },
+    ],
+    lat: 47.85, lng: 3.78,
+    description: 'Cultivé sur les plateaux autour de Chablis, un cran plus léger et plus simple. Même vivacité citronnée, à boire jeune.',
+  }),
+  vin({
+    id: 'touraine-sauvignon', region: 'Loire', appellation: 'Touraine Sauvignon', type: 'white',
+    cepages: ['Sauvignon Blanc'],
+    aromes: 'Agrumes, buis, fruits exotiques légers',
+    emoji: '🍈', enUneMot: 'Le Sauvignon malin de Touraine',
+    pourQui: 'Ceux qui aiment Sancerre et veulent le même style à moitié prix',
+    jauges: { puissance: 2, douceur: 1, tanins: 1 },
+    difficulte: 'facile', prixMoyen: 8,
+    bonsMilsimes: [2020, 2021, 2022],
+    garde: '1-4 ans', drinkFrom: 0, drinkUntil: 4,
+    temperature: '9-11°C', serviceTemp: 10,
+    accords: ['Fruits de mer', 'Chèvre frais', 'Apéritif', 'Salades'],
+    domaines: [
+      { name: 'Domaine de la Charmoise', note: 'Henry Marionnet, précurseur' },
+      { name: 'Domaine François Pinon', note: 'Fruit franc et net' },
+    ],
+    lat: 47.35, lng: 0.68,
+    description: 'Le Sauvignon Blanc décomplexé : mêmes arômes d\'agrumes et de buis que Sancerre, sans la note de craie, pour trois fois moins cher.',
+  }),
+  vin({
+    id: 'alsace-sylvaner', region: 'Alsace', appellation: 'Sylvaner', type: 'white',
+    cepages: ['Sylvaner'],
+    aromes: 'Pomme verte, fleurs blanches, légère note poivrée',
+    emoji: '🌼', enUneMot: 'Le blanc simple et désaltérant d\'Alsace',
+    pourQui: 'Ceux qui veulent un blanc léger, sec et sans prétention',
+    jauges: { puissance: 1, douceur: 1, tanins: 1 },
+    difficulte: 'facile', prixMoyen: 7,
+    bonsMilsimes: [2020, 2021, 2022],
+    garde: '1-4 ans', drinkFrom: 0, drinkUntil: 4,
+    temperature: '9-11°C', serviceTemp: 10,
+    accords: ['Tarte flambée', 'Charcuterie', 'Fruits de mer simples'],
+    domaines: [
+      { name: 'Domaine Sylvie Spielmann', note: 'Sylvaner de terroir, rare' },
+      { name: 'Cave de Ribeauvillé', note: 'Style pur, bon rapport Q/P' },
+    ],
+    lat: 48.20, lng: 7.33,
+    description: 'Cépage discret et longtemps sous-estimé en Alsace. Léger, croquant, parfait sur une tarte flambée entre amis.',
+  }),
+  vin({
+    id: 'cotes-de-bergerac-moelleux', region: 'Sud-Ouest', appellation: 'Côtes de Bergerac Moelleux', type: 'sweet',
+    cepages: ['Sémillon', 'Muscadelle', 'Sauvignon'],
+    aromes: 'Miel, abricot, fruits jaunes confits',
+    emoji: '🍑', enUneMot: 'Le petit cousin moelleux de Monbazillac',
+    pourQui: 'Ceux qui aiment le sucré-liquoreux sans le prix de Sauternes',
+    jauges: { puissance: 2, douceur: 4, tanins: 1 },
+    difficulte: 'facile', prixMoyen: 10,
+    bonsMilsimes: [2018, 2019, 2020, 2022],
+    garde: '5-15 ans', drinkFrom: 1, drinkUntil: 15,
+    temperature: '10-12°C', serviceTemp: 11,
+    accords: ['Foie gras', 'Fromages bleus', 'Tarte aux fruits'],
+    domaines: [
+      { name: 'Château Richard', note: 'Belle finesse, bio' },
+      { name: 'Château Tirecul La Gravière', note: 'Grande concentration' },
+    ],
+    lat: 44.78, lng: 0.55,
+    description: 'Cousin moins connu de Monbazillac, sur les coteaux voisins. Même principe de raisins botrytisés, style un peu plus léger et frais.',
+  }),
 ]
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1989,6 +2124,7 @@ export const MILLESIMES_DB = [
   [2015,'Liquoreux','Bordeaux','Sauternes','Sémillon',40,'Excellent','Privilégier',null],
   [2010,'Rouge','Bordeaux','Pauillac','Cabernet Sauvignon',35,'Exceptionnel','Privilégier','Légendaire'],
   [2009,'Rouge','Bordeaux','Saint-Estèphe','Cabernet Sauvignon',30,'Exceptionnel, hédoniste','Privilégier',null],
+  [2020,'Rouge','Bordeaux','Médoc','Cabernet Sauvignon, Merlot',8,'Bon, souple','Bon choix',null],
 
   // Bourgogne
   [2022,'Rouge','Bourgogne','Gevrey-Chambertin','Pinot Noir',20,'Excellent, abondant','Privilégier',null],
@@ -2007,6 +2143,7 @@ export const MILLESIMES_DB = [
   [2015,'Rouge','Bourgogne','Gevrey-Chambertin','Pinot Noir',22,'Exceptionnel','Privilégier','Le plus grand depuis 2005'],
   [2020,'Blanc','Bourgogne','Mâcon-Villages','Chardonnay',5,'Excellent','Privilégier','À boire'],
   [2022,'Blanc','Bourgogne','Mâcon-Villages','Chardonnay',5,'Excellent, mûr','Privilégier',null],
+  [2021,'Blanc','Bourgogne','Petit Chablis','Chardonnay',4,'Bon, tendu','Bon choix',null],
 
   // Champagne
   [2022,'Effervescent','Champagne','Champagne Millésimé','Chardonnay, Pinot Noir',16,'Excellent','Privilégier',null],
@@ -2031,6 +2168,8 @@ export const MILLESIMES_DB = [
   [2017,'Rouge','Rhône Nord','Côte-Rôtie','Syrah',25,'Exceptionnel','Privilégier','Millésime légendaire'],
   [2016,'Rouge','Rhône Sud','Châteauneuf-du-Pape','Grenache',20,'Exceptionnel','Privilégier',null],
   [2015,'Rouge','Rhône Nord','Hermitage','Syrah',30,'Exceptionnel','Privilégier','Monumental'],
+  [2022,'Rouge','Rhône Sud','Côtes du Rhône','Grenache, Syrah',6,'Excellent, mûr','Privilégier',null],
+  [2020,'Rouge','Rhône Sud','Côtes du Rhône','Grenache, Syrah',5,'Bon','Bon choix',null],
 
   // Loire
   [2022,'Blanc','Loire','Sancerre','Sauvignon Blanc',6,'Excellent, tendu','Privilégier',null],
@@ -2045,6 +2184,7 @@ export const MILLESIMES_DB = [
   [2019,'Blanc','Loire','Sancerre','Sauvignon Blanc',8,'Excellent, complexe','Privilégier',null],
   [2018,'Rouge','Loire','Bourgueil','Cabernet Franc',12,'Excellent, mûr','Privilégier',null],
   [2018,'Blanc','Loire','Vouvray moelleux','Chenin Blanc',30,'Exceptionnel','Privilégier','Année à moelleux'],
+  [2022,'Blanc','Loire','Touraine Sauvignon','Sauvignon Blanc',3,'Excellent, fruité','Privilégier',null],
 
   // Alsace
   [2022,'Blanc','Alsace','Riesling Grand Cru','Riesling',18,'Excellent, mûr','Privilégier',null],
@@ -2054,6 +2194,7 @@ export const MILLESIMES_DB = [
   [2019,'Blanc','Alsace','Riesling Grand Cru','Riesling',20,'Excellent','Privilégier',null],
   [2018,'Blanc','Alsace','Gewurztraminer','Gewurztraminer',12,'Excellent, riche','Privilégier',null],
   [2017,'Blanc','Alsace','Riesling Grand Cru','Riesling',18,'Excellent, précis','Privilégier',null],
+  [2021,'Blanc','Alsace','Sylvaner','Sylvaner',3,'Bon, vif','Bon choix',null],
 
   // Beaujolais
   [2022,'Rouge','Beaujolais','Morgon','Gamay',8,'Excellent, mûr','Privilégier',null],
@@ -2093,6 +2234,7 @@ export const MILLESIMES_DB = [
   [2018,'Liquoreux','Sud-Ouest','Jurançon','Petit Manseng',18,'Excellent','Privilégier',null],
   [2020,'Rouge','Sud-Ouest','Irouléguy','Tannat, Cabernet Franc',10,'Excellent','Privilégier',null],
   [2020,'Rouge','Sud-Ouest','Gaillac','Braucol, Duras',7,'Excellent','Privilégier',null],
+  [2020,'Liquoreux','Sud-Ouest','Côtes de Bergerac Moelleux','Sémillon, Muscadelle',12,'Excellent','Privilégier',null],
 
   // Jura / Savoie
   [2017,'Blanc','Jura','Vin Jaune','Savagnin',60,'Style oxydatif unique','Privilégier','Garde quasi illimitée'],
