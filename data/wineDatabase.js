@@ -35,9 +35,9 @@ export const WINE_DB = [
     temperature: '16-18°C', serviceTemp: 17, carafage: '2h',
     accords: ['Agneau rôti', 'Gibier', 'Fromages affinés'],
     domaines: [
-      { name: 'Château Latour', note: '1er Grand Cru Classé' },
-      { name: 'Château Lynch-Bages', note: '5ème Cru — le plus accessible' },
-      { name: 'Château Pichon Baron', note: '2ème Grand Cru Classé' },
+      { name: 'Château Latour', note: '1er Grand Cru Classé', url: 'https://www.chateau-latour.com' },
+      { name: 'Château Lynch-Bages', note: '5ème Cru — le plus accessible', url: 'https://www.lynchbages.com' },
+      { name: 'Château Pichon Baron', note: '2ème Grand Cru Classé', url: 'https://www.pichonbaron.com' },
     ],
     lat: 45.20, lng: -0.75,
     description: 'Le sommet du Médoc. Puissant, complexe, fait pour vieillir des décennies. À découvrir sur un vieux millésime si possible.',
@@ -55,8 +55,8 @@ export const WINE_DB = [
     temperature: '16-18°C', serviceTemp: 17, carafage: '1h30',
     accords: ['Filet de bœuf', 'Volaille rôtie', 'Fromages doux'],
     domaines: [
-      { name: 'Château Margaux', note: '1er Grand Cru Classé — mythique' },
-      { name: 'Château Palmer', note: '3ème Cru, niveau 1er Cru' },
+      { name: 'Château Margaux', note: '1er Grand Cru Classé — mythique', url: 'https://www.chateau-margaux.com' },
+      { name: 'Château Palmer', note: '3ème Cru, niveau 1er Cru', url: 'https://www.chateau-palmer.com' },
     ],
     lat: 45.04, lng: -0.68,
     description: 'Le Bordeaux le plus soyeux et parfumé. Sa signature : la violette et une texture de velours.',
@@ -74,8 +74,8 @@ export const WINE_DB = [
     temperature: '16-18°C', serviceTemp: 17, carafage: '1h30',
     accords: ['Entrecôte', 'Agneau', 'Fromages affinés'],
     domaines: [
-      { name: 'Château Léoville-Barton', note: '2ème Cru — régularité exemplaire' },
-      { name: 'Château Beychevelle', note: '4ème Cru — étiquette célèbre' },
+      { name: 'Château Léoville-Barton', note: '2ème Cru — régularité exemplaire', url: 'https://www.leoville-barton.com' },
+      { name: 'Château Beychevelle', note: '4ème Cru — étiquette célèbre', url: 'https://www.beychevelle.com' },
     ],
     lat: 45.15, lng: -0.74,
     description: 'Ni trop puissant, ni trop léger : Saint-Julien est le point d\'équilibre du Médoc. Valeur sûre absolue.',
@@ -93,8 +93,8 @@ export const WINE_DB = [
     temperature: '16-18°C', serviceTemp: 17, carafage: '2h',
     accords: ['Côte de bœuf', 'Gibier', 'Daube'],
     domaines: [
-      { name: 'Château Montrose', note: '2ème Cru — puissance légendaire' },
-      { name: 'Château Calon-Ségur', note: '3ème Cru au cœur sur l\'étiquette' },
+      { name: 'Château Montrose', note: '2ème Cru — puissance légendaire', url: 'https://www.chateau-montrose.com' },
+      { name: 'Château Calon-Ségur', note: '3ème Cru au cœur sur l\'étiquette', url: 'https://www.calon-segur.fr' },
     ],
     lat: 45.26, lng: -0.77,
     description: 'Le plus septentrional des grands Médocs. Tannique et dense jeune, magnifique après 10 ans de cave.',
@@ -112,8 +112,8 @@ export const WINE_DB = [
     temperature: '16-18°C', serviceTemp: 17, carafage: '1h',
     accords: ['Magret de canard', 'Viandes grillées', 'Champignons'],
     domaines: [
-      { name: 'Château Haut-Brion', note: '1er Grand Cru Classé' },
-      { name: 'Château Smith Haut Lafitte', note: 'Rouge et blanc d\'exception' },
+      { name: 'Château Haut-Brion', note: '1er Grand Cru Classé', url: 'https://www.chateau-haut-brion.com' },
+      { name: 'Château Smith Haut Lafitte', note: 'Rouge et blanc d\'exception', url: 'https://www.smith-haut-lafitte.com' },
     ],
     lat: 44.75, lng: -0.60,
     description: 'Berceau historique de Bordeaux, au sud de la ville. Signature fumée unique, en rouge comme en blanc.',
@@ -131,8 +131,8 @@ export const WINE_DB = [
     temperature: '16-18°C', serviceTemp: 17, carafage: '1h30',
     accords: ['Viande rouge', 'Champignons', 'Fromages affinés'],
     domaines: [
-      { name: 'Château Figeac', note: '1er Grand Cru Classé A' },
-      { name: 'Château Canon', note: 'Élégance sur calcaire' },
+      { name: 'Château Figeac', note: '1er Grand Cru Classé A', url: 'https://www.chateau-figeac.com' },
+      { name: 'Château Canon', note: 'Élégance sur calcaire', url: 'https://www.chateau-canon.com' },
     ],
     lat: 44.89, lng: -0.16,
     description: 'Le Merlot dans toute sa rondeur. Village médiéval magnifique, vins voluptueux et accessibles jeunes.',
@@ -151,7 +151,7 @@ export const WINE_DB = [
     accords: ['Filet mignon', 'Truffe', 'Champignons'],
     domaines: [
       { name: 'Pétrus', note: 'Le vin le plus cher de Bordeaux' },
-      { name: 'Château La Conseillante', note: 'Élégance de velours' },
+      { name: 'Château La Conseillante', note: 'Élégance de velours', url: 'https://www.la-conseillante.com' },
     ],
     lat: 44.93, lng: -0.20,
     description: 'Tout petit vignoble, immenses vins. Le Merlot y atteint une texture de velours introuvable ailleurs.',
@@ -170,7 +170,7 @@ export const WINE_DB = [
     accords: ['Foie gras', 'Roquefort', 'Tarte aux fruits'],
     domaines: [
       { name: "Château d'Yquem", note: 'Le plus grand liquoreux du monde' },
-      { name: 'Château Suduiraut', note: '1er Cru Classé' },
+      { name: 'Château Suduiraut', note: '1er Cru Classé', url: 'https://www.chateausuduiraut.com' },
     ],
     lat: 44.57, lng: -0.33,
     description: 'Vin doux né d\'un champignon magique (le botrytis) qui concentre le sucre du raisin. Un dessert à lui tout seul.',
@@ -190,8 +190,8 @@ export const WINE_DB = [
     temperature: '10-12°C', serviceTemp: 11,
     accords: ['Huîtres', 'Poisson grillé', 'Fromage de chèvre'],
     domaines: [
-      { name: 'Domaine William Fèvre', note: 'Grand classique' },
-      { name: 'La Chablisienne', note: 'Coopérative de très haut niveau' },
+      { name: 'Domaine William Fèvre', note: 'Grand classique', url: 'https://www.domainewilliamfevre.com' },
+      { name: 'La Chablisienne', note: 'Coopérative de très haut niveau', url: 'https://www.chablisienne.com' },
     ],
     lat: 47.82, lng: 3.80,
     description: 'Le Chardonnay le plus pur et le plus frais de France. Zéro bois, 100% minéralité. Immanquable avec les fruits de mer.',
@@ -210,7 +210,7 @@ export const WINE_DB = [
     accords: ['Homard', 'Volaille à la crème', 'Poisson en sauce'],
     domaines: [
       { name: 'Domaine Roulot', note: 'La référence absolue' },
-      { name: 'Domaine des Comtes Lafon', note: 'Style magistral' },
+      { name: 'Domaine des Comtes Lafon', note: 'Style magistral', url: 'https://www.comtes-lafon.fr' },
     ],
     lat: 46.97, lng: 4.77,
     description: 'L\'opposé de Chablis : ici le Chardonnay est rond, beurré, noisetté. Un blanc de gastronomie.',
@@ -228,8 +228,8 @@ export const WINE_DB = [
     temperature: '12-14°C', serviceTemp: 13,
     accords: ['Homard', 'Saint-Jacques', 'Volaille de Bresse'],
     domaines: [
-      { name: 'Domaine Leflaive', note: 'Biodynamie légendaire' },
-      { name: 'Domaine Sauzet', note: 'Précision cristalline' },
+      { name: 'Domaine Leflaive', note: 'Biodynamie légendaire', url: 'https://www.leflaive.fr' },
+      { name: 'Domaine Sauzet', note: 'Précision cristalline', url: 'https://www.domaine-sauzet.com' },
     ],
     lat: 46.95, lng: 4.75,
     description: 'Le village du Montrachet, le plus grand blanc sec du monde. Tension, précision, race : le sommet.',
@@ -247,7 +247,7 @@ export const WINE_DB = [
     temperature: '15-16°C', serviceTemp: 16, carafage: '45 min',
     accords: ['Bœuf bourguignon', 'Coq au vin', 'Époisses'],
     domaines: [
-      { name: 'Domaine Armand Rousseau', note: 'Mythique' },
+      { name: 'Domaine Armand Rousseau', note: 'Mythique', url: 'https://www.domaine-rousseau.com' },
       { name: 'Domaine Fourrier', note: 'Élégance pure' },
     ],
     lat: 47.23, lng: 4.97,
@@ -267,7 +267,7 @@ export const WINE_DB = [
     accords: ['Filet de bœuf', 'Canard', 'Truffe'],
     domaines: [
       { name: 'Domaine de la Romanée-Conti', note: 'Le vin le plus cher du monde' },
-      { name: 'Domaine Méo-Camuzet', note: 'Somptueux' },
+      { name: 'Domaine Méo-Camuzet', note: 'Somptueux', url: 'https://www.meo-camuzet.com' },
     ],
     lat: 47.16, lng: 4.95,
     description: 'La Romanée-Conti est ici. Le Pinot Noir y devient soie, épices et rose fanée. Le graal des amateurs.',
@@ -286,7 +286,7 @@ export const WINE_DB = [
     accords: ['Bœuf', 'Gibier à plumes', 'Fromages affinés'],
     domaines: [
       { name: 'Domaine Henri Gouges', note: 'L\'institution locale' },
-      { name: 'Domaine Faiveley', note: 'Grande maison fiable' },
+      { name: 'Domaine Faiveley', note: 'Grande maison fiable', url: 'https://www.domaine-faiveley.com' },
     ],
     lat: 47.14, lng: 4.95,
     description: 'Un Bourgogne charpenté, droit, sans chichi. Excellente porte d\'entrée vers les grands Pinots.',
@@ -305,7 +305,7 @@ export const WINE_DB = [
     accords: ['Bœuf braisé', 'Gibier', 'Fromages puissants'],
     domaines: [
       { name: 'Domaine de Courcel', note: 'Grands Épenots majestueux' },
-      { name: 'Domaine Comte Armand', note: 'Clos des Épeneaux' },
+      { name: 'Domaine Comte Armand', note: 'Clos des Épeneaux', url: 'https://www.domaine-comte-armand.com' },
     ],
     lat: 46.99, lng: 4.79,
     description: 'Le Pinot le plus tannique de Bourgogne. Réputé "masculin", il vieillit superbement.',
@@ -323,8 +323,8 @@ export const WINE_DB = [
     temperature: '15-16°C', serviceTemp: 15,
     accords: ['Volaille', 'Veau', 'Fromages doux'],
     domaines: [
-      { name: 'Domaine Marquis d\'Angerville', note: 'La référence' },
-      { name: 'Domaine de Montille', note: 'Pureté remarquable' },
+      { name: 'Domaine Marquis d\'Angerville', note: 'La référence', url: 'https://www.domaine-angerville.com' },
+      { name: 'Domaine de Montille', note: 'Pureté remarquable', url: 'https://www.demontille.com' },
     ],
     lat: 46.98, lng: 4.78,
     description: 'Voisin de Pommard mais tout son contraire : soyeux, parfumé, aérien. Le Pinot en tutu.',
@@ -363,7 +363,7 @@ export const WINE_DB = [
     temperature: '16-18°C', serviceTemp: 17, carafage: '2h',
     accords: ['Viande rouge', 'Gibier', 'Agneau aux herbes'],
     domaines: [
-      { name: 'E. Guigal', note: 'La Mouline, La Landonne, La Turque' },
+      { name: 'E. Guigal', note: 'La Mouline, La Landonne, La Turque', url: 'https://www.guigal.com' },
       { name: 'Domaine Jamet', note: 'Style traditionnel culte' },
     ],
     lat: 45.47, lng: 4.80,
@@ -383,7 +383,7 @@ export const WINE_DB = [
     accords: ['Côte de bœuf', 'Gibier', 'Daube'],
     domaines: [
       { name: 'Jean-Louis Chave', note: 'La famille mythique' },
-      { name: 'M. Chapoutier', note: 'Parcellaires en biodynamie' },
+      { name: 'M. Chapoutier', note: 'Parcellaires en biodynamie', url: 'https://www.chapoutier.com' },
     ],
     lat: 45.07, lng: 4.83,
     description: 'Une seule colline, des vins immortels. L\'Hermitage rouge peut vieillir 40 ans.',
@@ -401,8 +401,8 @@ export const WINE_DB = [
     temperature: '15-17°C', serviceTemp: 16, carafage: '30 min',
     accords: ['Grillades', 'Saucisse-lentilles', 'Fromages moyens'],
     domaines: [
-      { name: 'Alain Graillot', note: 'La référence du cru' },
-      { name: 'Domaine Combier', note: 'Bio, fruité éclatant', confidentiel: true, histoire: 'Une poignée d\'hectares sur les coteaux de Crozes, vinifiés à la main par une équipe qui tient encore sur les doigts d\'une main.' },
+      { name: 'Alain Graillot', note: 'La référence du cru', url: 'https://www.domaine-alain-graillot.com' },
+      { name: 'Domaine Combier', note: 'Bio, fruité éclatant', url: 'https://www.domaine-combier.com', confidentiel: true, histoire: 'Une poignée d\'hectares sur les coteaux de Crozes, vinifiés à la main par une équipe qui tient encore sur les doigts d\'une main.' },
     ],
     lat: 45.05, lng: 4.87,
     description: 'Le petit frère de l\'Hermitage : mêmes cépages, prix divisé par cinq. Excellent premier vin du Rhône.',
@@ -420,8 +420,8 @@ export const WINE_DB = [
     temperature: '12-14°C', serviceTemp: 13,
     accords: ['Poisson en sauce', 'Volaille', 'Cuisine épicée douce'],
     domaines: [
-      { name: 'E. Guigal', note: 'La Doriane' },
-      { name: 'Domaine Georges Vernay', note: 'Le sauveur de l\'appellation' },
+      { name: 'E. Guigal', note: 'La Doriane', url: 'https://www.guigal.com' },
+      { name: 'Domaine Georges Vernay', note: 'Le sauveur de l\'appellation', url: 'https://www.georges-vernay.fr' },
     ],
     lat: 45.46, lng: 4.78,
     description: 'Le Viognier dans toute sa gloire : un parfum d\'abricot et de fleurs inoubliable. Blanc de plaisir immédiat.',
@@ -440,7 +440,7 @@ export const WINE_DB = [
     accords: ['Daube', 'Sanglier', 'Viandes grillées'],
     domaines: [
       { name: 'Château Rayas', note: 'Le mythe — 100% Grenache' },
-      { name: 'Domaine du Vieux Télégraphe', note: 'Classique des galets' },
+      { name: 'Domaine du Vieux Télégraphe', note: 'Classique des galets', url: 'https://www.vieuxtelegraphe.com' },
     ],
     lat: 44.06, lng: 4.83,
     description: 'Les fameux galets roulés stockent le soleil. Résultat : un rouge riche, épicé, généreux — facile à aimer.',
@@ -458,7 +458,7 @@ export const WINE_DB = [
     temperature: '16-18°C', serviceTemp: 17, carafage: '30 min',
     accords: ['Agneau grillé', 'Ratatouille', 'Fromages de brebis'],
     domaines: [
-      { name: 'Domaine Santa Duc', note: 'Profondeur remarquable' },
+      { name: 'Domaine Santa Duc', note: 'Profondeur remarquable', url: 'https://www.domaine-santa-duc.fr' },
       { name: 'Domaine La Bouïssière', note: 'Altitude et fraîcheur' },
     ],
     lat: 44.16, lng: 5.00,
@@ -498,8 +498,8 @@ export const WINE_DB = [
     temperature: '10-12°C', serviceTemp: 11,
     accords: ['Crottin de Chavignol', 'Fruits de mer', 'Sushi'],
     domaines: [
-      { name: 'Domaine Vacheron', note: 'Biodynamie, vins de garde' },
-      { name: 'Henri Bourgeois', note: 'Grande maison régulière' },
+      { name: 'Domaine Vacheron', note: 'Biodynamie, vins de garde', url: 'https://www.domainevacheron.com' },
+      { name: 'Henri Bourgeois', note: 'Grande maison régulière', url: 'https://www.henribourgeois.com' },
     ],
     lat: 47.33, lng: 2.84,
     description: 'Le Sauvignon Blanc iconique. Vif, précis, désaltérant — le blanc passe-partout par excellence.',
@@ -518,7 +518,7 @@ export const WINE_DB = [
     accords: ['Poisson fumé', 'Fruits de mer', 'Chèvre frais'],
     domaines: [
       { name: 'Didier Dagueneau', note: 'Le génie disparu — vins cultes' },
-      { name: 'Domaine Masson-Blondelet', note: 'Régularité exemplaire' },
+      { name: 'Domaine Masson-Blondelet', note: 'Régularité exemplaire', url: 'https://www.masson-blondelet.fr' },
     ],
     lat: 47.28, lng: 2.95,
     description: 'De l\'autre côté de la Loire face à Sancerre. Sa signature : une pointe fumée dûe au silex.',
@@ -536,8 +536,8 @@ export const WINE_DB = [
     temperature: '10-12°C', serviceTemp: 11,
     accords: ['Volaille à la crème', 'Fromages de chèvre', 'Tarte Tatin'],
     domaines: [
-      { name: 'Domaine Huet', note: 'Biodynamie légendaire' },
-      { name: 'Vincent Carême', note: 'Nouvelle génération brillante', confidentiel: true, histoire: 'Un vigneron parti de zéro à Vouvray, qui a bâti son petit domaine parcelle après parcelle.' },
+      { name: 'Domaine Huet', note: 'Biodynamie légendaire', url: 'https://www.huet-echansonne.com' },
+      { name: 'Vincent Carême', note: 'Nouvelle génération brillante', url: 'https://www.vincentcareme.fr', confidentiel: true, histoire: 'Un vigneron parti de zéro à Vouvray, qui a bâti son petit domaine parcelle après parcelle.' },
     ],
     lat: 47.41, lng: 0.80,
     description: 'Sec, demi-sec, moelleux ou bulles : Vouvray fait tout, et vieillit mieux que presque tous les blancs de France.',
@@ -555,7 +555,7 @@ export const WINE_DB = [
     temperature: '14-16°C', serviceTemp: 15,
     accords: ['Charcuterie', 'Rillettes', 'Volaille rôtie'],
     domaines: [
-      { name: 'Domaine Charles Joguet', note: 'La référence historique' },
+      { name: 'Domaine Charles Joguet', note: 'La référence historique', url: 'https://www.charlesjoguet.com' },
       { name: 'Domaine Bernard Baudry', note: 'Excellence constante' },
     ],
     lat: 47.17, lng: 0.24,
@@ -594,7 +594,7 @@ export const WINE_DB = [
     accords: ['Huîtres', 'Moules-frites', 'Poisson grillé'],
     domaines: [
       { name: 'Domaine de la Pépière', note: 'Le Muscadet devenu culte' },
-      { name: 'Jo Landron', note: 'Bio, précis, salin', confidentiel: true, histoire: 'Un vigneron nantais qui a converti son domaine en bio dès les années 90, quand personne n\'y croyait encore.' },
+      { name: 'Jo Landron', note: 'Bio, précis, salin', url: 'https://www.domainelandron.com', confidentiel: true, histoire: 'Un vigneron nantais qui a converti son domaine en bio dès les années 90, quand personne n\'y croyait encore.' },
     ],
     lat: 47.13, lng: -1.35,
     description: 'Léger, salin, à 7€ : le compagnon parfait des huîtres. Les meilleures cuvées vieillissent étonnamment bien.',
@@ -612,7 +612,7 @@ export const WINE_DB = [
     temperature: '11-13°C', serviceTemp: 12,
     accords: ['Poisson de rivière', 'Volaille à la crème', 'Comté'],
     domaines: [
-      { name: 'Coulée de Serrant', note: 'Nicolas Joly — biodynamie mythique' },
+      { name: 'Coulée de Serrant', note: 'Nicolas Joly — biodynamie mythique', url: 'https://www.coulee-de-serrant.com' },
       { name: 'Domaine du Closel', note: 'Élégance accessible' },
     ],
     lat: 47.38, lng: -0.66,
@@ -633,8 +633,8 @@ export const WINE_DB = [
     temperature: '10-12°C', serviceTemp: 11,
     accords: ['Choucroute', 'Poisson en sauce', 'Cuisine asiatique'],
     domaines: [
-      { name: 'Trimbach', note: 'Clos Sainte Hune — mythique' },
-      { name: 'Domaine Zind-Humbrecht', note: 'Biodynamie, terroirs de feu' },
+      { name: 'Trimbach', note: 'Clos Sainte Hune — mythique', url: 'https://www.trimbach.fr' },
+      { name: 'Domaine Zind-Humbrecht', note: 'Biodynamie, terroirs de feu', url: 'https://www.zindhumbrecht.fr' },
     ],
     lat: 48.08, lng: 7.37,
     description: 'Le grand cépage noble d\'Alsace. Sec, tendu, capable de vieillir 30 ans. Magique avec la cuisine asiatique.',
@@ -652,8 +652,8 @@ export const WINE_DB = [
     temperature: '10-12°C', serviceTemp: 11,
     accords: ['Cuisine indienne/thaï', 'Munster', 'Foie gras', 'Dessert aux fruits'],
     domaines: [
-      { name: 'Domaine Weinbach', note: 'Cuvées somptueuses' },
-      { name: 'Hugel', note: 'Maison historique' },
+      { name: 'Domaine Weinbach', note: 'Cuvées somptueuses', url: 'https://www.domaineweinbach.com' },
+      { name: 'Hugel', note: 'Maison historique', url: 'https://www.hugel.com' },
     ],
     lat: 48.16, lng: 7.30,
     description: 'Litchi et pétale de rose dans un verre. Le vin le plus facile à reconnaître à l\'aveugle — et un bonheur avec les plats épicés.',
@@ -671,8 +671,8 @@ export const WINE_DB = [
     temperature: '10-12°C', serviceTemp: 11,
     accords: ['Volaille rôtie', 'Tarte flambée', 'Risotto aux champignons'],
     domaines: [
-      { name: 'Domaine Ostertag', note: 'Fruits de pierre remarquables' },
-      { name: 'Léon Beyer', note: 'Style sec traditionnel' },
+      { name: 'Domaine Ostertag', note: 'Fruits de pierre remarquables', url: 'https://www.domaine-ostertag.fr' },
+      { name: 'Léon Beyer', note: 'Style sec traditionnel', url: 'https://www.leonbeyer.fr' },
     ],
     lat: 48.25, lng: 7.40,
     description: 'Entre la fraîcheur du Riesling et l\'exubérance du Gewurz. Rond, légèrement fumé, très polyvalent à table.',
@@ -690,8 +690,8 @@ export const WINE_DB = [
     temperature: '9-11°C', serviceTemp: 10,
     accords: ['Apéritif', 'Quiche', 'Poisson simple', 'Salades'],
     domaines: [
-      { name: 'Domaine Albert Mann', note: 'Précision bio' },
-      { name: 'Cave de Turckheim', note: 'Très bon rapport Q/P' },
+      { name: 'Domaine Albert Mann', note: 'Précision bio', url: 'https://www.albertmann.com' },
+      { name: 'Cave de Turckheim', note: 'Très bon rapport Q/P', url: 'https://www.cave-turckheim.com' },
     ],
     lat: 48.09, lng: 7.28,
     description: 'Le couteau suisse alsacien : passe avec tout, ne déçoit jamais, coûte trois fois rien.',
@@ -731,7 +731,7 @@ export const WINE_DB = [
     accords: ['Apéritif dinatoire', 'Volaille', 'Charcuterie fine'],
     domaines: [
       { name: 'Domaine de la Grand\'Cour', note: 'Jean-Louis Dutraive — magique' },
-      { name: 'Château de Fleurie', note: 'Charme classique' },
+      { name: 'Château de Fleurie', note: 'Charme classique', url: 'https://www.chateaudefleurie.fr' },
     ],
     lat: 46.19, lng: 4.70,
     description: 'Son nom dit tout : c\'est le plus floral et délicat des Beaujolais. Un rouge qui se boit avec le sourire.',
@@ -749,7 +749,7 @@ export const WINE_DB = [
     temperature: '15-16°C', serviceTemp: 15,
     accords: ['Coq au vin', 'Viandes rôties', 'Fromages affinés'],
     domaines: [
-      { name: 'Château des Jacques', note: 'Louis Jadot — style bourguignon' },
+      { name: 'Château des Jacques', note: 'Louis Jadot — style bourguignon', url: 'https://www.chateau-des-jacques.com' },
       { name: 'Domaine Paul Janin', note: 'Vieilles vignes superbes' },
     ],
     lat: 46.18, lng: 4.73,
@@ -768,7 +768,7 @@ export const WINE_DB = [
     temperature: '12-14°C', serviceTemp: 13,
     accords: ['Apéritif', 'Barbecue', 'Charcuterie', 'Pizza'],
     domaines: [
-      { name: 'Château Thivin', note: 'Côte de Brouilly remarquable' },
+      { name: 'Château Thivin', note: 'Côte de Brouilly remarquable', url: 'https://www.chateau-thivin.com' },
       { name: 'Domaine Laurent Martray', note: 'Fruit croquant', confidentiel: true, histoire: 'Un petit domaine familial du Beaujolais qui vend l\'essentiel de sa production en direct, à la propriété.' },
     ],
     lat: 46.10, lng: 4.65,
@@ -789,7 +789,7 @@ export const WINE_DB = [
     temperature: '16-18°C', serviceTemp: 17, carafage: '1h',
     accords: ['Agneau aux herbes', 'Daube', 'Fromages de brebis'],
     domaines: [
-      { name: 'Domaine Tempier', note: 'La référence mondiale' },
+      { name: 'Domaine Tempier', note: 'La référence mondiale', url: 'https://www.domainetempier.com' },
       { name: 'Château Pradeaux', note: 'Tradition pure et dure' },
     ],
     lat: 43.14, lng: 5.75,
@@ -808,8 +808,8 @@ export const WINE_DB = [
     temperature: '8-10°C', serviceTemp: 9,
     accords: ['Apéritif', 'Salades', 'Grillades', 'Cuisine méditerranéenne'],
     domaines: [
-      { name: 'Château d\'Esclans', note: 'Whispering Angel — icône mondiale' },
-      { name: 'Domaine Ott', note: 'Le rosé de luxe historique' },
+      { name: 'Château d\'Esclans', note: 'Whispering Angel — icône mondiale', url: 'https://www.chateaudesclans.com' },
+      { name: 'Domaine Ott', note: 'Le rosé de luxe historique', url: 'https://www.domaines-ott.com' },
     ],
     lat: 43.45, lng: 6.20,
     description: 'Pâle, frais, fruité : le rosé provençal a conquis la planète. À boire jeune, bien frais, sans complexe.',
@@ -868,7 +868,7 @@ export const WINE_DB = [
     accords: ['Grillades', 'Cassoulet', 'Fromages de caractère'],
     domaines: [
       { name: 'Domaine Léon Barral', note: 'Nature, culte', confidentiel: true, histoire: 'Un vigneron biodynamiste qui laboure encore avec ses chevaux, sur un domaine minuscule devenu culte malgré lui.' },
-      { name: 'Château des Estanilles', note: 'Modernité maîtrisée' },
+      { name: 'Château des Estanilles', note: 'Modernité maîtrisée', url: 'https://www.chateaudesestanilles.com' },
     ],
     lat: 43.57, lng: 3.19,
     description: 'Les schistes noirs donnent des vins chaleureux et minéraux à la fois. Le Languedoc dans ce qu\'il a de meilleur.',
@@ -886,8 +886,8 @@ export const WINE_DB = [
     temperature: '15-16°C', serviceTemp: 15,
     accords: ['Pizza', 'Pâtes bolognaise', 'Grillades', 'Tajine'],
     domaines: [
-      { name: 'Mas Champart', note: 'Finesse rare dans la région', confidentiel: true, histoire: 'Un couple de vignerons installé sur quelques hectares isolés, loin des grandes caves coopératives du secteur.' },
-      { name: 'Domaine Rimbert', note: 'Carignan de schiste plein de vie', confidentiel: true, histoire: 'Jean-Marie Rimbert vinifie seul ses vieilles vignes de Carignan plantées sur les pentes de schiste.' },
+      { name: 'Mas Champart', note: 'Finesse rare dans la région', url: 'https://www.maschampart.com', confidentiel: true, histoire: 'Un couple de vignerons installé sur quelques hectares isolés, loin des grandes caves coopératives du secteur.' },
+      { name: 'Domaine Rimbert', note: 'Carignan de schiste plein de vie', url: 'https://www.domainerimbert.com', confidentiel: true, histoire: 'Jean-Marie Rimbert vinifie seul ses vieilles vignes de Carignan plantées sur les pentes de schiste.' },
     ],
     lat: 43.42, lng: 2.95,
     description: 'Simple, généreux, ensoleillé : le rouge du mardi soir qui met tout le monde d\'accord.',
@@ -905,7 +905,7 @@ export const WINE_DB = [
     temperature: '16-17°C', serviceTemp: 16,
     accords: ['Cassoulet', 'Confit de canard', 'Viandes en sauce'],
     domaines: [
-      { name: 'Domaine Gayda', note: 'Modernité internationale' },
+      { name: 'Domaine Gayda', note: 'Modernité internationale', url: 'https://www.domainegayda.com' },
       { name: 'Clos Centeilles', note: 'Cépages oubliés ressuscités', confidentiel: true, histoire: 'Un couple d\'agronomes qui a replanté des cépages disparus sur quelques parcelles oubliées du Minervois.' },
     ],
     lat: 43.34, lng: 2.62,
@@ -945,8 +945,8 @@ export const WINE_DB = [
     temperature: '16-17°C', serviceTemp: 16, carafage: '1h',
     accords: ['Confit de canard', 'Cassoulet', 'Magret'],
     domaines: [
-      { name: 'Château du Cèdre', note: 'La locomotive qualitative' },
-      { name: 'Clos Triguedina', note: 'Tradition depuis 1830' },
+      { name: 'Château du Cèdre', note: 'La locomotive qualitative', url: 'https://www.chateauducedre.com' },
+      { name: 'Clos Triguedina', note: 'Tradition depuis 1830', url: 'https://www.clostriguedina.com' },
     ],
     lat: 44.45, lng: 1.44,
     description: 'Le berceau mondial du Malbec, bien avant l\'Argentine. Sombre, dense, parfait avec le canard.',
@@ -964,7 +964,7 @@ export const WINE_DB = [
     temperature: '16-18°C', serviceTemp: 17, carafage: '2h',
     accords: ['Côte de bœuf', 'Garbure', 'Fromages de brebis puissants'],
     domaines: [
-      { name: 'Château Montus', note: 'Alain Brumont — le "Pétrus du Sud-Ouest"' },
+      { name: 'Château Montus', note: 'Alain Brumont — le "Pétrus du Sud-Ouest"', url: 'https://www.chateau-montus.com' },
       { name: 'Domaine Berthoumieu', note: 'Tradition généreuse', confidentiel: true, histoire: 'Une famille de vignerons du Madiran qui cultive ses parcelles de génération en génération, sans jamais s\'agrandir.' },
     ],
     lat: 43.55, lng: -0.06,
@@ -983,8 +983,8 @@ export const WINE_DB = [
     temperature: '9-11°C', serviceTemp: 10,
     accords: ['Foie gras', 'Fromage de brebis + confiture de cerise', 'Desserts aux fruits exotiques'],
     domaines: [
-      { name: 'Domaine Cauhapé', note: 'Quintessence légendaire' },
-      { name: 'Clos Lapeyre', note: 'Bio, montagne, précision', confidentiel: true, histoire: 'Un petit clos accroché aux coteaux du Jurançon, cultivé en bio par une seule famille depuis toujours.' },
+      { name: 'Domaine Cauhapé', note: 'Quintessence légendaire', url: 'https://www.cauhape.com' },
+      { name: 'Clos Lapeyre', note: 'Bio, montagne, précision', url: 'https://www.closlapeyre.fr', confidentiel: true, histoire: 'Un petit clos accroché aux coteaux du Jurançon, cultivé en bio par une seule famille depuis toujours.' },
     ],
     lat: 43.28, lng: -0.42,
     description: 'Face aux Pyrénées, un vin doux plein de fruits exotiques ET de fraîcheur. L\'accord brebis-confiture est culte.',
@@ -1002,8 +1002,8 @@ export const WINE_DB = [
     temperature: '15-16°C', serviceTemp: 15,
     accords: ['Saucisse de Toulouse', 'Cassoulet', 'Charcuterie'],
     domaines: [
-      { name: 'Domaine Plageoles', note: 'Gardien des cépages anciens', confidentiel: true, histoire: 'La famille Plageoles a passé sa vie à sauver des cépages tarnais oubliés, sur un domaine resté à taille humaine.' },
-      { name: 'Domaine Rotier', note: 'Modernité soignée', confidentiel: true, histoire: 'Un domaine familial du Gaillac qui cultive ses vignes en agriculture raisonnée, à taille humaine.' },
+      { name: 'Domaine Plageoles', note: 'Gardien des cépages anciens', url: 'https://www.domaine-plageoles.com', confidentiel: true, histoire: 'La famille Plageoles a passé sa vie à sauver des cépages tarnais oubliés, sur un domaine resté à taille humaine.' },
+      { name: 'Domaine Rotier', note: 'Modernité soignée', url: 'https://www.domaine-rotier.com', confidentiel: true, histoire: 'Un domaine familial du Gaillac qui cultive ses vignes en agriculture raisonnée, à taille humaine.' },
     ],
     lat: 43.90, lng: 1.90,
     description: 'Un des plus vieux vignobles de France avec des cépages introuvables ailleurs : Braucol, Duras, Mauzac…',
@@ -1022,7 +1022,7 @@ export const WINE_DB = [
     accords: ['Axoa de veau', 'Piperade', 'Ossau-Iraty'],
     domaines: [
       { name: 'Domaine Arretxea', note: 'Biodynamie en terrasses', confidentiel: true, histoire: 'Un couple de vignerons basques qui cultive à la main des parcelles en terrasses trop pentues pour les tracteurs.' },
-      { name: 'Domaine Brana', note: 'Pionnier de la renaissance' },
+      { name: 'Domaine Brana', note: 'Pionnier de la renaissance', url: 'https://www.domainebrana.com' },
     ],
     lat: 43.18, lng: -1.28,
     description: 'Vignes en terrasses au Pays Basque. Un rouge fier et montagnard, à boire avec un fromage de brebis local.',
@@ -1061,7 +1061,7 @@ export const WINE_DB = [
     temperature: '12-14°C', serviceTemp: 13,
     accords: ['Charcuterie', 'Volaille', 'Cuisine du terroir jurassien'],
     domaines: [
-      { name: 'Domaine Tissot', note: 'Biodynamie flamboyante' },
+      { name: 'Domaine Tissot', note: 'Biodynamie flamboyante', url: 'https://www.domaine-tissot.com' },
       { name: 'Maison Overnoy', note: 'Le mythe du vin nature' },
     ],
     lat: 46.90, lng: 5.77,
@@ -1141,8 +1141,8 @@ export const WINE_DB = [
     temperature: '16-17°C', serviceTemp: 16,
     accords: ['Tapas', 'Agneau rôti', 'Manchego'],
     domaines: [
-      { name: 'La Rioja Alta', note: 'Viña Ardanza — classique absolu' },
-      { name: 'Marqués de Riscal', note: 'Maison historique' },
+      { name: 'La Rioja Alta', note: 'Viña Ardanza — classique absolu', url: 'https://www.riojalta.com' },
+      { name: 'Marqués de Riscal', note: 'Maison historique', url: 'https://www.marquesderiscal.com' },
     ],
     lat: 42.47, lng: -2.45,
     description: 'Le grand rouge espagnol, élevé longuement en fût. Il arrive à maturité — prêt à boire — dès sa sortie. Malin !',
@@ -1160,8 +1160,8 @@ export const WINE_DB = [
     temperature: '16-17°C', serviceTemp: 16,
     accords: ['Pâtes bolognaise', 'Pizza', 'Osso buco', 'Parmesan'],
     domaines: [
-      { name: 'Fontodi', note: 'Bio, pureté du Sangiovese' },
-      { name: 'Castello di Ama', note: 'Élégance toscane' },
+      { name: 'Fontodi', note: 'Bio, pureté du Sangiovese', url: 'https://www.fontodi.com' },
+      { name: 'Castello di Ama', note: 'Élégance toscane', url: 'https://www.castellodiama.com' },
     ],
     lat: 43.47, lng: 11.25,
     description: 'L\'acidité du Sangiovese est faite pour la cuisine italienne : tomate, huile d\'olive, fromages. Évidence absolue.',
@@ -1179,7 +1179,7 @@ export const WINE_DB = [
     temperature: '17-18°C', serviceTemp: 17, carafage: '2h',
     accords: ['Risotto à la truffe', 'Brasato', 'Fromages affinés'],
     domaines: [
-      { name: 'Giacomo Conterno', note: 'Monfortino — légende absolue' },
+      { name: 'Giacomo Conterno', note: 'Monfortino — légende absolue', url: 'https://www.giacomoconterno.it' },
       { name: 'Bartolo Mascarello', note: 'Tradition inflexible' },
     ],
     lat: 44.61, lng: 7.94,
@@ -1198,8 +1198,8 @@ export const WINE_DB = [
     temperature: '14-16°C', serviceTemp: 15,
     accords: ['Fondant au chocolat', 'Stilton', 'Fruits secs'],
     domaines: [
-      { name: 'Taylor\'s', note: 'Vintage de référence' },
-      { name: 'Quinta do Noval', note: 'Nacional — le graal' },
+      { name: 'Taylor\'s', note: 'Vintage de référence', url: 'https://www.taylor.pt' },
+      { name: 'Quinta do Noval', note: 'Nacional — le graal', url: 'https://www.quintadonoval.com' },
     ],
     lat: 41.16, lng: -7.78,
     description: 'Vin muté du Douro : doux, puissant, immortel. Le seul vin qui tienne tête à un dessert au chocolat noir.',
@@ -1238,8 +1238,8 @@ export const WINE_DB = [
     temperature: '12-14°C', serviceTemp: 13,
     accords: ['Homard', 'Volaille de Bresse à la crème', 'Fromages affinés'],
     domaines: [
-      { name: 'Domaine Bonneau du Martray', note: 'Monopole quasi historique' },
-      { name: 'Louis Latour', note: 'Grande maison référente' },
+      { name: 'Domaine Bonneau du Martray', note: 'Monopole quasi historique', url: 'https://www.bonneaudumartray.com' },
+      { name: 'Louis Latour', note: 'Grande maison référente', url: 'https://www.louislatour.com' },
     ],
     lat: 47.06, lng: 4.87,
     description: 'Le seul Grand Cru blanc de la colline de Corton. Puissant, doré, taillé pour la garde.',
@@ -1257,8 +1257,8 @@ export const WINE_DB = [
     temperature: '15-16°C', serviceTemp: 15,
     accords: ['Volaille', 'Charcuterie', 'Bœuf bourguignon'],
     domaines: [
-      { name: 'Domaine Faiveley', note: 'Belles parcelles historiques' },
-      { name: 'Château de Chamirey', note: 'Régularité exemplaire' },
+      { name: 'Domaine Faiveley', note: 'Belles parcelles historiques', url: 'https://www.domaine-faiveley.com' },
+      { name: 'Château de Chamirey', note: 'Régularité exemplaire', url: 'https://www.chateau-chamirey.com' },
     ],
     lat: 46.80, lng: 4.71,
     description: 'La Côte Chalonnaise en majesté : du Pinot Noir bourguignon franc et fruité, à prix bien plus doux que la Côte d\'Or.',
@@ -1314,7 +1314,7 @@ export const WINE_DB = [
     temperature: '11-13°C', serviceTemp: 12,
     accords: ['Volaille à la crème', 'Poisson en sauce', 'Fromages affinés'],
     domaines: [
-      { name: 'Château Fuissé', note: 'La référence du cru' },
+      { name: 'Château Fuissé', note: 'La référence du cru', url: 'https://www.chateau-fuisse.fr' },
       { name: 'Domaine Guffens-Heynen', note: 'Précision et générosité' },
     ],
     lat: 46.29, lng: 4.72,
@@ -1352,7 +1352,7 @@ export const WINE_DB = [
     temperature: '10-12°C', serviceTemp: 11,
     accords: ['Charcuterie', 'Poisson grillé', 'Apéritif'],
     domaines: [
-      { name: 'Domaine Bruno Clair', note: 'Référence du village' },
+      { name: 'Domaine Bruno Clair', note: 'Référence du village', url: 'https://www.domaine-bruno-clair.com' },
       { name: 'Domaine Sylvain Pataille', note: 'Le renouveau du cru' },
     ],
     lat: 47.28, lng: 5.03,
@@ -1412,7 +1412,7 @@ export const WINE_DB = [
     accords: ['Poisson en sauce', 'Volaille', 'Fromages de chèvre affinés'],
     domaines: [
       { name: 'Domaine du Tunnel', note: 'Précision et fraîcheur' },
-      { name: 'Domaine Alain Voge', note: 'Style riche et généreux' },
+      { name: 'Domaine Alain Voge', note: 'Style riche et généreux', url: 'https://www.alain-voge.com' },
     ],
     lat: 44.94, lng: 4.83,
     description: 'En face de Cornas, un blanc rond à base de Marsanne et Roussanne, longtemps éclipsé par ses voisins rouges.',
@@ -1430,7 +1430,7 @@ export const WINE_DB = [
     temperature: '16-17°C', serviceTemp: 16,
     accords: ['Grillades', 'Ratatouille', 'Fromages de brebis'],
     domaines: [
-      { name: 'Domaine de la Mordorée', note: 'Référence du cru' },
+      { name: 'Domaine de la Mordorée', note: 'Référence du cru', url: 'https://www.la-mordoree.com' },
       { name: 'Château Mont-Redon', note: 'Grande maison fiable' },
     ],
     lat: 44.02, lng: 4.71,
@@ -1449,8 +1449,8 @@ export const WINE_DB = [
     temperature: '10-12°C', serviceTemp: 11,
     accords: ['Cuisine épicée', 'Grillades', 'Charcuterie'],
     domaines: [
-      { name: 'Domaine de la Mordorée', note: 'La Dame Rousse — icône' },
-      { name: 'Château d\'Aquéria', note: 'Style classique et structuré' },
+      { name: 'Domaine de la Mordorée', note: 'La Dame Rousse — icône', url: 'https://www.la-mordoree.com' },
+      { name: 'Château d\'Aquéria', note: 'Style classique et structuré', url: 'https://www.chateaudaqueria.com' },
     ],
     lat: 44.00, lng: 4.68,
     description: 'Le rosé le plus corsé et structuré de France, seule appellation de rosé pur du Rhône. Un rosé qui se prend au sérieux.',
@@ -1470,7 +1470,7 @@ export const WINE_DB = [
     temperature: '10-12°C', serviceTemp: 11,
     accords: ['Fruits de mer', 'Chèvre frais', 'Poisson grillé'],
     domaines: [
-      { name: 'Domaine Henry Pellé', note: 'Référence de l\'appellation' },
+      { name: 'Domaine Henry Pellé', note: 'Référence de l\'appellation', url: 'https://www.henry-pelle.com' },
       { name: 'Domaine de Chatenoy', note: 'Fraîcheur constante' },
     ],
     lat: 47.13, lng: 2.49,
@@ -1508,7 +1508,7 @@ export const WINE_DB = [
     temperature: '14-16°C', serviceTemp: 15,
     accords: ['Charcuterie', 'Volaille rôtie', 'Rillettes'],
     domaines: [
-      { name: 'Clos Rougeard', note: 'Le mythe absolu de l\'appellation' },
+      { name: 'Clos Rougeard', note: 'Le mythe absolu de l\'appellation', url: 'https://www.closrougeard.com' },
       { name: 'Domaine Thierry Germain', note: 'Biodynamie de haut vol' },
     ],
     lat: 47.19, lng: -0.08,
@@ -1567,8 +1567,8 @@ export const WINE_DB = [
     temperature: '16-18°C', serviceTemp: 17, carafage: '1h',
     accords: ['Entrecôte', 'Volaille rôtie', 'Fromages moyens'],
     domaines: [
-      { name: 'Château Cantemerle', note: '5ème Cru accessible' },
-      { name: 'Château Sociando-Mallet', note: 'Hors classement mais excellent' },
+      { name: 'Château Cantemerle', note: '5ème Cru accessible', url: 'https://www.cantemerle.com' },
+      { name: 'Château Sociando-Mallet', note: 'Hors classement mais excellent', url: 'https://www.sociando-mallet.com' },
     ],
     lat: 45.05, lng: -0.70,
     description: 'L\'appellation générique du Médoc, entre Saint-Estèphe et Margaux. Le style Bordeaux classique à prix raisonnable.',
@@ -1586,8 +1586,8 @@ export const WINE_DB = [
     temperature: '16-18°C', serviceTemp: 17, carafage: '1h30',
     accords: ['Côte de bœuf', 'Gibier', 'Fromages affinés'],
     domaines: [
-      { name: 'Château Chasse-Spleen', note: 'Régularité de très haut niveau' },
-      { name: 'Château Poujeaux', note: 'Puissance et finesse' },
+      { name: 'Château Chasse-Spleen', note: 'Régularité de très haut niveau', url: 'https://www.chasse-spleen.com' },
+      { name: 'Château Poujeaux', note: 'Puissance et finesse', url: 'https://www.chateaupoujeaux.com' },
     ],
     lat: 45.02, lng: -0.72,
     description: 'La plus petite appellation communale du Médoc, sans classement officiel mais un niveau digne des crus classés.',
@@ -1646,7 +1646,7 @@ export const WINE_DB = [
     accords: ['Apéritif', 'Asperges', 'Poisson léger'],
     domaines: [
       { name: 'Domaine Sylvie Spielmann', note: 'Style pur et précis', confidentiel: true, histoire: 'Une vigneronne indépendante d\'Alsace qui vinifie seule, sur un tout petit domaine familial.' },
-      { name: 'Domaine Kreydenweiss', note: 'Biodynamie, grande finesse', confidentiel: true, histoire: 'Un domaine alsacien en biodynamie depuis les années 80, resté volontairement à taille artisanale.' },
+      { name: 'Domaine Kreydenweiss', note: 'Biodynamie, grande finesse', url: 'https://www.kreydenweiss.com', confidentiel: true, histoire: 'Un domaine alsacien en biodynamie depuis les années 80, resté volontairement à taille artisanale.' },
     ],
     lat: 48.20, lng: 7.35,
     description: 'Seul Muscat vinifié entièrement sec en France. Bluffant : ça sent le raisin frais alors que c\'est un vin sec.',
@@ -1664,8 +1664,8 @@ export const WINE_DB = [
     temperature: '14-16°C', serviceTemp: 15,
     accords: ['Charcuterie', 'Volaille', 'Tarte flambée'],
     domaines: [
-      { name: 'Domaine Marcel Deiss', note: 'Rouge de terroir ambitieux' },
-      { name: 'Domaine Barmès-Buecher', note: 'Bio, fruité pur', confidentiel: true, histoire: 'Une famille de vignerons alsaciens en biodynamie, attachée à ses parcelles plus qu\'à sa taille.' },
+      { name: 'Domaine Marcel Deiss', note: 'Rouge de terroir ambitieux', url: 'https://www.marceldeiss.com' },
+      { name: 'Domaine Barmès-Buecher', note: 'Bio, fruité pur', url: 'https://www.barmes-buecher.com', confidentiel: true, histoire: 'Une famille de vignerons alsaciens en biodynamie, attachée à ses parcelles plus qu\'à sa taille.' },
     ],
     lat: 48.10, lng: 7.30,
     description: 'Longtemps discret, le Pinot Noir alsacien monte en gamme. Un rouge frais et digeste, servi légèrement frais.',
@@ -1763,8 +1763,8 @@ export const WINE_DB = [
     temperature: '16-17°C', serviceTemp: 16,
     accords: ['Agneau', 'Grillades', 'Plats mijotés'],
     domaines: [
-      { name: 'Mas de Daumas Gassac', note: 'Précurseur mondialement reconnu' },
-      { name: 'Domaine d\'Aupilhac', note: 'Grande précision de terroir' },
+      { name: 'Mas de Daumas Gassac', note: 'Précurseur mondialement reconnu', url: 'https://www.daumas-gassac.com' },
+      { name: 'Domaine d\'Aupilhac', note: 'Grande précision de terroir', url: 'https://www.aupilhac.com' },
     ],
     lat: 43.79, lng: 3.48,
     description: 'Sur les contreforts du Larzac, un Languedoc devenu la référence qualitative de la région ces vingt dernières années.',
@@ -1822,7 +1822,7 @@ export const WINE_DB = [
     temperature: '15-17°C', serviceTemp: 16,
     accords: ['Confit de canard', 'Charcuterie', 'Grillades'],
     domaines: [
-      { name: 'Château Tour des Gendres', note: 'Bio, très belle matière', confidentiel: true, histoire: 'La famille de Conti cultive ce domaine bergeracois en bio, loin des grands noms bordelais voisins.' },
+      { name: 'Château Tour des Gendres', note: 'Bio, très belle matière', url: 'https://www.chateautourdesgendres.com', confidentiel: true, histoire: 'La famille de Conti cultive ce domaine bergeracois en bio, loin des grands noms bordelais voisins.' },
       { name: 'Château Court-les-Mûts', note: 'Régularité fiable' },
     ],
     lat: 44.85, lng: 0.48,
@@ -1842,7 +1842,7 @@ export const WINE_DB = [
     accords: ['Foie gras', 'Roquefort', 'Tarte aux fruits'],
     domaines: [
       { name: 'Château Tirecul La Gravière', note: 'Niveau grand cru' },
-      { name: 'Château Bélingard', note: 'Belle régularité' },
+      { name: 'Château Bélingard', note: 'Belle régularité', url: 'https://www.chateaubelingard.com' },
     ],
     lat: 44.75, lng: 0.51,
     description: 'Même botrytis, même cépages que Sauternes, juste en face sur la Dordogne. Un liquoreux généreux à prix très doux.',
@@ -1862,7 +1862,7 @@ export const WINE_DB = [
     temperature: '11-13°C', serviceTemp: 12,
     accords: ['Comté', 'Volaille à la crème', 'Poisson de lac'],
     domaines: [
-      { name: 'Domaine Rolet', note: 'Grande diversité de styles' },
+      { name: 'Domaine Rolet', note: 'Grande diversité de styles', url: 'https://www.domaine-rolet.com' },
       { name: 'Domaine Ganevat', note: 'Culte, vins rares' },
     ],
     lat: 46.68, lng: 5.62,
@@ -1902,8 +1902,8 @@ export const WINE_DB = [
     temperature: '16-18°C', serviceTemp: 17, carafage: '1h',
     accords: ['Agneau rôti', 'Cochon de lait', 'Fromages affinés'],
     domaines: [
-      { name: 'Vega Sicilia', note: 'Único — mythe espagnol' },
-      { name: 'Bodegas Aalto', note: 'Modernité et concentration' },
+      { name: 'Vega Sicilia', note: 'Único — mythe espagnol', url: 'https://www.vega-sicilia.com' },
+      { name: 'Bodegas Aalto', note: 'Modernité et concentration', url: 'https://www.bodegasaalto.com' },
     ],
     lat: 41.61, lng: -3.69,
     description: 'Sur le haut plateau castillan, le Tempranillo atteint une concentration extrême. Puissant, sombre, taillé pour la garde.',
@@ -1921,8 +1921,8 @@ export const WINE_DB = [
     temperature: '16-18°C', serviceTemp: 17, carafage: '1h30',
     accords: ['Gibier', 'Viandes grillées', 'Fromages puissants'],
     domaines: [
-      { name: 'Álvaro Palacios', note: 'L\'Ermita — icône mondiale' },
-      { name: 'Clos Mogador', note: 'Pionnier du renouveau' },
+      { name: 'Álvaro Palacios', note: 'L\'Ermita — icône mondiale', url: 'https://www.alvaropalacios.com' },
+      { name: 'Clos Mogador', note: 'Pionnier du renouveau', url: 'https://www.closmogador.com' },
     ],
     lat: 41.18, lng: 0.82,
     description: 'Vignes plantées sur ardoise noire (llicorella) en terrasses vertigineuses. Un rouge dense, minéral, extrême.',
@@ -1940,8 +1940,8 @@ export const WINE_DB = [
     temperature: '17-18°C', serviceTemp: 17, carafage: '1h30',
     accords: ['Brasato', 'Gibier', 'Pecorino affiné'],
     domaines: [
-      { name: 'Biondi-Santi', note: 'Le créateur historique de l\'appellation' },
-      { name: 'Casanova di Neri', note: 'Modernité et puissance' },
+      { name: 'Biondi-Santi', note: 'Le créateur historique de l\'appellation', url: 'https://www.biondisanti.it' },
+      { name: 'Casanova di Neri', note: 'Modernité et puissance', url: 'https://www.casanovadineri.com' },
     ],
     lat: 43.05, lng: 11.49,
     description: 'Le Sangiovese le plus abouti d\'Italie. Élevage long, garde exceptionnelle, structure imposante.',
@@ -1959,8 +1959,8 @@ export const WINE_DB = [
     temperature: '16-18°C', serviceTemp: 17, carafage: '1h',
     accords: ['Agneau grillé', 'Viandes en sauce', 'Fromages affinés'],
     domaines: [
-      { name: 'Quinta do Crasto', note: 'Grande régularité' },
-      { name: 'Niepoort', note: 'Style pur et moderne' },
+      { name: 'Quinta do Crasto', note: 'Grande régularité', url: 'https://www.quintadocrasto.pt' },
+      { name: 'Niepoort', note: 'Style pur et moderne', url: 'https://www.niepoort-vinhos.com' },
     ],
     lat: 41.17, lng: -7.75,
     description: 'Les mêmes cépages que le Porto, vinifiés secs : un rouge dense et épicé né sur les terrasses vertigineuses du Douro.',
@@ -1980,8 +1980,8 @@ export const WINE_DB = [
     temperature: '15-16°C', serviceTemp: 16,
     accords: ['Grillades', 'Charcuterie', 'Pizza', 'Plats mijotés'],
     domaines: [
-      { name: 'Famille Perrin', note: 'Grande régularité, bio' },
-      { name: 'Domaine Chapoutier', note: 'Belles cuvées d\'entrée de gamme' },
+      { name: 'Famille Perrin', note: 'Grande régularité, bio', url: 'https://www.familleperrin.com' },
+      { name: 'Domaine Chapoutier', note: 'Belles cuvées d\'entrée de gamme', url: 'https://www.chapoutier.com' },
     ],
     lat: 44.35, lng: 4.80,
     description: 'L\'appellation régionale qui couvre toute la vallée du Rhône Sud. Simple, fruité, généreux : le rouge de tous les jours par excellence.',
@@ -2000,7 +2000,7 @@ export const WINE_DB = [
     accords: ['Entrecôte', 'Rôti de bœuf', 'Fromages moyens'],
     domaines: [
       { name: 'Château Rollan de By', note: 'Belle régularité' },
-      { name: 'Château Greysac', note: 'Style classique et digeste' },
+      { name: 'Château Greysac', note: 'Style classique et digeste', url: 'https://www.chateau-greysac.com' },
     ],
     lat: 45.35, lng: -0.90,
     description: 'L\'appellation générique du Médoc, au nord de Bordeaux. Le même style que les grands crus (Cabernet Sauvignon dominant) mais taillé pour boire jeune.',
@@ -2076,7 +2076,7 @@ export const WINE_DB = [
     accords: ['Tarte flambée', 'Charcuterie', 'Fruits de mer simples'],
     domaines: [
       { name: 'Domaine Sylvie Spielmann', note: 'Sylvaner de terroir, rare' },
-      { name: 'Cave de Ribeauvillé', note: 'Style pur, bon rapport Q/P' },
+      { name: 'Cave de Ribeauvillé', note: 'Style pur, bon rapport Q/P', url: 'https://www.cave-ribeauville.com' },
     ],
     lat: 48.20, lng: 7.33,
     description: 'Cépage discret et longtemps sous-estimé en Alsace. Léger, croquant, parfait sur une tarte flambée entre amis.',
@@ -2327,6 +2327,7 @@ export const WINE_DB_DOMAINES = (() => {
           appellations: new Set(),
           confidentiel: false,
           histoire: null,
+          url: null,
         })
       }
       const entry = map.get(d.name)
@@ -2336,6 +2337,7 @@ export const WINE_DB_DOMAINES = (() => {
       entry.appellations.add(w.appellation)
       if (d.confidentiel) entry.confidentiel = true
       if (d.histoire && !entry.histoire) entry.histoire = d.histoire
+      if (d.url && !entry.url) entry.url = d.url
     }
   }
   return [...map.values()]

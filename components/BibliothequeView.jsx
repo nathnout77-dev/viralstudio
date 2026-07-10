@@ -176,7 +176,7 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
                       )}
                     </div>
                     <a
-                      href={`https://www.google.com/search?q=${encodeURIComponent(`${d.name} ${wine.appellation} site officiel`)}`}
+                      href={d.url || `https://www.google.com/search?q=${encodeURIComponent(`${d.name} ${wine.appellation} site officiel`)}`}
                       target="_blank" rel="noopener noreferrer"
                       onClick={e => e.stopPropagation()}
                       className="flex-shrink-0 flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
