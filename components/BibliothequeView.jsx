@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
-import { Library, Search, X, Plus, Check, Thermometer, Clock, Wine, MapPin, ChevronDown, ExternalLink, Sparkles, NotebookPen } from 'lucide-react'
+import { Library, Search, X, Plus, Check, Thermometer, Clock, Wine, MapPin, ChevronDown, ExternalLink, Sparkles, NotebookPen, ChefHat } from 'lucide-react'
+import AccordInverse from './AccordInverse'
 import { WINE_DB, REGIONS_LIST, DIFFICULTE_CONFIG, MILLESIMES_DB, gardeForMillesime } from '../data/wineDatabase'
 import JaugesGout from './JaugesGout'
 import Terme from './Tooltip'
@@ -32,6 +33,7 @@ const DIFF_FILTERS = [
 // ── Fiche détaillée ────────────────────────────────────────────────────────────
 export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
   const [millesime, setMillesime] = useState(wine.bonsMilsimes[wine.bonsMilsimes.length - 1])
+  const [showAccordInverse, setShowAccordInverse] = useState(false)
   const diff = DIFFICULTE_CONFIG[wine.difficulte]
   const addedSet = added || new Set()
   const isAdded = addedSet.has(`${wine.id}-${millesime}`)
@@ -151,6 +153,12 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
                 </span>
               ))}
             </div>
+            <button
+              onClick={() => setShowAccordInverse(true)}
+              className="mt-3 flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
+            >
+              <ChefHat size={13} /> Que cuisiner avec ?
+            </button>
           </div>
 
           {/* Domaines */}
@@ -246,6 +254,10 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
           )}
         </div>
       </div>
+
+      {showAccordInverse && (
+        <AccordInverse wine={wine} onClose={() => setShowAccordInverse(false)} />
+      )}
     </div>
   )
 }

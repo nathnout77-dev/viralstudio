@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
-import { X, Wine, Grape, MapPin, Plus, Thermometer, Clock, Star, BookOpen, Check, ChevronRight, ExternalLink, Sparkles, NotebookPen } from 'lucide-react'
+import { X, Wine, Grape, MapPin, Plus, Thermometer, Clock, Star, BookOpen, Check, ChevronRight, ExternalLink, Sparkles, NotebookPen, ChefHat } from 'lucide-react'
+import AccordInverse from './AccordInverse'
 import dynamic from 'next/dynamic'
 import { WINE_DB, WINE_DB_DOMAINES, gardeForMillesime } from '../data/wineDatabase'
 import { regionInfo } from '../data/regionsInfo'
@@ -17,6 +18,7 @@ const TYPE_COLORS = {
 function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
   const [millesime, setMillesime] = useState(wine.bonsMilsimes[wine.bonsMilsimes.length - 1])
   const [qty, setQty] = useState(1)
+  const [showAccordInverse, setShowAccordInverse] = useState(false)
   const isAdded = addedIds.has(`${wine.id}-${millesime}`)
   const hasPetitDomaine = wine.domaines.some(d => d.confidentiel)
 
@@ -160,6 +162,12 @@ function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
               <span key={a} className="text-xs bg-anthracite-50 border border-anthracite-200 text-anthracite-600 px-2.5 py-1 rounded-full">{a}</span>
             ))}
           </div>
+          <button
+            onClick={() => setShowAccordInverse(true)}
+            className="mt-2.5 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
+          >
+            <ChefHat size={12} /> Que cuisiner avec ?
+          </button>
         </div>
 
         {/* Domaines */}
@@ -243,6 +251,10 @@ function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
           </button>
         )}
       </div>
+
+      {showAccordInverse && (
+        <AccordInverse wine={wine} onClose={() => setShowAccordInverse(false)} />
+      )}
     </div>
   )
 }
