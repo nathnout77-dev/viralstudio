@@ -16,6 +16,7 @@ import AssistantView    from '../components/AssistantView'
 import OnboardingProfil, { loadProfil } from '../components/OnboardingProfil'
 import { removeEnvie } from '../components/Envies'
 import CompteSync from '../components/CompteSync'
+import { CaveAmieViewer } from '../components/CaveAmis'
 import { Sparkles }     from 'lucide-react'
 
 const InteractiveMap = dynamic(() => import('../components/InteractiveMap'), { ssr: false })
@@ -86,6 +87,7 @@ export default function App() {
   const [journalPrefill, setJournalPrefill] = useState(null)
   const [enviePrefill, setEnviePrefill] = useState(null) // « J'ai acheté » depuis la liste d'envies
   const [showCompte, setShowCompte]   = useState(false)
+  const [friendCode, setFriendCode]   = useState(null) // ?cave=CODE → cave d'un ami
 
   useEffect(() => {
     const saved = localStorage.getItem('oenotheque-v2')
@@ -93,7 +95,16 @@ export default function App() {
     const seen = sessionStorage.getItem('landing-seen')
     if (seen) setShowLanding(false)
     setProfil(loadProfil())
+    // Lien « cave entre amis » : /?cave=CODE
+    const code = new URLSearchParams(window.location.search).get('cave')
+    if (code) setFriendCode(code)
     setReady(true)
+  }, [])
+
+  const closeFriendCave = useCallback(() => {
+    setFriendCode(null)
+    // Nettoie l'URL pour ne pas rouvrir la cave au refresh
+    window.history.replaceState(null, '', window.location.pathname)
   }, [])
 
   // Mode global : 'debutant' | 'amateur' | 'expert'
@@ -212,6 +223,7 @@ export default function App() {
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
         <LandingPage onEnter={enterApp} onTabChange={handleTabChange} onCeSoir={openCeSoir} onScan={openScan} />
+        {friendCode && <CaveAmieViewer code={friendCode} onClose={closeFriendCave} />}
         {showCeSoir && (
           <CeSoirMode
             mode={mode}
@@ -298,6 +310,7 @@ export default function App() {
             onAddWine={saveWine}
           />
         )}
+        {friendCode && <CaveAmieViewer code={friendCode} onClose={closeFriendCave} />}
         {showCompte && <CompteSync onClose={() => setShowCompte(false)} />}
         {showAssistant && <AssistantView onClose={() => setShowAssistant(false)} />}
         {showOnboarding && <OnboardingProfil onComplete={completeOnboarding} />}

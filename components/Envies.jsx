@@ -184,7 +184,7 @@ export default function EnviesView({ onBuy }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {enriched.map(({ id, appellation, addedAt, wine }, i) => (
+        {enriched.map(({ id, appellation, addedAt, wine, pour }, i) => (
           <div
             key={id}
             className="card p-4 animate-fade-in-up"
@@ -199,6 +199,11 @@ export default function EnviesView({ onBuy }) {
               </div>
               <div className="min-w-0 flex-1">
                 <div className="font-wine-name text-2xl text-anthracite-900 leading-none truncate">{appellation}</div>
+                {pour && (
+                  <span className="inline-flex items-center px-2 py-0.5 mt-1 rounded-full text-[9px] font-bold uppercase tracking-[0.12em] bg-gold-500/15 text-gold-700 border border-gold-500/30">
+                    Pour {pour}
+                  </span>
+                )}
                 <div className="text-[11px] text-anthracite-400 mt-1">
                   {wine ? `${wine.region} · ~${wine.prixMoyen} €` : 'Vin repéré'}
                   {' · '}

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { X, CloudOff, Cloud, Mail, LogOut, Check, RefreshCw, Smartphone, CloudDownload, UserCircle2 } from 'lucide-react'
 import { supabase, cloudDisponible } from '../lib/supabase'
+import CaveAmisSection, { pushPartageSnapshot } from './CaveAmis'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Compte & synchronisation cloud — local-first.
@@ -55,6 +56,8 @@ async function pushToCloud(userId) {
     updated_at: new Date().toISOString(),
   })
   if (error) throw error
+  // Si la cave est partagée entre amis, on rafraîchit aussi le snapshot public
+  await pushPartageSnapshot(userId).catch(() => {})
   return snap
 }
 
@@ -293,6 +296,7 @@ export default function CompteSync({ onClose, extraSection = null }) {
                 après chaque modification.
               </p>
               {error && <p className="text-xs text-red-700 mt-3">{error}</p>}
+              <CaveAmisSection user={user} />
               {extraSection}
             </div>
           )}
