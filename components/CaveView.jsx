@@ -1,7 +1,8 @@
 import { useState, useMemo, useEffect } from 'react'
-import { Search, SlidersHorizontal, LayoutGrid, List, Wine, Plus, X, ChevronDown, BookHeart } from 'lucide-react'
+import { Search, SlidersHorizontal, LayoutGrid, List, Wine, Plus, X, ChevronDown, BookHeart, BarChart3 } from 'lucide-react'
 import WineCard from './WineCard'
 import JournalDegustation from './JournalDegustation'
+import PanoramaCave from './PanoramaCave'
 
 const TYPES = ['Tous', 'Rouge', 'Blanc', 'Rosé', 'Effervescent', 'Liquoreux']
 const TYPE_MAP = { 'Rouge':'red', 'Blanc':'white', 'Rosé':'rosé', 'Effervescent':'sparkling', 'Liquoreux':'sweet' }
@@ -81,8 +82,9 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
       {/* Sous-onglets : Ma Cave / Mémoires de Vin */}
       <div className="flex gap-2 mb-6 overflow-x-auto hide-scrollbar">
         {[
-          { id: 'cave',    label: 'Ma Cave',        Icon: Wine },
-          { id: 'journal', label: 'Mémoires de Vin', Icon: BookHeart },
+          { id: 'cave',     label: 'Ma Cave',         Icon: Wine },
+          { id: 'journal',  label: 'Mémoires de Vin', Icon: BookHeart },
+          { id: 'panorama', label: 'Panorama',        Icon: BarChart3 },
         ].map(({ id, label, Icon }) => (
           <button
             key={id}
@@ -98,6 +100,8 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
           </button>
         ))}
       </div>
+
+      {sub === 'panorama' && <PanoramaCave wines={wines} />}
 
       {sub === 'journal' && (
         <JournalDegustation prefill={journalPrefill} onConsumePrefill={onConsumeJournalPrefill} />
