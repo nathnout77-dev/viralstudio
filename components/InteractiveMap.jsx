@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
-import { X, Wine, Grape, MapPin, Plus, Thermometer, Clock, Star, BookOpen, Check, ChevronRight, ExternalLink, Sparkles, NotebookPen, ChefHat } from 'lucide-react'
+import { X, Wine, Grape, MapPin, Plus, Thermometer, Clock, Star, BookOpen, Check, ChevronRight, ExternalLink, Sparkles, NotebookPen, ChefHat, Route } from 'lucide-react'
+import RoutesDesVins from './RoutesDesVins'
 import AccordInverse from './AccordInverse'
 import { EnvieButton } from './Envies'
 import dynamic from 'next/dynamic'
@@ -16,7 +17,7 @@ const TYPE_COLORS = {
 }
 
 // ── Wine detail panel ──────────────────────────────────────────────────────────
-function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
+export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
   const [millesime, setMillesime] = useState(wine.bonsMilsimes[wine.bonsMilsimes.length - 1])
   const [qty, setQty] = useState(1)
   const [showAccordInverse, setShowAccordInverse] = useState(false)
@@ -263,6 +264,7 @@ function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
 
 // ── Map component ─────────────────────────────────────────────────────────────
 export default function InteractiveMap({ onAddWine, onNoter }) {
+  const [view, setView] = useState('vignobles') // vignobles | routes
   const [selected, setSelected] = useState(null)
   const [MapComponents, setMap] = useState(null)
   const [addedIds, setAddedIds] = useState(new Set())
@@ -320,15 +322,44 @@ export default function InteractiveMap({ onAddWine, onNoter }) {
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 rounded-xl bg-wine-800 flex items-center justify-center shadow-wine">
-          <MapPin size={18} className="text-gold-400" />
+          {view === 'routes' ? <Route size={18} className="text-gold-400" /> : <MapPin size={18} className="text-gold-400" />}
         </div>
         <div>
           <span className="eyebrow mb-1">Le voyage</span>
-          <h2 className="section-title">Carte des Vignobles</h2>
-          <p className="section-sub">{WINE_DB.length} appellations — cliquez pour explorer et ajouter à votre cave</p>
+          <h2 className="section-title">{view === 'routes' ? 'Routes des vins' : 'Carte des Vignobles'}</h2>
+          <p className="section-sub">
+            {view === 'routes'
+              ? '6 itinéraires œnotouristiques, tracés jour par jour'
+              : `${WINE_DB.length} appellations — cliquez pour explorer et ajouter à votre cave`}
+          </p>
         </div>
       </div>
 
+      {/* Sélecteur de vue : vignobles / routes des vins */}
+      <div className="flex gap-2 mb-5">
+        {[
+          { id: 'vignobles', label: 'Vignobles', Icon: MapPin },
+          { id: 'routes',    label: 'Routes des vins', Icon: Route },
+        ].map(({ id, label, Icon }) => (
+          <button
+            key={id}
+            onClick={() => setView(id)}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              view === id
+                ? 'bg-wine-800 text-cream shadow-wine'
+                : 'bg-white text-anthracite-600 border border-anthracite-200 hover:border-wine-300'
+            }`}
+          >
+            <Icon size={13} />
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {view === 'routes' ? (
+        <RoutesDesVins onAddWine={onAddWine} onNoter={onNoter} />
+      ) : (
+      <>
       {/* Region filter */}
       <div className="flex gap-2 flex-wrap mb-4">
         {regions.map(r => (
@@ -465,6 +496,8 @@ export default function InteractiveMap({ onAddWine, onNoter }) {
           </div>
         </div>
       </div>
+      </>
+      )}
     </div>
   )
 }
