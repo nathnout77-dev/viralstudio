@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { Library, Search, X, Plus, Check, Thermometer, Clock, Wine, MapPin, ChevronDown, ExternalLink, Sparkles, NotebookPen, ChefHat } from 'lucide-react'
 import AccordInverse from './AccordInverse'
+import { EnvieButton } from './Envies'
 import { WINE_DB, REGIONS_LIST, DIFFICULTE_CONFIG, MILLESIMES_DB, gardeForMillesime } from '../data/wineDatabase'
 import JaugesGout from './JaugesGout'
 import Terme from './Tooltip'
@@ -78,6 +79,7 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
             </div>
             <div className="flex flex-col items-center gap-2 flex-shrink-0">
               <WineGlassAnim color="#f5f0e8" fillLevel={fillLevelFromJauges(wine.jauges)} size={44} />
+              <EnvieButton appellation={wine.appellation} light />
               <button onClick={onClose}
                       className="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/35 text-cream transition-all cursor-pointer"
                       aria-label="Fermer">
@@ -294,6 +296,7 @@ function VinCard({ wine, onClick, index }) {
           {diff.emoji} {diff.label}
         </span>
         <div className="flex items-center gap-1.5">
+          <EnvieButton appellation={wine.appellation} size={12} className="!w-6 !h-6" />
           {hasPetitDomaine && (
             <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-gold-500/15 text-gold-700" title="Contient un petit domaine">
               ✨

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { X, RefreshCw, Sparkles, ChevronLeft } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
 import JaugesGout from './JaugesGout'
+import { EnvieButton } from './Envies'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // « Ce soir, je bois quoi ? » — 5 questions guidées → le meilleur vin pour vous
@@ -263,9 +264,12 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
                             <div className="font-serif text-sm font-bold text-anthracite-900">{w.appellation}</div>
                             <div className="text-[11px] text-anthracite-400">{w.region} · {w.typeLabel} · ~{w.prixMoyen} €</div>
                           </div>
-                          <span className="flex-shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-full"
-                                style={{ background: diff.bg, color: diff.color }}>
-                            {diff.emoji}
+                          <span className="flex items-center gap-1.5 flex-shrink-0">
+                            <EnvieButton appellation={w.appellation} size={12} className="!w-6 !h-6" />
+                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+                                  style={{ background: diff.bg, color: diff.color }}>
+                              {diff.emoji}
+                            </span>
                           </span>
                         </div>
                         <p className="text-xs text-anthracite-500 italic mt-1">« {w.enUneMot} »</p>

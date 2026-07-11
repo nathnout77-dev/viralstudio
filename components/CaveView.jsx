@@ -1,8 +1,9 @@
 import { useState, useMemo, useEffect } from 'react'
-import { Search, SlidersHorizontal, LayoutGrid, List, Wine, Plus, X, ChevronDown, BookHeart, BarChart3 } from 'lucide-react'
+import { Search, SlidersHorizontal, LayoutGrid, List, Wine, Plus, X, ChevronDown, BookHeart, BarChart3, Heart } from 'lucide-react'
 import WineCard from './WineCard'
 import JournalDegustation from './JournalDegustation'
 import PanoramaCave from './PanoramaCave'
+import EnviesView, { useEnvies } from './Envies'
 
 const TYPES = ['Tous', 'Rouge', 'Blanc', 'Rosé', 'Effervescent', 'Liquoreux']
 const TYPE_MAP = { 'Rouge':'red', 'Blanc':'white', 'Rosé':'rosé', 'Effervescent':'sparkling', 'Liquoreux':'sweet' }
@@ -30,7 +31,8 @@ function SelectFilter({ value, onChange, options, label }) {
   )
 }
 
-export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onUpdateQty, journalPrefill, onConsumeJournalPrefill }) {
+export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onUpdateQty, journalPrefill, onConsumeJournalPrefill, onBuyEnvie }) {
+  const envies = useEnvies()
   const [search, setSearch]   = useState('')
   const [typeFilter, setType] = useState('Tous')
   const [region, setRegion]   = useState('Toutes')
@@ -85,7 +87,8 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
           { id: 'cave',     label: 'Ma Cave',         Icon: Wine },
           { id: 'journal',  label: 'Mémoires de Vin', Icon: BookHeart },
           { id: 'panorama', label: 'Panorama',        Icon: BarChart3 },
-        ].map(({ id, label, Icon }) => (
+          { id: 'envies',   label: 'Envies',          Icon: Heart, badge: envies.length },
+        ].map(({ id, label, Icon, badge }) => (
           <button
             key={id}
             onClick={() => setSub(id)}
@@ -97,11 +100,20 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
           >
             <Icon size={13} />
             {label}
+            {badge > 0 && (
+              <span className={`min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full text-[9px] font-bold ${
+                sub === id ? 'bg-gold-500/30 text-gold-300' : 'bg-wine-800 text-cream'
+              }`}>
+                {badge}
+              </span>
+            )}
           </button>
         ))}
       </div>
 
       {sub === 'panorama' && <PanoramaCave wines={wines} />}
+
+      {sub === 'envies' && <EnviesView onBuy={onBuyEnvie} />}
 
       {sub === 'journal' && (
         <JournalDegustation prefill={journalPrefill} onConsumePrefill={onConsumeJournalPrefill} />

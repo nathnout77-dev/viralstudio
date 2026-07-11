@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 import { X, Wine, Grape, MapPin, Plus, Thermometer, Clock, Star, BookOpen, Check, ChevronRight, ExternalLink, Sparkles, NotebookPen, ChefHat } from 'lucide-react'
 import AccordInverse from './AccordInverse'
+import { EnvieButton } from './Envies'
 import dynamic from 'next/dynamic'
 import { WINE_DB, WINE_DB_DOMAINES, gardeForMillesime } from '../data/wineDatabase'
 import { regionInfo } from '../data/regionsInfo'
@@ -56,6 +57,7 @@ function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
           </div>
           <div className="flex flex-col items-center gap-1.5 flex-shrink-0">
             <WineGlassAnim color="#f5f0e8" fillLevel={fillLevelFromJauges(wine.jauges)} size={32} />
+            <EnvieButton appellation={wine.appellation} size={13} light className="!w-7 !h-7" />
             <button onClick={onClose}
                     className="w-7 h-7 flex-shrink-0 flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/35 transition-all cursor-pointer"
                     aria-label="Fermer">

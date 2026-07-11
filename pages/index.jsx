@@ -14,6 +14,7 @@ import CeSoirMode       from '../components/CeSoirMode'
 import ScanEtiquette    from '../components/ScanEtiquette'
 import AssistantView    from '../components/AssistantView'
 import OnboardingProfil, { loadProfil } from '../components/OnboardingProfil'
+import { removeEnvie } from '../components/Envies'
 import { Sparkles }     from 'lucide-react'
 
 const InteractiveMap = dynamic(() => import('../components/InteractiveMap'), { ssr: false })
@@ -82,6 +83,7 @@ export default function App() {
   const [showOnboarding, setShowOnboarding] = useState(false)
   const [librarySearch, setLibrarySearch] = useState('')
   const [journalPrefill, setJournalPrefill] = useState(null)
+  const [enviePrefill, setEnviePrefill] = useState(null) // « J'ai acheté » depuis la liste d'envies
 
   useEffect(() => {
     const saved = localStorage.getItem('oenotheque-v2')
@@ -148,6 +150,16 @@ export default function App() {
     )
     setShowForm(false)
     setEditWine(null)
+    // Si l'ajout vient de la liste d'envies, l'envie est honorée : on la retire.
+    setEnviePrefill(prev => {
+      if (prev?._envieId) removeEnvie(prev._envieId)
+      return null
+    })
+  }, [])
+
+  // « J'ai acheté » depuis la liste d'envies → formulaire d'ajout pré-rempli
+  const buyFromEnvie = useCallback(prefill => {
+    setEnviePrefill(prefill)
   }, [])
 
   const deleteWine = useCallback(id => {
@@ -246,6 +258,7 @@ export default function App() {
               onUpdateQty={updateQty}
               journalPrefill={journalPrefill}
               onConsumeJournalPrefill={() => setJournalPrefill(null)}
+              onBuyEnvie={buyFromEnvie}
             />
           )}
           {tab === 'vins'      && <BibliothequeView onAddWine={saveWine} mode={mode} initialSearch={librarySearch} onNoter={noterDegustation} />}
@@ -261,11 +274,11 @@ export default function App() {
             onEdit={editWineHandler}
           />
         )}
-        {(showForm || editWine) && (
+        {(showForm || editWine || enviePrefill) && (
           <WineForm
-            initial={editWine || undefined}
+            initial={editWine || enviePrefill || undefined}
             onSave={saveWine}
-            onClose={() => { setShowForm(false); setEditWine(null) }}
+            onClose={() => { setShowForm(false); setEditWine(null); setEnviePrefill(null) }}
           />
         )}
         {showCeSoir && (

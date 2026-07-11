@@ -143,7 +143,7 @@ function ToolSwitch({ tool, setTool }) {
   )
 }
 
-export default function SommelierForm({ onOpenBibliotheque, renderEnvie }) {
+export default function SommelierForm({ onOpenBibliotheque }) {
   const [tool, setTool]       = useState('quiz')
   const [step, setStep]       = useState(0)
   const [answers, setAnswers] = useState({})
@@ -185,7 +185,7 @@ export default function SommelierForm({ onOpenBibliotheque, renderEnvie }) {
           </p>
         </div>
         <ToolSwitch tool={tool} setTool={setTool} />
-        <BudgetCaviste renderEnvie={renderEnvie} />
+        <BudgetCaviste />
       </div>
     )
   }

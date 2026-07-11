@@ -3,6 +3,7 @@ import {
   Coins, RefreshCw, ExternalLink, Wine, Sparkles, Gift, Home, PartyPopper, Users, ChevronDown,
 } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
+import { EnvieButton } from './Envies'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Budget caviste — « Composez ma sélection »
@@ -107,7 +108,7 @@ function buildWhy(w, occasion) {
   }
 }
 
-export default function BudgetCaviste({ renderEnvie, envieIds }) {
+export default function BudgetCaviste() {
   const [budget, setBudget]     = useState(50)
   const [custom, setCustom]     = useState('')
   const [occasion, setOccasion] = useState('diner')
@@ -249,9 +250,7 @@ export default function BudgetCaviste({ renderEnvie, envieIds }) {
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
                         <span className="text-sm font-bold text-anthracite-900">~{w.prixMoyen} €</span>
-                        {renderEnvie && (
-                          <span className="flex-shrink-0">{renderEnvie(w)}</span>
-                        )}
+                        <EnvieButton appellation={w.appellation} size={13} className="!w-7 !h-7" />
                       </div>
                     </div>
                     <p className="text-xs text-anthracite-600 mt-2 leading-relaxed">
