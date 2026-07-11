@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import {
   NotebookPen, Grape, X, Plus, Search, Trash2, Pencil, ArrowLeft,
-  Calendar, Users, Feather, ChevronDown, BookHeart,
+  Calendar, Users, Feather, ChevronDown, BookHeart, Share2,
 } from 'lucide-react'
+import ShareDegustation from './ShareDegustation'
 import { WINE_DB } from '../data/wineDatabase'
 import { AROME_FAMILLES } from '../data/aromes'
 
@@ -292,6 +293,7 @@ function JournalForm({ initial, caveWines, onSave, onClose }) {
 
 // ── Page de carnet : vue détail d'une entrée ─────────────────────────────────
 function CarnetPage({ entry, onClose, onEdit, onDelete }) {
+  const [showShare, setShowShare] = useState(false)
   return (
     <div
       className="fixed inset-0 z-[80] flex items-end sm:items-center justify-center p-0 sm:p-4"
@@ -314,6 +316,10 @@ function CarnetPage({ entry, onClose, onEdit, onDelete }) {
               <ArrowLeft size={13} /> Retour au journal
             </button>
             <div className="flex items-center gap-2 flex-shrink-0">
+              <button onClick={() => setShowShare(true)} aria-label="Partager cette dégustation" title="Partager cette dégustation"
+                      className="w-8 h-8 flex items-center justify-center rounded-full bg-white border border-anthracite-900/10 hover:border-gold-500/60 text-anthracite-600 transition-all cursor-pointer">
+                <Share2 size={13} />
+              </button>
               <button onClick={() => onEdit(entry)} aria-label="Modifier"
                       className="w-8 h-8 flex items-center justify-center rounded-full bg-white border border-anthracite-900/10 hover:border-gold-500/60 text-anthracite-600 transition-all cursor-pointer">
                 <Pencil size={13} />
@@ -380,8 +386,18 @@ function CarnetPage({ entry, onClose, onEdit, onDelete }) {
               </p>
             </>
           )}
+
+          <button
+            onClick={() => setShowShare(true)}
+            className="mt-8 w-full flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-bold text-cream shadow-wine hover:brightness-110 active:scale-[0.99] transition-all cursor-pointer"
+            style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
+          >
+            <Share2 size={13} /> Partager cette dégustation
+          </button>
         </div>
       </div>
+
+      {showShare && <ShareDegustation entry={entry} onClose={() => setShowShare(false)} />}
     </div>
   )
 }
