@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
-import { Search, SlidersHorizontal, LayoutGrid, List, Wine, Plus, X, ChevronDown, BookHeart, BarChart3, Heart } from 'lucide-react'
+import { Search, SlidersHorizontal, LayoutGrid, List, Wine, Plus, X, ChevronDown, BookHeart, BarChart3, Heart, CloudUpload } from 'lucide-react'
 import WineCard from './WineCard'
 import JournalDegustation from './JournalDegustation'
 import PanoramaCave from './PanoramaCave'
@@ -31,7 +31,7 @@ function SelectFilter({ value, onChange, options, label }) {
   )
 }
 
-export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onUpdateQty, journalPrefill, onConsumeJournalPrefill, onBuyEnvie }) {
+export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onUpdateQty, journalPrefill, onConsumeJournalPrefill, onBuyEnvie, onCompte }) {
   const envies = useEnvies()
   const [search, setSearch]   = useState('')
   const [typeFilter, setType] = useState('Tous')
@@ -109,6 +109,16 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
             )}
           </button>
         ))}
+
+        {/* Compte & synchronisation */}
+        <button
+          onClick={onCompte}
+          className="ml-auto flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer bg-white text-anthracite-600 border border-anthracite-200 hover:border-gold-500/70"
+          title="Sauvegarder et synchroniser ma cave dans le cloud"
+        >
+          <CloudUpload size={13} className="text-gold-600" />
+          Synchroniser mes données
+        </button>
       </div>
 
       {sub === 'panorama' && <PanoramaCave wines={wines} />}

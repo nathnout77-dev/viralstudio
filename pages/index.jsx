@@ -15,6 +15,7 @@ import ScanEtiquette    from '../components/ScanEtiquette'
 import AssistantView    from '../components/AssistantView'
 import OnboardingProfil, { loadProfil } from '../components/OnboardingProfil'
 import { removeEnvie } from '../components/Envies'
+import CompteSync from '../components/CompteSync'
 import { Sparkles }     from 'lucide-react'
 
 const InteractiveMap = dynamic(() => import('../components/InteractiveMap'), { ssr: false })
@@ -84,6 +85,7 @@ export default function App() {
   const [librarySearch, setLibrarySearch] = useState('')
   const [journalPrefill, setJournalPrefill] = useState(null)
   const [enviePrefill, setEnviePrefill] = useState(null) // « J'ai acheté » depuis la liste d'envies
+  const [showCompte, setShowCompte]   = useState(false)
 
   useEffect(() => {
     const saved = localStorage.getItem('oenotheque-v2')
@@ -245,6 +247,7 @@ export default function App() {
           onLanding={() => setShowLanding(true)}
           onCeSoir={() => setShowCeSoir(true)}
           onScan={() => setShowScan(true)}
+          onCompte={() => setShowCompte(true)}
         />
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-10">
@@ -259,6 +262,7 @@ export default function App() {
               journalPrefill={journalPrefill}
               onConsumeJournalPrefill={() => setJournalPrefill(null)}
               onBuyEnvie={buyFromEnvie}
+              onCompte={() => setShowCompte(true)}
             />
           )}
           {tab === 'vins'      && <BibliothequeView onAddWine={saveWine} mode={mode} initialSearch={librarySearch} onNoter={noterDegustation} />}
@@ -294,6 +298,7 @@ export default function App() {
             onAddWine={saveWine}
           />
         )}
+        {showCompte && <CompteSync onClose={() => setShowCompte(false)} />}
         {showAssistant && <AssistantView onClose={() => setShowAssistant(false)} />}
         {showOnboarding && <OnboardingProfil onComplete={completeOnboarding} />}
 

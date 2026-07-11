@@ -1,4 +1,4 @@
-import { Wine, Library, MapPin, Sparkles, BookOpen, Plus, Utensils, ScanLine } from 'lucide-react'
+import { Wine, Library, MapPin, Sparkles, BookOpen, Plus, Utensils, ScanLine, UserCircle2 } from 'lucide-react'
 
 const TABS = [
   { id: 'cave',      label: 'Ma Cave',   Icon: Wine },
@@ -14,7 +14,7 @@ const MODE_BADGE = {
   expert:   { emoji: '🎓', label: 'Expert' },
 }
 
-export default function Navbar({ tab, setTab, total, mode, onProfil, onAdd, onLanding, onCeSoir, onScan }) {
+export default function Navbar({ tab, setTab, total, mode, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte }) {
   const badge = MODE_BADGE[mode]
   return (
     <>
@@ -64,6 +64,16 @@ export default function Navbar({ tab, setTab, total, mode, onProfil, onAdd, onLa
                 {badge.label}
               </button>
             )}
+
+            {/* Compte & synchronisation (desktop) */}
+            <button
+              onClick={onCompte}
+              title="Mon compte — sauvegarde & synchronisation"
+              aria-label="Mon compte — sauvegarde et synchronisation"
+              className="hidden md:inline-flex w-11 h-11 items-center justify-center rounded-full text-anthracite-500 border border-anthracite-900/15 hover:border-gold-500/70 hover:text-anthracite-900 active:scale-[0.95] transition-all duration-300 cursor-pointer"
+            >
+              <UserCircle2 size={18} strokeWidth={1.6} />
+            </button>
 
             {/* Scanner une étiquette (desktop) */}
             <button
