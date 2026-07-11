@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { Sparkles, ChevronLeft, Utensils } from 'lucide-react'
+import { Sparkles, ChevronLeft, Utensils, Coins } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG, MILLESIMES_DB } from '../data/wineDatabase'
 import JaugesGout from './JaugesGout'
+import BudgetCaviste from './BudgetCaviste'
 
 // ═══ GOÛT-O-MÈTRE ═══════════════════════════════════════════════════════════
 // Quiz ludique : questions du quotidien → profil de goût vin.
@@ -117,7 +118,33 @@ function getMillesimesFor(wine) {
 }
 
 // ═══ UI ═════════════════════════════════════════════════════════════════════
-export default function SommelierForm({ onOpenBibliotheque }) {
+// Sélecteur d'outil : Goût-o-mètre (quiz) ou Budget caviste (sélection à budget)
+function ToolSwitch({ tool, setTool }) {
+  return (
+    <div className="flex justify-center gap-2 mb-8">
+      {[
+        { id: 'quiz',   label: 'Goût-o-mètre',   Icon: Sparkles },
+        { id: 'budget', label: 'Budget caviste',  Icon: Coins },
+      ].map(({ id, label, Icon }) => (
+        <button
+          key={id}
+          onClick={() => setTool(id)}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            tool === id
+              ? 'bg-wine-800 text-cream shadow-wine'
+              : 'bg-white text-anthracite-600 border border-anthracite-200 hover:border-wine-300'
+          }`}
+        >
+          <Icon size={13} />
+          {label}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+export default function SommelierForm({ onOpenBibliotheque, renderEnvie }) {
+  const [tool, setTool]       = useState('quiz')
   const [step, setStep]       = useState(0)
   const [answers, setAnswers] = useState({})
   const [results, setResults] = useState(null)
@@ -142,6 +169,26 @@ export default function SommelierForm({ onOpenBibliotheque }) {
   }
 
   const reset = () => { setStep(0); setAnswers({}); setResults(null) }
+
+  // ── Budget caviste ──
+  if (tool === 'budget') {
+    return (
+      <div className="max-w-2xl mx-auto animate-fade-in">
+        <div className="text-center mb-6">
+          <div className="inline-flex w-14 h-14 rounded-3xl items-center justify-center shadow-wine mb-3"
+               style={{ background: 'linear-gradient(135deg, #0C0A09 0%, #3a0616 60%, #5c0d22 100%)' }}>
+            <Coins size={22} className="text-gold-400" />
+          </div>
+          <h2 className="font-serif text-2xl font-bold text-anthracite-900">Budget caviste</h2>
+          <p className="text-sm text-anthracite-500 mt-1">
+            Donnez un budget et une occasion — on compose la sélection comme un bon caviste.
+          </p>
+        </div>
+        <ToolSwitch tool={tool} setTool={setTool} />
+        <BudgetCaviste renderEnvie={renderEnvie} />
+      </div>
+    )
+  }
 
   // ── Résultats ──
   if (results) {
@@ -246,6 +293,8 @@ export default function SommelierForm({ onOpenBibliotheque }) {
           Pas besoin de connaître le vin — répondez sur VOS goûts, on s'occupe du reste.
         </p>
       </div>
+
+      <ToolSwitch tool={tool} setTool={setTool} />
 
       {/* Progress bubbles */}
       <div className="flex items-center justify-center gap-2 mb-8">
