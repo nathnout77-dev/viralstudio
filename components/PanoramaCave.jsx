@@ -1,6 +1,7 @@
 import { useMemo, useEffect, useState } from 'react'
-import { BarChart3, Wine, Hourglass, Coins, CalendarClock, Quote } from 'lucide-react'
+import { BarChart3, Wine, Hourglass, Coins, CalendarClock, Quote, GraduationCap } from 'lucide-react'
 import { WINE_DB, gardeForMillesime } from '../data/wineDatabase'
+import { computeProfilAppris } from '../data/goutsAppris'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Panorama — tableau de bord statistique de la cave.
@@ -94,6 +95,94 @@ function BarRow({ label, count, max, color, pct, delay = 0, mounted }) {
       <div className="w-16 text-right text-xs flex-shrink-0">
         <span className="font-semibold text-anthracite-900">{count}</span>
         <span className="text-anthracite-400"> · {pct}%</span>
+      </div>
+    </div>
+  )
+}
+
+// ── Goûts appris des dégustations ─────────────────────────────────────────────
+const JAUGE_LABELS = [
+  { key: 'puissance', label: 'Puissance', low: 'Léger', high: 'Puissant' },
+  { key: 'douceur',   label: 'Douceur',   low: 'Sec',   high: 'Doux' },
+  { key: 'tanins',    label: 'Tanins',    low: 'Souple', high: 'Costaud' },
+]
+
+function GoutsApprisBlock({ mounted }) {
+  const [profil, setProfil] = useState(null)
+  useEffect(() => { setProfil(computeProfilAppris()) }, [])
+  if (!profil) return null
+
+  return (
+    <div className="card p-5 animate-fade-in-up" style={{ animationDelay: '260ms', animationFillMode: 'both' }}>
+      <div className="flex items-center gap-2 mb-1">
+        <GraduationCap size={14} className="text-gold-600" />
+        <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400">
+          Vos goûts, appris de vos dégustations
+        </div>
+      </div>
+      <p className="text-[11px] text-anthracite-400 mb-4">
+        Calculé à partir de vos {profil.nbDegustations} dégustations notées — plus vous notez, plus c'est juste.
+      </p>
+
+      <div className="grid sm:grid-cols-2 gap-5">
+        {profil.jauges && (
+          <div className="space-y-3">
+            {JAUGE_LABELS.map(({ key, label, low, high }, i) => {
+              const v = profil.jauges[key]
+              return (
+                <div key={key}>
+                  <div className="flex items-center justify-between text-[10px] text-anthracite-400 mb-1">
+                    <span>{low}</span>
+                    <span className="font-bold text-anthracite-600 uppercase tracking-wide">{label}</span>
+                    <span>{high}</span>
+                  </div>
+                  <svg className="w-full h-3" preserveAspectRatio="none" viewBox="0 0 100 10" aria-label={`${label} : ${v} sur 5`}>
+                    <rect x="0" y="3" width="100" height="4" rx="2" fill="#efe9dd" />
+                    <rect x="0" y="3" height="4" rx="2" fill="#c9a84c"
+                          width={mounted ? ((v - 1) / 4) * 100 : 0}
+                          style={{ transition: `width 700ms cubic-bezier(0.22,1,0.36,1) ${i * 90}ms` }} />
+                    <circle cx={mounted ? ((v - 1) / 4) * 100 : 0} cy="5" r="4" fill="#5c0d22"
+                            style={{ transition: `cx 700ms cubic-bezier(0.22,1,0.36,1) ${i * 90}ms` }} />
+                  </svg>
+                </div>
+              )
+            })}
+          </div>
+        )}
+        <div className="space-y-3">
+          {profil.famillesAromes.length > 0 && (
+            <div>
+              <div className="text-[10px] uppercase tracking-wider font-semibold text-anthracite-400 mb-1.5">
+                Familles d'arômes favorites
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {profil.famillesAromes.map(f => (
+                  <span key={f.id} className="px-2.5 py-1 rounded-full text-xs font-semibold text-cream"
+                        style={{ background: `linear-gradient(135deg, ${f.couleurs[0]}, ${f.couleurs[1]})` }}>
+                    {f.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+          {profil.regionsFavorites.length > 0 && (
+            <div>
+              <div className="text-[10px] uppercase tracking-wider font-semibold text-anthracite-400 mb-1.5">
+                Régions plébiscitées
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {profil.regionsFavorites.map(r => (
+                  <span key={r} className="px-2.5 py-1 rounded-full text-xs bg-anthracite-50 border border-anthracite-200 text-anthracite-600">{r}</span>
+                ))}
+              </div>
+            </div>
+          )}
+          {profil.prix && (
+            <p className="text-[11px] text-anthracite-500">
+              Fourchette de prix réelle : <span className="font-semibold text-anthracite-700">{profil.prix.min}–{profil.prix.max} €</span> (moyenne {profil.prix.moyen} €)
+            </p>
+          )}
+        </div>
       </div>
     </div>
   )
@@ -207,6 +296,9 @@ export default function PanoramaCave({ wines }) {
           </div>
         </div>
       )}
+
+      {/* Goûts appris des dégustations notées */}
+      <GoutsApprisBlock mounted={mounted} />
 
       <div className="grid lg:grid-cols-2 gap-5">
         {/* Par couleur */}

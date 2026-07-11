@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { X, Send, Sparkles, RefreshCw, Wine } from 'lucide-react'
 import { WINE_DB, MILLESIMES_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
 import { GLOSSAIRE_LIST } from '../data/glossaire'
+import { profilApprisPourAssistant } from '../data/goutsAppris'
 import JaugesGout from './JaugesGout'
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -86,6 +87,7 @@ const MENU = [
 ]
 
 function buildSystemPrompt(profil) {
+  const appris = profilApprisPourAssistant()
   const vins = WINE_DB.map(w => ({
     a: w.appellation, r: w.region, t: w.typeLabel, prix: w.prixMoyen,
     niv: w.difficulte, j: w.jauges, ar: w.aromes,
@@ -109,6 +111,10 @@ ${profil?.niveau === 'debutant'
   : profil?.niveau
     ? 'C\'est un AMATEUR/CONNAISSEUR : tu peux être plus technique et précis, flatter ses connaissances, proposer aussi des vins "explorer" et "pointu".'
     : ''}
+${appris ? `
+# Goûts appris de ses dégustations réelles (source la plus fiable — ${appris.degustationsNotees} dégustations notées dans l'app)
+${JSON.stringify(appris)}
+Utilise ces tendances RÉELLES pour affiner tes recommandations (jauges aimées, types, régions, arômes, fourchette de prix). Elles complètent le profil déclaré sans le remplacer.` : ''}
 
 # Base de vins de l'application (recommande d'abord depuis cette liste)
 ${JSON.stringify(vins)}

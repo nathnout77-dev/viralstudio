@@ -1,6 +1,7 @@
-import { useState } from 'react'
-import { Sparkles, ChevronLeft, Utensils, Coins } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { Sparkles, ChevronLeft, Utensils, Coins, GraduationCap } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG, MILLESIMES_DB } from '../data/wineDatabase'
+import { computeProfilAppris, bonusProfilAppris } from '../data/goutsAppris'
 import JaugesGout from './JaugesGout'
 import BudgetCaviste from './BudgetCaviste'
 
@@ -148,6 +149,8 @@ export default function SommelierForm({ onOpenBibliotheque }) {
   const [step, setStep]       = useState(0)
   const [answers, setAnswers] = useState({})
   const [results, setResults] = useState(null)
+  // Profil appris des dégustations : bonus doux (~30 %), n'écrase pas le quiz.
+  const profilAppris = useMemo(() => computeProfilAppris(), [])
 
   const current = QUIZ[step]
 
@@ -159,7 +162,7 @@ export default function SommelierForm({ onOpenBibliotheque }) {
     } else {
       const profile = computeProfile(newAnswers)
       const ranked = WINE_DB
-        .map(w => ({ wine: w, score: scoreWine(w, profile) }))
+        .map(w => ({ wine: w, score: scoreWine(w, profile) + bonusProfilAppris(w, profilAppris, 0.6) }))
         .filter(x => x.score > -50)
         .sort((a, b) => b.score - a.score)
         .slice(0, 4)
@@ -198,6 +201,12 @@ export default function SommelierForm({ onOpenBibliotheque }) {
           <div className="text-4xl mb-3">🎯</div>
           <h2 className="font-serif text-2xl font-bold text-anthracite-900">Votre profil est prêt !</h2>
           <p className="text-sm text-anthracite-500 mt-1">Voici {results.length} vins choisis rien que pour vous.</p>
+          {profilAppris && (
+            <p className="inline-flex items-center gap-1.5 text-[11px] text-gold-700 font-semibold mt-2">
+              <GraduationCap size={12} />
+              Affiné par vos {profilAppris.nbDegustations} dégustations notées
+            </p>
+          )}
         </div>
 
         <div className="space-y-4 mb-6">

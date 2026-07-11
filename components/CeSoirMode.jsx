@@ -1,6 +1,7 @@
-import { useState } from 'react'
-import { X, RefreshCw, Sparkles, ChevronLeft } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { X, RefreshCw, Sparkles, ChevronLeft, GraduationCap } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
+import { computeProfilAppris, bonusProfilAppris } from '../data/goutsAppris'
 import JaugesGout from './JaugesGout'
 import { EnvieButton } from './Envies'
 
@@ -137,6 +138,8 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
   const [step, setStep]       = useState(0)
   const [answers, setAnswers] = useState({})
   const [results, setResults] = useState(null)
+  // Profil appris des dégustations : bonus doux (~30 %), n'écrase pas le quiz.
+  const profilAppris = useMemo(() => computeProfilAppris(), [])
 
   const current = QUESTIONS[step]
 
@@ -147,7 +150,7 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
       setTimeout(() => setStep(s => s + 1), 180)
     } else {
       const scored = WINE_DB
-        .map(w => ({ w, s: score(w, next, mode) }))
+        .map(w => ({ w, s: score(w, next, mode) + bonusProfilAppris(w, profilAppris, 0.5) }))
         .sort((a, b) => b.s - a.s)
       let filtered = scored.filter(x => x.s > -5)
       if (filtered.length < 3) filtered = scored // fallback : garantir toujours 3 vins
@@ -231,6 +234,12 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
             </>
           ) : (
             <div className="space-y-3">
+              {profilAppris && (
+                <div className="flex items-center gap-1.5 text-[11px] text-gold-700 font-semibold">
+                  <GraduationCap size={12} />
+                  Affiné par vos {profilAppris.nbDegustations} dégustations notées
+                </div>
+              )}
               <div className="flex items-center justify-end mb-1">
                 <button onClick={reset} className="text-xs text-wine-700 hover:text-wine-800 cursor-pointer flex items-center gap-1 font-semibold">
                   <RefreshCw size={11} /> Recommencer
