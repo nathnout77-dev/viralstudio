@@ -4,6 +4,7 @@ import AccordsView from './AccordsView'
 import MillesimesView from './MillesimesView'
 import DomainesView from './DomainesView'
 import EcoleDuVin from './EcoleDuVin'
+import CapsulesRow from './Capsules'
 import ActualiteVin from './ActualiteVin'
 import { GLOSSAIRE_LIST } from '../data/glossaire'
 
@@ -68,7 +69,7 @@ export default function GuideView({ onAddWine }) {
       {sub === 'millesimes' && <MillesimesView />}
       {sub === 'domaines'   && <DomainesView onAddWine={onAddWine} />}
       {sub === 'lexique'    && <LexiqueView />}
-      {sub === 'ecole'      && <EcoleDuVin />}
+      {sub === 'ecole'      && <><CapsulesRow /><EcoleDuVin /></>}
       {sub === 'actualite'  && <ActualiteVin />}
     </div>
   )

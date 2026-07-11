@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { Wine, Library, MapPin, Sparkles, BookOpen, ChevronDown, Utensils, ArrowRight, Gauge, Hourglass, Camera, GraduationCap, Compass, NotebookPen, Users } from 'lucide-react'
+import { Wine, Library, MapPin, Sparkles, BookOpen, ChevronDown, Utensils, ArrowRight, Gauge, Hourglass, Camera, GraduationCap, Compass, NotebookPen, Users, Play } from 'lucide-react'
+import { CAPSULES } from '../data/capsules'
+import { CapsulePlayer } from './Capsules'
 import { WINE_DB, MILLESIMES_DB, CONFIDENTIEL_DOMAINES, WINE_DB_BY_REGION } from '../data/wineDatabase'
 import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
 import RoueAromes from './RoueAromes'
@@ -125,6 +127,7 @@ function FeatCard({ f, i, hidden }) {
 export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) {
   const [reduced, setReduced] = useState(false)
   const [statsOn, setStatsOn] = useState(false)
+  const [capsuleActive, setCapsuleActive] = useState(null) // capsule « 1 minute pour comprendre »
   const statsRef = useRef(null)
 
   // Racines des scènes épinglées (le moteur rAF va chercher les nœuds dedans)
@@ -283,6 +286,7 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
     { icon: MapPin, title: 'La carte des vignobles', desc: `Voyagez dans ${totRegions} régions, cliquez, découvrez, ajoutez à votre cave.`, action: () => onTabChange('carte'), cta: 'Voyager', color: '#3d5a80' },
     { icon: Wine, title: 'Votre cave, simplifiée', desc: 'Suivez vos bouteilles et sachez toujours laquelle ouvrir ce soir.', action: onEnter, cta: 'Ma cave', color: '#5c0d22' },
     { icon: BookOpen, title: 'Le lexique décodé', desc: 'Tanins, millésime, carafage… tous les mots compliqués expliqués comme à un ami.', action: () => onTabChange('guide'), cta: 'Apprendre', color: '#6b4a3a' },
+    { icon: Play, title: '1 minute pour comprendre', desc: 'Le carafage, les tanins, la robe… 8 capsules animées façon stories. Une minute chrono chacune.', action: () => setCapsuleActive(CAPSULES[0]), cta: 'Regarder', color: '#7a5c1e' },
   ]
   const topRegions = Object.entries(WINE_DB_BY_REGION)
     .map(([region, ws]) => ({ region, count: ws.length, color: ws[0].color }))
@@ -633,6 +637,9 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
         </div>
         <p className="text-anthracite-500 text-xs font-light tracking-wide">Le vin, enfin simple. L'abus d'alcool est dangereux pour la santé.</p>
       </footer>
+
+      {/* Lecteur de capsule « 1 minute pour comprendre » */}
+      {capsuleActive && <CapsulePlayer capsule={capsuleActive} onClose={() => setCapsuleActive(null)} />}
     </div>
   )
 }
