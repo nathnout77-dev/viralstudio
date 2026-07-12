@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { X, Wine, ChevronDown, Sparkles } from 'lucide-react'
 import { WINE_DB_APPELLATIONS } from '../data/wineDatabase'
+import useModalBehavior from '../lib/useModal'
 
 const TYPES = [
   { value: 'red',       label: 'Rouge' },
@@ -33,6 +34,7 @@ function SelectWrapper({ children }) {
 }
 
 export default function WineForm({ initial, onSave, onClose }) {
+  useModalBehavior(onClose)
   const [form, setForm] = useState({
     id:             initial?.id || `w${Date.now()}`,
     name:           initial?.name || '',

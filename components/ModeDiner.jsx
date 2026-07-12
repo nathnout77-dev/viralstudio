@@ -8,6 +8,7 @@ import { CHIPS, buildMenu, caveIdsFromWines, suggestionsPour, millesimeConseille
 import { computeProfilAppris } from '../data/goutsAppris'
 import { FicheVin } from './BibliothequeView'
 import { EnvieButton } from './Envies'
+import useModalBehavior from '../lib/useModal'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Mode Dîner — « Composez le menu des vins de votre repas ».
@@ -201,6 +202,7 @@ async function renderMenuCard(canvas, { services, convives, bouteilles }) {
 }
 
 function ShareMenu({ menu, convives, onClose }) {
+  useModalBehavior(onClose)
   const canvasRef = useRef(null)
   const [ready, setReady] = useState(false)
   const [busy, setBusy] = useState(false)

@@ -4,6 +4,7 @@ import { WINE_DB, MILLESIMES_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
 import { GLOSSAIRE_LIST } from '../data/glossaire'
 import { profilApprisPourAssistant } from '../data/goutsAppris'
 import JaugesGout from './JaugesGout'
+import useModalBehavior from '../lib/useModal'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Assistant conversationnel « Œno » — profilage, menu, chat IA + fallback
@@ -233,6 +234,7 @@ function fallbackFor(menuId, profil) {
 }
 
 export default function AssistantView({ onClose }) {
+  useModalBehavior(onClose)
   const [profil, setProfil]               = useState(null)
   const [profilStep, setProfilStep]       = useState(-1)
   const [profilAnswers, setProfilAnswers] = useState({})

@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { snapshotLocal } from './CompteSync'
 import WineCard from './WineCard'
 import { loadEnvies } from './Envies'
+import useModalBehavior from '../lib/useModal'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Cave entre amis — partage par snapshot + code court.
@@ -162,6 +163,7 @@ export default function CaveAmisSection({ user }) {
 
 // ── Vue lecture seule de la cave d'un ami (param ?cave=CODE) ─────────────────
 export function CaveAmieViewer({ code, onClose }) {
+  useModalBehavior(onClose)
   const [state, setState] = useState({ loading: true, partage: null, error: null })
   const [offert, setOffert] = useState(null) // id du dernier vin offert (feedback)
 

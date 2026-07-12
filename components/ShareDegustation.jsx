@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { X, Share2, Download, Loader2 } from 'lucide-react'
+import useModalBehavior from '../lib/useModal'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Partage de dégustation — carte image 1080×1350 (4:5 Instagram) via canvas.
@@ -192,6 +193,7 @@ async function renderCard(canvas, entry) {
 }
 
 export default function ShareDegustation({ entry, onClose }) {
+  useModalBehavior(onClose)
   const canvasRef = useRef(null)
   const [ready, setReady] = useState(false)
   const [busy, setBusy] = useState(false)

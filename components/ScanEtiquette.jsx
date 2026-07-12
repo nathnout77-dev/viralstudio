@@ -6,6 +6,7 @@ import { normaliser } from '../data/aromes'
 import JaugesGout from './JaugesGout'
 import { FicheVin } from './BibliothequeView'
 import { toggleEnvie, useEnvies } from './Envies'
+import useModalBehavior from '../lib/useModal'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ScanEtiquette — photographiez une étiquette, Œno la décode.
@@ -246,6 +247,7 @@ function EnvieAction({ appellation }) {
 }
 
 export default function ScanEtiquette({ onClose, onAddWine }) {
+  useModalBehavior(onClose)
   // step : 'idle' | 'preview' | 'prix' | 'loading' | 'result' | 'error'
   const [step, setStep] = useState('idle')
   const [photo, setPhoto] = useState(null)        // dataURL JPEG redimensionné

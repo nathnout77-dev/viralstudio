@@ -6,6 +6,7 @@ import {
 import ShareDegustation from './ShareDegustation'
 import { WINE_DB } from '../data/wineDatabase'
 import { AROME_FAMILLES } from '../data/aromes'
+import useModalBehavior from '../lib/useModal'
 
 const STORAGE_KEY = 'oeno-journal'
 const CAVE_KEY = 'oenotheque-v2'
@@ -148,6 +149,7 @@ function ChipRow({ chips, onPick }) {
 
 // ── Formulaire de nouvelle note ───────────────────────────────────────────────
 function JournalForm({ initial, caveWines, onSave, onClose }) {
+  useModalBehavior(onClose)
   const [form, setForm] = useState({
     id: initial?.id || `j${Date.now()}`,
     name: initial?.name || '',
@@ -293,6 +295,7 @@ function JournalForm({ initial, caveWines, onSave, onClose }) {
 
 // ── Page de carnet : vue détail d'une entrée ─────────────────────────────────
 function CarnetPage({ entry, onClose, onEdit, onDelete }) {
+  useModalBehavior(onClose)
   const [showShare, setShowShare] = useState(false)
   return (
     <div

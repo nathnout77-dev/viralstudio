@@ -6,6 +6,7 @@ import { WINE_DB, REGIONS_LIST, DIFFICULTE_CONFIG, MILLESIMES_DB, gardeForMilles
 import JaugesGout from './JaugesGout'
 import Terme from './Tooltip'
 import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
+import useModalBehavior from '../lib/useModal'
 
 const TYPE_FILTERS = [
   { value: 'all',       label: 'Tous' },
@@ -33,6 +34,7 @@ const DIFF_FILTERS = [
 
 // ── Fiche détaillée ────────────────────────────────────────────────────────────
 export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
+  useModalBehavior(onClose)
   const [millesime, setMillesime] = useState(wine.bonsMilsimes[wine.bonsMilsimes.length - 1])
   // Si la fiche reste montée mais change de vin, on repart sur son dernier bon millésime
   useEffect(() => {

@@ -4,6 +4,7 @@ import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
 import { computeProfilAppris, bonusProfilAppris } from '../data/goutsAppris'
 import JaugesGout from './JaugesGout'
 import { EnvieButton } from './Envies'
+import useModalBehavior from '../lib/useModal'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // « Ce soir, je bois quoi ? » — 5 questions guidées → le meilleur vin pour vous
@@ -135,6 +136,7 @@ function buildReason(w, a) {
 }
 
 export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
+  useModalBehavior(onClose)
   const [step, setStep]       = useState(0)
   const [answers, setAnswers] = useState({})
   const [results, setResults] = useState(null)

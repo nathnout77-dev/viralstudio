@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { X, CloudOff, Cloud, Mail, LogOut, Check, RefreshCw, Smartphone, CloudDownload, UserCircle2 } from 'lucide-react'
 import { supabase, cloudDisponible } from '../lib/supabase'
 import CaveAmisSection, { pushPartageSnapshot } from './CaveAmis'
+import useModalBehavior from '../lib/useModal'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Compte & synchronisation cloud — local-first.
@@ -74,6 +75,7 @@ export function useSession() {
 }
 
 export default function CompteSync({ onClose, extraSection = null }) {
+  useModalBehavior(onClose)
   const session = useSession()
   const user = session?.user || null
 

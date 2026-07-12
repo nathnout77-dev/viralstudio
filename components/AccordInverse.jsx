@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { X, ChefHat, Utensils, Thermometer, Clock, Lightbulb } from 'lucide-react'
 import { recettesFor } from '../data/recettes'
+import useModalBehavior from '../lib/useModal'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Accord inversé — « J'ai cette bouteille, je cuisine quoi ? »
@@ -10,6 +11,7 @@ import { recettesFor } from '../data/recettes'
 // ═══════════════════════════════════════════════════════════════════════════
 
 export default function AccordInverse({ wine, onClose }) {
+  useModalBehavior(onClose)
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
   if (!mounted || !wine) return null

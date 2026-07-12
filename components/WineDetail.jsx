@@ -1,5 +1,6 @@
 import { X, Star, Thermometer, Clock, Wine, MapPin, Grape, TrendingUp, UtensilsCrossed, Edit2 } from 'lucide-react'
 import WineGlassAnim from './WineGlassAnim'
+import useModalBehavior from '../lib/useModal'
 
 const ACCORD_ICONS = { '🥩':'🥩','🐟':'🐟','🧀':'🧀','🍮':'🍮','🍄':'🍄','🦞':'🦞','🍗':'🍗' }
 
@@ -51,6 +52,7 @@ function ApogeeBar({ wine }) {
 }
 
 export default function WineDetail({ wine, onClose, onEdit }) {
+  useModalBehavior(onClose)
   if (!wine) return null
 
   const typeLabels = { red:'Rouge', white:'Blanc', rosé:'Rosé', sparkling:'Effervescent', sweet:'Liquoreux' }

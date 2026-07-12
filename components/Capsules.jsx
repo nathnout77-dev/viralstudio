@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { X, ChevronLeft, ChevronRight, Play } from 'lucide-react'
 import { CAPSULES } from '../data/capsules'
+import useModalBehavior from '../lib/useModal'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Capsules « 1 minute pour comprendre » — lecteur plein écran façon stories.
@@ -201,6 +202,7 @@ const CAP_CSS = `
 
 // ── Lecteur plein écran ──────────────────────────────────────────────────────
 export function CapsulePlayer({ capsule, onClose }) {
+  useModalBehavior() // verrou du scroll de fond (Échap déjà géré ci-dessous)
   const reduced = useReducedMotion()
   const [idx, setIdx] = useState(0)
   const [progress, setProgress] = useState(0)

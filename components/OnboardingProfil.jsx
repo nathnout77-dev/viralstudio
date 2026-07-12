@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Wine, ArrowRight } from 'lucide-react'
 import { WINE_DB } from '../data/wineDatabase'
+import useModalBehavior from '../lib/useModal'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Profilage à l'arrivée (≤ 5 questions) → active le Mode Débutant ou Expert
@@ -159,6 +160,7 @@ function scoreWine(w, niveau, gouts) {
 }
 
 export default function OnboardingProfil({ onComplete }) {
+  useModalBehavior() // verrouille le scroll de fond (pas d'Échap : parcours obligatoire)
   const [niveau, setNiveau] = useState(null)
   const [step, setStep]     = useState(0)
   const [answers, setAnswers] = useState({})
