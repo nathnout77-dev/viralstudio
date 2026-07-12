@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Wine, Library, MapPin, Sparkles, BookOpen, ChevronDown, Utensils, ArrowRight, Gauge, Hourglass, Camera, GraduationCap, Compass, NotebookPen, Users, Play } from 'lucide-react'
+import { Wine, Library, MapPin, Sparkles, BookOpen, ChevronDown, Utensils, ArrowRight, Gauge, Hourglass, Camera, GraduationCap, Compass, NotebookPen, Users, Play, UtensilsCrossed } from 'lucide-react'
 import { CAPSULES } from '../data/capsules'
 import { CapsulePlayer } from './Capsules'
 import { WINE_DB, MILLESIMES_DB, CONFIDENTIEL_DOMAINES, WINE_DB_BY_REGION } from '../data/wineDatabase'
@@ -282,6 +282,7 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
     { icon: Utensils, title: '« Ce soir, je bois quoi ? »', desc: 'Dites-nous juste ce que vous mangez. 3 vins, 10 secondes, zéro jargon.', action: onCeSoir, cta: 'Essayer', color: '#8c2f39' },
     { icon: Camera, title: 'Scannez une étiquette', desc: 'Une bouteille vous intrigue au restaurant ? Photographiez l\'étiquette : Œno vous la décode en quelques secondes.', action: onScan, cta: 'Scanner', color: '#a16207' },
     { icon: Sparkles, title: 'Le Goût-o-mètre', desc: 'Café ou thé ? Confiture ou citron ? Répondez sur VOS goûts, on trouve VOS vins.', action: () => onTabChange('sommelier'), cta: 'Faire le test', color: '#b8722c' },
+    { icon: UtensilsCrossed, title: 'Le Mode Dîner', desc: 'Entrée, plat, dessert : composez le menu des vins de votre repas, comme au restaurant.', action: () => { try { sessionStorage.setItem('oeno-sommelier-tool', 'diner') } catch {} ; onTabChange('sommelier') }, cta: 'Composer', color: '#72102a' },
     { icon: Library, title: `${WINE_DB.length} vins décodés`, desc: 'Chaque appellation expliquée simplement : jauges de goût, prix moyen, "pour qui ?".', action: () => onTabChange('vins'), cta: 'Explorer', color: '#4d7c50' },
     { icon: MapPin, title: 'La carte des vignobles', desc: `Voyagez dans ${totRegions} régions, cliquez, découvrez, ajoutez à votre cave.`, action: () => onTabChange('carte'), cta: 'Voyager', color: '#3d5a80' },
     { icon: Wine, title: 'Votre cave, simplifiée', desc: 'Suivez vos bouteilles et sachez toujours laquelle ouvrir ce soir.', action: onEnter, cta: 'Ma cave', color: '#5c0d22' },

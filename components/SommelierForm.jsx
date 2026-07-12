@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react'
-import { Sparkles, ChevronLeft, Utensils, Coins, GraduationCap } from 'lucide-react'
+import { Sparkles, ChevronLeft, Utensils, Coins, GraduationCap, UtensilsCrossed } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG, MILLESIMES_DB } from '../data/wineDatabase'
 import { computeProfilAppris, bonusProfilAppris } from '../data/goutsAppris'
 import JaugesGout from './JaugesGout'
 import BudgetCaviste from './BudgetCaviste'
+import ModeDiner from './ModeDiner'
 
 // ═══ GOÛT-O-MÈTRE ═══════════════════════════════════════════════════════════
 // Quiz ludique : questions du quotidien → profil de goût vin.
@@ -119,13 +120,14 @@ function getMillesimesFor(wine) {
 }
 
 // ═══ UI ═════════════════════════════════════════════════════════════════════
-// Sélecteur d'outil : Goût-o-mètre (quiz) ou Budget caviste (sélection à budget)
+// Sélecteur d'outil : Goût-o-mètre (quiz), Budget caviste ou Mode Dîner
 function ToolSwitch({ tool, setTool }) {
   return (
-    <div className="flex justify-center gap-2 mb-8">
+    <div className="flex flex-wrap justify-center gap-2 mb-8">
       {[
         { id: 'quiz',   label: 'Goût-o-mètre',   Icon: Sparkles },
         { id: 'budget', label: 'Budget caviste',  Icon: Coins },
+        { id: 'diner',  label: 'Mode Dîner',      Icon: UtensilsCrossed },
       ].map(({ id, label, Icon }) => (
         <button
           key={id}
@@ -145,7 +147,13 @@ function ToolSwitch({ tool, setTool }) {
 }
 
 export default function SommelierForm({ onOpenBibliotheque }) {
-  const [tool, setTool]       = useState('quiz')
+  // Pré-sélection d'un outil (carte « Mode Dîner » de la landing, par ex.)
+  const [tool, setTool] = useState(() => {
+    if (typeof window === 'undefined') return 'quiz'
+    const t = sessionStorage.getItem('oeno-sommelier-tool')
+    sessionStorage.removeItem('oeno-sommelier-tool')
+    return ['quiz', 'budget', 'diner'].includes(t) ? t : 'quiz'
+  })
   const [step, setStep]       = useState(0)
   const [answers, setAnswers] = useState({})
   const [results, setResults] = useState(null)
@@ -189,6 +197,26 @@ export default function SommelierForm({ onOpenBibliotheque }) {
         </div>
         <ToolSwitch tool={tool} setTool={setTool} />
         <BudgetCaviste />
+      </div>
+    )
+  }
+
+  // ── Mode Dîner ──
+  if (tool === 'diner') {
+    return (
+      <div className="max-w-2xl mx-auto animate-fade-in">
+        <div className="text-center mb-6">
+          <div className="inline-flex w-14 h-14 rounded-3xl items-center justify-center shadow-wine mb-3"
+               style={{ background: 'linear-gradient(135deg, #0C0A09 0%, #3a0616 60%, #5c0d22 100%)' }}>
+            <UtensilsCrossed size={22} className="text-gold-400" />
+          </div>
+          <h2 className="font-serif text-2xl font-bold text-anthracite-900">Le Mode Dîner</h2>
+          <p className="text-sm text-anthracite-500 mt-1">
+            Entrée, plat, dessert — composez le menu des vins de votre repas, comme au restaurant.
+          </p>
+        </div>
+        <ToolSwitch tool={tool} setTool={setTool} />
+        <ModeDiner />
       </div>
     )
   }
