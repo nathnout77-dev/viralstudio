@@ -215,14 +215,14 @@ export default function EnviesView({ onBuy }) {
             <div className="flex items-center gap-2 mt-3.5">
               <button
                 onClick={() => buy({ appellation, wine, id })}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold text-cream bg-wine-800 hover:brightness-110 active:scale-[0.98] shadow-wine transition-all cursor-pointer"
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full text-xs font-bold text-cream bg-wine-800 hover:brightness-110 active:scale-[0.98] shadow-wine transition-all cursor-pointer"
               >
                 <ShoppingBag size={12} /> J'ai acheté
               </button>
               <button
                 onClick={() => removeEnvie(id)}
                 aria-label={`Retirer ${appellation} de la liste`}
-                className="w-9 h-9 flex items-center justify-center rounded-xl bg-white border border-anthracite-900/10 text-anthracite-400 hover:border-red-300 hover:text-red-600 transition-all cursor-pointer"
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-white border border-anthracite-900/10 text-anthracite-400 hover:border-red-300 hover:text-red-600 transition-all cursor-pointer"
               >
                 <Trash2 size={13} />
               </button>

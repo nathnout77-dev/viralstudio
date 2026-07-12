@@ -207,7 +207,7 @@ export default function MillesimesView() {
           {(region !== 'Toutes' || type !== 'Tous' || year || rec !== 'Tous') && (
             <button
               onClick={() => { setRegion('Toutes'); setType('Tous'); setYear(''); setRec('Tous') }}
-              className="px-3 py-2 text-xs text-wine-700 bg-wine-50 border border-wine-200 rounded-lg hover:bg-wine-100 transition-colors cursor-pointer"
+              className="px-3 py-2 text-xs text-wine-700 bg-wine-50 border border-wine-200 rounded-full hover:bg-wine-100 transition-colors cursor-pointer"
             >
               Réinitialiser
             </button>

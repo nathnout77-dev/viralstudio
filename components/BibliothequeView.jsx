@@ -163,7 +163,7 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
             </div>
             <button
               onClick={() => setShowAccordInverse(true)}
-              className="mt-3 flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
+              className="mt-3 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
             >
               <ChefHat size={13} /> Que cuisiner avec ?
             </button>
@@ -195,7 +195,7 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
                       href={d.url || `https://www.google.com/search?q=${encodeURIComponent(`${d.name} ${wine.appellation} site officiel`)}`}
                       target="_blank" rel="noopener noreferrer"
                       onClick={e => e.stopPropagation()}
-                      className="flex-shrink-0 flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
+                      className="flex-shrink-0 flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
                       title={`Visiter le site de ${d.name}`}
                     >
                       <ExternalLink size={9} />
@@ -242,7 +242,7 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
           <button
             onClick={() => onAddToCave(wine, millesime)}
             disabled={isAdded}
-            className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all cursor-pointer ${
+            className={`w-full flex items-center justify-center gap-2 py-3 rounded-full text-sm font-bold transition-all cursor-pointer ${
               isAdded
                 ? 'bg-emerald-100 text-emerald-700'
                 : 'text-cream shadow-wine hover:brightness-110 active:scale-[0.99]'
@@ -255,7 +255,7 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
           {onNoter && (
             <button
               onClick={() => onNoter({ name: wine.appellation, domain: wine.domaines?.[0]?.name || '', vintage: millesime, type: wine.type })}
-              className="w-full flex items-center justify-center gap-1.5 py-2.5 mt-2 rounded-xl text-xs font-semibold text-anthracite-500 hover:text-wine-700 transition-colors cursor-pointer"
+              className="w-full flex items-center justify-center gap-1.5 py-2.5 mt-2 rounded-full text-xs font-semibold text-anthracite-500 hover:text-wine-700 transition-colors cursor-pointer"
             >
               <NotebookPen size={13} /> Noter cette dégustation
             </button>

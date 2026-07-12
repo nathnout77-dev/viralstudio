@@ -92,12 +92,12 @@ export default function WineDetail({ wine, onClose, onEdit }) {
           </div>
           <div className="absolute top-4 right-4 flex gap-2">
             <button onClick={() => onEdit?.(wine)}
-                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer"
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer"
                     aria-label="Modifier">
               <Edit2 size={13} />
             </button>
             <button onClick={onClose}
-                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer"
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer"
                     aria-label="Fermer">
               <X size={14} />
             </button>

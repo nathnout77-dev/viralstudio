@@ -65,7 +65,7 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
             <WineGlassAnim color="#f5f0e8" fillLevel={fillLevelFromJauges(wine.jauges)} size={32} />
             <EnvieButton appellation={wine.appellation} size={13} light className="!w-7 !h-7" />
             <button onClick={onClose}
-                    className="w-7 h-7 flex-shrink-0 flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/35 transition-all cursor-pointer"
+                    className="w-7 h-7 flex-shrink-0 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/35 transition-all cursor-pointer"
                     aria-label="Fermer">
               <X size={13} />
             </button>
@@ -172,7 +172,7 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
           </div>
           <button
             onClick={() => setShowAccordInverse(true)}
-            className="mt-2.5 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
+            className="mt-2.5 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
           >
             <ChefHat size={12} /> Que cuisiner avec ?
           </button>
@@ -201,7 +201,7 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
                   href={d.url || `https://www.google.com/search?q=${encodeURIComponent(`${d.name} ${wine.appellation} site officiel`)}`}
                   target="_blank" rel="noopener noreferrer"
                   onClick={e => e.stopPropagation()}
-                  className="flex-shrink-0 flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
+                  className="flex-shrink-0 flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
                   title={`Visiter le site de ${d.name}`}
                 >
                   <ExternalLink size={9} />
@@ -236,7 +236,7 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
           <button
             onClick={handleAdd}
             disabled={isAdded}
-            className={`ml-auto flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-300 cursor-pointer ${
+            className={`ml-auto flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition-all duration-300 cursor-pointer ${
               isAdded
                 ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
                 : 'text-cream shadow-wine hover:brightness-110 hover:-translate-y-0.5 active:translate-y-0'
@@ -253,7 +253,7 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
         {onNoter && (
           <button
             onClick={() => onNoter({ name: wine.appellation, domain: wine.domaines?.[0]?.name || '', vintage: millesime, type: wine.type })}
-            className="w-full flex items-center justify-center gap-1.5 py-2 mt-2 rounded-lg text-xs font-semibold text-anthracite-500 hover:text-wine-700 transition-colors cursor-pointer"
+            className="w-full flex items-center justify-center gap-1.5 py-2 mt-2 rounded-full text-xs font-semibold text-anthracite-500 hover:text-wine-700 transition-colors cursor-pointer"
           >
             <NotebookPen size={12} /> Noter cette dégustation
           </button>

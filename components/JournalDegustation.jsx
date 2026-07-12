@@ -395,7 +395,7 @@ function CarnetPage({ entry, onClose, onEdit, onDelete }) {
 
           <button
             onClick={() => setShowShare(true)}
-            className="mt-8 w-full flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-bold text-cream shadow-wine hover:brightness-110 active:scale-[0.99] transition-all cursor-pointer"
+            className="mt-8 w-full flex items-center justify-center gap-2 py-3 rounded-full text-xs font-bold text-cream shadow-wine hover:brightness-110 active:scale-[0.99] transition-all cursor-pointer"
             style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
           >
             <Share2 size={13} /> Partager cette dégustation

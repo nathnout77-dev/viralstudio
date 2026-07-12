@@ -41,7 +41,7 @@ function DomaineCard({ domaine, onOpenWine, index }) {
       <div className="flex items-center gap-2">
         <button
           onClick={() => onOpenWine(firstWine)}
-          className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-cream cursor-pointer hover:brightness-110 transition-all"
+          className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold text-cream cursor-pointer hover:brightness-110 transition-all"
           style={{ background: firstWine.color }}
         >
           <Wine size={12} />
@@ -50,7 +50,7 @@ function DomaineCard({ domaine, onOpenWine, index }) {
         <a
           href={domaine.url || `https://www.google.com/search?q=${encodeURIComponent(`${domaine.name} ${domaine.appellations[0]} site officiel`)}`}
           target="_blank" rel="noopener noreferrer"
-          className="flex-shrink-0 flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
+          className="flex-shrink-0 flex items-center gap-1 px-3 py-2 rounded-full text-xs font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
           title={`Visiter le site de ${domaine.name}`}
         >
           <ExternalLink size={11} />

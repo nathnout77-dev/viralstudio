@@ -152,7 +152,7 @@ export default function WineForm({ initial, onSave, onClose }) {
               {initial ? 'Modifier le vin' : 'Ajouter un vin'}
             </h2>
           </div>
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-anthracite-100 text-anthracite-500 transition-all cursor-pointer" aria-label="Fermer">
+          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-anthracite-100 text-anthracite-500 transition-all cursor-pointer" aria-label="Fermer">
             <X size={15} />
           </button>
         </div>

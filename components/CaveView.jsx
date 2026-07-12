@@ -169,7 +169,7 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
         <div className="flex items-center gap-2 flex-shrink-0">
           <button
             onClick={() => setShowFilters(f => !f)}
-            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg border text-xs font-medium transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full border text-xs font-medium transition-all cursor-pointer ${
               showFilters || hasFilters
                 ? 'bg-wine-50 border-wine-300 text-wine-800'
                 : 'bg-white border-anthracite-200 text-anthracite-600 hover:border-anthracite-300'

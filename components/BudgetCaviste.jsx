@@ -271,7 +271,7 @@ export default function BudgetCaviste() {
                               key={d.name}
                               href={d.url || `https://www.google.com/search?q=${encodeURIComponent(`${d.name} ${w.appellation} acheter`)}`}
                               target="_blank" rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
+                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
                             >
                               <ExternalLink size={9} /> {d.name}
                             </a>
