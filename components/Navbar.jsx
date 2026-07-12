@@ -19,7 +19,7 @@ export default function Navbar({ tab, setTab, total, mode, onProfil, onAdd, onLa
   return (
     <>
       {/* Top header — verre translucide crème, hairline */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl border-b border-anthracite-900/[0.08]"
+      <header className="lg:hidden sticky top-0 z-50 backdrop-blur-xl border-b border-anthracite-900/[0.08]"
               style={{ background: 'rgba(250,250,249,0.82)' }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6">
           {/* Logo */}

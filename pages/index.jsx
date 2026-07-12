@@ -3,6 +3,7 @@ import Head from 'next/head'
 import dynamic from 'next/dynamic'
 
 import Navbar           from '../components/Navbar'
+import Sidebar          from '../components/Sidebar'
 import WineDetail       from '../components/WineDetail'
 import WineForm         from '../components/WineForm'
 import CaveView         from '../components/CaveView'
@@ -248,7 +249,8 @@ export default function App() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-      <div className="min-h-dvh bg-cream font-sans">
+      <div className="min-h-dvh bg-cream font-sans lg:pl-64">
+        {/* Mobile / tablette : topbar + bottom nav */}
         <Navbar
           tab={tab}
           setTab={setTab}
@@ -262,7 +264,22 @@ export default function App() {
           onCompte={() => setShowCompte(true)}
         />
 
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-10">
+        {/* Desktop ≥ lg : sidebar fixe noire, signature luxe */}
+        <Sidebar
+          tab={tab}
+          setTab={setTab}
+          total={total}
+          mode={mode}
+          onProfil={redoProfil}
+          onAdd={() => setShowForm(true)}
+          onLanding={() => setShowLanding(true)}
+          onCeSoir={() => setShowCeSoir(true)}
+          onScan={() => setShowScan(true)}
+          onCompte={() => setShowCompte(true)}
+          onAssistant={() => setShowAssistant(true)}
+        />
+
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-6 lg:py-10 pb-24 md:pb-10">
           {tab === 'cave' && (
             <CaveView
               wines={wines}
