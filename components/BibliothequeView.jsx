@@ -50,7 +50,7 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
       role="dialog" aria-modal="true"
     >
       <div
-        className="modal-panel sm:max-w-xl max-h-[92vh] shadow-card-hover"
+        className="modal-panel sm:max-w-xl lg:max-w-4xl max-h-[92vh] shadow-card-hover"
         onClick={e => e.stopPropagation()}
       >
         {/* Header coloré */}
@@ -90,7 +90,7 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
         </div>
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-5">
+        <div className="flex-1 overflow-y-auto p-6 lg:p-8 space-y-5 lg:space-y-0 lg:columns-2 lg:gap-10 [&>*]:lg:break-inside-avoid [&>*]:lg:mb-5">
           {/* Pour qui + difficulté */}
           <div className="flex items-start gap-3">
             <span
@@ -379,10 +379,10 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
       </div>
 
       {/* Recherche */}
-      <div className="relative mb-4">
+      <div className="relative mb-4 lg:mb-6">
         <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-anthracite-400" />
         <input
-          className="w-full pl-11 pr-4 py-3 bg-white border border-anthracite-200 rounded-2xl text-sm placeholder-anthracite-400 focus:outline-none focus:ring-2 focus:ring-gold-600/40 focus:border-gold-500 transition-all"
+          className="w-full pl-11 pr-4 py-3 bg-white border border-anthracite-200 rounded-2xl text-base sm:text-sm placeholder-anthracite-400 focus:outline-none focus:ring-2 focus:ring-gold-600/40 focus:border-gold-500 transition-all"
           placeholder="Cherchez un vin, une région, un cépage, un arôme…"
           value={search}
           onChange={e => setSearch(e.target.value)}
@@ -394,57 +394,71 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
         )}
       </div>
 
-      {/* Filtres type */}
-      <div className="flex gap-2 flex-wrap mb-3">
-        {TYPE_FILTERS.map(f => (
-          <button
-            key={f.value}
-            onClick={() => setType(f.value)}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
-              type === f.value ? 'bg-wine-800 text-cream border-wine-800' : 'bg-white text-anthracite-600 border-anthracite-200 hover:border-wine-300'
-            }`}
-          >
-            {f.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Filtres budget + difficulté + région */}
-      <div className="flex gap-2 flex-wrap mb-6">
-        {[
-          { value: budget, set: setBudget, options: BUDGET_FILTERS },
-          { value: diff,   set: setDiff,   options: DIFF_FILTERS },
-          { value: region, set: setRegion, options: [{ value: 'all', label: 'Toutes régions' }, ...REGIONS_LIST.map(r => ({ value: r, label: r }))] },
-        ].map(({ value, set, options }, i) => (
-          <div key={i} className="relative">
-            <select
-              value={value}
-              onChange={e => set(e.target.value)}
-              className="pl-3 pr-8 py-2 bg-white border border-anthracite-200 rounded-xl text-xs text-anthracite-700 focus:outline-none focus:ring-2 focus:ring-gold-600/40 cursor-pointer appearance-none font-medium"
-            >
-              {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-            </select>
-            <ChevronDown size={11} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-anthracite-400 pointer-events-none" />
+      {/* Desktop : panneau de filtres persistant à gauche · Mobile : filtres empilés */}
+      <div className="lg:flex lg:gap-8 lg:items-start">
+        <aside className="lg:w-52 lg:flex-shrink-0 lg:sticky lg:top-10">
+          {/* Filtres type */}
+          <div className="hidden lg:block text-[10px] uppercase tracking-[0.2em] font-bold text-anthracite-400 mb-3">Couleur</div>
+          <div className="flex gap-2 flex-wrap mb-3 lg:flex-col lg:gap-1.5 lg:mb-6">
+            {TYPE_FILTERS.map(f => (
+              <button
+                key={f.value}
+                onClick={() => setType(f.value)}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer lg:w-full lg:text-left lg:rounded-xl lg:px-3.5 lg:py-2 ${
+                  type === f.value ? 'bg-wine-800 text-cream border-wine-800' : 'bg-white text-anthracite-600 border-anthracite-200 hover:border-wine-300'
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
           </div>
-        ))}
-        <span className="text-xs text-anthracite-400 self-center ml-auto font-medium">
-          {filtered.length} vin{filtered.length > 1 ? 's' : ''}
-        </span>
-      </div>
 
-      {/* Grille */}
-      {filtered.length === 0 ? (
-        <div className="text-center py-16">
-          <div className="text-4xl mb-3">🔍</div>
-          <p className="text-anthracite-500 text-sm">Aucun vin ne correspond — élargissez vos filtres.</p>
+          {/* Filtres budget + difficulté + région */}
+          <div className="hidden lg:block text-[10px] uppercase tracking-[0.2em] font-bold text-anthracite-400 mb-3">Affiner</div>
+          <div className="flex gap-2 flex-wrap mb-6 lg:flex-col lg:gap-2.5">
+            {[
+              { value: budget, set: setBudget, options: BUDGET_FILTERS },
+              { value: diff,   set: setDiff,   options: DIFF_FILTERS },
+              { value: region, set: setRegion, options: [{ value: 'all', label: 'Toutes régions' }, ...REGIONS_LIST.map(r => ({ value: r, label: r }))] },
+            ].map(({ value, set, options }, i) => (
+              <div key={i} className="relative lg:w-full">
+                <select
+                  value={value}
+                  onChange={e => set(e.target.value)}
+                  className="pl-3 pr-8 py-2 lg:w-full bg-white border border-anthracite-200 rounded-xl text-xs text-anthracite-700 focus:outline-none focus:ring-2 focus:ring-gold-600/40 cursor-pointer appearance-none font-medium"
+                >
+                  {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                </select>
+                <ChevronDown size={11} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-anthracite-400 pointer-events-none" />
+              </div>
+            ))}
+            <span className="text-xs text-anthracite-400 self-center ml-auto font-medium lg:hidden">
+              {filtered.length} vin{filtered.length > 1 ? 's' : ''}
+            </span>
+          </div>
+        </aside>
+
+        {/* Contenu */}
+        <div className="flex-1 min-w-0">
+          <p className="hidden lg:block text-xs text-anthracite-400 font-medium mb-4">
+            {filtered.length} vin{filtered.length > 1 ? 's' : ''} sur {WINE_DB.length}
+          </p>
+
+          {/* Grille */}
+          {filtered.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="text-4xl mb-3">🔍</div>
+              <p className="text-anthracite-500 text-sm">Aucun vin ne correspond — élargissez vos filtres.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+              {filtered.map((w, i) => (
+                <VinCard key={w.id} wine={w} index={i} onClick={() => setSelected(w)} />
+              ))}
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {filtered.map((w, i) => (
-            <VinCard key={w.id} wine={w} index={i} onClick={() => setSelected(w)} />
-          ))}
-        </div>
-      )}
+      </div>
 
       {/* Fiche */}
       {selected && (

@@ -285,55 +285,62 @@ export default function PanoramaCave({ wines }) {
         ))}
       </div>
 
-      {/* Profil de buveur */}
-      {stats.profil && (
-        <div className="rounded-2xl p-5 flex items-start gap-3 animate-fade-in-up"
-             style={{ background: 'linear-gradient(135deg, #0C0A09 0%, #3a0616 60%, #5c0d22 100%)', animationDelay: '200ms', animationFillMode: 'both' }}>
-          <Quote size={16} className="text-gold-400 flex-shrink-0 mt-1" />
-          <div>
-            <div className="eyebrow-dark mb-1.5">Votre profil de buveur</div>
-            <p className="font-serif text-base sm:text-lg text-cream leading-relaxed italic">{stats.profil}</p>
+      {/* Desktop ≥ xl : vraie disposition dashboard 2 colonnes · Mobile : empilé */}
+      <div className="space-y-5 xl:space-y-0 xl:grid xl:grid-cols-2 xl:gap-5 xl:items-start">
+        {/* Colonne gauche : profil + répartitions */}
+        <div className="space-y-5">
+          {/* Profil de buveur */}
+          {stats.profil && (
+            <div className="rounded-2xl p-5 flex items-start gap-3 animate-fade-in-up"
+                 style={{ background: 'linear-gradient(135deg, #0C0A09 0%, #3a0616 60%, #5c0d22 100%)', animationDelay: '200ms', animationFillMode: 'both' }}>
+              <Quote size={16} className="text-gold-400 flex-shrink-0 mt-1" />
+              <div>
+                <div className="eyebrow-dark mb-1.5">Votre profil de buveur</div>
+                <p className="font-serif text-base sm:text-lg text-cream leading-relaxed italic">{stats.profil}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Par couleur */}
+          <div className="card p-5">
+            <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-4">Répartition par couleur</div>
+            <div className="space-y-3">
+              {stats.byType.map((t, i) => (
+                <BarRow key={t.type} label={t.label || t.type} count={t.count} max={maxType}
+                        color={t.color || '#8c8577'} pct={pct(t.count)} delay={i * 90} mounted={mounted} />
+              ))}
+            </div>
+          </div>
+
+          {/* Par gamme de prix */}
+          <div className="card p-5">
+            <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-4">Par gamme de prix</div>
+            <div className="space-y-3">
+              {PRIX_GAMMES.map((g, i) => (
+                <BarRow key={g.label} label={g.label} count={stats.gammeCounts[i]} max={maxGamme}
+                        color="#c9a84c" pct={pct(stats.gammeCounts[i])} delay={i * 90} mounted={mounted} />
+              ))}
+            </div>
           </div>
         </div>
-      )}
 
-      {/* Goûts appris des dégustations notées */}
-      <GoutsApprisBlock mounted={mounted} />
+        {/* Colonne droite : goûts appris + régions */}
+        <div className="space-y-5">
+          {/* Goûts appris des dégustations notées */}
+          <GoutsApprisBlock mounted={mounted} />
 
-      <div className="grid lg:grid-cols-2 gap-5">
-        {/* Par couleur */}
-        <div className="card p-5">
-          <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-4">Répartition par couleur</div>
-          <div className="space-y-3">
-            {stats.byType.map((t, i) => (
-              <BarRow key={t.type} label={t.label || t.type} count={t.count} max={maxType}
-                      color={t.color || '#8c8577'} pct={pct(t.count)} delay={i * 90} mounted={mounted} />
-            ))}
+          {/* Par région */}
+          <div className="card p-5">
+            <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-4">
+              Par région — {stats.byRegion.length} terroir{stats.byRegion.length > 1 ? 's' : ''} représenté{stats.byRegion.length > 1 ? 's' : ''}
+            </div>
+            <div className="space-y-3">
+              {stats.byRegion.map((r, i) => (
+                <BarRow key={r.region} label={r.region} count={r.count} max={maxRegion}
+                        color={i === 0 ? '#5c0d22' : i === 1 ? '#8c2f39' : '#b08d57'} pct={pct(r.count)} delay={i * 70} mounted={mounted} />
+              ))}
+            </div>
           </div>
-        </div>
-
-        {/* Par gamme de prix */}
-        <div className="card p-5">
-          <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-4">Par gamme de prix</div>
-          <div className="space-y-3">
-            {PRIX_GAMMES.map((g, i) => (
-              <BarRow key={g.label} label={g.label} count={stats.gammeCounts[i]} max={maxGamme}
-                      color="#c9a84c" pct={pct(stats.gammeCounts[i])} delay={i * 90} mounted={mounted} />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Par région */}
-      <div className="card p-5">
-        <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-4">
-          Par région — {stats.byRegion.length} terroir{stats.byRegion.length > 1 ? 's' : ''} représenté{stats.byRegion.length > 1 ? 's' : ''}
-        </div>
-        <div className="space-y-3">
-          {stats.byRegion.map((r, i) => (
-            <BarRow key={r.region} label={r.region} count={r.count} max={maxRegion}
-                    color={i === 0 ? '#5c0d22' : i === 1 ? '#8c2f39' : '#b08d57'} pct={pct(r.count)} delay={i * 70} mounted={mounted} />
-          ))}
         </div>
       </div>
     </div>

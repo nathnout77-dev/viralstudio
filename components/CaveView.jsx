@@ -92,7 +92,7 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
           <button
             key={id}
             onClick={() => setSub(id)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer lg:px-5 ${
               sub === id
                 ? 'bg-wine-800 text-cream shadow-wine'
                 : 'bg-white text-anthracite-600 border border-anthracite-200 hover:border-wine-300'
@@ -113,7 +113,7 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
         {/* Compte & synchronisation */}
         <button
           onClick={onCompte}
-          className="ml-auto flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer bg-white text-anthracite-600 border border-anthracite-200 hover:border-gold-500/70"
+          className="ml-auto flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer bg-white text-anthracite-600 border border-anthracite-200 hover:border-gold-500/70"
           title="Sauvegarder et synchroniser ma cave dans le cloud"
         >
           <CloudUpload size={13} className="text-gold-600" />
@@ -237,7 +237,7 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
       ) : (
         <div className={
           view === 'grid'
-            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'
+            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4'
             : 'flex flex-col gap-2'
         }>
           {filtered.map(w => (

@@ -46,14 +46,14 @@ export default function GuideView({ onAddWine }) {
   const [sub, setSub] = useState('accords')
 
   return (
-    <div>
-      {/* Sub-tabs */}
-      <div className="flex gap-2 mb-6 overflow-x-auto hide-scrollbar">
+    <div className="lg:max-w-5xl lg:mx-auto">
+      {/* Sub-tabs — scrollables sur mobile, tabs spacieuses centrées sur desktop */}
+      <div className="flex gap-2 mb-6 overflow-x-auto hide-scrollbar lg:justify-center lg:gap-3 lg:mb-10 lg:overflow-visible lg:flex-wrap">
         {SUBTABS.map(({ id, label, Icon }) => (
           <button
             key={id}
             onClick={() => setSub(id)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer lg:px-5 lg:py-3 lg:text-[13px] ${
               sub === id
                 ? 'bg-wine-800 text-cream shadow-wine'
                 : 'bg-white text-anthracite-600 border border-anthracite-200 hover:border-wine-300'
