@@ -11,16 +11,17 @@ import SommelierForm    from '../components/SommelierForm'
 import GuideView        from '../components/GuideView'
 import BibliothequeView from '../components/BibliothequeView'
 import LandingPage      from '../components/LandingPage'
-import CeSoirMode       from '../components/CeSoirMode'
-import ScanEtiquette    from '../components/ScanEtiquette'
-import AssistantView    from '../components/AssistantView'
 import OnboardingProfil, { loadProfil } from '../components/OnboardingProfil'
 import { removeEnvie } from '../components/Envies'
-import CompteSync from '../components/CompteSync'
-import { CaveAmieViewer } from '../components/CaveAmis'
 import { Sparkles }     from 'lucide-react'
 
 const InteractiveMap = dynamic(() => import('../components/InteractiveMap'), { ssr: false })
+// Overlays lourds, chargés uniquement à l'ouverture (jamais au premier rendu)
+const CeSoirMode     = dynamic(() => import('../components/CeSoirMode'), { ssr: false })
+const ScanEtiquette  = dynamic(() => import('../components/ScanEtiquette'), { ssr: false })
+const AssistantView  = dynamic(() => import('../components/AssistantView'), { ssr: false })
+const CompteSync     = dynamic(() => import('../components/CompteSync'), { ssr: false })
+const CaveAmieViewer = dynamic(() => import('../components/CaveAmis').then(m => m.CaveAmieViewer), { ssr: false })
 
 // ─── Vins de démonstration ────────────────────────────────────────────────────
 const DEMO_WINES = [

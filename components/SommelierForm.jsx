@@ -2,9 +2,12 @@ import { useState, useMemo } from 'react'
 import { Sparkles, ChevronLeft, Utensils, Coins, GraduationCap, UtensilsCrossed } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG, MILLESIMES_DB } from '../data/wineDatabase'
 import { computeProfilAppris, bonusProfilAppris } from '../data/goutsAppris'
+import dynamic from 'next/dynamic'
 import JaugesGout from './JaugesGout'
-import BudgetCaviste from './BudgetCaviste'
-import ModeDiner from './ModeDiner'
+
+// Outils secondaires chargés à la demande (le quiz reste l'écran par défaut)
+const BudgetCaviste = dynamic(() => import('./BudgetCaviste'), { ssr: false })
+const ModeDiner     = dynamic(() => import('./ModeDiner'), { ssr: false })
 
 // ═══ GOÛT-O-MÈTRE ═══════════════════════════════════════════════════════════
 // Quiz ludique : questions du quotidien → profil de goût vin.

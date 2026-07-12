@@ -3,7 +3,10 @@ import {
   NotebookPen, Grape, X, Plus, Search, Trash2, Pencil, ArrowLeft,
   Calendar, Users, Feather, ChevronDown, BookHeart, Share2,
 } from 'lucide-react'
-import ShareDegustation from './ShareDegustation'
+import dynamic from 'next/dynamic'
+
+// Génération d'image canvas : chargée seulement quand on partage
+const ShareDegustation = dynamic(() => import('./ShareDegustation'), { ssr: false })
 import { WINE_DB } from '../data/wineDatabase'
 import { AROME_FAMILLES } from '../data/aromes'
 import useModalBehavior from '../lib/useModal'
