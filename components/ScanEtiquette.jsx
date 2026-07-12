@@ -1,10 +1,11 @@
 import { useRef, useState } from 'react'
-import { X, Camera, Image as ImageIcon, RefreshCw, Sparkles, Plus, Check, MapPin, BookOpen } from 'lucide-react'
+import { X, Camera, Image as ImageIcon, RefreshCw, Sparkles, Plus, Check, MapPin, BookOpen, Tag, Pencil, UtensilsCrossed, Heart } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
 import { regionInfo } from '../data/regionsInfo'
 import { normaliser } from '../data/aromes'
 import JaugesGout from './JaugesGout'
 import { FicheVin } from './BibliothequeView'
+import { toggleEnvie, useEnvies } from './Envies'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ScanEtiquette — photographiez une étiquette, Œno la décode.
@@ -43,16 +44,20 @@ const CEPAGES_SIMPLE = {
 }
 const noteCepage = c => CEPAGES_SIMPLE[normaliser(c)] || null
 
-const SYSTEM_PROMPT = `Tu es un sommelier expert qui lit des étiquettes de vin françaises et internationales.
+const SYSTEM_PROMPT = `Tu es un sommelier expert qui lit des étiquettes de vin françaises et internationales, pour aider quelqu'un à évaluer une bouteille EN RAYON, en magasin, avant de l'acheter.
 On te montre la photo d'une étiquette de bouteille. Réponds STRICTEMENT avec un objet JSON valide, sans aucun texte autour, sans balises markdown :
-{"appellation": string|null, "region": string|null, "cepages": string[], "type": "red"|"white"|"rosé"|"sweet"|null, "millesime": number|null, "domaine": string|null, "confiance": "haute"|"moyenne"|"basse"}
+{"appellation": string|null, "region": string|null, "cepages": string[], "type": "red"|"white"|"rosé"|"sweet"|null, "millesime": number|null, "domaine": string|null, "confiance": "haute"|"moyenne"|"basse", "styleEtQualite": string, "pourQui": string, "accordsSuggeres": string[], "fourchettePrixHabituelle": {"min": number, "max": number}}
 Règles :
 - "appellation" : l'appellation d'origine (ex. "Gevrey-Chambertin", "Chianti Classico"), pas le nom de cuvée.
 - "region" : la région viticole, si possible parmi "Bordeaux", "Bourgogne", "Rhône Nord", "Rhône Sud", "Loire", "Alsace", "Beaujolais", "Provence", "Languedoc", "Roussillon", "Sud-Ouest", "Jura", "Savoie", "Corse", "Champagne", "Italie", "Espagne", "Portugal".
 - "cepages" : les cépages probables, même s'ils ne figurent pas sur l'étiquette (déduis-les de l'appellation).
 - "type" : la couleur du vin ("red", "white", "rosé", ou "sweet" pour un liquoreux).
 - "confiance" : ton niveau de certitude global sur la lecture.
-Si l'image n'est pas une étiquette de vin ou est illisible, réponds exactement : {"appellation":null,"region":null,"cepages":[],"type":null,"millesime":null,"domaine":null,"confiance":"basse"}`
+- "styleEtQualite" : 2 à 3 phrases, ton simple et sans jargon, décrivant le style et les qualités attendues de ce type de vin (ex. structure, texture, ce qui le caractérise). Comme un ami connaisseur qui te dit honnêtement à quoi t'attendre.
+- "pourQui" : une courte phrase disant à qui ce vin va plaire (ex. "Idéal si vous aimez les rouges souples et fruités, à boire sans attendre.").
+- "accordsSuggeres" : 3 à 4 plats concrets et courants (ex. "Entrecôte", "Fromages affinés", "Poulet rôti"), cohérents avec le style du vin.
+- "fourchettePrixHabituelle" : estimation réaliste et honnête de la fourchette de prix en euros que cette appellation / ce style / ce niveau de qualité perçu coûte habituellement en France, {min, max}. Ne mentionne JAMAIS un magasin, une enseigne ou un point de vente précis — tu évalues uniquement le vin, jamais où l'acheter.
+Si l'image n'est pas une étiquette de vin ou est illisible, réponds exactement : {"appellation":null,"region":null,"cepages":[],"type":null,"millesime":null,"domaine":null,"confiance":"basse","styleEtQualite":"","pourQui":"","accordsSuggeres":[],"fourchettePrixHabituelle":null}`
 
 // Redimensionnement côté client : max 1024px de large, JPEG qualité 0.8
 function resizeImage(file) {
@@ -128,8 +133,120 @@ const CONFIANCE_LABEL = {
   basse: 'Lecture incertaine',
 }
 
+// Verdict qualité/prix calculé côté front à partir du prix saisi en rayon
+// et de la fourchette de prix habituelle estimée par l'IA.
+function verdictPrix(prix, fourchette) {
+  const p = Number(prix)
+  if (!p || p <= 0 || !fourchette || fourchette.min == null || fourchette.max == null) return null
+  if (p < fourchette.min) {
+    return { label: 'Bonne affaire', emoji: '✨', bg: 'rgba(74,124,89,0.12)', color: '#3f6b4c' }
+  }
+  if (p > fourchette.max) {
+    return { label: 'Plutôt cher pour ce type de vin', emoji: '💶', bg: 'rgba(140,47,57,0.10)', color: '#8c2f39' }
+  }
+  return { label: 'Prix cohérent', emoji: '👍', bg: 'rgba(199,161,90,0.16)', color: '#8a6a1f' }
+}
+
+// Bloc verdict qualité/prix + édition du prix, affiché en tête de la fiche résultat.
+function PrixRayonBloc({ verdict, prixRayon, editingPrix, prixDraft, setPrixDraft, setEditingPrix, confirmerPrix }) {
+  if (editingPrix) {
+    return (
+      <div className="rounded-2xl p-4 border border-anthracite-900/[0.08] bg-white space-y-2.5">
+        <label htmlFor="scan-prix-edit" className="text-xs font-semibold text-anthracite-600">Prix affiché en rayon (€)</label>
+        <div className="flex gap-2">
+          <input
+            id="scan-prix-edit"
+            type="number"
+            inputMode="decimal"
+            min="0"
+            step="0.5"
+            placeholder="ex. 14,90"
+            value={prixDraft}
+            onChange={e => setPrixDraft(e.target.value)}
+            className="input-field flex-1"
+            autoFocus
+          />
+          <button
+            onClick={confirmerPrix}
+            className="min-h-[44px] px-4 rounded-full text-sm font-semibold text-cream cursor-pointer transition-all duration-300 hover:brightness-110 active:scale-[0.98]"
+            style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
+          >
+            OK
+          </button>
+        </div>
+      </div>
+    )
+  }
+  return (
+    <div className="flex items-center justify-between gap-2">
+      {verdict ? (
+        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold" style={{ background: verdict.bg, color: verdict.color }}>
+          {verdict.emoji} {verdict.label} <span className="font-normal opacity-70">— {prixRayon} €</span>
+        </span>
+      ) : (
+        <span className="text-xs text-anthracite-400">Prix non renseigné</span>
+      )}
+      <button
+        onClick={() => { setPrixDraft(prixRayon || ''); setEditingPrix(true) }}
+        className="inline-flex items-center gap-1 text-xs font-medium text-anthracite-500 hover:text-anthracite-800 transition-colors duration-300 cursor-pointer"
+      >
+        <Pencil size={11} /> {verdict ? 'Modifier' : 'Ajouter le prix'}
+      </button>
+    </div>
+  )
+}
+
+// Bloc "Notre avis" (style/qualité, pour qui) + "À table avec" (accords), réutilisé dans les deux fiches.
+function AvisEtAccords({ parsed }) {
+  if (!parsed?.styleEtQualite && !parsed?.accordsSuggeres?.length) return null
+  return (
+    <>
+      {(parsed.styleEtQualite || parsed.pourQui) && (
+        <div className="rounded-xl p-3.5 border border-gold-500/20" style={{ background: 'rgba(199,161,90,0.06)' }}>
+          <div className="text-[10px] uppercase tracking-wider font-bold text-gold-700 mb-1.5">Notre avis</div>
+          {parsed.styleEtQualite && <p className="text-xs text-anthracite-700 leading-relaxed">{parsed.styleEtQualite}</p>}
+          {parsed.pourQui && <p className="text-xs text-anthracite-500 italic mt-1.5">{parsed.pourQui}</p>}
+        </div>
+      )}
+      {parsed.accordsSuggeres?.length > 0 && (
+        <div>
+          <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-2 flex items-center gap-1.5">
+            <UtensilsCrossed size={11} className="text-gold-600" /> À table avec
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {parsed.accordsSuggeres.map(plat => (
+              <span key={plat} className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-cream border border-anthracite-900/10 text-anthracite-700">
+                {plat}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
+// Bouton pleine largeur, cohérent avec le reste des actions, pour ajouter/retirer des envies.
+function EnvieAction({ appellation }) {
+  const envies = useEnvies()
+  const active = envies.some(e => e.appellation === appellation)
+  return (
+    <button
+      onClick={() => toggleEnvie(appellation)}
+      className={`w-full flex items-center justify-center gap-2 py-3 rounded-full text-sm font-semibold transition-all duration-300 cursor-pointer ${
+        active
+          ? 'bg-wine-50 text-wine-700 border border-wine-200'
+          : 'border border-anthracite-900/15 text-anthracite-700 hover:border-anthracite-900/40 active:scale-[0.98]'
+      }`}
+    >
+      <Heart size={15} className={active ? 'fill-wine-600 text-wine-600' : ''} />
+      {active ? 'Dans mes envies' : 'Ajouter à mes envies'}
+    </button>
+  )
+}
+
 export default function ScanEtiquette({ onClose, onAddWine }) {
-  // step : 'idle' | 'preview' | 'loading' | 'result' | 'error'
+  // step : 'idle' | 'preview' | 'prix' | 'loading' | 'result' | 'error'
   const [step, setStep] = useState('idle')
   const [photo, setPhoto] = useState(null)        // dataURL JPEG redimensionné
   const [parsed, setParsed] = useState(null)      // réponse JSON de Claude
@@ -137,6 +254,9 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
   const [errType, setErrType] = useState(null)    // 'unreadable' | 'api'
   const [ficheWine, setFicheWine] = useState(null)
   const [added, setAdded] = useState(false)
+  const [prixRayon, setPrixRayon] = useState('')  // prix saisi en rayon (string du champ)
+  const [prixDraft, setPrixDraft] = useState('')  // brouillon pour l'édition post-résultat
+  const [editingPrix, setEditingPrix] = useState(false)
   const cameraRef = useRef(null)
   const galleryRef = useRef(null)
 
@@ -164,7 +284,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'claude-sonnet-5',
-          max_tokens: 400,
+          max_tokens: 700,
           system: SYSTEM_PROMPT,
           messages: [
             {
@@ -211,6 +331,14 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
     setMatched(null)
     setErrType(null)
     setAdded(false)
+    setPrixRayon('')
+    setPrixDraft('')
+    setEditingPrix(false)
+  }
+
+  const confirmerPrix = () => {
+    setEditingPrix(false)
+    if (prixDraft) setPrixRayon(prixDraft)
   }
 
   // Ajout direct à la cave (vin de la bibliothèque ou lecture générique)
@@ -263,10 +391,13 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
   const proches = step === 'result' && !matched && parsed ? vinsProches(parsed) : []
   const region = parsed?.region ? regionInfo(parsed.region) : null
   const confiance = parsed ? CONFIANCE_LABEL[parsed.confiance] : null
+  const verdict = parsed ? verdictPrix(prixRayon, parsed.fourchettePrixHabituelle) : null
+  const nomEnvie = matched?.appellation || parsed?.appellation || parsed?.domaine || null
 
   const sousTitre = {
     idle: "Une bouteille vous intrigue ? Photographiez son étiquette.",
     preview: 'Votre photo est prête à être lue.',
+    prix: 'Une info en plus, si vous l\'avez sous les yeux.',
     loading: 'Un instant, notre sommelier lit votre étiquette…',
     result: matched ? 'Bonne nouvelle : on connaît ce vin.' : "Voici ce qu'on peut vous en dire.",
     error: 'Petit contretemps…',
@@ -350,7 +481,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                 <img src={photo} alt="Aperçu de l'étiquette photographiée" className="max-h-72 w-auto max-w-full object-contain" />
               </div>
               <button
-                onClick={analyser}
+                onClick={() => setStep('prix')}
                 className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full text-sm font-semibold text-cream cursor-pointer transition-all duration-300 hover:brightness-110 active:scale-[0.98] shadow-wine"
                 style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
               >
@@ -362,6 +493,50 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                 className="w-full min-h-[44px] flex items-center justify-center gap-2 rounded-full text-xs font-medium text-anthracite-500 hover:text-anthracite-800 transition-colors duration-300 cursor-pointer"
               >
                 <RefreshCw size={12} /> Changer de photo
+              </button>
+            </div>
+          )}
+
+          {/* ── PRIX : saisie optionnelle du prix en rayon ──────────────── */}
+          {step === 'prix' && (
+            <div className="space-y-4 animate-fade-in">
+              <div className="flex flex-col items-center text-center gap-2 pb-1">
+                <span className="w-11 h-11 rounded-full flex items-center justify-center" style={{ background: '#f0e9dd' }}>
+                  <Tag size={18} className="text-gold-700" />
+                </span>
+                <div className="font-serif text-lg text-anthracite-900">Prix affiché en rayon ?</div>
+                <p className="text-xs text-anthracite-500 max-w-[19rem] leading-relaxed">
+                  Renseignez-le pour savoir tout de suite si c'est une bonne affaire. Vous pourrez le modifier plus tard.
+                </p>
+              </div>
+              <div>
+                <label htmlFor="scan-prix" className="block text-xs font-semibold text-anthracite-600 mb-1.5">Prix (€)</label>
+                <input
+                  id="scan-prix"
+                  type="number"
+                  inputMode="decimal"
+                  min="0"
+                  step="0.5"
+                  placeholder="ex. 14,90"
+                  value={prixRayon}
+                  onChange={e => setPrixRayon(e.target.value)}
+                  className="input-field"
+                  autoFocus
+                />
+              </div>
+              <button
+                onClick={analyser}
+                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full text-sm font-semibold text-cream cursor-pointer transition-all duration-300 hover:brightness-110 active:scale-[0.98] shadow-wine"
+                style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
+              >
+                <Sparkles size={15} className="text-gold-400" />
+                Analyser l'étiquette
+              </button>
+              <button
+                onClick={() => { setPrixRayon(''); analyser() }}
+                className="w-full min-h-[44px] flex items-center justify-center gap-2 rounded-full text-xs font-medium text-anthracite-500 hover:text-anthracite-800 transition-colors duration-300 cursor-pointer"
+              >
+                Passer, je ne connais pas le prix
               </button>
             </div>
           )}
@@ -406,6 +581,15 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
           {/* ── RESULT : vin reconnu dans la bibliothèque ───────────────── */}
           {step === 'result' && matched && (
             <div className="space-y-4 animate-slide-up">
+              <PrixRayonBloc
+                verdict={verdict}
+                prixRayon={prixRayon}
+                editingPrix={editingPrix}
+                prixDraft={prixDraft}
+                setPrixDraft={setPrixDraft}
+                setEditingPrix={setEditingPrix}
+                confirmerPrix={confirmerPrix}
+              />
               {/* Fiche simplifiée */}
               <div className="rounded-2xl overflow-hidden border border-anthracite-900/[0.07] shadow-card">
                 <div className="p-5 relative overflow-hidden"
@@ -471,6 +655,8 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                       {DIFFICULTE_CONFIG[matched.difficulte].emoji} {DIFFICULTE_CONFIG[matched.difficulte].label}
                     </span>
                   </div>
+
+                  <AvisEtAccords parsed={parsed} />
                 </div>
               </div>
 
@@ -483,6 +669,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                 <BookOpen size={15} />
                 Voir la fiche complète
               </button>
+              {nomEnvie && <EnvieAction appellation={nomEnvie} />}
               {onAddWine && (
                 <button
                   onClick={ajouterCave}
@@ -510,6 +697,15 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
           {/* ── RESULT : fiche générique (pas dans la bibliothèque) ─────── */}
           {step === 'result' && !matched && parsed && (
             <div className="space-y-4 animate-slide-up">
+              <PrixRayonBloc
+                verdict={verdict}
+                prixRayon={prixRayon}
+                editingPrix={editingPrix}
+                prixDraft={prixDraft}
+                setPrixDraft={setPrixDraft}
+                setEditingPrix={setEditingPrix}
+                confirmerPrix={confirmerPrix}
+              />
               <div className="rounded-2xl overflow-hidden border border-anthracite-900/[0.07] shadow-card">
                 <div className="p-5 relative overflow-hidden text-cream"
                      style={{ background: 'linear-gradient(150deg, #1C1917 0%, #3a0616 80%, #5c0d22 140%)' }}>
@@ -580,9 +776,12 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                       </div>
                     </div>
                   )}
+
+                  <AvisEtAccords parsed={parsed} />
                 </div>
               </div>
 
+              {nomEnvie && <EnvieAction appellation={nomEnvie} />}
               {onAddWine && (parsed.appellation || parsed.domaine) && (
                 <button
                   onClick={ajouterCave}
