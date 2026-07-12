@@ -63,13 +63,17 @@ export const bouteillesPour = convives => Math.max(1, Math.ceil(convives / 3))
 function fallbackWine(courseKey, exclude, budgetMax) {
   const prefType = { entree: 'white', plat: 'red', dessert: 'sweet' }[courseKey] || 'red'
   const ok = w => !exclude.has(w.id) && w.type !== 'sparkling' && (!budgetMax || w.prixMoyen <= budgetMax)
-  const pool = WINE_DB.filter(ok)
+  let pool = WINE_DB.filter(ok)
+  // Budget trop serré pour trouver un repli : on relâche la contrainte de prix
+  // plutôt que de laisser un service sans vin (le menu doit toujours aboutir).
+  if (!pool.length && budgetMax) pool = WINE_DB.filter(w => !exclude.has(w.id) && w.type !== 'sparkling')
+  if (!pool.length) pool = WINE_DB.filter(w => !exclude.has(w.id))
   const score = w =>
     (w.type === prefType ? 6 : 0) +
     (w.difficulte === 'facile' ? 4 : w.difficulte === 'explorer' ? 1 : -2) +
     w.accords.length * 0.5 -
     Math.abs(w.jauges.puissance - 3)
-  return pool.sort((a, b) => score(b) - score(a))[0] || null
+  return [...pool].sort((a, b) => score(b) - score(a))[0] || null
 }
 
 // ── Cœur : compose le menu des vins ─────────────────────────────────────────
@@ -103,7 +107,8 @@ export function buildMenu({ courses, convives = 5, useCave = false, caveIds = ne
       wine = fallbackWine(course.key, used, budgetMax)
       fallback = true
     }
-    if (wine) used.add(wine.id)
+    if (!wine) continue // WINE_DB vide : impossible en pratique, mais on ne plante pas
+    used.add(wine.id)
     if (alt) used.add(alt.id)
 
     items.push({

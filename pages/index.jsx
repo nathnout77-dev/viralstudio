@@ -91,8 +91,14 @@ export default function App() {
   const [friendCode, setFriendCode]   = useState(null) // ?cave=CODE → cave d'un ami
 
   useEffect(() => {
-    const saved = localStorage.getItem('oenotheque-v2')
-    setWines(saved ? JSON.parse(saved) : DEMO_WINES)
+    // Lecture robuste : un localStorage corrompu ne doit jamais bloquer l'app
+    let saved = null
+    try {
+      const raw = localStorage.getItem('oenotheque-v2')
+      const parsed = raw ? JSON.parse(raw) : null
+      if (Array.isArray(parsed)) saved = parsed
+    } catch { /* données illisibles : on repart des vins de démo */ }
+    setWines(saved || DEMO_WINES)
     const seen = sessionStorage.getItem('landing-seen')
     if (seen) setShowLanding(false)
     setProfil(loadProfil())

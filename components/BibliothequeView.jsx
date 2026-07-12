@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Library, Search, X, Plus, Check, Thermometer, Clock, Wine, MapPin, ChevronDown, ExternalLink, Sparkles, NotebookPen, ChefHat } from 'lucide-react'
 import AccordInverse from './AccordInverse'
 import { EnvieButton } from './Envies'
@@ -34,6 +34,10 @@ const DIFF_FILTERS = [
 // ── Fiche détaillée ────────────────────────────────────────────────────────────
 export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
   const [millesime, setMillesime] = useState(wine.bonsMilsimes[wine.bonsMilsimes.length - 1])
+  // Si la fiche reste montée mais change de vin, on repart sur son dernier bon millésime
+  useEffect(() => {
+    setMillesime(wine.bonsMilsimes[wine.bonsMilsimes.length - 1])
+  }, [wine.id]) // eslint-disable-line react-hooks/exhaustive-deps
   const [showAccordInverse, setShowAccordInverse] = useState(false)
   const diff = DIFFICULTE_CONFIG[wine.difficulte]
   const addedSet = added || new Set()

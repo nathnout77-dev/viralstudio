@@ -20,6 +20,11 @@ const TYPE_COLORS = {
 export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
   const [millesime, setMillesime] = useState(wine.bonsMilsimes[wine.bonsMilsimes.length - 1])
   const [qty, setQty] = useState(1)
+  // Le panneau reste monté quand on clique un autre marqueur : on resynchronise
+  useEffect(() => {
+    setMillesime(wine.bonsMilsimes[wine.bonsMilsimes.length - 1])
+    setQty(1)
+  }, [wine.id]) // eslint-disable-line react-hooks/exhaustive-deps
   const [showAccordInverse, setShowAccordInverse] = useState(false)
   const isAdded = addedIds.has(`${wine.id}-${millesime}`)
   const hasPetitDomaine = wine.domaines.some(d => d.confidentiel)
