@@ -1,7 +1,7 @@
 {
   "name": "Œno — Le vin, enfin simple",
   "short_name": "Œno",
-  "description": "Votre cave, la carte des vignobles, un Goût-o-mètre et 55+ vins décodés pour néophytes.",
+  "description": "Votre cave, la carte des vignobles, un Goût-o-mètre et plus de 100 vins décodés pour néophytes.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#12100e",

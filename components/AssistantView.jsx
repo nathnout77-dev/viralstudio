@@ -230,7 +230,7 @@ function fallbackFor(menuId, profil) {
     return `## Mes suggestions pour vous\n` +
       picks.map(w => `- **${w.appellation}** (${w.region}, ~${w.prixMoyen}€) — ${w.pourQui}. À chercher chez : ${w.domaines[0]?.name || 'votre caviste'}.`).join('\n')
   }
-  return `Je n'arrive pas à joindre mon cerveau distant pour le moment 😅. En attendant, explorez l'onglet **Vins** (55+ appellations décodées) ou le **Guide** (millésimes, accords, lexique) — tout y est disponible hors-ligne !`
+  return `Je n'arrive pas à joindre mon cerveau distant pour le moment 😅. En attendant, explorez l'onglet **Vins** (plus de 100 appellations décodées) ou le **Guide** (millésimes, accords, lexique) — tout y est disponible hors-ligne !`
 }
 
 export default function AssistantView({ onClose }) {
