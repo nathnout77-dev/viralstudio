@@ -7,6 +7,7 @@ import JaugesGout from './JaugesGout'
 import Terme from './Tooltip'
 import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
 import useModalBehavior from '../lib/useModal'
+import { tintStyle } from '../lib/wineStyle'
 
 const TYPE_FILTERS = [
   { value: 'all',       label: 'Tous' },
@@ -61,7 +62,7 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
       >
         {/* Header coloré */}
         <div
-          className="p-6 pb-5 flex-shrink-0 relative overflow-hidden"
+          className="p-6 pb-5 flex-shrink-0 relative overflow-hidden gold-sheen"
           style={{ background: `linear-gradient(150deg, ${wine.color} 0%, ${wine.color}cc 55%, #1e2426 145%)` }}
         >
           <div className="absolute -top-8 -right-8 text-[120px] opacity-15 select-none leading-none">{wine.emoji}</div>
@@ -277,8 +278,8 @@ function VinCard({ wine, onClick, index }) {
   return (
     <button
       onClick={onClick}
-      className="card p-4 text-left w-full hover:-translate-y-1 transition-all duration-300 cursor-pointer group animate-fade-in-up"
-      style={{ animationDelay: `${Math.min(index * 40, 400)}ms`, animationFillMode: 'both' }}
+      className="card card-tinted p-4 text-left w-full hover:-translate-y-1 transition-all duration-300 cursor-pointer group animate-fade-in-up"
+      style={{ animationDelay: `${Math.min(index * 40, 400)}ms`, animationFillMode: 'both', ...tintStyle(wine.type) }}
     >
       <div className="flex items-start gap-3 mb-3">
         <div

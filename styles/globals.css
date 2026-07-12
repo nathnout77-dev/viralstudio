@@ -31,6 +31,18 @@
 
   h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; }
 
+  /* Grain de papier généralisé — voile de bruit fixe, imperceptible mais
+     présent, sur toutes les vues (crème comme sombres). Zéro JS, un seul
+     pseudo-élément fixe : aucun coût par composant. */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 2147483647;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  }
+
   input, select, textarea, button { font-family: inherit; }
 
   ::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -65,9 +77,13 @@
     @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-medium text-sm rounded-full text-anthracite-950
            transition-all duration-300 cursor-pointer shadow-gold active:scale-[0.98]
            focus:outline-none focus:ring-2 focus:ring-gold-600 focus:ring-offset-2;
-    background: linear-gradient(135deg, #d4a847 0%, #c9a84c 50%, #b8962a 100%);
+    background: linear-gradient(115deg, #d4a847 0%, #c9a84c 30%, #e8c96b 50%, #c9a84c 70%, #b8962a 100%);
+    background-size: 220% 100%;
+    background-position: 0% center;
+    animation: goldSweep 10s linear infinite;
+    animation-play-state: paused;
   }
-  .btn-gold:hover { filter: brightness(1.06); transform: translateY(-1px); }
+  .btn-gold:hover { filter: brightness(1.06); transform: translateY(-1px); animation-play-state: running; }
   .btn-gold:active { transform: translateY(0) scale(0.98); }
 
   /* ── Cartes épurées : bordure hairline, ombre douce et diffuse ──────────── */
@@ -147,7 +163,36 @@
 
   .divider-gold {
     @apply h-px my-6;
-    background: linear-gradient(to right, transparent, rgba(161,98,7,0.30), transparent);
+    background: linear-gradient(90deg, transparent 0%, rgba(161,98,7,0.30) 35%, rgba(212,168,71,0.55) 50%, rgba(161,98,7,0.30) 65%, transparent 100%);
+    background-size: 220% 100%;
+    animation: goldSweep 11s linear infinite;
+  }
+
+  /* Reflet or lent : balayage lumineux discret sur les éléments signature
+     (bordures des cartes ouvertes, filets, en-têtes de fiches). Pausé
+     automatiquement par la règle prefers-reduced-motion globale. */
+  .gold-sheen {
+    position: relative;
+    overflow: hidden;
+  }
+  .gold-sheen::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(105deg, transparent 40%, rgba(232,201,107,0.14) 50%, transparent 60%);
+    background-size: 300% 100%;
+    animation: goldSweep 9s linear infinite;
+  }
+
+  /* Ombre colorée par type de vin — lit la variable --tint posée en inline
+     par les cartes (voir lib/wineStyle.js). Renforcée au hover. */
+  .card-tinted {
+    box-shadow: 0 1px 2px rgba(28,25,23,0.04), 0 10px 32px var(--tint, rgba(28,25,23,0.06));
+    transition: box-shadow 0.5s var(--ease-luxe), transform 0.5s var(--ease-luxe), border-color 0.5s var(--ease-luxe);
+  }
+  .card-tinted:hover {
+    box-shadow: 0 2px 4px rgba(28,25,23,0.05), 0 20px 52px var(--tint, rgba(28,25,23,0.10));
   }
 
   .text-gradient-gold {
@@ -254,6 +299,13 @@
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
   pointer-events: none;
+}
+
+/* Balayage or très lent (reflets de lumière sur les surfaces dorées) */
+@keyframes goldSweep {
+  from { background-position: 0% center; }
+  50%  { background-position: 100% center; }
+  to   { background-position: 0% center; }
 }
 
 /* Wine glass animation */

@@ -542,7 +542,7 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
             </p>
             <button
               onClick={() => onTabChange('vins', domaineDuMoment.name)}
-              className="reveal reveal-delay-3 mt-12 min-h-[48px] inline-flex items-center gap-2.5 px-8 rounded-full font-medium text-sm text-cream border border-gold-500/40 hover:bg-gold-500/10 hover:border-gold-500/70 active:scale-[0.98] transition-all duration-500 cursor-pointer">
+              className="reveal reveal-delay-3 gold-sheen mt-12 min-h-[48px] inline-flex items-center gap-2.5 px-8 rounded-full font-medium text-sm text-cream border border-gold-500/40 hover:bg-gold-500/10 hover:border-gold-500/70 active:scale-[0.98] transition-all duration-500 cursor-pointer">
               <Wine size={14} className="text-gold-400" />
               Découvrir sa fiche
               <ArrowRight size={13} />

@@ -1,5 +1,6 @@
 import { Wine, Star, Clock, Thermometer, Edit2, Trash2, Plus, Minus } from 'lucide-react'
 import { useState } from 'react'
+import { tintStyle } from '../lib/wineStyle'
 
 const TYPE_CONFIG = {
   red:       { label: 'Rouge',       color: '#72102a', cls: 'border-wine-800/25 text-wine-800',   dot: 'bg-wine-700' },
@@ -42,7 +43,8 @@ export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty
     return (
       <div
         onClick={() => onSelect?.(wine)}
-        className="card p-5 cursor-pointer hover:border-anthracite-900/20 hover:-translate-y-0.5 active:scale-[0.98] group animate-fade-in"
+        className="card card-tinted p-5 cursor-pointer hover:border-anthracite-900/20 hover:-translate-y-0.5 active:scale-[0.98] group animate-fade-in"
+        style={tintStyle(wine.type)}
         role="button" tabIndex={0}
         onKeyDown={e => e.key === 'Enter' && onSelect?.(wine)}
         aria-label={`${wine.name} ${wine.vintage}`}
@@ -70,7 +72,7 @@ export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty
   }
 
   return (
-    <div className="card group animate-slide-up overflow-hidden hover:border-anthracite-900/15">
+    <div className="card card-tinted group animate-slide-up overflow-hidden hover:border-anthracite-900/15" style={tintStyle(wine.type)}>
       {/* Bottle visual strip */}
       <div
         className="h-1 w-full"
