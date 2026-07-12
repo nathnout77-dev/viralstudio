@@ -65,7 +65,7 @@ export default function WineDetail({ wine, onClose, onEdit }) {
       role="dialog" aria-modal="true" aria-label={`Fiche : ${wine.name}`}
     >
       <div
-        className="modal-panel sm:max-w-lg max-h-[92vh] shadow-card-hover"
+        className="modal-panel sm:max-w-lg lg:max-w-2xl max-h-[92vh] shadow-card-hover"
         onClick={e => e.stopPropagation()}
       >
         {/* Hero */}

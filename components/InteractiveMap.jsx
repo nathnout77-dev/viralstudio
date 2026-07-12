@@ -45,7 +45,7 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
   }
 
   return (
-    <div className="absolute top-3 right-3 bottom-3 z-[1000] w-80 sm:w-96 bg-cream rounded-xl shadow-card-hover border border-anthracite-200 overflow-hidden flex flex-col animate-slide-up">
+    <div className="absolute inset-2 sm:inset-auto sm:top-3 sm:right-3 sm:bottom-3 z-[1000] sm:w-80 lg:w-96 bg-cream rounded-xl shadow-card-hover border border-anthracite-200 overflow-hidden flex flex-col animate-slide-up">
       {/* Header */}
       <div className="p-4 flex-shrink-0 text-cream relative overflow-hidden"
            style={{ background: `linear-gradient(150deg, ${wine.color} 0%, ${wine.color}cc 55%, #1e2426 150%)` }}>
@@ -410,7 +410,7 @@ export default function InteractiveMap({ onAddWine, onNoter }) {
       )}
 
       <div className="card overflow-hidden" style={{ isolation: 'isolate', zIndex: 0, position: 'relative' }}>
-        <div className="relative" style={{ height: '560px' }}>
+        <div className="relative h-[460px] sm:h-[560px] lg:h-[72vh] lg:min-h-[560px]">
           {!MapComponents ? (
             <div className="absolute inset-0 flex items-center justify-center bg-anthracite-50">
               <div className="text-center">

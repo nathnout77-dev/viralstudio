@@ -99,9 +99,11 @@ export default function RoutesDesVins({ onAddWine, onNoter }) {
         <p className="text-sm text-anthracite-500 leading-relaxed mt-2 max-w-2xl">{route.intro}</p>
       </div>
 
+      {/* Desktop : carte sticky à gauche, déroulé en colonne droite · Mobile : empilé */}
+      <div className="lg:grid lg:grid-cols-2 lg:gap-6 lg:items-start">
       {/* Carte — fix z-index Leaflet préservé (isolation + zIndex 0) */}
-      <div className="card overflow-hidden mb-5" style={{ isolation: 'isolate', zIndex: 0, position: 'relative' }}>
-        <div className="relative" style={{ height: '420px' }}>
+      <div className="card overflow-hidden mb-5 lg:mb-0 lg:sticky lg:top-10" style={{ isolation: 'isolate', zIndex: 0, position: 'relative' }}>
+        <div className="relative h-[420px] lg:h-[72vh] lg:min-h-[520px]">
           {!MapComponents || !Leaflet ? (
             <div className="absolute inset-0 flex items-center justify-center bg-anthracite-50">
               <div className="w-8 h-8 rounded-full border-2 border-gold-500 border-t-transparent animate-spin" />
@@ -151,7 +153,7 @@ export default function RoutesDesVins({ onAddWine, onNoter }) {
       </div>
 
       {/* Déroulé jour par jour */}
-      <div className="space-y-4">
+      <div className="space-y-4 lg:max-h-[72vh] lg:overflow-y-auto lg:pr-1">
         {route.etapes.map((e, i) => {
           const domaines = domainesEtape(e)
           return (
@@ -214,6 +216,7 @@ export default function RoutesDesVins({ onAddWine, onNoter }) {
             </div>
           )
         })}
+      </div>
       </div>
 
       {/* Conseils pratiques */}
