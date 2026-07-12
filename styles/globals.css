@@ -193,6 +193,38 @@
     animation: goldSweep 9s linear infinite;
   }
 
+  /* ── Étiquette de collection : cartes de vin façon étiquette de bouteille ──
+     Double filet (cadre hairline + filet or pâle décalé de 4px), coins quasi
+     droits — l'objet tranche volontairement avec les pills du reste. */
+  .etiquette {
+    @apply bg-white;
+    position: relative;
+    border: 1px solid rgba(28,25,23,0.16);
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(28,25,23,0.04), 0 10px 32px var(--tint, rgba(28,25,23,0.06));
+    transition: box-shadow 0.5s var(--ease-luxe), transform 0.5s var(--ease-luxe), border-color 0.5s var(--ease-luxe);
+  }
+  .etiquette::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 1px solid rgba(201,168,76,0.45);
+    border-radius: 1px;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .etiquette:hover {
+    border-color: rgba(28,25,23,0.28);
+    box-shadow: 0 2px 4px rgba(28,25,23,0.05), 0 20px 52px var(--tint, rgba(28,25,23,0.10));
+  }
+  .etiquette-numero {
+    @apply text-[9px] font-semibold uppercase tracking-[0.3em] text-anthracite-400;
+  }
+  .medaillon {
+    @apply w-7 h-7 rounded-full border border-gold-500/50 flex items-center justify-center flex-shrink-0
+           font-serif text-[11px] font-medium text-gold-600;
+  }
+
   /* Ombre colorée par type de vin — lit la variable --tint posée en inline
      par les cartes (voir lib/wineStyle.js). Renforcée au hover. */
   .card-tinted {

@@ -7,7 +7,10 @@ import JaugesGout from './JaugesGout'
 import Terme from './Tooltip'
 import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
 import useModalBehavior from '../lib/useModal'
-import { tintStyle } from '../lib/wineStyle'
+import { tintStyle, pastilleStyle, regionMonogram, collectionNumero } from '../lib/wineStyle'
+
+// Index stable dans WINE_DB → numérotation de collection (« N° 07 »)
+const WINE_INDEX = new Map(WINE_DB.map((w, i) => [w.id, i]))
 
 const TYPE_FILTERS = [
   { value: 'all',       label: 'Tous' },
@@ -70,10 +73,20 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
             <div className="min-w-0">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <div className="text-3xl mb-1.5">{wine.emoji}</div>
+                  <div className="flex items-center gap-2.5 mb-1.5">
+                    <span className="text-3xl">{wine.emoji}</span>
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-cream/60">
+                      {collectionNumero(WINE_INDEX.get(wine.id) ?? 0)}
+                    </span>
+                    <span className="w-7 h-7 rounded-full border border-cream/40 flex items-center justify-center font-serif text-[11px] text-cream/85" title={wine.region}>
+                      {regionMonogram(wine.region)}
+                    </span>
+                  </div>
                   <h3 className="font-wine-name text-5xl text-cream">{wine.appellation}</h3>
-                  <p className="text-cream/70 text-sm mt-1 flex items-center gap-1.5">
-                    <MapPin size={11} /> {wine.region} · {wine.typeLabel}
+                  <p className="text-cream/70 text-sm mt-1.5 flex items-center gap-1.5">
+                    <MapPin size={11} /> {wine.region}
+                    <span className="w-2.5 h-2.5 rounded-full ml-1 ring-1 ring-white/40" style={pastilleStyle(wine.type)} aria-hidden="true" />
+                    <span className="uppercase tracking-[0.18em] text-[10px] font-semibold">{wine.typeLabel}</span>
                   </p>
                 </div>
               </div>
@@ -275,25 +288,38 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
 function VinCard({ wine, onClick, index }) {
   const diff = DIFFICULTE_CONFIG[wine.difficulte]
   const hasPetitDomaine = wine.domaines.some(d => d.confidentiel)
+  const numero = WINE_INDEX.get(wine.id) ?? index
   return (
     <button
       onClick={onClick}
-      className="card card-tinted p-4 text-left w-full hover:-translate-y-1 transition-all duration-300 cursor-pointer group animate-fade-in-up"
+      className="etiquette p-4 pt-3.5 text-left w-full hover:-translate-y-1 transition-all duration-300 cursor-pointer group animate-fade-in-up"
       style={{ animationDelay: `${Math.min(index * 40, 400)}ms`, animationFillMode: 'both', ...tintStyle(wine.type) }}
     >
-      <div className="flex items-start gap-3 mb-3">
-        <div
-          className="w-11 h-11 rounded-2xl flex items-center justify-center text-xl flex-shrink-0 transition-transform group-hover:scale-110"
-          style={{ background: `${wine.color}18` }}
-        >
-          {wine.emoji}
+      {/* En-tête d'étiquette : numéro de collection + monogramme de région */}
+      <div className="flex items-center justify-between mb-2.5">
+        <span className="etiquette-numero">{collectionNumero(numero)}</span>
+        <span className="medaillon transition-transform group-hover:scale-110" title={wine.region}>
+          {regionMonogram(wine.region)}
+        </span>
+      </div>
+
+      {/* Nom + appellation en petites capitales espacées */}
+      <div className="text-center mb-2 min-w-0">
+        <div className="font-wine-name text-3xl text-anthracite-900 leading-none truncate">
+          {wine.emoji} {wine.appellation}
         </div>
-        <div className="min-w-0">
-          <div className="font-wine-name text-2xl text-anthracite-900 truncate">{wine.appellation}</div>
-          <div className="text-[11px] text-anthracite-400 mt-0.5">{wine.region} · ~{wine.prixMoyen} €</div>
+        <div className="text-[9px] uppercase tracking-[0.22em] text-anthracite-400 mt-1.5">
+          {wine.region} · ~{wine.prixMoyen} €
         </div>
       </div>
-      <p className="text-xs text-anthracite-500 italic mb-3 line-clamp-1">« {wine.enUneMot} »</p>
+
+      {/* Pastille robe du vin + type en micro-capitales */}
+      <div className="flex items-center justify-center gap-1.5 mb-2.5">
+        <span className="w-3 h-3 rounded-full ring-1 ring-anthracite-900/10 flex-shrink-0" style={pastilleStyle(wine.type)} aria-hidden="true" />
+        <span className="text-[9px] uppercase tracking-[0.18em] font-semibold text-anthracite-500">{wine.typeLabel}</span>
+      </div>
+
+      <p className="text-xs text-anthracite-500 italic mb-3 line-clamp-1 text-center">« {wine.enUneMot} »</p>
       <JaugesGout jauges={wine.jauges} compact animate={false} />
       <div className="flex items-center justify-between mt-3 gap-2">
         <span
@@ -309,7 +335,6 @@ function VinCard({ wine, onClick, index }) {
               ✨
             </span>
           )}
-          <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: wine.color }} title={wine.typeLabel} />
         </div>
       </div>
     </button>

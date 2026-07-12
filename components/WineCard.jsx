@@ -1,6 +1,6 @@
 import { Wine, Star, Clock, Thermometer, Edit2, Trash2, Plus, Minus } from 'lucide-react'
 import { useState } from 'react'
-import { tintStyle } from '../lib/wineStyle'
+import { tintStyle, pastilleStyle, regionMonogram } from '../lib/wineStyle'
 
 const TYPE_CONFIG = {
   red:       { label: 'Rouge',       color: '#72102a', cls: 'border-wine-800/25 text-wine-800',   dot: 'bg-wine-700' },
@@ -72,14 +72,19 @@ export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty
   }
 
   return (
-    <div className="card card-tinted group animate-slide-up overflow-hidden hover:border-anthracite-900/15" style={tintStyle(wine.type)}>
-      {/* Bottle visual strip */}
-      <div
-        className="h-1 w-full"
-        style={{ background: `linear-gradient(90deg, ${bottleColor} 0%, ${bottleColor}88 100%)` }}
-      />
-
+    <div className="etiquette group animate-slide-up overflow-hidden hover:-translate-y-0.5" style={tintStyle(wine.type)}>
       <div className="p-5">
+        {/* En-tête d'étiquette : pastille robe + type, monogramme de région */}
+        <div className="flex items-center justify-between mb-3">
+          <span className="inline-flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded-full ring-1 ring-anthracite-900/10 flex-shrink-0" style={pastilleStyle(wine.type)} aria-hidden="true" />
+            <span className="text-[9px] uppercase tracking-[0.18em] font-semibold text-anthracite-500">{cfg.label}</span>
+          </span>
+          {wine.region && (
+            <span className="medaillon" title={wine.region}>{regionMonogram(wine.region)}</span>
+          )}
+        </div>
+
         {/* Header */}
         <div className="flex items-start justify-between gap-2 mb-3">
           <div className="flex-1 min-w-0">
@@ -101,7 +106,6 @@ export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty
 
         {/* Badges */}
         <div className="flex flex-wrap items-center gap-1.5 mb-3">
-          <TypeBadge type={wine.type} />
           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.12em] border border-anthracite-900/15 text-anthracite-600">
             {wine.vintage}
           </span>
