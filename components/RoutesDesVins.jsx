@@ -130,7 +130,7 @@ export default function RoutesDesVins({ onAddWine, onNoter }) {
                 {route.etapes.map((e, i) => (
                   <MapComponents.Marker key={i} position={[e.lat, e.lng]} icon={numberIcon(i + 1)}>
                     <MapComponents.Tooltip direction="top" offset={[0, -14]}>
-                      <div style={{ fontFamily: 'Playfair Display, serif', fontSize: 12, color: '#1e2426', fontWeight: 600 }}>
+                      <div style={{ fontFamily: 'Fraunces, serif', fontSize: 12, color: '#1e2426', fontWeight: 600 }}>
                         Jour {e.jour} — {e.titre}
                       </div>
                     </MapComponents.Tooltip>

@@ -111,7 +111,7 @@ async function renderMenuCard(canvas, { services, convives, bouteilles }) {
   try {
     await Promise.all([
       document.fonts.load('700 110px Tangerine'),
-      document.fonts.load('600 44px "Playfair Display"'),
+      document.fonts.load('600 44px "Fraunces"'),
       document.fonts.load('600 24px Inter'),
       document.fonts.ready,
     ])
@@ -165,7 +165,7 @@ async function renderMenuCard(canvas, { services, convives, bouteilles }) {
     ctx.fillText(`${(ORDINAUX[i] || `${i + 1}ᵉ`).toUpperCase()}  S E R V I C E   —   ${s.label.toUpperCase()}`, W / 2, y)
     y += 62
     ctx.fillStyle = ENCRE
-    ctx.font = '600 44px "Playfair Display", serif'
+    ctx.font = '600 44px "Fraunces", serif'
     let plat = s.dish.charAt(0).toUpperCase() + s.dish.slice(1)
     while (ctx.measureText(plat).width > W - 260 && plat.length > 8) plat = plat.slice(0, -2)
     ctx.fillText(plat, W / 2, y)

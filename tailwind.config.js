@@ -41,7 +41,7 @@ module.exports = {
         cream: '#FAFAF9',
       },
       fontFamily: {
-        serif:  ['Playfair Display', 'Georgia', 'serif'],
+        serif:  ['Fraunces', 'Georgia', 'serif'],
         sans:   ['Inter', 'system-ui', 'sans-serif'],
         script: ['Tangerine', 'cursive'],
       },

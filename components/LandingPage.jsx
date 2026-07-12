@@ -98,7 +98,7 @@ function Bouteille({ className = '' }) {
       {/* Étiquette crème */}
       <rect x="35" y="206" width="50" height="66" rx="2.5" fill="#FAFAF9" opacity="0.94" />
       <rect x="35" y="206" width="50" height="66" rx="2.5" stroke="rgba(201,168,76,0.65)" strokeWidth="1" />
-      <text x="60" y="236" textAnchor="middle" fontFamily="'Playfair Display', Georgia, serif" fontSize="19" fontWeight="600" fill="#1C1917">Œno</text>
+      <text x="60" y="236" textAnchor="middle" fontFamily="'Fraunces', Georgia, serif" fontSize="19" fontWeight="600" fill="#1C1917">Œno</text>
       <text x="60" y="252" textAnchor="middle" fontFamily="'Inter', sans-serif" fontSize="6" letterSpacing="2.2" fill="#A16207">GRAND VIN</text>
       <line x1="46" y1="261" x2="74" y2="261" stroke="rgba(161,98,7,0.5)" strokeWidth="0.8" />
     </svg>
@@ -331,8 +331,8 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
 
           {/* Contenu central */}
           <div className="lp-hero-content relative z-10 flex-1 flex flex-col items-center justify-center text-center px-6 gap-[2svh] py-2 min-h-0">
-            <h1 data-lp-title className="font-serif font-medium text-cream tracking-tight leading-none will-change-transform"
-                style={{ fontSize: 'clamp(3.2rem, 16vw, 12rem)' }}>
+            <h1 data-lp-title className="font-serif font-light text-cream leading-none will-change-transform"
+                style={{ fontSize: 'clamp(3.2rem, 16vw, 12rem)', letterSpacing: '-0.02em' }}>
               Œno
             </h1>
 
@@ -416,8 +416,8 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
       <section ref={acteARef} className="relative" style={pinH('240vh')}>
         <div className={`${pinCls} flex items-center justify-center`} style={{ background: '#FAFAF9' }}>
           <div className="max-w-4xl mx-auto px-6 text-center">
-            <h2 className="font-serif font-medium text-anthracite-950 tracking-tight leading-[1.06]"
-                style={{ fontSize: 'clamp(2.6rem, 9vw, 6.2rem)' }}>
+            <h2 className="font-serif font-light text-anthracite-950 leading-[1.06]"
+                style={{ fontSize: 'clamp(2.6rem, 9vw, 6.2rem)', letterSpacing: '-0.015em' }}>
               <span data-lp-line style={hiddenLine} className="block">Vous n'y connaissez</span>
               <span data-lp-line style={hiddenLine} className="block">rien en vin ?</span>
               <span data-lp-line style={hiddenLine} className="block italic text-wine-900 mt-3">Parfait.</span>
@@ -431,8 +431,8 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
         <div className={`${pinCls} bg-noise flex items-center justify-center`}
              style={{ background: 'radial-gradient(ellipse 80% 90% at 50% 0%, #1C1917 0%, #0C0A09 70%)' }}>
           <div className="max-w-4xl mx-auto px-6 text-center">
-            <h2 className="font-serif font-medium text-cream tracking-tight leading-[1.06]"
-                style={{ fontSize: 'clamp(2.6rem, 9vw, 6.2rem)' }}>
+            <h2 className="font-serif font-light text-cream leading-[1.06]"
+                style={{ fontSize: 'clamp(2.6rem, 9vw, 6.2rem)', letterSpacing: '-0.015em' }}>
               <span data-lp-line style={hiddenLine} className="block">Pas de jargon.</span>
               <span data-lp-line style={hiddenLine} className="block">Pas de snobisme.</span>
               <span data-lp-line style={hiddenLine} className="block mt-5">

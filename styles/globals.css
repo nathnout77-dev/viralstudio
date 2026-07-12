@@ -29,7 +29,15 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; }
+  /* Fraunces variable : l'axe optique (opsz) s'ajuste automatiquement à la
+     taille rendue — fin et incisif en display, plus charpenté en petit. */
+  h1, h2, h3, h4, .font-serif {
+    font-family: 'Fraunces', Georgia, serif;
+    font-optical-sizing: auto;
+  }
+  /* Fraunces est plus opulente que Playfair : les très grands corps se
+     resserrent légèrement pour garder la tension des titres. */
+  h1, h2 { letter-spacing: -0.01em; }
 
   /* Grain de papier généralisé — voile de bruit fixe, imperceptible mais
      présent, sur toutes les vues (crème comme sombres). Zéro JS, un seul

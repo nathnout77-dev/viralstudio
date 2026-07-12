@@ -290,7 +290,7 @@ export default function RoueAromes() {
           <text
             x={C} y={C + 1}
             textAnchor="middle"
-            fontFamily="'Playfair Display', Georgia, serif"
+            fontFamily="'Fraunces', Georgia, serif"
             fontSize="22"
             fontWeight="500"
             fill="#1C1917"

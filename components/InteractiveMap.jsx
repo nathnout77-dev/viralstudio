@@ -453,7 +453,7 @@ export default function InteractiveMap({ onAddWine, onNoter }) {
                     }}
                   >
                     <MapComponents.Tooltip direction="top" offset={[0, -10]}>
-                      <div style={{ fontFamily: 'Playfair Display, serif', fontSize: 12, color: '#1e2426', fontWeight: 600 }}>
+                      <div style={{ fontFamily: 'Fraunces, serif', fontSize: 12, color: '#1e2426', fontWeight: 600 }}>
                         {wine.appellation}
                       </div>
                       <div style={{ fontSize: 10, color: '#7a8486', marginTop: 2 }}>

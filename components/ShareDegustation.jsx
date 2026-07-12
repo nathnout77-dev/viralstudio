@@ -75,7 +75,7 @@ async function renderCard(canvas, entry) {
     await Promise.all([
       document.fonts.load('700 130px Tangerine'),
       document.fonts.load('400 62px Tangerine'),
-      document.fonts.load('italic 500 40px "Playfair Display"'),
+      document.fonts.load('italic 500 40px "Fraunces"'),
       document.fonts.load('600 26px Inter'),
       document.fonts.ready,
     ])
@@ -171,9 +171,9 @@ async function renderCard(canvas, entry) {
     y += 20
   }
 
-  // Ressenti — 2-3 lignes max, guillemets élégants, Playfair italique
+  // Ressenti — 2-3 lignes max, guillemets élégants, Fraunces italique
   if (entry.ressenti) {
-    ctx.font = 'italic 500 40px "Playfair Display", serif'
+    ctx.font = 'italic 500 40px "Fraunces", serif'
     ctx.fillStyle = 'rgba(245,240,232,0.88)'
     const lines = wrapLines(ctx, entry.ressenti.replace(/\s+/g, ' ').trim(), W - 300, 3)
     if (lines.length) {

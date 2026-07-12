@@ -199,7 +199,7 @@ function JournalForm({ initial, caveWines, onSave, onClose }) {
         <div className="p-6 pb-4 flex-shrink-0 flex items-center justify-between border-b border-anthracite-900/[0.06]">
           <div>
             <span className="eyebrow mb-1">{initial ? 'Modifier la note' : 'Nouvelle note'}</span>
-            <h3 className="text-2xl font-bold text-anthracite-900" style={{ fontFamily: 'Playfair Display, serif' }}>
+            <h3 className="text-2xl font-bold text-anthracite-900" style={{ fontFamily: 'Fraunces, serif' }}>
               {initial ? 'Affiner ce souvenir' : 'Racontez cette dégustation'}
             </h3>
           </div>
@@ -387,7 +387,7 @@ function CarnetPage({ entry, onClose, onEdit, onDelete }) {
             <>
               <div className="divider-gold" />
               <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-2">Votre ressenti</div>
-              <p className="text-[15px] text-anthracite-800 leading-loose whitespace-pre-line" style={{ fontFamily: 'Playfair Display, serif' }}>
+              <p className="text-[15px] text-anthracite-800 leading-loose whitespace-pre-line" style={{ fontFamily: 'Fraunces, serif' }}>
                 {entry.ressenti}
               </p>
             </>
