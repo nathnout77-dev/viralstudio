@@ -1,6 +1,8 @@
-import { useState } from 'react'
-import { Wine, ArrowRight } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { Wine, ArrowRight, Quote } from 'lucide-react'
 import { WINE_DB } from '../data/wineDatabase'
+import { diversifyByRegion, buildRaison, getRegionsPref } from '../lib/suggestions'
+import RegionsPrefFilter from './RegionsPrefFilter'
 import useModalBehavior from '../lib/useModal'
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -159,16 +161,54 @@ function scoreWine(w, niveau, gouts) {
   return s
 }
 
+const N_RESULTS = 5
+
+// Traduit les réponses d'onboarding en critères pour buildRaison
+function criteresFromGouts(niveau, gouts) {
+  const c = { niveau }
+  if (gouts.sucre?.includes('Doux')) c.sucre = 'doux'
+  if (gouts.sucre?.includes('Sec')) c.sucre = 'sec'
+  if (gouts.intensite?.includes('Léger')) c.style = 'leger'
+  if (gouts.intensite === 'Équilibré') c.style = 'equilibre'
+  if (gouts.intensite?.includes('Costaud')) c.style = 'costaud'
+  if (gouts.bouche?.includes('Puissant')) c.style = 'puissant'
+  if (gouts.bouche?.includes('Léger')) c.style = 'leger'
+  if (gouts.bouche?.includes('Tannique')) c.style = 'puissant'
+  if (gouts.bouche?.includes('Minéral')) c.fraicheur = true
+  const max = budgetMax(gouts.budget)
+  if (max != null && max < 999) c.budget = max
+  return c
+}
+
 export default function OnboardingProfil({ onComplete }) {
   useModalBehavior() // verrouille le scroll de fond (pas d'Échap : parcours obligatoire)
   const [niveau, setNiveau] = useState(null)
   const [step, setStep]     = useState(0)
   const [answers, setAnswers] = useState({})
-  const [results, setResults] = useState(null)
   const [pendingProfil, setPendingProfil] = useState(null)
+  const [regionsPref, setRegionsPrefState] = useState(() =>
+    typeof window === 'undefined' ? [] : getRegionsPref()
+  )
+  const isConnaisseur = niveau === 'expert'
 
   const questions = niveau ? QUESTIONS[niveau === 'debutant' ? 'debutant' : 'expert'] : []
   const currentQ  = niveau && step < questions.length ? questions[step] : null
+
+  // Résultats recalculés à chaque changement de régions préférées
+  const results = useMemo(() => {
+    if (!pendingProfil) return null
+    const activeRegions = isConnaisseur ? regionsPref : []
+    const pool = activeRegions.length ? WINE_DB.filter(w => activeRegions.includes(w.region)) : WINE_DB
+    const scored = pool
+      .map(w => ({ w, s: scoreWine(w, pendingProfil.niveau, pendingProfil.gouts) }))
+      .sort((a, b) => b.s - a.s)
+    return diversifyByRegion(scored, N_RESULTS) // jamais deux vins de la même région
+  }, [pendingProfil, regionsPref, isConnaisseur])
+
+  const criteres = useMemo(
+    () => (pendingProfil ? criteresFromGouts(pendingProfil.niveau, pendingProfil.gouts) : {}),
+    [pendingProfil]
+  )
 
   const answer = (qid, label) => {
     const next = { ...answers, [qid]: label }
@@ -176,14 +216,7 @@ export default function OnboardingProfil({ onComplete }) {
     if (step < questions.length - 1) {
       setStep(s => s + 1)
     } else {
-      const profil = { niveau, gouts: next }
-      const top3 = [...WINE_DB]
-        .map(w => ({ w, s: scoreWine(w, niveau, next) }))
-        .sort((a, b) => b.s - a.s)
-        .slice(0, 3)
-        .map(x => x.w)
-      setPendingProfil(profil)
-      setResults(top3)
+      setPendingProfil({ niveau, gouts: next })
     }
   }
 
@@ -209,7 +242,7 @@ export default function OnboardingProfil({ onComplete }) {
           </div>
           <h3 className="font-serif text-xl font-medium">Bienvenue sur Œno !</h3>
           <p className="text-cream/70 text-xs mt-1">
-            {results ? 'Voici 3 vins pour démarrer, choisis pour vous' : niveau ? `Encore ${questions.length - step} petite${questions.length - step > 1 ? 's' : ''} question${questions.length - step > 1 ? 's' : ''}…` : '5 questions max pour tout personnaliser pour vous.'}
+            {results ? `Voici ${results.length} vins pour démarrer, choisis pour vous` : niveau ? `Encore ${questions.length - step} petite${questions.length - step > 1 ? 's' : ''} question${questions.length - step > 1 ? 's' : ''}…` : '5 questions max pour tout personnaliser pour vous.'}
           </p>
         </div>
 
@@ -217,16 +250,19 @@ export default function OnboardingProfil({ onComplete }) {
           {results ? (
             <div className="animate-fade-in-up">
               <h4 className="font-serif text-base font-bold text-anthracite-900 text-center mb-1">
-                🎉 3 vins pour démarrer
+                🎉 {results.length} vins pour démarrer
               </h4>
               <p className="text-xs text-anthracite-400 text-center mb-5">
                 Sélectionnés selon vos réponses — vous les retrouverez dans la Bibliothèque
               </p>
+              {isConnaisseur && (
+                <RegionsPrefFilter selected={regionsPref} onChange={setRegionsPrefState} />
+              )}
               <div className="space-y-3">
                 {results.map((w, i) => (
                   <div
                     key={w.id}
-                    className="card p-4 flex items-center gap-3 animate-scale-in"
+                    className="card p-4 flex items-start gap-3 animate-scale-in"
                     style={{ animationDelay: `${i * 90}ms`, animationFillMode: 'both' }}
                   >
                     <span className="text-2xl flex-shrink-0">{w.emoji}</span>
@@ -234,6 +270,10 @@ export default function OnboardingProfil({ onComplete }) {
                       <span className="block text-sm font-bold text-anthracite-900 truncate">{w.appellation}</span>
                       <span className="block text-xs text-anthracite-400 truncate">{w.region} · ~{w.prixMoyen} €</span>
                       <span className="block text-xs text-anthracite-500 italic mt-0.5">« {w.enUneMot} »</span>
+                      <span className="flex items-start gap-1.5 text-[11px] text-anthracite-600 italic mt-1.5 leading-relaxed">
+                        <Quote size={10} className="flex-shrink-0 mt-0.5 text-gold-600" />
+                        <span>{buildRaison(w, { ...criteres, regionPref: isConnaisseur && regionsPref.includes(w.region) })}</span>
+                      </span>
                     </span>
                   </div>
                 ))}

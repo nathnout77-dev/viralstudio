@@ -1,8 +1,10 @@
 import { useState, useMemo } from 'react'
-import { X, RefreshCw, Sparkles, ChevronLeft, GraduationCap } from 'lucide-react'
+import { X, RefreshCw, Sparkles, ChevronLeft, GraduationCap, Quote } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
 import { computeProfilAppris, bonusProfilAppris } from '../data/goutsAppris'
+import { diversifyByRegion, buildRaison, getRegionsPref } from '../lib/suggestions'
 import JaugesGout from './JaugesGout'
+import RegionsPrefFilter from './RegionsPrefFilter'
 import { EnvieButton } from './Envies'
 import useModalBehavior from '../lib/useModal'
 
@@ -119,31 +121,38 @@ function score(w, a, mode) {
   return s
 }
 
-function buildReason(w, a) {
-  const bits = []
-  const platLabels = {
-    viande_rouge: 'votre viande rouge', volaille: 'la volaille', poisson: 'le poisson',
-    pates: 'les pâtes', fromage: 'le fromage', vege: 'un repas léger',
-    dessert: 'le dessert', apero: 'l\'apéro',
-  }
-  bits.push(`Parfait avec ${platLabels[a.plat] || 'votre repas'}`)
-  if (a.style === 'leger') bits.push('léger et frais comme demandé')
-  if (a.style === 'puissant') bits.push('du caractère, comme vous l\'aimez')
-  if (a.style === 'doux') bits.push('la gourmandise que vous cherchez')
-  if (a.occasion === 'invites') bits.push('de quoi impressionner vos invités')
-  if (w.prixMoyen <= a.budget * 0.6) bits.push(`et il reste dans votre budget (~${w.prixMoyen}€)`)
-  return bits.join(', ') + '.'
-}
+const N_RESULTS = 5
 
 export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
   useModalBehavior(onClose)
   const [step, setStep]       = useState(0)
   const [answers, setAnswers] = useState({})
-  const [results, setResults] = useState(null)
+  const [done, setDone]       = useState(false)
+  const [regionsPref, setRegionsPrefState] = useState(() => getRegionsPref())
   // Profil appris des dégustations : bonus doux (~30 %), n'écrase pas le quiz.
   const profilAppris = useMemo(() => computeProfilAppris(), [])
+  const isConnaisseur = mode === 'expert'
 
   const current = QUESTIONS[step]
+
+  // Résultats recalculés à chaque changement de réponses ou de régions préférées
+  const results = useMemo(() => {
+    if (!done) return null
+    const activeRegions = isConnaisseur ? regionsPref : []
+    const pool = activeRegions.length ? WINE_DB.filter(w => activeRegions.includes(w.region)) : WINE_DB
+    const scored = pool
+      .map(w => ({ w, s: score(w, answers, mode) + bonusProfilAppris(w, profilAppris, 0.5) }))
+      .sort((a, b) => b.s - a.s)
+    let filtered = scored.filter(x => x.s > -5)
+    if (filtered.length < N_RESULTS) filtered = scored // fallback : garantir toujours 5 vins
+    return diversifyByRegion(filtered, N_RESULTS) // jamais deux vins de la même région
+  }, [done, answers, mode, profilAppris, regionsPref, isConnaisseur])
+
+  const criteresFor = (w) => ({
+    plat: answers.plat, style: answers.style, budget: answers.budget,
+    occasion: answers.occasion, niveau: mode, profilAppris: !!profilAppris,
+    regionPref: isConnaisseur && regionsPref.includes(w.region),
+  })
 
   const select = (v) => {
     const next = { ...answers, [current.id]: v }
@@ -151,17 +160,11 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
     if (step < QUESTIONS.length - 1) {
       setTimeout(() => setStep(s => s + 1), 180)
     } else {
-      const scored = WINE_DB
-        .map(w => ({ w, s: score(w, next, mode) + bonusProfilAppris(w, profilAppris, 0.5) }))
-        .sort((a, b) => b.s - a.s)
-      let filtered = scored.filter(x => x.s > -5)
-      if (filtered.length < 3) filtered = scored // fallback : garantir toujours 3 vins
-      const top = filtered.slice(0, 3).map(x => x.w)
-      setResults(top)
+      setDone(true)
     }
   }
 
-  const reset = () => { setStep(0); setAnswers({}); setResults(null) }
+  const reset = () => { setStep(0); setAnswers({}); setDone(false) }
 
   return (
     <div
@@ -183,7 +186,7 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
               <span className="eyebrow-dark mb-2">Sommelier express</span>
               <h3 className="font-serif text-2xl font-medium">Ce soir, je bois quoi ?</h3>
               <p className="text-cream/70 text-sm mt-1">
-                {results ? 'Vos 3 vins, choisis pour vous.' : '5 petites questions → le vin parfait pour votre soirée.'}
+                {results ? `Vos ${results.length} vins, choisis pour vous.` : '5 petites questions → le vin parfait pour votre soirée.'}
               </p>
             </div>
             <button onClick={onClose}
@@ -248,6 +251,10 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
                 </button>
               </div>
 
+              {isConnaisseur && (
+                <RegionsPrefFilter selected={regionsPref} onChange={setRegionsPrefState} />
+              )}
+
               {results.length === 0 && (
                 <p className="text-center text-sm text-anthracite-500 py-8">
                   Aucun vin ne colle parfaitement — essayez avec un budget plus large !
@@ -287,8 +294,9 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
                         <div className="mt-2">
                           <JaugesGout jauges={w.jauges} compact animate={false} />
                         </div>
-                        <p className="text-[11px] text-anthracite-600 mt-2 leading-relaxed">
-                          {buildReason(w, answers)}
+                        <p className="text-[11px] text-anthracite-600 italic mt-2 leading-relaxed flex items-start gap-1.5">
+                          <Quote size={10} className="flex-shrink-0 mt-0.5 text-gold-600" />
+                          <span>{buildRaison(w, criteresFor(w))}</span>
                         </p>
                       </div>
                     </div>

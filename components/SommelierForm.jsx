@@ -1,7 +1,10 @@
 import { useState, useMemo } from 'react'
-import { Sparkles, ChevronLeft, Utensils, Coins, GraduationCap, UtensilsCrossed } from 'lucide-react'
+import { Sparkles, ChevronLeft, Utensils, Coins, GraduationCap, UtensilsCrossed, Quote } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG, MILLESIMES_DB } from '../data/wineDatabase'
 import { computeProfilAppris, bonusProfilAppris } from '../data/goutsAppris'
+import { diversifyByRegion, buildRaison, getRegionsPref } from '../lib/suggestions'
+import { loadProfil } from './OnboardingProfil'
+import RegionsPrefFilter from './RegionsPrefFilter'
 import dynamic from 'next/dynamic'
 import JaugesGout from './JaugesGout'
 
@@ -159,11 +162,52 @@ export default function SommelierForm({ onOpenBibliotheque }) {
   })
   const [step, setStep]       = useState(0)
   const [answers, setAnswers] = useState({})
-  const [results, setResults] = useState(null)
+  const [profile, setProfile] = useState(null)
+  const [regionsPref, setRegionsPrefState] = useState(() =>
+    typeof window === 'undefined' ? [] : getRegionsPref()
+  )
   // Profil appris des dégustations : bonus doux (~30 %), n'écrase pas le quiz.
   const profilAppris = useMemo(() => computeProfilAppris(), [])
+  const niveau = useMemo(() => (typeof window === 'undefined' ? null : loadProfil()?.niveau), [])
+  const isConnaisseur = niveau === 'expert'
 
   const current = QUIZ[step]
+
+  const N_RESULTS = 5
+
+  // Résultats recalculés à chaque changement de profil quiz ou de régions préférées
+  const results = useMemo(() => {
+    if (!profile) return null
+    const activeRegions = isConnaisseur ? regionsPref : []
+    const pool = activeRegions.length ? WINE_DB.filter(w => activeRegions.includes(w.region)) : WINE_DB
+    const scored = pool
+      .map(w => ({ wine: w, score: scoreWine(w, profile) + bonusProfilAppris(w, profilAppris, 0.6) }))
+      .sort((a, b) => b.score - a.score)
+    let filtered = scored.filter(x => x.score > -50)
+    if (filtered.length < N_RESULTS) filtered = scored // garantir 5 vins quand la base le permet
+    return diversifyByRegion(filtered, N_RESULTS) // jamais deux vins de la même région
+      .map(wine => ({ ...wine, millesimesReco: getMillesimesFor(wine) }))
+  }, [profile, profilAppris, regionsPref, isConnaisseur])
+
+  // Critères réellement matchés → phrase personnalisée sous chaque vin
+  const criteres = useMemo(() => {
+    if (!profile) return {}
+    const p = profile
+    const style =
+      p.puissance >= 2 ? 'puissant'
+      : p.douceur >= 3 ? 'doux'
+      : p.fraicheur >= 2 ? 'leger'
+      : 'equilibre'
+    return {
+      style,
+      fraicheur: p.fraicheur >= 2,
+      fruit: p.fruit >= 2,
+      rondeur: p.rondeur >= 2,
+      budget: p.budgetMax < 9999 ? p.budgetMax : undefined,
+      niveau,
+      profilAppris: !!profilAppris,
+    }
+  }, [profile, niveau, profilAppris])
 
   const select = (label) => {
     const newAnswers = { ...answers, [current.id]: label }
@@ -171,18 +215,11 @@ export default function SommelierForm({ onOpenBibliotheque }) {
     if (step < QUIZ.length - 1) {
       setTimeout(() => setStep(s => s + 1), 200)
     } else {
-      const profile = computeProfile(newAnswers)
-      const ranked = WINE_DB
-        .map(w => ({ wine: w, score: scoreWine(w, profile) + bonusProfilAppris(w, profilAppris, 0.6) }))
-        .filter(x => x.score > -50)
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 4)
-        .map(({ wine }) => ({ ...wine, millesimesReco: getMillesimesFor(wine) }))
-      setResults(ranked)
+      setProfile(computeProfile(newAnswers))
     }
   }
 
-  const reset = () => { setStep(0); setAnswers({}); setResults(null) }
+  const reset = () => { setStep(0); setAnswers({}); setProfile(null) }
 
   // ── Budget caviste ──
   if (tool === 'budget') {
@@ -240,6 +277,10 @@ export default function SommelierForm({ onOpenBibliotheque }) {
           )}
         </div>
 
+        {isConnaisseur && (
+          <RegionsPrefFilter selected={regionsPref} onChange={setRegionsPrefState} />
+        )}
+
         <div className="space-y-4 mb-6">
           {results.map((w, i) => {
             const diff = DIFFICULTE_CONFIG[w.difficulte]
@@ -290,6 +331,10 @@ export default function SommelierForm({ onOpenBibliotheque }) {
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-anthracite-100">
+                  <p className="text-xs text-anthracite-600 italic leading-relaxed flex items-start gap-1.5 mb-1.5">
+                    <Quote size={10} className="flex-shrink-0 mt-0.5 text-gold-600" />
+                    <span>{buildRaison(w, { ...criteres, regionPref: isConnaisseur && regionsPref.includes(w.region) })}</span>
+                  </p>
                   <p className="text-xs text-anthracite-600 leading-relaxed">
                     <span className="font-semibold">Pourquoi ce vin ? </span>{w.pourQui}.
                   </p>
