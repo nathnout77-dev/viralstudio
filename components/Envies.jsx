@@ -58,13 +58,28 @@ export function useEnvies() {
 
 // ── Bouton cœur discret ──────────────────────────────────────────────────────
 // Rendu en <span role="button"> pour pouvoir vivre dans une carte cliquable.
+// 6 particules d'or radiales (cercles et losanges alternés, voir .envie-particle)
+const PARTICLES = Array.from({ length: 6 }, (_, i) => {
+  const angle = (i / 6) * Math.PI * 2 - Math.PI / 2
+  return { dx: `${Math.round(Math.cos(angle) * 16)}px`, dy: `${Math.round(Math.sin(angle) * 16)}px` }
+})
+
 export function EnvieButton({ appellation, size = 15, light = false, className = '' }) {
   const envies = useEnvies()
   const active = envies.some(e => e.appellation === appellation)
+  const [burst, setBurst] = useState(false)
+
+  // À l'ajout uniquement : pop du cœur + éclosion de particules d'or (500ms)
+  useEffect(() => {
+    if (!burst) return undefined
+    const t = setTimeout(() => setBurst(false), 500)
+    return () => clearTimeout(t)
+  }, [burst])
 
   const toggle = e => {
     e.stopPropagation()
     e.preventDefault()
+    if (!active) setBurst(true)
     toggleEnvie(appellation)
   }
 
@@ -77,7 +92,7 @@ export function EnvieButton({ appellation, size = 15, light = false, className =
       aria-label={active ? 'Retirer de ma liste d\'envies' : 'Ajouter à ma liste d\'envies'}
       aria-pressed={active}
       title={active ? 'Dans ma liste d\'envies' : 'Ajouter à ma liste d\'envies'}
-      className={`inline-flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 cursor-pointer hover:scale-110 active:scale-95 ${
+      className={`relative inline-flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 cursor-pointer hover:scale-110 active:scale-95 ${
         light
           ? 'bg-white/20 hover:bg-white/35'
           : 'bg-white border border-anthracite-900/10 hover:border-wine-300'
@@ -86,9 +101,12 @@ export function EnvieButton({ appellation, size = 15, light = false, className =
       <Heart
         size={size}
         strokeWidth={1.8}
-        fill={active ? '#8c2f39' : 'none'}
-        className={active ? 'text-wine-700' : light ? 'text-cream' : 'text-anthracite-400'}
+        fill={burst ? '#c9a84c' : active ? '#8c2f39' : 'none'}
+        className={`${burst ? 'envie-pop text-gold-500' : active ? 'text-wine-700' : light ? 'text-cream' : 'text-anthracite-400'}`}
       />
+      {burst && PARTICLES.map((p, i) => (
+        <span key={i} className="envie-particle" style={{ '--dx': p.dx, '--dy': p.dy }} aria-hidden="true" />
+      ))}
     </span>
   )
 }

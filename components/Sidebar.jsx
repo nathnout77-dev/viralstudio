@@ -1,4 +1,5 @@
 import { Wine, Library, MapPin, Sparkles, BookOpen, Plus, Utensils, ScanLine, UserCircle2, MessageCircleHeart } from 'lucide-react'
+import RollingNumber from './RollingNumber'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Sidebar desktop (≥ lg) — signature luxe : noir profond, textes crème,
@@ -66,7 +67,7 @@ export default function Sidebar({ tab, setTab, total, mode, onProfil, onAdd, onL
         <div>
           <div className="font-serif text-2xl text-cream tracking-wide leading-none">Œno</div>
           <div className="text-[9px] text-gold-500 uppercase tracking-[0.22em] mt-1.5">
-            {total} bouteille{total > 1 ? 's' : ''} en cave
+            <RollingNumber value={total} /> bouteille{total > 1 ? 's' : ''} en cave
           </div>
         </div>
       </button>

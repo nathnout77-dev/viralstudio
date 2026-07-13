@@ -4,6 +4,7 @@ import WineCard from './WineCard'
 import JournalDegustation from './JournalDegustation'
 import PanoramaCave from './PanoramaCave'
 import EnviesView, { useEnvies } from './Envies'
+import RollingNumber from './RollingNumber'
 
 const TYPES = ['Tous', 'Rouge', 'Blanc', 'Rosé', 'Effervescent', 'Liquoreux']
 const TYPE_MAP = { 'Rouge':'red', 'Blanc':'white', 'Rosé':'rosé', 'Effervescent':'sparkling', 'Liquoreux':'sweet' }
@@ -104,7 +105,7 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
               <span className={`min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full text-[9px] font-bold ${
                 sub === id ? 'bg-gold-500/30 text-gold-300' : 'bg-wine-800 text-cream'
               }`}>
-                {badge}
+                <RollingNumber value={badge} />
               </span>
             )}
           </button>

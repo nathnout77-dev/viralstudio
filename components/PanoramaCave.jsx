@@ -2,6 +2,7 @@ import { useMemo, useEffect, useState } from 'react'
 import { BarChart3, Wine, Hourglass, Coins, CalendarClock, Quote, GraduationCap } from 'lucide-react'
 import { WINE_DB, gardeForMillesime } from '../data/wineDatabase'
 import { computeProfilAppris } from '../data/goutsAppris'
+import RollingNumber from './RollingNumber'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Panorama — tableau de bord statistique de la cave.
@@ -278,7 +279,7 @@ export default function PanoramaCave({ wines }) {
         ].map(({ Icon, label, value, sub }, i) => (
           <div key={label} className="card p-4 animate-fade-in-up" style={{ animationDelay: `${i * 60}ms`, animationFillMode: 'both' }}>
             <Icon size={14} className="text-gold-600 mb-2" />
-            <div className="text-xl sm:text-2xl font-semibold text-anthracite-900 font-serif">{value}</div>
+            <div className="text-xl sm:text-2xl font-semibold text-anthracite-900 font-serif"><RollingNumber value={value} /></div>
             <div className="text-[10px] text-anthracite-500 uppercase tracking-wide mt-0.5">{label}</div>
             <div className="text-[10px] text-anthracite-400">{sub}</div>
           </div>
