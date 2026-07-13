@@ -321,7 +321,7 @@ function VinCard({ wine, onClick, index }) {
 
       {/* Nom + appellation en petites capitales espacées */}
       <div className="text-center mb-2 min-w-0">
-        <div className="font-wine-name text-3xl text-anthracite-900 leading-none truncate">
+        <div className="font-wine-name text-2xl text-anthracite-900 leading-tight line-clamp-2 whitespace-normal">
           {wine.emoji} {wine.appellation}
         </div>
         <div className="text-[9px] uppercase tracking-[0.22em] text-anthracite-400 mt-1.5">

@@ -56,7 +56,7 @@ export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty
             <Wine size={16} className="text-white/60" />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="font-wine-name text-2xl text-anthracite-900 truncate">{wine.name}</div>
+            <div className="font-wine-name text-2xl text-anthracite-900 leading-tight line-clamp-2 whitespace-normal">{wine.name}</div>
             <div className="text-xs text-anthracite-500 truncate">{wine.domain}</div>
             <div className="flex items-center gap-2 mt-1">
               <TypeBadge type={wine.type} />
