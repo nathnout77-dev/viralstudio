@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { X, CloudOff, Cloud, Mail, LogOut, Check, RefreshCw, Smartphone, CloudDownload, UserCircle2 } from 'lucide-react'
+import { X, CloudOff, Cloud, Mail, LogOut, Check, RefreshCw, Smartphone, CloudDownload, UserCircle2, Download, Upload, ShieldCheck } from 'lucide-react'
 import { supabase, cloudDisponible } from '../lib/supabase'
 import CaveAmisSection, { pushPartageSnapshot } from './CaveAmis'
 import useModalBehavior from '../lib/useModal'
+import { toast } from './Toast'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Compte & synchronisation cloud — local-first.
@@ -72,6 +73,110 @@ export function useSession() {
     return () => sub.subscription.unsubscribe()
   }, [])
   return session
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Filet de sécurité local — export/import d'un fichier JSON unique regroupant
+// toutes les clés localStorage de l'app. Disponible que le cloud soit
+// configuré ou non : quand il ne l'est pas, c'est la seule sauvegarde
+// possible ; quand il l'est, c'est un complément (jamais un remplacement
+// de la synchronisation cloud, qui reste prioritaire et automatique).
+// ═══════════════════════════════════════════════════════════════════════════
+
+function exportSauvegardeLocale() {
+  const snap = snapshotLocal()
+  const payload = { app: 'oeno', version: 1, exportedAt: new Date().toISOString(), data: snap }
+  const date = new Date().toISOString().slice(0, 10)
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `oeno-sauvegarde-${date}.json`
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  URL.revokeObjectURL(url)
+  toast('Sauvegarde exportée')
+}
+
+function restaurerSauvegardeLocale(file, onDone) {
+  const reader = new FileReader()
+  reader.onload = () => {
+    let parsed
+    try {
+      parsed = JSON.parse(reader.result)
+    } catch {
+      onDone('Fichier illisible : ce n\'est pas une sauvegarde Œno valide.')
+      return
+    }
+    const data = parsed?.data && typeof parsed.data === 'object' ? parsed.data : null
+    if (!data) {
+      onDone('Fichier illisible : ce n\'est pas une sauvegarde Œno valide.')
+      return
+    }
+    const confirmed = window.confirm(
+      'Restaurer ce fichier remplacera votre cave, vos mémoires de vin, vos envies, ' +
+      'votre profil et votre progression École actuels sur cet appareil. Continuer ?'
+    )
+    if (!confirmed) return
+    for (const [col, key] of Object.entries(SYNC_KEYS)) {
+      if (Object.prototype.hasOwnProperty.call(data, col) && data[col] !== undefined) {
+        try {
+          if (data[col] === null) localStorage.removeItem(key)
+          else localStorage.setItem(key, JSON.stringify(data[col]))
+        } catch {}
+      }
+    }
+    toast('Sauvegarde restaurée')
+    onDone(null, true)
+  }
+  reader.onerror = () => onDone('Impossible de lire ce fichier.')
+  reader.readAsText(file)
+}
+
+function ExportRestoreLocal({ compact = false }) {
+  const [err, setErr] = useState(null)
+  const inputId = compact ? 'restore-file-compact' : 'restore-file'
+
+  const handleFile = e => {
+    const file = e.target.files?.[0]
+    e.target.value = '' // permet de re-sélectionner le même fichier plus tard
+    if (!file) return
+    setErr(null)
+    restaurerSauvegardeLocale(file, (error, reload) => {
+      if (error) { setErr(error); return }
+      if (reload) window.location.reload()
+    })
+  }
+
+  return (
+    <div className={compact ? 'mt-4 pt-4 border-t border-anthracite-900/[0.07]' : ''}>
+      {!compact && (
+        <div className="flex items-start gap-2 mb-3">
+          <ShieldCheck size={14} className="text-wine-800 flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-anthracite-500 leading-relaxed">
+            En attendant, gardez un filet de sécurité local : exportez un fichier de
+            sauvegarde, ou restaurez-en un précédemment téléchargé.
+          </p>
+        </div>
+      )}
+      {compact && (
+        <p className="text-[11px] text-anthracite-400 leading-relaxed mb-2.5">
+          Filet de sécurité local, en complément de la sauvegarde cloud.
+        </p>
+      )}
+      <div className="flex flex-wrap gap-2.5">
+        <button type="button" onClick={exportSauvegardeLocale} className="btn-ghost text-xs px-3.5 py-2">
+          <Download size={12} /> Exporter mes données
+        </button>
+        <label htmlFor={inputId} className="btn-ghost text-xs px-3.5 py-2 cursor-pointer">
+          <Upload size={12} /> Restaurer depuis un fichier
+          <input id={inputId} type="file" accept="application/json" onChange={handleFile} className="hidden" />
+        </label>
+      </div>
+      {err && <p className="text-xs text-red-700 mt-2.5">{err}</p>}
+    </div>
+  )
 }
 
 export default function CompteSync({ onClose, extraSection = null }) {
@@ -203,13 +308,19 @@ export default function CompteSync({ onClose, extraSection = null }) {
         <div className="px-6 py-6 overflow-y-auto">
           {/* Cloud indisponible (env vars absentes) */}
           {!cloudDisponible && (
-            <div className="text-center py-6">
-              <CloudOff size={36} className="text-anthracite-200 mx-auto mb-4" />
-              <p className="font-serif text-base text-anthracite-600 mb-2">La sauvegarde cloud arrive bientôt</p>
-              <p className="text-xs text-anthracite-400 leading-relaxed max-w-xs mx-auto">
-                Pas d'inquiétude : votre cave, vos mémoires de vin et vos envies sont
-                soigneusement conservées sur cet appareil. Rien ne se perd.
-              </p>
+            <div className="py-2">
+              <div className="text-center mb-5">
+                <CloudOff size={36} className="text-anthracite-200 mx-auto mb-4" />
+                <p className="font-serif text-base text-anthracite-600 mb-2">
+                  La synchronisation cloud n'est pas encore activée
+                </p>
+                <p className="text-xs text-anthracite-400 leading-relaxed max-w-xs mx-auto">
+                  Votre cave, vos mémoires de vin, vos envies et votre profil ne vivent
+                  aujourd'hui que sur cet appareil, dans ce navigateur. Si vous videz son
+                  historique ou en changez, ces données peuvent être perdues.
+                </p>
+              </div>
+              <ExportRestoreLocal />
             </div>
           )}
 
@@ -231,6 +342,7 @@ export default function CompteSync({ onClose, extraSection = null }) {
                 <Mail size={14} />
                 {busy ? 'Envoi…' : 'Recevoir mon lien de connexion'}
               </button>
+              <ExportRestoreLocal compact />
             </form>
           )}
 
@@ -299,6 +411,7 @@ export default function CompteSync({ onClose, extraSection = null }) {
               </p>
               {error && <p className="text-xs text-red-700 mt-3">{error}</p>}
               <CaveAmisSection user={user} />
+              <ExportRestoreLocal compact />
               {extraSection}
             </div>
           )}

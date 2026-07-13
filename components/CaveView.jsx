@@ -115,10 +115,10 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
         <button
           onClick={onCompte}
           className="ml-auto flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer bg-white text-anthracite-600 border border-anthracite-200 hover:border-gold-500/70"
-          title="Sauvegarder et synchroniser ma cave dans le cloud"
+          title="Mon compte, sauvegarde et synchronisation"
         >
           <CloudUpload size={13} className="text-gold-600" />
-          Synchroniser mes données
+          Mon compte & sauvegarde
         </button>
       </div>
 
