@@ -27,12 +27,9 @@ export default function Document() {
         <meta name="twitter:description" content="Vous n'y connaissez rien en vin ? Parfait. Œno décode plus de 100 vins pour néophytes." />
         <meta name="twitter:image" content="/icons/icon-512.png" />
 
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..500&family=Tangerine:wght@400;700&display=swap"
-          rel="stylesheet"
-        />
+        {/* Inter / Fraunces / Tangerine sont désormais auto-hébergées via
+            next/font/google (voir lib/fonts.js + pages/_app.jsx) : plus de
+            <link> vers fonts.googleapis.com. */}
         <link
           rel="stylesheet"
           href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"

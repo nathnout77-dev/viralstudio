@@ -41,9 +41,9 @@ module.exports = {
         cream: '#FAFAF9',
       },
       fontFamily: {
-        serif:  ['Fraunces', 'Georgia', 'serif'],
-        sans:   ['Inter', 'system-ui', 'sans-serif'],
-        script: ['Tangerine', 'cursive'],
+        serif:  ['var(--font-fraunces)', 'Georgia', 'serif'],
+        sans:   ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        script: ['var(--font-tangerine)', 'cursive'],
       },
       boxShadow: {
         'gold':        '0 8px 32px rgba(201,168,76,0.20)',

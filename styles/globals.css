@@ -24,7 +24,7 @@
   body {
     background-color: #FAFAF9;
     color: #1C1917;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-inter), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -32,7 +32,7 @@
   /* Fraunces variable : l'axe optique (opsz) s'ajuste automatiquement à la
      taille rendue — fin et incisif en display, plus charpenté en petit. */
   h1, h2, h3, h4, .font-serif {
-    font-family: 'Fraunces', Georgia, serif;
+    font-family: var(--font-fraunces), Georgia, serif;
     font-optical-sizing: auto;
   }
   /* Fraunces est plus opulente que Playfair : les très grands corps se
@@ -148,13 +148,13 @@
 
   .section-title {
     @apply text-4xl font-bold text-anthracite-900;
-    font-family: 'Tangerine', cursive;
+    font-family: var(--font-tangerine), cursive;
     line-height: 1;
   }
   /* Noms de bouteilles, domaines, millésimes — calligraphie Tangerine.
      La police rend petit : les tailles sont systématiquement augmentées. */
   .font-wine-name {
-    font-family: 'Tangerine', cursive;
+    font-family: var(--font-tangerine), cursive;
     font-weight: 700;
     line-height: 1.05;
   }
