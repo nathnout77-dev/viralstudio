@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { Wine, ArrowRight, Quote } from 'lucide-react'
 import { WINE_DB } from '../data/wineDatabase'
 import { diversifyByRegion, buildRaison, getRegionsPref } from '../lib/suggestions'
@@ -180,8 +180,22 @@ function criteresFromGouts(niveau, gouts) {
   return c
 }
 
+// Profil par défaut posé quand l'utilisateur quitte l'onboarding avant la fin
+// (Échap ou lien « plus tard ») : niveau intermédiaire raisonnable, sans
+// goûts particuliers — cohérent avec les valeurs utilisées ailleurs
+// (goutsAppris.js, SommelierForm, AssistantView, RegionsPrefFilter).
+const PROFIL_PAR_DEFAUT = { niveau: 'amateur', gouts: {} }
+
 export default function OnboardingProfil({ onComplete }) {
-  useModalBehavior() // verrouille le scroll de fond (pas d'Échap : parcours obligatoire)
+  // Échappatoire : pas question de laisser l'utilisateur bloqué sans issue.
+  // Échap pose un profil par défaut raisonnable puis ferme, comme le lien
+  // « plus tard » ci-dessous — jamais une fermeture qui laisserait l'app
+  // sans aucun profil.
+  const skipOnboarding = useCallback(() => {
+    try { localStorage.setItem(PROFIL_KEY, JSON.stringify(PROFIL_PAR_DEFAUT)) } catch {}
+    onComplete(PROFIL_PAR_DEFAUT)
+  }, [onComplete])
+  useModalBehavior(skipOnboarding)
   const [niveau, setNiveau] = useState(null)
   const [step, setStep]     = useState(0)
   const [answers, setAnswers] = useState({})
@@ -306,6 +320,12 @@ export default function OnboardingProfil({ onComplete }) {
                   </button>
                 ))}
               </div>
+              <button
+                onClick={skipOnboarding}
+                className="mt-5 mx-auto flex text-xs text-anthracite-400 hover:text-anthracite-700 cursor-pointer"
+              >
+                Plus tard, je verrai ça après
+              </button>
             </div>
           ) : currentQ && (
             <div key={currentQ.id} className="animate-slide-up">
