@@ -61,57 +61,61 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
       role="dialog" aria-modal="true"
     >
       <div
-        className="modal-panel sm:max-w-xl lg:max-w-4xl max-h-[92vh] shadow-card-hover"
+        className="modal-panel sm:max-w-xl lg:max-w-5xl max-h-[92vh] lg:h-[88vh] shadow-card-hover"
         onClick={e => e.stopPropagation()}
       >
-        {/* Header coloré */}
+        {/* Header coloré — compact en desktop pour laisser la place au contenu */}
         <div
-          className="p-6 pb-5 flex-shrink-0 relative overflow-hidden gold-sheen"
+          className="p-6 pb-5 lg:py-4 lg:px-7 flex-shrink-0 relative overflow-hidden gold-sheen"
           style={{ background: `linear-gradient(150deg, ${wine.color} 0%, ${wine.color}cc 55%, #1e2426 145%)` }}
         >
-          <div className="absolute -top-8 -right-8 text-[120px] opacity-15 select-none leading-none">{wine.emoji}</div>
-          <div className="relative flex items-start justify-between gap-3">
+          <div className="absolute -top-8 -right-8 text-[120px] lg:text-[80px] opacity-15 select-none leading-none">{wine.emoji}</div>
+          <div className="relative flex items-start lg:items-center justify-between gap-3">
             <div className="min-w-0">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2.5 mb-1.5">
-                    <span className="text-3xl">{wine.emoji}</span>
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-cream/60">
-                      {collectionNumero(WINE_INDEX.get(wine.id) ?? 0)}
-                    </span>
-                    <span className="w-7 h-7 rounded-full border border-cream/40 flex items-center justify-center font-serif text-[11px] text-cream/85" title={wine.region}>
-                      {regionMonogram(wine.region)}
-                    </span>
-                  </div>
-                  <h3 className="font-wine-name text-5xl text-cream">{wine.appellation}</h3>
-                  <p className="text-cream/70 text-sm mt-1.5 flex items-center gap-1.5">
-                    <MapPin size={11} /> {wine.region}
-                    <span className="w-2.5 h-2.5 rounded-full ml-1 ring-1 ring-white/40" style={pastilleStyle(wine.type)} aria-hidden="true" />
-                    <span className="uppercase tracking-[0.18em] text-[10px] font-semibold">{wine.typeLabel}</span>
-                  </p>
-                </div>
+              <div className="flex items-center gap-2.5 mb-1.5 lg:mb-1">
+                <span className="text-3xl lg:text-xl">{wine.emoji}</span>
+                <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-cream/60">
+                  {collectionNumero(WINE_INDEX.get(wine.id) ?? 0)}
+                </span>
+                <span className="w-7 h-7 lg:w-6 lg:h-6 rounded-full border border-cream/40 flex items-center justify-center font-serif text-[11px] lg:text-[10px] text-cream/85" title={wine.region}>
+                  {regionMonogram(wine.region)}
+                </span>
+                {hasPetitDomaine && (
+                  <span className="hidden lg:inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/20 text-cream backdrop-blur-sm">
+                    <Sparkles size={10} /> Petit domaine
+                  </span>
+                )}
               </div>
-              <p className="text-cream/90 font-medium italic mt-3 text-sm">« {wine.enUneMot} »</p>
+              <h3 className="font-wine-name text-5xl lg:text-[2.6rem] text-cream lg:leading-none">{wine.appellation}</h3>
+              <p className="text-cream/70 text-sm lg:text-[13px] mt-1.5 lg:mt-1 flex items-center gap-1.5 flex-wrap">
+                <MapPin size={11} /> {wine.region}
+                <span className="w-2.5 h-2.5 rounded-full ml-1 ring-1 ring-white/40" style={pastilleStyle(wine.type)} aria-hidden="true" />
+                <span className="uppercase tracking-[0.18em] text-[10px] font-semibold">{wine.typeLabel}</span>
+                <span className="hidden lg:inline text-cream/85 font-medium italic ml-2">« {wine.enUneMot} »</span>
+              </p>
+              <p className="text-cream/90 font-medium italic mt-3 text-sm lg:hidden">« {wine.enUneMot} »</p>
               {hasPetitDomaine && (
-                <span className="inline-flex items-center gap-1 mt-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/20 text-cream backdrop-blur-sm">
+                <span className="inline-flex lg:hidden items-center gap-1 mt-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/20 text-cream backdrop-blur-sm">
                   <Sparkles size={10} /> Petit domaine
                 </span>
               )}
             </div>
-            <div className="flex flex-col items-center gap-2 flex-shrink-0">
-              <WineGlassAnim color="#f5f0e8" fillLevel={fillLevelFromJauges(wine.jauges)} size={44} />
-              <EnvieButton appellation={wine.appellation} light />
+            <div className="flex flex-col lg:flex-row-reverse items-center gap-2 lg:gap-2.5 flex-shrink-0">
               <button onClick={onClose}
                       className="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/35 text-cream transition-all cursor-pointer"
                       aria-label="Fermer">
                 <X size={14} />
               </button>
+              <EnvieButton appellation={wine.appellation} light />
+              <div className="lg:hidden">
+                <WineGlassAnim color="#f5f0e8" fillLevel={fillLevelFromJauges(wine.jauges)} size={44} />
+              </div>
             </div>
           </div>
         </div>
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto p-6 lg:p-8 space-y-5 lg:space-y-0 lg:columns-2 lg:gap-10 [&>*]:lg:break-inside-avoid [&>*]:lg:mb-5">
+        <div className="flex-1 overflow-y-auto p-6 lg:px-10 lg:py-8 space-y-5 lg:space-y-0 lg:columns-2 lg:gap-14 [&>*]:lg:break-inside-avoid [&>*]:lg:mb-7">
           {/* Pour qui + difficulté */}
           <div className="flex items-start gap-3">
             <span
@@ -229,52 +233,58 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
           </div>
         </div>
 
-        {/* Footer : ajout cave */}
-        <div className="p-5 border-t border-anthracite-100 bg-cream flex-shrink-0">
-          <div className="flex items-center gap-2 mb-3 overflow-x-auto hide-scrollbar">
-            <span className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 flex-shrink-0">
-              <Terme id="millesime">Millésime</Terme> :
-            </span>
-            {wine.bonsMilsimes.map(y => (
+        {/* Footer : ajout cave — sur une ligne en desktop */}
+        <div className="p-5 lg:px-7 lg:py-4 border-t border-anthracite-100 bg-cream flex-shrink-0">
+          <div className="lg:flex lg:items-center lg:gap-6">
+            <div className="lg:flex-1 lg:min-w-0">
+              <div className="flex items-center gap-2 mb-3 lg:mb-1.5 overflow-x-auto hide-scrollbar">
+                <span className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 flex-shrink-0">
+                  <Terme id="millesime">Millésime</Terme> :
+                </span>
+                {wine.bonsMilsimes.map(y => (
+                  <button
+                    key={y}
+                    onClick={() => setMillesime(y)}
+                    className={`px-2.5 py-1 rounded-full text-xs font-semibold border transition-all cursor-pointer flex-shrink-0 ${
+                      millesime === y ? 'text-cream border-transparent' : 'bg-white border-anthracite-200 text-anthracite-600'
+                    }`}
+                    style={millesime === y ? { background: wine.color } : {}}
+                  >
+                    {y}
+                  </button>
+                ))}
+              </div>
+              {garde && (
+                <p className="text-[11px] text-anthracite-500 mb-3 lg:mb-0">
+                  🕰️ À boire entre <span className="font-semibold text-anthracite-700">{garde.from}</span> et <span className="font-semibold text-anthracite-700">{garde.until}</span>
+                </p>
+              )}
+            </div>
+            <div className="lg:flex lg:items-center lg:gap-3 lg:flex-shrink-0">
+              {onAddToCave && (
               <button
-                key={y}
-                onClick={() => setMillesime(y)}
-                className={`px-2.5 py-1 rounded-full text-xs font-semibold border transition-all cursor-pointer flex-shrink-0 ${
-                  millesime === y ? 'text-cream border-transparent' : 'bg-white border-anthracite-200 text-anthracite-600'
+                onClick={() => onAddToCave(wine, millesime)}
+                disabled={isAdded}
+                className={`w-full lg:w-auto flex items-center justify-center gap-2 py-3 lg:px-7 rounded-full text-sm font-bold transition-all cursor-pointer ${
+                  isAdded
+                    ? 'bg-emerald-100 text-emerald-700'
+                    : 'text-cream shadow-wine hover:brightness-110 active:scale-[0.99]'
                 }`}
-                style={millesime === y ? { background: wine.color } : {}}
+                style={!isAdded ? { background: wine.color } : {}}
               >
-                {y}
+                {isAdded ? <><Check size={15} /> Ajouté à ma cave</> : <><Plus size={15} /> Ajouter à ma cave ({millesime})</>}
               </button>
-            ))}
+              )}
+              {onNoter && (
+                <button
+                  onClick={() => onNoter({ name: wine.appellation, domain: wine.domaines?.[0]?.name || '', vintage: millesime, type: wine.type })}
+                  className="w-full lg:w-auto flex items-center justify-center gap-1.5 py-2.5 lg:px-4 mt-2 lg:mt-0 rounded-full text-xs font-semibold text-anthracite-500 hover:text-wine-700 transition-colors cursor-pointer"
+                >
+                  <NotebookPen size={13} /> Noter cette dégustation
+                </button>
+              )}
+            </div>
           </div>
-          {garde && (
-            <p className="text-[11px] text-anthracite-500 mb-3">
-              🕰️ À boire entre <span className="font-semibold text-anthracite-700">{garde.from}</span> et <span className="font-semibold text-anthracite-700">{garde.until}</span>
-            </p>
-          )}
-          {onAddToCave && (
-          <button
-            onClick={() => onAddToCave(wine, millesime)}
-            disabled={isAdded}
-            className={`w-full flex items-center justify-center gap-2 py-3 rounded-full text-sm font-bold transition-all cursor-pointer ${
-              isAdded
-                ? 'bg-emerald-100 text-emerald-700'
-                : 'text-cream shadow-wine hover:brightness-110 active:scale-[0.99]'
-            }`}
-            style={!isAdded ? { background: wine.color } : {}}
-          >
-            {isAdded ? <><Check size={15} /> Ajouté à ma cave</> : <><Plus size={15} /> Ajouter à ma cave ({millesime})</>}
-          </button>
-          )}
-          {onNoter && (
-            <button
-              onClick={() => onNoter({ name: wine.appellation, domain: wine.domaines?.[0]?.name || '', vintage: millesime, type: wine.type })}
-              className="w-full flex items-center justify-center gap-1.5 py-2.5 mt-2 rounded-full text-xs font-semibold text-anthracite-500 hover:text-wine-700 transition-colors cursor-pointer"
-            >
-              <NotebookPen size={13} /> Noter cette dégustation
-            </button>
-          )}
         </div>
       </div>
 
