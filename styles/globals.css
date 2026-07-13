@@ -288,10 +288,16 @@
 
   /* ── Voile bordeaux entre les onglets ────────────────────────────────────
      La nouvelle vue apparaît (opacity + translateY 8px→0, 250ms) sous un
-     voile bordeaux très transparent qui se dissout. Remonté via key={tab}. */
+     voile bordeaux très transparent qui se dissout. Remonté via key={tab}.
+     Pas de fill-mode « both » : sinon le `transform: translateY(0)` de la
+     keyframe finale reste appliqué en permanence après l'animation, ce qui
+     transforme ce conteneur en bloc englobant pour tout descendant en
+     `position: fixed` (ex. le scrim de FicheVin) — le modal se retrouve
+     alors piégé dans la hauteur totale du contenu scrollable au lieu du
+     viewport, d'où un voile flouté géant sans panneau visible. */
   .view-transition {
     position: relative;
-    animation: viewIn 0.25s var(--ease-luxe) both;
+    animation: viewIn 0.25s var(--ease-luxe);
   }
   .view-transition::before {
     content: '';
