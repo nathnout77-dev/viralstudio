@@ -235,6 +235,19 @@
     box-shadow: 0 2px 4px rgba(28,25,23,0.05), 0 20px 52px var(--tint, rgba(28,25,23,0.10));
   }
 
+  /* ── Mini verre des étiquettes : se remplit au survol de la carte ─────────
+     Sur pointeur fin : vide par défaut, le vin monte au hover de la carte
+     (.group) — simple translateY sur l'élément clippé, transform only.
+     Sur tactile : rempli statique (aucune animation par carte). */
+  .mini-verre { overflow: visible; }
+  @media (hover: hover) and (pointer: fine) {
+    .mini-verre .mini-verre-vin {
+      transform: translateY(16px); /* sous la coupe, masqué par le clip */
+      transition: transform 0.5s var(--ease-luxe);
+    }
+    .group:hover .mini-verre .mini-verre-vin { transform: translateY(0); }
+  }
+
   .text-gradient-gold {
     background: linear-gradient(135deg, #d4a847 0%, #c9a84c 40%, #e8c96b 70%, #b8962a 100%);
     -webkit-background-clip: text;

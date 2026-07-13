@@ -1,6 +1,7 @@
 import { Wine, Star, Clock, Thermometer, Edit2, Trash2, Plus, Minus } from 'lucide-react'
 import { useState } from 'react'
 import { tintStyle, pastilleStyle, regionMonogram } from '../lib/wineStyle'
+import { MiniVerre } from './WineGlassAnim'
 
 const TYPE_CONFIG = {
   red:       { label: 'Rouge',       color: '#72102a', cls: 'border-wine-800/25 text-wine-800',   dot: 'bg-wine-700' },
@@ -80,9 +81,12 @@ export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty
             <span className="w-3 h-3 rounded-full ring-1 ring-anthracite-900/10 flex-shrink-0" style={pastilleStyle(wine.type)} aria-hidden="true" />
             <span className="text-[9px] uppercase tracking-[0.18em] font-semibold text-anthracite-500">{cfg.label}</span>
           </span>
-          {wine.region && (
-            <span className="medaillon" title={wine.region}>{regionMonogram(wine.region)}</span>
-          )}
+          <span className="inline-flex items-center gap-2">
+            <MiniVerre color={cfg.color} fillLevel={Math.min(1, 0.35 + wine.quantity * 0.06)} size={13} hoverFill />
+            {wine.region && (
+              <span className="medaillon" title={wine.region}>{regionMonogram(wine.region)}</span>
+            )}
+          </span>
         </div>
 
         {/* Header */}

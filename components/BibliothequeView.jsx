@@ -5,8 +5,9 @@ import { EnvieButton } from './Envies'
 import { WINE_DB, REGIONS_LIST, DIFFICULTE_CONFIG, MILLESIMES_DB, gardeForMillesime } from '../data/wineDatabase'
 import JaugesGout from './JaugesGout'
 import Terme from './Tooltip'
-import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
+import WineGlassAnim, { MiniVerre, fillLevelFromJauges } from './WineGlassAnim'
 import useModalBehavior from '../lib/useModal'
+import useTilt from '../lib/useTilt'
 import { tintStyle, pastilleStyle, regionMonogram, collectionNumero } from '../lib/wineStyle'
 
 // Index stable dans WINE_DB → numérotation de collection (« N° 07 »)
@@ -289,15 +290,20 @@ function VinCard({ wine, onClick, index }) {
   const diff = DIFFICULTE_CONFIG[wine.difficulte]
   const hasPetitDomaine = wine.domaines.some(d => d.confidentiel)
   const numero = WINE_INDEX.get(wine.id) ?? index
+  const tiltRef = useTilt() // inclinaison 3D façon carte physique (desktop)
   return (
     <button
+      ref={tiltRef}
       onClick={onClick}
       className="etiquette p-4 pt-3.5 text-left w-full hover:-translate-y-1 transition-all duration-300 cursor-pointer group animate-fade-in-up"
       style={{ animationDelay: `${Math.min(index * 40, 400)}ms`, animationFillMode: 'both', ...tintStyle(wine.type) }}
     >
       {/* En-tête d'étiquette : numéro de collection + monogramme de région */}
       <div className="flex items-center justify-between mb-2.5">
-        <span className="etiquette-numero">{collectionNumero(numero)}</span>
+        <span className="inline-flex items-center gap-2">
+          <MiniVerre color={wine.color} fillLevel={fillLevelFromJauges(wine.jauges)} size={13} hoverFill />
+          <span className="etiquette-numero">{collectionNumero(numero)}</span>
+        </span>
         <span className="medaillon transition-transform group-hover:scale-110" title={wine.region}>
           {regionMonogram(wine.region)}
         </span>
