@@ -15,11 +15,12 @@ import { toast } from './Toast'
 // ═══════════════════════════════════════════════════════════════════════════
 
 export const SYNC_KEYS = {
-  cave:    'oenotheque-v2',
-  journal: 'oeno-journal',
-  envies:  'oeno-envies',
-  profil:  'oeno-profil',
-  ecole:   'oeno-ecole',
+  cave:        'oenotheque-v2',
+  journal:     'oeno-journal',
+  envies:      'oeno-envies',
+  profil:      'oeno-profil',
+  ecole:       'oeno-ecole',
+  decouvertes: 'oeno-decouvertes',
 }
 
 export function snapshotLocal() {

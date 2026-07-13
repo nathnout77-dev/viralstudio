@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { X, Camera, Image as ImageIcon, RefreshCw, Sparkles, Plus, Check, MapPin, BookOpen, Tag, Pencil, UtensilsCrossed, Heart } from 'lucide-react'
+import { X, Camera, Image as ImageIcon, RefreshCw, Sparkles, Plus, Check, MapPin, BookOpen, Tag, Pencil, UtensilsCrossed, Heart, Globe, Library } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
 import { regionInfo } from '../data/regionsInfo'
 import { normaliser } from '../data/aromes'
@@ -7,6 +7,7 @@ import JaugesGout from './JaugesGout'
 import { FicheVin } from './BibliothequeView'
 import { toggleEnvie, useEnvies } from './Envies'
 import useModalBehavior from '../lib/useModal'
+import { loadDecouvertes, matchDecouverte, decouverteFromVision, addDecouverte, updateDecouverte } from '../lib/decouvertes'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ScanEtiquette — photographiez une étiquette, Œno la décode.
@@ -59,6 +60,59 @@ Règles :
 - "accordsSuggeres" : 3 à 4 plats concrets et courants (ex. "Entrecôte", "Fromages affinés", "Poulet rôti"), cohérents avec le style du vin.
 - "fourchettePrixHabituelle" : estimation réaliste et honnête de la fourchette de prix en euros que cette appellation / ce style / ce niveau de qualité perçu coûte habituellement en France, {min, max}. Ne mentionne JAMAIS un magasin, une enseigne ou un point de vente précis — tu évalues uniquement le vin, jamais où l'acheter.
 Si l'image n'est pas une étiquette de vin ou est illisible, réponds exactement : {"appellation":null,"region":null,"cepages":[],"type":null,"millesime":null,"domaine":null,"confiance":"basse","styleEtQualite":"","pourQui":"","accordsSuggeres":[],"fourchettePrixHabituelle":null}`
+
+// Prompt d'enrichissement : recherche web sur le domaine, une fois le vin identifié.
+function enrichPrompt(json) {
+  return `Tu es le documentaliste d'Œno, une application française dédiée au vin. On vient d'identifier un vin par sa photo d'étiquette :
+- Domaine : ${json.domaine || 'inconnu'}
+- Appellation : ${json.appellation || 'inconnue'}
+- Millésime : ${json.millesime || 'inconnu'}
+- Région : ${json.region || 'inconnue'}
+Recherche sur le web des informations fiables et récentes sur ce domaine et ce vin, puis réponds STRICTEMENT avec un objet JSON valide, sans aucun texte autour, sans balises markdown :
+{"histoireDomaine": string, "styleVin": string, "accords": string[], "fourchettePrix": {"min": number, "max": number}|null, "siteWeb": string|null}
+Règles :
+- "histoireDomaine" : 2 à 3 phrases sur l'histoire, la taille et l'esprit du domaine, ton chaleureux et précis, en français.
+- "styleVin" : 1 à 2 phrases sur le style de ce vin en particulier.
+- "accords" : 3 à 4 plats concrets qui l'accompagnent bien.
+- "fourchettePrix" : fourchette de prix habituelle constatée en euros {min, max}, ou null si introuvable.
+- "siteWeb" : URL du site officiel du domaine si tu la trouves, sinon null.
+- Ne mentionne JAMAIS de supermarché, de grande distribution ni aucune enseigne commerciale de distribution ; tu documentes le vin, jamais où l'acheter.
+- Si une information reste introuvable, mets null (ou [] pour "accords") plutôt que d'inventer.`
+}
+
+// Enrichissement web : renvoie les champs fusionnables, ou null si échec/pas de données.
+async function rechercheWeb(json) {
+  try {
+    const res = await fetch('/api/claude', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-5',
+        max_tokens: 1200,
+        messages: [{ role: 'user', content: enrichPrompt(json) }],
+        tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: 3 }],
+      }),
+    })
+    const data = await res.json()
+    if (!res.ok || data.error || data.type === 'error') return null
+    const raw = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n')
+    const start = raw.indexOf('{')
+    const end = raw.lastIndexOf('}')
+    if (start === -1 || end <= start) return null
+    const obj = JSON.parse(raw.slice(start, end + 1))
+    const usedWeb = (data.content || []).some(b => b.type === 'web_search_tool_result' || b.type === 'server_tool_use')
+    return {
+      histoire: typeof obj.histoireDomaine === 'string' ? obj.histoireDomaine.trim() : '',
+      styleWeb: typeof obj.styleVin === 'string' ? obj.styleVin.trim() : '',
+      accordsWeb: Array.isArray(obj.accords) ? obj.accords.filter(a => typeof a === 'string') : [],
+      fourchettePrixWeb: obj.fourchettePrix && obj.fourchettePrix.min != null ? obj.fourchettePrix : null,
+      siteWeb: typeof obj.siteWeb === 'string' && obj.siteWeb.startsWith('http') ? obj.siteWeb : null,
+      usedWeb,
+    }
+  } catch {
+    return null
+  }
+}
 
 // Redimensionnement côté client : max 1024px de large, JPEG qualité 0.8
 function resizeImage(file) {
@@ -246,6 +300,49 @@ function EnvieAction({ appellation }) {
   )
 }
 
+// Bandeau « Mes découvertes » : état d'enrichissement web ou mention « déjà connu ».
+function DecouverteBanner({ dejaConnu, enrichState, decouverte }) {
+  if (dejaConnu) {
+    return (
+      <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-anthracite-50 border border-anthracite-900/[0.06]">
+        <Library size={13} className="text-anthracite-400 flex-shrink-0" />
+        <span className="text-xs text-anthracite-500">Déjà dans votre bibliothèque</span>
+      </div>
+    )
+  }
+  if (enrichState === 'loading') {
+    return (
+      <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border border-gold-500/25" style={{ background: 'rgba(199,161,90,0.07)' }} aria-live="polite">
+        <span className="w-3.5 h-3.5 rounded-full border-2 border-gold-500/30 border-t-gold-600 animate-spin flex-shrink-0" />
+        <span className="text-xs text-anthracite-600">Recherche d'informations sur ce domaine…</span>
+      </div>
+    )
+  }
+  if (enrichState === 'done' && decouverte) {
+    return (
+      <div className="rounded-xl px-3.5 py-3 border border-gold-500/25" style={{ background: 'rgba(199,161,90,0.07)' }}>
+        <div className="flex items-center gap-2 mb-1.5">
+          <Globe size={13} className="text-gold-700 flex-shrink-0" />
+          <span className="text-[11px] uppercase tracking-wider font-bold text-gold-700">
+            {decouverte.sourceWeb ? 'Ajouté à Mes découvertes, enrichi par le web' : 'Ajouté à Mes découvertes'}
+          </span>
+        </div>
+        {decouverte.histoire && (
+          <p className="text-xs text-anthracite-700 leading-relaxed">{decouverte.histoire}</p>
+        )}
+        {decouverte.siteWeb && (
+          <a href={decouverte.siteWeb} target="_blank" rel="noopener noreferrer"
+             onClick={e => e.stopPropagation()}
+             className="inline-flex items-center gap-1 mt-2 text-[11px] font-semibold text-wine-700 hover:text-wine-800">
+            <Globe size={10} /> Site officiel
+          </a>
+        )}
+      </div>
+    )
+  }
+  return null
+}
+
 export default function ScanEtiquette({ onClose, onAddWine }) {
   useModalBehavior(onClose)
   // step : 'idle' | 'preview' | 'prix' | 'loading' | 'result' | 'error'
@@ -259,8 +356,41 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
   const [prixRayon, setPrixRayon] = useState('')  // prix saisi en rayon (string du champ)
   const [prixDraft, setPrixDraft] = useState('')  // brouillon pour l'édition post-résultat
   const [editingPrix, setEditingPrix] = useState(false)
+  // Bibliothèque personnelle « Mes découvertes »
+  const [dejaConnu, setDejaConnu] = useState(false)     // vin déjà en WINE_DB ou en découvertes
+  const [enrichState, setEnrichState] = useState('idle') // 'idle' | 'loading' | 'done'
+  const [decouverte, setDecouverte] = useState(null)     // enregistrement sauvegardé
   const cameraRef = useRef(null)
   const galleryRef = useRef(null)
+
+  // Après identification vision : mémoriser et enrichir si le vin est inconnu.
+  const traiterDecouverte = async (json, matchedWine) => {
+    const existante = matchDecouverte(loadDecouvertes(), json)
+    if (matchedWine || existante) {
+      // Déjà connu : pas de re-recherche, mention sobre.
+      setDejaConnu(true)
+      return
+    }
+    // Vin inconnu : on mémorise d'abord la lecture vision (capture garantie)…
+    let record = addDecouverte(decouverteFromVision(json))
+    setDecouverte(record)
+    // …puis on tente un enrichissement web, non bloquant.
+    setEnrichState('loading')
+    const web = await rechercheWeb(json)
+    if (web) {
+      const merged = updateDecouverte(record.id, {
+        histoire: web.histoire || record.histoire,
+        description: web.styleWeb || record.description,
+        styleEtQualite: web.styleWeb || record.styleEtQualite,
+        accords: [...new Set([...(record.accords || []), ...web.accordsWeb])],
+        fourchettePrix: web.fourchettePrixWeb || record.fourchettePrix,
+        siteWeb: web.siteWeb,
+        sourceWeb: !!web.usedWeb,
+      })
+      if (merged) setDecouverte(merged)
+    }
+    setEnrichState('done')
+  }
 
   const onFile = async e => {
     const file = e.target.files?.[0]
@@ -316,10 +446,13 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
         setStep('error')
         return
       }
+      const matchedWine = matchWine(json)
       setParsed(json)
-      setMatched(matchWine(json))
+      setMatched(matchedWine)
       setAdded(false)
       setStep('result')
+      // Bibliothèque personnelle : mémorisation + enrichissement web (non bloquant)
+      traiterDecouverte(json, matchedWine)
     } catch {
       setErrType('unreadable')
       setStep('error')
@@ -336,6 +469,9 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
     setPrixRayon('')
     setPrixDraft('')
     setEditingPrix(false)
+    setDejaConnu(false)
+    setEnrichState('idle')
+    setDecouverte(null)
   }
 
   const confirmerPrix = () => {
@@ -592,6 +728,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                 setEditingPrix={setEditingPrix}
                 confirmerPrix={confirmerPrix}
               />
+              <DecouverteBanner dejaConnu={dejaConnu} enrichState={enrichState} decouverte={decouverte} />
               {/* Fiche simplifiée */}
               <div className="rounded-2xl overflow-hidden border border-anthracite-900/[0.07] shadow-card">
                 <div className="p-5 relative overflow-hidden"
@@ -708,6 +845,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                 setEditingPrix={setEditingPrix}
                 confirmerPrix={confirmerPrix}
               />
+              <DecouverteBanner dejaConnu={dejaConnu} enrichState={enrichState} decouverte={decouverte} />
               <div className="rounded-2xl overflow-hidden border border-anthracite-900/[0.07] shadow-card">
                 <div className="p-5 relative overflow-hidden text-cream"
                      style={{ background: 'linear-gradient(150deg, #1C1917 0%, #3a0616 80%, #5c0d22 140%)' }}>

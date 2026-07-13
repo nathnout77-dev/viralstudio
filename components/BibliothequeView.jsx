@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
-import { Library, Search, X, Plus, Check, Thermometer, Clock, Wine, MapPin, ChevronDown, ExternalLink, Sparkles, NotebookPen, ChefHat } from 'lucide-react'
+import { Library, Search, X, Plus, Check, Thermometer, Clock, Wine, MapPin, ChevronDown, ExternalLink, Sparkles, NotebookPen, ChefHat, Camera, Globe, Trash2, Grape, UtensilsCrossed, Calendar } from 'lucide-react'
 import AccordInverse from './AccordInverse'
 import { EnvieButton } from './Envies'
 import { WINE_DB, REGIONS_LIST, DIFFICULTE_CONFIG, MILLESIMES_DB, gardeForMillesime } from '../data/wineDatabase'
@@ -9,6 +9,177 @@ import WineGlassAnim, { MiniVerre, fillLevelFromJauges } from './WineGlassAnim'
 import useModalBehavior from '../lib/useModal'
 import useTilt from '../lib/useTilt'
 import { tintStyle, pastilleStyle, regionMonogram, collectionNumero } from '../lib/wineStyle'
+import { loadDecouvertes, removeDecouverte, decouverteNumero } from '../lib/decouvertes'
+
+const TYPE_LABELS = { red: 'Rouge', white: 'Blanc', 'rosé': 'Rosé', sweet: 'Liquoreux', sparkling: 'Effervescent' }
+
+function formatScanDate(ts) {
+  if (!ts) return ''
+  try {
+    return new Date(ts).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+  } catch { return '' }
+}
+
+// ── Découverte : étiquette compacte ─────────────────────────────────────────────
+function DecouverteCard({ dec, index, onClick }) {
+  const titre = dec.appellation || dec.domaine || 'Vin scanné'
+  return (
+    <button
+      onClick={onClick}
+      className="etiquette p-4 pt-3.5 text-left w-full hover:-translate-y-1 transition-all duration-300 cursor-pointer group animate-fade-in-up"
+      style={{ animationDelay: `${Math.min(index * 40, 400)}ms`, animationFillMode: 'both', ...tintStyle(dec.type || 'red') }}
+    >
+      <div className="flex items-center justify-between mb-2.5">
+        <span className="inline-flex items-center gap-2">
+          <span className="w-3 h-3 rounded-full ring-1 ring-anthracite-900/10 flex-shrink-0" style={pastilleStyle(dec.type || 'red')} aria-hidden="true" />
+          <span className="etiquette-numero">{decouverteNumero(index)}</span>
+        </span>
+        {dec.region
+          ? <span className="medaillon transition-transform group-hover:scale-110" title={dec.region}>{regionMonogram(dec.region)}</span>
+          : <Camera size={13} className="text-anthracite-300" />}
+      </div>
+
+      <div className="text-center mb-2 min-w-0">
+        <div className="font-wine-name text-2xl text-anthracite-900 leading-tight line-clamp-2 whitespace-normal">{titre}</div>
+        {dec.domaine && dec.appellation && (
+          <div className="text-[11px] text-anthracite-500 truncate mt-0.5">{dec.domaine}</div>
+        )}
+        <div className="text-[9px] uppercase tracking-[0.22em] text-anthracite-400 mt-1.5">
+          {[dec.region, dec.type ? TYPE_LABELS[dec.type] : null, dec.millesime].filter(Boolean).join(' · ') || 'Scanné'}
+        </div>
+      </div>
+
+      <div className="flex items-center justify-center gap-1.5">
+        {dec.sourceWeb && (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-gold-500/15 text-gold-700" title="Enrichi par une recherche web">
+            <Globe size={9} /> Web
+          </span>
+        )}
+        <span className="text-[9px] text-anthracite-400">{formatScanDate(dec.scannedAt)}</span>
+      </div>
+    </button>
+  )
+}
+
+// ── Découverte : fiche détail tolérante aux champs manquants ────────────────────
+function DecouverteFiche({ dec, onClose, onDelete }) {
+  useModalBehavior(onClose)
+  const titre = dec.appellation || dec.domaine || 'Vin scanné'
+  const color = { red: '#8c2f39', white: '#c9a84c', 'rosé': '#e58f8f', sparkling: '#5b8db8', sweet: '#b8860b' }[dec.type] || '#8c2f39'
+  const fourchette = dec.fourchettePrix && dec.fourchettePrix.min != null
+    ? `${dec.fourchettePrix.min}–${dec.fourchettePrix.max} €` : null
+  return (
+    <div
+      className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center p-0 sm:p-4"
+      style={{ background: 'rgba(12,10,9,0.55)', backdropFilter: 'blur(8px)' }}
+      onClick={onClose}
+      role="dialog" aria-modal="true"
+    >
+      <div className="modal-panel sm:max-w-lg max-h-[92vh] shadow-card-hover" onClick={e => e.stopPropagation()}>
+        <div className="p-6 pb-5 flex-shrink-0 relative overflow-hidden text-cream"
+             style={{ background: `linear-gradient(150deg, ${color} 0%, ${color}cc 55%, #1e2426 145%)` }}>
+          <div className="absolute -top-6 -right-6 text-[90px] opacity-10 select-none leading-none" aria-hidden="true">🍷</div>
+          <div className="relative flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-cream/60">Ma découverte</span>
+                {dec.sourceWeb && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-white/20 text-cream backdrop-blur-sm">
+                    <Globe size={9} /> Web
+                  </span>
+                )}
+              </div>
+              <h3 className="font-wine-name text-4xl text-cream leading-none">{titre}</h3>
+              <p className="text-cream/70 text-xs mt-2 flex items-center gap-1.5 flex-wrap">
+                {dec.region && <span className="inline-flex items-center gap-1"><MapPin size={10} /> {dec.region}</span>}
+                {dec.type && <span>· {TYPE_LABELS[dec.type] || dec.type}</span>}
+                {dec.millesime && <span>· {dec.millesime}</span>}
+              </p>
+              {dec.domaine && dec.appellation && (
+                <p className="text-cream/60 text-xs mt-1">Domaine scanné : {dec.domaine}</p>
+              )}
+            </div>
+            <button onClick={onClose} aria-label="Fermer"
+                    className="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/35 text-cream transition-all cursor-pointer">
+              <X size={14} />
+            </button>
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4">
+          <p className="text-[11px] text-anthracite-400 flex items-center gap-1.5">
+            <Calendar size={11} /> Scanné le {formatScanDate(dec.scannedAt)}
+          </p>
+
+          {dec.histoire && (
+            <div className="rounded-xl p-3.5 border border-gold-500/20" style={{ background: 'rgba(199,161,90,0.06)' }}>
+              <div className="text-[10px] uppercase tracking-wider font-bold text-gold-700 mb-1.5">Le domaine</div>
+              <p className="text-xs text-anthracite-700 leading-relaxed">{dec.histoire}</p>
+            </div>
+          )}
+
+          {(dec.styleEtQualite || dec.description) && (
+            <div>
+              <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-1.5">Le style</div>
+              <p className="text-sm text-anthracite-700 leading-relaxed">{dec.styleEtQualite || dec.description}</p>
+              {dec.pourQui && <p className="text-xs text-anthracite-500 italic mt-1.5">{dec.pourQui}</p>}
+            </div>
+          )}
+
+          {dec.cepages?.length > 0 && (
+            <div>
+              <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-1.5 flex items-center gap-1.5">
+                <Grape size={11} className="text-wine-600" /> Cépages probables
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {dec.cepages.map(c => (
+                  <span key={c} className="text-xs bg-white border border-anthracite-200 text-anthracite-600 px-2.5 py-1 rounded-full">{c}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {dec.accords?.length > 0 && (
+            <div>
+              <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-2 flex items-center gap-1.5">
+                <UtensilsCrossed size={11} className="text-gold-600" /> À table avec
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {dec.accords.map(a => (
+                  <span key={a} className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-cream border border-anthracite-900/10 text-anthracite-700">{a}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {fourchette && (
+            <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-anthracite-100 text-anthracite-700">
+              Fourchette de prix : {fourchette}
+            </span>
+          )}
+
+          {dec.siteWeb && (
+            <a href={dec.siteWeb} target="_blank" rel="noopener noreferrer"
+               className="flex items-center gap-1.5 text-xs font-semibold text-wine-700 hover:text-wine-800">
+              <Globe size={12} /> Site officiel du domaine
+            </a>
+          )}
+
+          {!dec.histoire && !dec.styleEtQualite && !dec.description && !dec.cepages?.length && (
+            <p className="text-sm text-anthracite-400 italic">Peu d'informations sur ce vin pour le moment — mais il est bien dans votre bibliothèque.</p>
+          )}
+
+          <button
+            onClick={() => onDelete(dec.id)}
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-full text-xs font-semibold text-anthracite-500 hover:text-red-600 border border-anthracite-900/10 hover:border-red-300 transition-all cursor-pointer"
+          >
+            <Trash2 size={13} /> Retirer de mes découvertes
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 // Index stable dans WINE_DB → numérotation de collection (« N° 07 »)
 const WINE_INDEX = new Map(WINE_DB.map((w, i) => [w.id, i]))
@@ -367,6 +538,20 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
   const [region, setRegion]   = useState('all')
   const [selected, setSelected] = useState(null)
   const [added, setAdded]     = useState(new Set())
+  // Collection (WINE_DB) vs bibliothèque personnelle « Mes découvertes »
+  const [onglet, setOnglet]   = useState('collection')
+  const [decouvertes, setDecouvertes] = useState([])
+  const [selectedDec, setSelectedDec] = useState(null)
+
+  // Rechargement des découvertes à l'affichage de l'onglet (un scan a pu en ajouter)
+  useEffect(() => {
+    setDecouvertes(loadDecouvertes())
+  }, [onglet])
+
+  const supprimerDecouverte = (id) => {
+    setDecouvertes(removeDecouverte(id))
+    setSelectedDec(null)
+  }
 
   const filtered = useMemo(() => WINE_DB.filter(w => {
     if (search) {
@@ -426,6 +611,46 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
         </div>
       </div>
 
+      {/* Chips : La collection / Mes découvertes */}
+      <div className="flex flex-wrap gap-2 mb-5">
+        <button
+          onClick={() => setOnglet('collection')}
+          className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
+            onglet === 'collection' ? 'bg-wine-800 text-cream shadow-wine' : 'bg-white text-anthracite-600 border border-anthracite-200 hover:border-wine-300'
+          }`}
+        >
+          <Library size={13} /> La collection <span className="opacity-70">({WINE_DB.length})</span>
+        </button>
+        <button
+          onClick={() => setOnglet('decouvertes')}
+          className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
+            onglet === 'decouvertes' ? 'bg-wine-800 text-cream shadow-wine' : 'bg-white text-anthracite-600 border border-anthracite-200 hover:border-wine-300'
+          }`}
+        >
+          <Camera size={13} /> Mes découvertes <span className="opacity-70">({decouvertes.length})</span>
+        </button>
+      </div>
+
+      {/* ── Mes découvertes ──────────────────────────────────────────────────── */}
+      {onglet === 'decouvertes' && (
+        decouvertes.length === 0 ? (
+          <div className="text-center py-16">
+            <Camera size={36} className="text-anthracite-200 mx-auto mb-4" />
+            <p className="font-serif text-base text-anthracite-500 mb-1">Votre bibliothèque personnelle est vide</p>
+            <p className="text-xs text-anthracite-400 max-w-sm mx-auto">Scannez l'étiquette d'un vin inconnu : Œno l'identifie, l'enrichit d'une recherche web et le garde ici, rien que pour vous.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {decouvertes.map((dec, i) => (
+              <DecouverteCard key={dec.id} dec={dec} index={i} onClick={() => setSelectedDec(dec)} />
+            ))}
+          </div>
+        )
+      )}
+
+      {/* ── La collection ────────────────────────────────────────────────────── */}
+      {onglet === 'collection' && (
+      <>
       {/* Recherche */}
       <div className="relative mb-4 lg:mb-6">
         <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-anthracite-400" />
@@ -507,6 +732,8 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
           )}
         </div>
       </div>
+      </>
+      )}
 
       {/* Fiche */}
       {selected && (
@@ -517,6 +744,11 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
           added={added}
           onNoter={onNoter}
         />
+      )}
+
+      {/* Fiche découverte */}
+      {selectedDec && (
+        <DecouverteFiche dec={selectedDec} onClose={() => setSelectedDec(null)} onDelete={supprimerDecouverte} />
       )}
     </div>
   )
