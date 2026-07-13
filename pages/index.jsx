@@ -14,6 +14,7 @@ import LandingPage      from '../components/LandingPage'
 import OnboardingProfil, { loadProfil } from '../components/OnboardingProfil'
 import { removeEnvie } from '../components/Envies'
 import { toast } from '../components/Toast'
+import { normaliser } from '../data/aromes'
 import { Sparkles }     from 'lucide-react'
 
 const InteractiveMap = dynamic(() => import('../components/InteractiveMap'), { ssr: false })
@@ -202,6 +203,26 @@ export default function App() {
     if (detailWine?.id === wine.id) setDetailWine(prev => ({ ...prev, quantity: newQty }))
   }, [detailWine])
 
+  // Étoile « préféré » sur un vin de la cave, persisté dans oenotheque-v2
+  const toggleFavori = useCallback((wine) => {
+    setWines(prev => prev.map(w => w.id === wine.id ? { ...w, favori: !w.favori } : w))
+    if (detailWine?.id === wine.id) setDetailWine(prev => ({ ...prev, favori: !prev.favori }))
+  }, [detailWine])
+
+  // Pont Mémoires de Vin → Préférés : une note ≥ 4 grappes sur un vin en cave
+  // marque automatiquement ce vin comme favori (matching appellation / nom).
+  const markFavoriFromNote = useCallback((entry) => {
+    if (!entry || (entry.note || 0) < 4) return
+    const nname = normaliser(entry.name)
+    if (!nname) return
+    const match = wines.find(w =>
+      !w.favori && (normaliser(w.appellation) === nname || normaliser(w.name) === nname)
+    )
+    if (!match) return
+    setWines(prev => prev.map(w => w.id === match.id ? { ...w, favori: true } : w))
+    toast('Ajouté à vos préférés ★')
+  }, [wines])
+
   const total = wines.reduce((s, w) => s + w.quantity, 0)
 
   if (!ready) {
@@ -301,6 +322,8 @@ export default function App() {
               onDelete={deleteWine}
               onSelect={setDetailWine}
               onUpdateQty={updateQty}
+              onToggleFavori={toggleFavori}
+              onMarkFavori={markFavoriFromNote}
               journalPrefill={journalPrefill}
               onConsumeJournalPrefill={() => setJournalPrefill(null)}
               onBuyEnvie={buyFromEnvie}
@@ -319,6 +342,7 @@ export default function App() {
             wine={detailWine}
             onClose={() => setDetailWine(null)}
             onEdit={editWineHandler}
+            onToggleFavori={toggleFavori}
           />
         )}
         {(showForm || editWine || enviePrefill) && (

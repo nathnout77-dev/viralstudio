@@ -1,5 +1,5 @@
 import { Wine, Star, Clock, Thermometer, Edit2, Trash2, Plus, Minus } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { tintStyle, pastilleStyle, regionMonogram } from '../lib/wineStyle'
 import { MiniVerre } from './WineGlassAnim'
 
@@ -9,6 +9,43 @@ const TYPE_CONFIG = {
   rosé:      { label: 'Rosé',        color: '#e45872', cls: 'border-pink-700/25 text-pink-800',   dot: 'bg-pink-400' },
   sparkling: { label: 'Effervescent',color: '#3b82f6', cls: 'border-blue-700/25 text-blue-800',   dot: 'bg-blue-400' },
   sweet:     { label: 'Liquoreux',   color: '#92400e', cls: 'border-amber-800/30 text-amber-900', dot: 'bg-amber-700' },
+}
+
+// Étoile discrète « favori » : remplie or quand actif, pop au clic (comme le cœur envies)
+export function FavoriStar({ wine, onToggle, size = 14, light = false, className = '' }) {
+  const [pop, setPop] = useState(false)
+  useEffect(() => {
+    if (!pop) return undefined
+    const t = setTimeout(() => setPop(false), 350)
+    return () => clearTimeout(t)
+  }, [pop])
+  if (!onToggle) return null
+  const active = !!wine.favori
+  const toggle = e => {
+    e.stopPropagation()
+    e.preventDefault()
+    if (!active) setPop(true)
+    onToggle(wine)
+  }
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-label={active ? 'Retirer de vos préférés' : 'Ajouter à vos préférés'}
+      aria-pressed={active}
+      title={active ? 'Dans vos préférés' : 'Ajouter à vos préférés'}
+      className={`inline-flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 cursor-pointer hover:scale-110 active:scale-95 ${
+        light ? 'bg-white/20 hover:bg-white/35' : 'hover:bg-gold-500/10'
+      } ${className}`}
+    >
+      <Star
+        size={size}
+        strokeWidth={1.8}
+        fill={active ? '#c9a84c' : 'none'}
+        className={`${pop ? 'envie-pop' : ''} ${active ? 'text-gold-500' : light ? 'text-cream' : 'text-anthracite-300 hover:text-gold-500'}`}
+      />
+    </button>
+  )
 }
 
 function TypeBadge({ type }) {
@@ -31,7 +68,7 @@ function DrinkingWindow({ wine }) {
   return <span className="inline-flex px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.1em] border border-emerald-800/25 text-emerald-800">À boire · jusqu'à {end}</span>
 }
 
-export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty, compact = false }) {
+export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty, onToggleFavori, compact = false }) {
   const [imgError, setImgError] = useState(false)
   const cfg = TYPE_CONFIG[wine.type] || TYPE_CONFIG.red
 
@@ -63,6 +100,7 @@ export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty
               <span className="text-xs text-anthracite-400">{wine.vintage}</span>
             </div>
           </div>
+          <FavoriStar wine={wine} onToggle={onToggleFavori} className="flex-shrink-0" />
           <div className="text-right flex-shrink-0">
             <div className="text-lg font-semibold text-anthracite-900">{wine.quantity}</div>
             <div className="text-[10px] text-anthracite-400 uppercase tracking-wide">btle</div>
@@ -82,6 +120,7 @@ export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty
             <span className="text-[9px] uppercase tracking-[0.18em] font-semibold text-anthracite-500">{cfg.label}</span>
           </span>
           <span className="inline-flex items-center gap-2">
+            <FavoriStar wine={wine} onToggle={onToggleFavori} className="-mr-1" />
             <MiniVerre color={cfg.color} fillLevel={Math.min(1, 0.35 + wine.quantity * 0.06)} size={13} hoverFill />
             {wine.region && (
               <span className="medaillon" title={wine.region}>{regionMonogram(wine.region)}</span>

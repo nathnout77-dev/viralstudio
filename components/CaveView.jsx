@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
-import { Search, SlidersHorizontal, LayoutGrid, List, Wine, Plus, X, ChevronDown, BookHeart, BarChart3, Heart, CloudUpload } from 'lucide-react'
+import { Search, SlidersHorizontal, LayoutGrid, List, Wine, Plus, X, ChevronDown, BookHeart, BarChart3, Heart, CloudUpload, Star } from 'lucide-react'
 import WineCard from './WineCard'
 import JournalDegustation from './JournalDegustation'
 import PanoramaCave from './PanoramaCave'
@@ -32,15 +32,18 @@ function SelectFilter({ value, onChange, options, label }) {
   )
 }
 
-export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onUpdateQty, journalPrefill, onConsumeJournalPrefill, onBuyEnvie, onCompte }) {
+export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onUpdateQty, onToggleFavori, onMarkFavori, journalPrefill, onConsumeJournalPrefill, onBuyEnvie, onCompte }) {
   const envies = useEnvies()
   const [search, setSearch]   = useState('')
   const [typeFilter, setType] = useState('Tous')
   const [region, setRegion]   = useState('Toutes')
   const [sort, setSort]       = useState('name')
+  const [favOnly, setFavOnly] = useState(false)
   const [view, setView]       = useState('grid')
   const [showFilters, setShowFilters] = useState(false)
   const [sub, setSub]         = useState('cave')
+
+  const favCount = useMemo(() => wines.filter(w => w.favori).length, [wines])
 
   // Si une note pré-remplie arrive (depuis « Noter cette dégustation »), on bascule sur le journal
   useEffect(() => {
@@ -54,17 +57,22 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
                           || w.appellation?.toLowerCase().includes(q) || String(w.vintage).includes(q)
       const matchType   = typeFilter === 'Tous' || w.type === TYPE_MAP[typeFilter]
       const matchRegion = region === 'Toutes' || w.region === region
-      return matchSearch && matchType && matchRegion
+      const matchFav    = !favOnly || !!w.favori
+      return matchSearch && matchType && matchRegion && matchFav
     })
     list = [...list].sort((a, b) => {
-      if (sort === 'name')     return a.name.localeCompare(b.name)
+      // Tri par défaut (nom) : les préférés remontent en tête
+      if (sort === 'name') {
+        if (!!b.favori !== !!a.favori) return (b.favori ? 1 : 0) - (a.favori ? 1 : 0)
+        return a.name.localeCompare(b.name)
+      }
       if (sort === 'vintage')  return b.vintage - a.vintage
       if (sort === 'quantity') return b.quantity - a.quantity
       if (sort === 'value')    return (b.estimatedValue || 0) - (a.estimatedValue || 0)
       return 0
     })
     return list
-  }, [wines, search, typeFilter, region, sort])
+  }, [wines, search, typeFilter, region, sort, favOnly])
 
   const stats = useMemo(() => ({
     total:    wines.reduce((s, w) => s + w.quantity, 0),
@@ -78,7 +86,7 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
     }).length,
   }), [wines])
 
-  const hasFilters = typeFilter !== 'Tous' || region !== 'Toutes'
+  const hasFilters = typeFilter !== 'Tous' || region !== 'Toutes' || favOnly
 
   return (
     <div className="animate-fade-in">
@@ -127,7 +135,7 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
       {sub === 'envies' && <EnviesView onBuy={onBuyEnvie} />}
 
       {sub === 'journal' && (
-        <JournalDegustation prefill={journalPrefill} onConsumePrefill={onConsumeJournalPrefill} />
+        <JournalDegustation prefill={journalPrefill} onConsumePrefill={onConsumeJournalPrefill} onMarkFavori={onMarkFavori} />
       )}
 
       {sub === 'cave' && (
@@ -211,6 +219,21 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
               </button>
             ))}
           </div>
+          {favCount > 0 && (
+            <button
+              onClick={() => setFavOnly(f => !f)}
+              aria-pressed={favOnly}
+              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
+                favOnly
+                  ? 'bg-gold-500/15 text-gold-700 border-gold-500/50'
+                  : 'bg-white text-anthracite-500 border-anthracite-200 hover:border-gold-500/50'
+              }`}
+            >
+              <Star size={12} strokeWidth={1.8} fill={favOnly ? '#c9a84c' : 'none'} className={favOnly ? 'text-gold-500' : 'text-anthracite-400'} />
+              Favoris
+              <span className="text-[10px] opacity-70">{favCount}</span>
+            </button>
+          )}
           <div className="flex gap-2 items-center ml-auto">
             <SelectFilter value={region} onChange={setRegion} options={REGIONS} label="Région" />
             <SelectFilter value={sort}   onChange={setSort}   options={SORT_OPTIONS} label="Trier par" />
@@ -249,6 +272,7 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
               onEdit={onEdit}
               onDelete={onDelete}
               onUpdateQty={onUpdateQty}
+              onToggleFavori={onToggleFavori}
             />
           ))}
         </div>

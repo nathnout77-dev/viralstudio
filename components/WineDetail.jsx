@@ -1,5 +1,6 @@
 import { X, Star, Thermometer, Clock, Wine, MapPin, Grape, TrendingUp, UtensilsCrossed, Edit2 } from 'lucide-react'
 import WineGlassAnim from './WineGlassAnim'
+import { FavoriStar } from './WineCard'
 import useModalBehavior from '../lib/useModal'
 
 const ACCORD_ICONS = { '🥩':'🥩','🐟':'🐟','🧀':'🧀','🍮':'🍮','🍄':'🍄','🦞':'🦞','🍗':'🍗' }
@@ -51,7 +52,7 @@ function ApogeeBar({ wine }) {
   )
 }
 
-export default function WineDetail({ wine, onClose, onEdit }) {
+export default function WineDetail({ wine, onClose, onEdit, onToggleFavori }) {
   useModalBehavior(onClose)
   if (!wine) return null
 
@@ -91,6 +92,7 @@ export default function WineDetail({ wine, onClose, onEdit }) {
             </div>
           </div>
           <div className="absolute top-4 right-4 flex gap-2">
+            {onToggleFavori && <FavoriStar wine={wine} onToggle={onToggleFavori} light />}
             <button onClick={() => onEdit?.(wine)}
                     className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer"
                     aria-label="Modifier">

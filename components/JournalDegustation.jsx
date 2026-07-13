@@ -435,7 +435,7 @@ function EntryCard({ entry, onSelect, index }) {
 }
 
 // ── Vue principale ─────────────────────────────────────────────────────────────
-export default function JournalDegustation({ prefill, onConsumePrefill }) {
+export default function JournalDegustation({ prefill, onConsumePrefill, onMarkFavori }) {
   const [entries, setEntries] = useState([])
   const [ready, setReady] = useState(false)
   const [caveWines, setCaveWines] = useState([])
@@ -484,7 +484,9 @@ export default function JournalDegustation({ prefill, onConsumePrefill }) {
     setEditEntry(null)
     setFormSeed(null)
     toast('Souvenir consigné dans vos Mémoires de Vin')
-  }, [])
+    // Pont vers les préférés : une belle note sur un vin en cave le marque favori
+    onMarkFavori?.(entry)
+  }, [onMarkFavori])
 
   const remove = useCallback(id => {
     if (!confirm('Supprimer définitivement cette note de dégustation ?')) return
