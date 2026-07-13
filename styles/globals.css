@@ -286,6 +286,52 @@
     animation: jaugeIn 0.6s var(--ease-luxe) both;
   }
 
+  /* ── Voile bordeaux entre les onglets ────────────────────────────────────
+     La nouvelle vue apparaît (opacity + translateY 8px→0, 250ms) sous un
+     voile bordeaux très transparent qui se dissout. Remonté via key={tab}. */
+  .view-transition {
+    position: relative;
+    animation: viewIn 0.25s var(--ease-luxe) both;
+  }
+  .view-transition::before {
+    content: '';
+    position: absolute;
+    inset: -2.5rem -1rem;
+    z-index: 40;
+    pointer-events: none;
+    background: rgba(92,13,34,0.06);
+    animation: viewVeil 0.45s ease-out forwards;
+  }
+
+  /* ── CTA « Ce soir » qui respire ─────────────────────────────────────────
+     Halo or : fin anneau (pseudo-élément) qui s'étend et se dissout en boucle
+     lente (4s). Transform + opacity uniquement. Retiré au premier clic
+     (mémorisé en sessionStorage, voir lib/useCtaBreathe.js). */
+  .cta-breathe { position: relative; }
+  .cta-breathe::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    pointer-events: none;
+    box-shadow: 0 0 0 1.5px rgba(201,168,76,0.75), 0 0 18px rgba(201,168,76,0.35);
+    animation: ctaBreathe 4s ease-out infinite;
+  }
+
+  /* ── Toasts œnologiques ──────────────────────────────────────────────────
+     Panneau sombre élégant : glisse du bas (mobile) / bas-droite (desktop),
+     mini verre + message en Fraunces, auto-dissous après 3s. */
+  .toast-oeno {
+    @apply flex items-center gap-3 px-5 py-3.5 rounded-2xl pointer-events-auto;
+    background: #1C1917;
+    border: 1px solid rgba(201,168,76,0.28);
+    box-shadow: 0 12px 40px rgba(12,10,9,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
+    animation: toastIn 0.35s var(--ease-luxe) both;
+  }
+  .toast-oeno.toast-leaving {
+    animation: toastOut 0.3s var(--ease-luxe) forwards;
+  }
+
   .text-gradient-gold {
     background: linear-gradient(135deg, #d4a847 0%, #c9a84c 40%, #e8c96b 70%, #b8962a 100%);
     -webkit-background-clip: text;
@@ -403,6 +449,29 @@
 @keyframes shimmer {
   from { background-position: -200% center; }
   to   { background-position:  200% center; }
+}
+
+@keyframes viewIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes viewVeil {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes ctaBreathe {
+  0%        { transform: scale(1);    opacity: 0.85; }
+  55%, 100% { transform: scale(1.22); opacity: 0; }
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes toastOut {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(12px); }
 }
 
 @keyframes enviePop {

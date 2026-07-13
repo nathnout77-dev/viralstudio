@@ -10,6 +10,7 @@ const ShareDegustation = dynamic(() => import('./ShareDegustation'), { ssr: fals
 import { WINE_DB } from '../data/wineDatabase'
 import { AROME_FAMILLES } from '../data/aromes'
 import useModalBehavior from '../lib/useModal'
+import { toast } from './Toast'
 
 const STORAGE_KEY = 'oeno-journal'
 const CAVE_KEY = 'oenotheque-v2'
@@ -482,6 +483,7 @@ export default function JournalDegustation({ prefill, onConsumePrefill }) {
     setShowForm(false)
     setEditEntry(null)
     setFormSeed(null)
+    toast('Souvenir consigné dans vos Mémoires de Vin')
   }, [])
 
   const remove = useCallback(id => {

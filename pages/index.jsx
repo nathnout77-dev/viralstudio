@@ -13,6 +13,7 @@ import BibliothequeView from '../components/BibliothequeView'
 import LandingPage      from '../components/LandingPage'
 import OnboardingProfil, { loadProfil } from '../components/OnboardingProfil'
 import { removeEnvie } from '../components/Envies'
+import { toast } from '../components/Toast'
 import { Sparkles }     from 'lucide-react'
 
 const InteractiveMap = dynamic(() => import('../components/InteractiveMap'), { ssr: false })
@@ -171,6 +172,7 @@ export default function App() {
     )
     setShowForm(false)
     setEditWine(null)
+    toast('Enregistré dans votre cave')
     // Si l'ajout vient de la liste d'envies, l'envie est honorée : on la retire.
     setEnviePrefill(prev => {
       if (prev?._envieId) removeEnvie(prev._envieId)
@@ -287,6 +289,10 @@ export default function App() {
         />
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-6 lg:py-10 pb-24 md:pb-10">
+          {/* key={tab} remonte le conteneur : la nouvelle vue entre sous un
+              voile bordeaux qui se dissout (les vues, conditionnelles, se
+              remontaient déjà à chaque changement d'onglet — état inchangé). */}
+          <div key={tab} className="view-transition">
           {tab === 'cave' && (
             <CaveView
               wines={wines}
@@ -305,6 +311,7 @@ export default function App() {
           {tab === 'carte'     && <InteractiveMap onAddWine={saveWine} onNoter={noterDegustation} />}
           {tab === 'sommelier' && <SommelierForm onOpenBibliotheque={() => setTab('vins')} />}
           {tab === 'guide'     && <GuideView onAddWine={saveWine} />}
+          </div>
         </main>
 
         {detailWine && (

@@ -1,4 +1,5 @@
 import { Wine, Library, MapPin, Sparkles, BookOpen, Plus, Utensils, ScanLine, UserCircle2 } from 'lucide-react'
+import useCtaBreathe from '../lib/useCtaBreathe'
 
 const TABS = [
   { id: 'cave',      label: 'Ma Cave',   Icon: Wine },
@@ -16,6 +17,8 @@ const MODE_BADGE = {
 
 export default function Navbar({ tab, setTab, total, mode, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte }) {
   const badge = MODE_BADGE[mode]
+  const { breatheClass, settle } = useCtaBreathe() // halo du CTA « Ce soir ? »
+  const ceSoir = () => { settle(); onCeSoir?.() }
   return (
     <>
       {/* Top header — verre translucide crème, hairline */}
@@ -87,16 +90,16 @@ export default function Navbar({ tab, setTab, total, mode, onProfil, onAdd, onLa
 
             {/* Ce soir ? */}
             <button
-              onClick={onCeSoir}
-              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[11px] font-semibold uppercase tracking-[0.1em] text-cream active:scale-[0.98] cursor-pointer transition-all duration-300 hover:brightness-110"
+              onClick={ceSoir}
+              className={`hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[11px] font-semibold uppercase tracking-[0.1em] text-cream active:scale-[0.98] cursor-pointer transition-all duration-300 hover:brightness-110 ${breatheClass}`}
               style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
             >
               <Utensils size={12} />
               Ce soir ?
             </button>
             <button
-              onClick={onCeSoir}
-              className="sm:hidden w-11 h-11 flex items-center justify-center rounded-full text-cream cursor-pointer active:scale-[0.95] transition-transform duration-300"
+              onClick={ceSoir}
+              className={`sm:hidden w-11 h-11 flex items-center justify-center rounded-full text-cream cursor-pointer active:scale-[0.95] transition-transform duration-300 ${breatheClass}`}
               style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
               aria-label="Ce soir, je bois quoi ?"
             >

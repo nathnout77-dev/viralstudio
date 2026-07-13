@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Wine, Library, MapPin, Sparkles, BookOpen, ChevronDown, Utensils, ArrowRight, Gauge, Hourglass, Camera, GraduationCap, Compass, NotebookPen, Users, Play, UtensilsCrossed } from 'lucide-react'
 import { CAPSULES } from '../data/capsules'
 import { CapsulePlayer } from './Capsules'
 import { WINE_DB, MILLESIMES_DB, CONFIDENTIEL_DOMAINES, WINE_DB_BY_REGION } from '../data/wineDatabase'
 import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
 import RoueAromes from './RoueAromes'
+import useCtaBreathe from '../lib/useCtaBreathe'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ŒNO — Landing cinématique scroll-driven (façon keynote produit)
@@ -126,6 +127,8 @@ function FeatCard({ f, i, hidden }) {
 // ── Landing ───────────────────────────────────────────────────────────────────
 export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) {
   const [reduced, setReduced] = useState(false)
+  const { breatheClass, settle } = useCtaBreathe() // halo du CTA « Ce soir »
+  const ceSoir = useCallback(() => { settle(); onCeSoir?.() }, [settle, onCeSoir])
   const [statsOn, setStatsOn] = useState(false)
   const [capsuleActive, setCapsuleActive] = useState(null) // capsule « 1 minute pour comprendre »
   const statsRef = useRef(null)
@@ -358,8 +361,8 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
 
             {/* CTA — toujours accessibles */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-              <button onClick={onCeSoir}
-                      className="group min-h-[52px] inline-flex items-center justify-center gap-3 px-8 rounded-full font-semibold text-anthracite-950 shadow-gold-lg transition-all duration-500 hover:-translate-y-1 active:scale-[0.98] cursor-pointer"
+              <button onClick={ceSoir}
+                      className={`group min-h-[52px] inline-flex items-center justify-center gap-3 px-8 rounded-full font-semibold text-anthracite-950 shadow-gold-lg transition-all duration-500 hover:-translate-y-1 active:scale-[0.98] cursor-pointer ${breatheClass}`}
                       style={{ background: 'linear-gradient(135deg, #d4a847 0%, #c9a84c 50%, #b8962a 100%)' }}>
                 <Utensils size={17} />
                 Ce soir, je bois quoi ?
@@ -618,8 +621,8 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
               <Wine size={19} />
               C'est parti
             </button>
-            <button onClick={onCeSoir}
-                    className="reveal reveal-delay-4 min-h-[52px] inline-flex items-center gap-2.5 px-8 rounded-full font-medium text-sm text-cream border border-white/20 bg-white/[0.04] hover:bg-white/10 active:scale-[0.98] transition-all duration-500 cursor-pointer">
+            <button onClick={ceSoir}
+                    className={`reveal reveal-delay-4 min-h-[52px] inline-flex items-center gap-2.5 px-8 rounded-full font-medium text-sm text-cream border border-white/20 bg-white/[0.04] hover:bg-white/10 active:scale-[0.98] transition-all duration-500 cursor-pointer ${breatheClass}`}>
               <Utensils size={15} />
               Ce soir, je bois quoi ?
             </button>

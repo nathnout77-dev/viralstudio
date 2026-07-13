@@ -5,6 +5,7 @@ import {
   RefreshCw, Check, GraduationCap, Thermometer, Hourglass, Sparkles,
 } from 'lucide-react'
 import { CHIPS, buildMenu, caveIdsFromWines, suggestionsPour, millesimeConseille } from './modeDinerLogic'
+import { toast } from './Toast'
 import { computeProfilAppris } from '../data/goutsAppris'
 import { FicheVin } from './BibliothequeView'
 import { EnvieButton } from './Envies'
@@ -255,6 +256,7 @@ function ShareMenu({ menu, convives, onClose }) {
       } else {
         // Repli : texte dans le presse-papier
         await navigator.clipboard.writeText(texteMenu())
+        toast('Menu copié — prêt à envoyer aux convives')
         setCopied(true)
         setTimeout(() => setCopied(false), 2000)
       }

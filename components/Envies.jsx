@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { Heart, Trash2, ShoppingBag, Share2, Check, Wine } from 'lucide-react'
+import { Heart, Trash2, ShoppingBag, Share2, Wine } from 'lucide-react'
 import { WINE_DB } from '../data/wineDatabase'
+import { toast } from './Toast'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Liste d'envies — vins repérés, à acheter plus tard.
@@ -79,7 +80,10 @@ export function EnvieButton({ appellation, size = 15, light = false, className =
   const toggle = e => {
     e.stopPropagation()
     e.preventDefault()
-    if (!active) setBurst(true)
+    if (!active) {
+      setBurst(true)
+      toast('Ajouté à vos envies')
+    }
     toggleEnvie(appellation)
   }
 
@@ -114,7 +118,6 @@ export function EnvieButton({ appellation, size = 15, light = false, className =
 // ── Vue « Envies » (sous-onglet de Ma Cave) ──────────────────────────────────
 export default function EnviesView({ onBuy }) {
   const envies = useEnvies()
-  const [shared, setShared] = useState(false)
 
   const enriched = useMemo(() => envies.map(e => ({
     ...e,
@@ -144,8 +147,7 @@ export default function EnviesView({ onBuy }) {
         document.execCommand('copy')
         document.body.removeChild(ta)
       }
-      setShared(true)
-      setTimeout(() => setShared(false), 2000)
+      toast('Liste copiée — prête à partager')
     }
   }, [enriched])
 
@@ -197,7 +199,7 @@ export default function EnviesView({ onBuy }) {
           </div>
         </div>
         <button onClick={share} className="btn-ghost text-xs px-4 py-2.5">
-          {shared ? <><Check size={13} className="text-emerald-600" /> Copiée !</> : <><Share2 size={13} /> Partager ma liste</>}
+          <Share2 size={13} /> Partager ma liste
         </button>
       </div>
 
