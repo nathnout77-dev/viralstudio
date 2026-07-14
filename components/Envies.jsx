@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { Heart, Trash2, ShoppingBag, Share2, Wine } from 'lucide-react'
 import { WINE_DB } from '../data/wineDatabase'
 import { toast } from './Toast'
+import { FicheVin } from './BibliothequeView'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Liste d'envies — vins repérés, à acheter plus tard.
@@ -118,6 +119,7 @@ export function EnvieButton({ appellation, size = 15, light = false, className =
 // ── Vue « Envies » (sous-onglet de Ma Cave) ──────────────────────────────────
 export default function EnviesView({ onBuy }) {
   const envies = useEnvies()
+  const [wineSelected, setWineSelected] = useState(null)
 
   const enriched = useMemo(() => envies.map(e => ({
     ...e,
@@ -207,7 +209,11 @@ export default function EnviesView({ onBuy }) {
         {enriched.map(({ id, appellation, addedAt, wine, pour }, i) => (
           <div
             key={id}
-            className="card p-4 animate-fade-in-up"
+            onClick={() => wine && setWineSelected(wine)}
+            role={wine ? 'button' : undefined}
+            tabIndex={wine ? 0 : undefined}
+            onKeyDown={e => wine && e.key === 'Enter' && setWineSelected(wine)}
+            className={`card p-4 animate-fade-in-up ${wine ? 'cursor-pointer hover:border-gold-500/30 hover:-translate-y-0.5 transition-all' : ''}`}
             style={{ animationDelay: `${Math.min(i * 50, 350)}ms`, animationFillMode: 'both' }}
           >
             <div className="flex items-start gap-3">
@@ -234,13 +240,13 @@ export default function EnviesView({ onBuy }) {
             {wine && <p className="text-xs text-anthracite-500 italic mt-2.5 line-clamp-1">« {wine.enUneMot} »</p>}
             <div className="flex items-center gap-2 mt-3.5">
               <button
-                onClick={() => buy({ appellation, wine, id })}
+                onClick={e => { e.stopPropagation(); buy({ appellation, wine, id }) }}
                 className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full text-xs font-bold text-cream bg-wine-800 hover:brightness-110 active:scale-[0.98] shadow-wine transition-all cursor-pointer"
               >
                 <ShoppingBag size={12} /> J'ai acheté
               </button>
               <button
-                onClick={() => removeEnvie(id)}
+                onClick={e => { e.stopPropagation(); removeEnvie(id) }}
                 aria-label={`Retirer ${appellation} de la liste`}
                 className="w-9 h-9 flex items-center justify-center rounded-full bg-white border border-anthracite-900/10 text-anthracite-400 hover:border-red-300 hover:text-red-600 transition-all cursor-pointer"
               >
@@ -250,6 +256,10 @@ export default function EnviesView({ onBuy }) {
           </div>
         ))}
       </div>
+
+      {wineSelected && (
+        <FicheVin wine={wineSelected} onClose={() => setWineSelected(null)} />
+      )}
     </div>
   )
 }
