@@ -7,6 +7,7 @@ import { loadProfil } from './OnboardingProfil'
 import RegionsPrefFilter from './RegionsPrefFilter'
 import dynamic from 'next/dynamic'
 import JaugesGout from './JaugesGout'
+import { FicheVin } from './BibliothequeView'
 
 // Outils secondaires chargés à la demande (le quiz reste l'écran par défaut)
 const BudgetCaviste = dynamic(() => import('./BudgetCaviste'), { ssr: false })
@@ -166,6 +167,7 @@ export default function SommelierForm({ onOpenBibliotheque }) {
   const [regionsPref, setRegionsPrefState] = useState(() =>
     typeof window === 'undefined' ? [] : getRegionsPref()
   )
+  const [wineSelected, setWineSelected] = useState(null)
   // Profil appris des dégustations : bonus doux (~30 %), n'écrase pas le quiz.
   const profilAppris = useMemo(() => computeProfilAppris(), [])
   const niveau = useMemo(() => (typeof window === 'undefined' ? null : loadProfil()?.niveau), [])
@@ -285,7 +287,13 @@ export default function SommelierForm({ onOpenBibliotheque }) {
           {results.map((w, i) => {
             const diff = DIFFICULTE_CONFIG[w.difficulte]
             return (
-              <div key={w.id} className="card p-5 animate-slide-up" style={{ animationDelay: `${i * 90}ms`, animationFillMode: 'both' }}>
+              <button
+                type="button"
+                key={w.id}
+                onClick={() => setWineSelected(w)}
+                className="card p-5 w-full text-left animate-slide-up hover:border-gold-500/30 hover:-translate-y-0.5 transition-all cursor-pointer"
+                style={{ animationDelay: `${i * 90}ms`, animationFillMode: 'both' }}
+              >
                 <div className="flex items-start gap-4">
                   <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0"
                        style={{ background: `${w.color}18` }}>
@@ -346,10 +354,14 @@ export default function SommelierForm({ onOpenBibliotheque }) {
                     ))}
                   </div>
                 </div>
-              </div>
+              </button>
             )
           })}
         </div>
+
+        {wineSelected && (
+          <FicheVin wine={wineSelected} onClose={() => setWineSelected(null)} />
+        )}
 
         <div className="flex gap-3">
           <button onClick={reset} className="btn-ghost flex-1 justify-center">Refaire le test</button>
