@@ -85,7 +85,8 @@ export default async function handler(req, res) {
 
     // Dégradation propre : si le grounding fait échouer la requête, on retente
     // sans l'outil web plutôt que de planter (réponse sans recherche web).
-    if (!response.ok && webSearch) {
+    // Jamais sur un 429 (quota) : ça ne ferait qu'aggraver la limitation.
+    if (!response.ok && webSearch && response.status !== 429) {
       delete payload.tools
       response = await fetch(url, {
         method: 'POST',
@@ -97,7 +98,9 @@ export default async function handler(req, res) {
     const data = await response.json()
 
     if (!response.ok) {
-      const message = data?.error?.message || 'gemini_error'
+      const message = response.status === 429
+        ? 'Quota Gemini momentanément dépassé — réessayez dans une minute.'
+        : (data?.error?.message || 'gemini_error')
       return res.status(response.status).json({ error: message })
     }
 

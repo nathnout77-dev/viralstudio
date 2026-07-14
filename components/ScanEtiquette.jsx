@@ -346,7 +346,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
   const [photo, setPhoto] = useState(null)        // dataURL JPEG redimensionné
   const [parsed, setParsed] = useState(null)      // réponse JSON de Claude
   const [matched, setMatched] = useState(null)    // vin WINE_DB correspondant
-  const [errType, setErrType] = useState(null)    // 'unreadable' | 'api'
+  const [errType, setErrType] = useState(null)    // 'unreadable' | 'api' | 'quota'
   const [ficheWine, setFicheWine] = useState(null)
   const [added, setAdded] = useState(false)
   const [prixRayon, setPrixRayon] = useState('')  // prix saisi en rayon (string du champ)
@@ -422,7 +422,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
         ],
       })
       if (!ok) {
-        setErrType('api')
+        setErrType(/quota|429/i.test(data?.error || '') ? 'quota' : 'api')
         setStep('error')
         return
       }
@@ -688,12 +688,14 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
           {/* ── ERROR : douce, avec retry ───────────────────────────────── */}
           {step === 'error' && (
             <div className="py-8 flex flex-col items-center text-center animate-fade-in">
-              <div className="text-4xl mb-4" aria-hidden="true">{errType === 'api' ? '🫥' : '🔍'}</div>
+              <div className="text-4xl mb-4" aria-hidden="true">{errType === 'quota' ? '⏳' : errType === 'api' ? '🫥' : '🔍'}</div>
               <div className="font-serif text-lg text-anthracite-900">
-                {errType === 'api' ? 'Notre sommelier fait une courte pause' : 'Étiquette illisible'}
+                {errType === 'quota' ? 'Trop de lectures en peu de temps' : errType === 'api' ? 'Notre sommelier fait une courte pause' : 'Étiquette illisible'}
               </div>
               <p className="text-sm text-anthracite-500 mt-2 max-w-[19rem] leading-relaxed">
-                {errType === 'api'
+                {errType === 'quota'
+                  ? "Le quota gratuit du service de lecture est atteint pour l'instant. Patientez une minute puis réessayez."
+                  : errType === 'api'
                   ? "Le service de lecture est momentanément indisponible. Toutes nos excuses — réessayez dans un instant."
                   : "Réessayez avec plus de lumière, l'étiquette bien à plat et cadrée en entier."}
               </p>
