@@ -37,6 +37,9 @@ export default function WineTile({
   showEnvie = true,
   showBadgeCoupDeCoeur = false,
   className = '',
+  children,
+  footer,
+  iconClass = 'w-12 h-12 rounded-2xl text-2xl',
 }) {
   const tiltRef = useTilt()
   if (!wine) return null
@@ -130,10 +133,10 @@ export default function WineTile({
       )}
       <div className="flex items-start gap-3">
         <div
-          className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
+          className={`flex items-center justify-center flex-shrink-0 ${iconClass}`}
           style={{ background: color ? `${color}18` : '#f0e9dd' }}
         >
-          {emoji}
+          {emoji || <span className="text-anthracite-400">🍷</span>}
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
@@ -164,8 +167,10 @@ export default function WineTile({
               <span>{buildRaison(wine, raisonCriteres)}</span>
             </p>
           )}
+          {children}
         </div>
       </div>
+      {footer}
     </div>
   )
 }

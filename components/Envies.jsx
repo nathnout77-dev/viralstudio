@@ -3,6 +3,7 @@ import { Heart, Trash2, ShoppingBag, Share2, Wine } from 'lucide-react'
 import { WINE_DB } from '../data/wineDatabase'
 import { toast } from './Toast'
 import { FicheVin } from './BibliothequeView'
+import WineTile from './WineTile'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Liste d'envies — vins repérés, à acheter plus tard.
@@ -206,55 +207,69 @@ export default function EnviesView({ onBuy }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {enriched.map(({ id, appellation, addedAt, wine, pour }, i) => (
-          <div
-            key={id}
-            onClick={() => wine && setWineSelected(wine)}
-            role={wine ? 'button' : undefined}
-            tabIndex={wine ? 0 : undefined}
-            onKeyDown={e => wine && e.key === 'Enter' && setWineSelected(wine)}
-            className={`card p-4 animate-fade-in-up ${wine ? 'cursor-pointer hover:border-gold-500/30 hover:-translate-y-0.5 transition-all' : ''}`}
-            style={{ animationDelay: `${Math.min(i * 50, 350)}ms`, animationFillMode: 'both' }}
-          >
-            <div className="flex items-start gap-3">
-              <div
-                className="w-10 h-10 rounded-2xl flex items-center justify-center text-lg flex-shrink-0"
-                style={{ background: wine ? `${wine.color}18` : '#f0e9dd' }}
-              >
-                {wine?.emoji || <Wine size={15} className="text-anthracite-400" />}
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="font-wine-name text-2xl text-anthracite-900 leading-none truncate">{appellation}</div>
-                {pour && (
-                  <span className="inline-flex items-center px-2 py-0.5 mt-1 rounded-full text-[9px] font-bold uppercase tracking-[0.12em] bg-gold-500/15 text-gold-700 border border-gold-500/30">
-                    Pour {pour}
-                  </span>
-                )}
-                <div className="text-[11px] text-anthracite-400 mt-1">
-                  {wine ? `${wine.region} · ~${wine.prixMoyen} €` : 'Vin repéré'}
-                  {' · '}
-                  {new Date(addedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
-                </div>
-              </div>
-            </div>
-            {wine && <p className="text-xs text-anthracite-500 italic mt-2.5 line-clamp-1">« {wine.enUneMot} »</p>}
-            <div className="flex items-center gap-2 mt-3.5">
+        {enriched.map(({ id, appellation, addedAt, wine, pour }, i) => {
+          const dateLabel = new Date(addedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+          const actions = (
+            <div className="flex items-center gap-2 mt-3.5" onClick={e => e.stopPropagation()}>
               <button
-                onClick={e => { e.stopPropagation(); buy({ appellation, wine, id }) }}
+                onClick={() => buy({ appellation, wine, id })}
                 className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full text-xs font-bold text-cream bg-wine-800 hover:brightness-110 active:scale-[0.98] shadow-wine transition-all cursor-pointer"
               >
                 <ShoppingBag size={12} /> J'ai acheté
               </button>
               <button
-                onClick={e => { e.stopPropagation(); removeEnvie(id) }}
+                onClick={() => removeEnvie(id)}
                 aria-label={`Retirer ${appellation} de la liste`}
                 className="w-9 h-9 flex items-center justify-center rounded-full bg-white border border-anthracite-900/10 text-anthracite-400 hover:border-red-300 hover:text-red-600 transition-all cursor-pointer"
               >
                 <Trash2 size={13} />
               </button>
             </div>
-          </div>
-        ))}
+          )
+
+          if (!wine) {
+            // Vin non retrouvé dans le catalogue : pas de fiche à ouvrir, carte non cliquable.
+            return (
+              <div key={id} className="card p-4 animate-fade-in-up" style={{ animationDelay: `${Math.min(i * 50, 350)}ms`, animationFillMode: 'both' }}>
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-lg flex-shrink-0" style={{ background: '#f0e9dd' }}>
+                    <Wine size={15} className="text-anthracite-400" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="font-wine-name text-2xl text-anthracite-900 leading-none truncate">{appellation}</div>
+                    {pour && (
+                      <span className="inline-flex items-center px-2 py-0.5 mt-1 rounded-full text-[9px] font-bold uppercase tracking-[0.12em] bg-gold-500/15 text-gold-700 border border-gold-500/30">
+                        Pour {pour}
+                      </span>
+                    )}
+                    <div className="text-[11px] text-anthracite-400 mt-1">Vin repéré · {dateLabel}</div>
+                  </div>
+                </div>
+                {actions}
+              </div>
+            )
+          }
+
+          return (
+            <WineTile
+              key={id}
+              wine={{ ...wine, appellation }}
+              variant="compact"
+              index={i}
+              onOpen={() => setWineSelected(wine)}
+              showEnvie={false}
+              iconClass="w-10 h-10 rounded-2xl text-lg"
+              footer={actions}
+            >
+              {pour && (
+                <span className="inline-flex items-center px-2 py-0.5 mt-1.5 rounded-full text-[9px] font-bold uppercase tracking-[0.12em] bg-gold-500/15 text-gold-700 border border-gold-500/30">
+                  Pour {pour}
+                </span>
+              )}
+              <div className="text-[11px] text-anthracite-400 mt-1">Repéré le {dateLabel}</div>
+            </WineTile>
+          )
+        })}
       </div>
 
       {wineSelected && (

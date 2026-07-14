@@ -5,10 +5,10 @@ import { EnvieButton } from './Envies'
 import { WINE_DB, REGIONS_LIST, DIFFICULTE_CONFIG, MILLESIMES_DB, gardeForMillesime } from '../data/wineDatabase'
 import JaugesGout from './JaugesGout'
 import Terme from './Tooltip'
-import WineGlassAnim, { MiniVerre, fillLevelFromJauges } from './WineGlassAnim'
+import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
 import useModalBehavior from '../lib/useModal'
-import useTilt from '../lib/useTilt'
 import { tintStyle, pastilleStyle, regionMonogram, collectionNumero } from '../lib/wineStyle'
+import WineTile from './WineTile'
 import { loadDecouvertes, removeDecouverte, decouverteNumero } from '../lib/decouvertes'
 
 const TYPE_LABELS = { red: 'Rouge', white: 'Blanc', 'rosé': 'Rosé', sweet: 'Liquoreux', sparkling: 'Effervescent' }
@@ -466,68 +466,6 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
   )
 }
 
-// ── Card compacte ──────────────────────────────────────────────────────────────
-function VinCard({ wine, onClick, index }) {
-  const diff = DIFFICULTE_CONFIG[wine.difficulte]
-  const hasPetitDomaine = wine.domaines.some(d => d.confidentiel)
-  const numero = WINE_INDEX.get(wine.id) ?? index
-  const tiltRef = useTilt() // inclinaison 3D façon carte physique (desktop)
-  return (
-    <button
-      ref={tiltRef}
-      onClick={onClick}
-      className="etiquette p-4 pt-3.5 text-left w-full hover:-translate-y-1 transition-all duration-300 cursor-pointer group animate-fade-in-up"
-      style={{ animationDelay: `${Math.min(index * 40, 400)}ms`, animationFillMode: 'both', ...tintStyle(wine.type) }}
-    >
-      {/* En-tête d'étiquette : numéro de collection + monogramme de région */}
-      <div className="flex items-center justify-between mb-2.5">
-        <span className="inline-flex items-center gap-2">
-          <MiniVerre color={wine.color} fillLevel={fillLevelFromJauges(wine.jauges)} size={13} hoverFill />
-          <span className="etiquette-numero">{collectionNumero(numero)}</span>
-        </span>
-        <span className="medaillon transition-transform group-hover:scale-110" title={wine.region}>
-          {regionMonogram(wine.region)}
-        </span>
-      </div>
-
-      {/* Nom + appellation en petites capitales espacées */}
-      <div className="text-center mb-2 min-w-0">
-        <div className="font-wine-name text-2xl text-anthracite-900 leading-tight line-clamp-2 whitespace-normal">
-          {wine.emoji} {wine.appellation}
-        </div>
-        <div className="text-[9px] uppercase tracking-[0.22em] text-anthracite-400 mt-1.5">
-          {wine.region} · ~{wine.prixMoyen} €
-        </div>
-      </div>
-
-      {/* Pastille robe du vin + type en micro-capitales */}
-      <div className="flex items-center justify-center gap-1.5 mb-2.5">
-        <span className="w-3 h-3 rounded-full ring-1 ring-anthracite-900/10 flex-shrink-0" style={pastilleStyle(wine.type)} aria-hidden="true" />
-        <span className="text-[9px] uppercase tracking-[0.18em] font-semibold text-anthracite-500">{wine.typeLabel}</span>
-      </div>
-
-      <p className="text-xs text-anthracite-500 italic mb-3 line-clamp-1 text-center">« {wine.enUneMot} »</p>
-      <JaugesGout jauges={wine.jauges} compact animate={false} />
-      <div className="flex items-center justify-between mt-3 gap-2">
-        <span
-          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold"
-          style={{ background: diff.bg, color: diff.color }}
-        >
-          {diff.emoji} {diff.label}
-        </span>
-        <div className="flex items-center gap-1.5">
-          <EnvieButton appellation={wine.appellation} size={12} className="!w-6 !h-6" />
-          {hasPetitDomaine && (
-            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-gold-500/15 text-gold-700" title="Contient un petit domaine">
-              ✨
-            </span>
-          )}
-        </div>
-      </div>
-    </button>
-  )
-}
-
 // ── Vue principale ─────────────────────────────────────────────────────────────
 export default function BibliothequeView({ onAddWine, mode, initialSearch = '', onNoter }) {
   const [search, setSearch]   = useState(initialSearch)
@@ -726,7 +664,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
               {filtered.map((w, i) => (
-                <VinCard key={w.id} wine={w} index={i} onClick={() => setSelected(w)} />
+                <WineTile key={w.id} wine={w} variant="collection" index={WINE_INDEX.get(w.id) ?? i} onOpen={setSelected} />
               ))}
             </div>
           )}
