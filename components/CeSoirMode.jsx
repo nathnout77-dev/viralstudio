@@ -1,13 +1,12 @@
 import { useState, useMemo } from 'react'
-import { X, RefreshCw, Sparkles, ChevronLeft, GraduationCap, Quote } from 'lucide-react'
-import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
+import { X, RefreshCw, Sparkles, ChevronLeft, GraduationCap } from 'lucide-react'
+import { WINE_DB } from '../data/wineDatabase'
 import { computeProfilAppris, bonusProfilAppris } from '../data/goutsAppris'
-import { diversifyByRegion, buildRaison, getRegionsPref } from '../lib/suggestions'
-import JaugesGout from './JaugesGout'
+import { diversifyByRegion, getRegionsPref } from '../lib/suggestions'
 import RegionsPrefFilter from './RegionsPrefFilter'
-import { EnvieButton } from './Envies'
 import useModalBehavior from '../lib/useModal'
 import { FicheVin } from './BibliothequeView'
+import WineTile from './WineTile'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // « Ce soir, je bois quoi ? » — 5 questions guidées → le meilleur vin pour vous
@@ -263,53 +262,21 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
                 </p>
               )}
 
-              {results.map((w, i) => {
-                const diff = DIFFICULTE_CONFIG[w.difficulte]
-                return (
-                  <div
-                    key={w.id}
-                    onClick={() => setWineSelected(w)}
-                    role="button" tabIndex={0}
-                    onKeyDown={e => e.key === 'Enter' && setWineSelected(w)}
-                    className={`card p-4 animate-slide-up cursor-pointer hover:border-gold-500/30 hover:-translate-y-0.5 transition-all ${i === 0 ? 'ring-1 ring-gold-600/60' : ''}`}
-                    style={{ animationDelay: `${i * 90}ms`, animationFillMode: 'both' }}>
-                    {i === 0 && (
-                      <div className="text-[10px] font-bold text-gold-600 uppercase tracking-wider mb-2 flex items-center gap-1">
-                        <Sparkles size={10} /> Notre coup de cœur pour ce soir
-                      </div>
-                    )}
-                    <div className="flex items-start gap-3">
-                      <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
-                           style={{ background: `${w.color}18` }}>
-                        {w.emoji}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-start justify-between gap-2">
-                          <div>
-                            <div className="font-serif text-sm font-bold text-anthracite-900">{w.appellation}</div>
-                            <div className="text-[11px] text-anthracite-400">{w.region} · {w.typeLabel} · ~{w.prixMoyen} €</div>
-                          </div>
-                          <span className="flex items-center gap-1.5 flex-shrink-0" onClick={e => e.stopPropagation()}>
-                            <EnvieButton appellation={w.appellation} size={12} className="!w-6 !h-6" />
-                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
-                                  style={{ background: diff.bg, color: diff.color }}>
-                              {diff.emoji}
-                            </span>
-                          </span>
-                        </div>
-                        <p className="text-xs text-anthracite-500 italic mt-1">« {w.enUneMot} »</p>
-                        <div className="mt-2">
-                          <JaugesGout jauges={w.jauges} compact animate={false} />
-                        </div>
-                        <p className="text-[11px] text-anthracite-600 italic mt-2 leading-relaxed flex items-start gap-1.5">
-                          <Quote size={10} className="flex-shrink-0 mt-0.5 text-gold-600" />
-                          <span>{buildRaison(w, criteresFor(w))}</span>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )
-              })}
+              {results.map((w, i) => (
+                <WineTile
+                  key={w.id}
+                  wine={w}
+                  variant="compact"
+                  index={i}
+                  onOpen={setWineSelected}
+                  showRaison
+                  raisonCriteres={criteresFor(w)}
+                  showBadgeCoupDeCoeur
+                  coupDeCoeurLabel="Notre coup de cœur pour ce soir"
+                  nameClass="font-serif text-sm font-bold text-anthracite-900"
+                  className={i === 0 ? 'ring-1 ring-gold-600/60' : ''}
+                />
+              ))}
 
               {results.length > 0 && (
                 <button

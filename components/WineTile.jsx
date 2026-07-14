@@ -36,10 +36,12 @@ export default function WineTile({
   raisonCriteres = null,
   showEnvie = true,
   showBadgeCoupDeCoeur = false,
+  coupDeCoeurLabel = 'Coup de cœur',
   className = '',
   children,
   footer,
   iconClass = 'w-12 h-12 rounded-2xl text-2xl',
+  nameClass = 'font-wine-name text-2xl text-anthracite-900 leading-tight',
 }) {
   const tiltRef = useTilt()
   if (!wine) return null
@@ -128,7 +130,7 @@ export default function WineTile({
     >
       {showBadgeCoupDeCoeur && index === 0 && (
         <div className="text-[10px] font-bold text-gold-600 uppercase tracking-wider mb-2 flex items-center gap-1">
-          <Sparkles size={10} /> Coup de cœur
+          <Sparkles size={10} /> {coupDeCoeurLabel}
         </div>
       )}
       <div className="flex items-start gap-3">
@@ -141,7 +143,7 @@ export default function WineTile({
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
-              <div className="font-wine-name text-2xl text-anthracite-900 leading-tight">{appellation}</div>
+              <div className={nameClass}>{appellation}</div>
               <div className="text-[11px] text-anthracite-400 mt-0.5">
                 {[region, typeLabel, prixMoyen != null ? `~${prixMoyen} €` : null].filter(Boolean).join(' · ')}
               </div>
