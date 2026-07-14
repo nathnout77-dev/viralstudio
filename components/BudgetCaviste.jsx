@@ -4,6 +4,7 @@ import {
 } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
 import { EnvieButton } from './Envies'
+import { FicheVin } from './BibliothequeView'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Budget caviste — « Composez ma sélection »
@@ -115,6 +116,7 @@ export default function BudgetCaviste() {
   const [couleur, setCouleur]   = useState('mixte')
   const [selection, setSelection] = useState(null)
   const [spinning, setSpinning] = useState(false)
+  const [wineSelected, setWineSelected] = useState(null)
 
   const effectiveBudget = custom ? Math.max(15, Number(custom) || 0) : budget
 
@@ -236,7 +238,14 @@ export default function BudgetCaviste() {
           {selection.wines.map((w, i) => {
             const diff = DIFFICULTE_CONFIG[w.difficulte]
             return (
-              <div key={w.id} className="card p-5 animate-slide-up" style={{ animationDelay: `${i * 80}ms`, animationFillMode: 'both' }}>
+              <div
+                key={w.id}
+                onClick={() => setWineSelected(w)}
+                role="button" tabIndex={0}
+                onKeyDown={e => e.key === 'Enter' && setWineSelected(w)}
+                className="card p-5 animate-slide-up cursor-pointer hover:border-gold-500/30 hover:-translate-y-0.5 transition-all"
+                style={{ animationDelay: `${i * 80}ms`, animationFillMode: 'both' }}
+              >
                 <div className="flex items-start gap-3">
                   <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
                        style={{ background: `${w.color}18` }}>
@@ -248,7 +257,7 @@ export default function BudgetCaviste() {
                         <div className="font-wine-name text-3xl text-anthracite-900 leading-none">{w.appellation}</div>
                         <div className="text-xs text-anthracite-400 mt-1">{w.region} · {w.typeLabel}</div>
                       </div>
-                      <div className="flex items-center gap-2 flex-shrink-0">
+                      <div className="flex items-center gap-2 flex-shrink-0" onClick={e => e.stopPropagation()}>
                         <span className="text-sm font-bold text-anthracite-900">~{w.prixMoyen} €</span>
                         <EnvieButton appellation={w.appellation} size={13} className="!w-7 !h-7" />
                       </div>
@@ -271,6 +280,7 @@ export default function BudgetCaviste() {
                               key={d.name}
                               href={d.url || `https://www.google.com/search?q=${encodeURIComponent(`${d.name} ${w.appellation} acheter`)}`}
                               target="_blank" rel="noopener noreferrer"
+                              onClick={e => e.stopPropagation()}
                               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
                             >
                               <ExternalLink size={9} /> {d.name}
@@ -290,6 +300,10 @@ export default function BudgetCaviste() {
             Prix indicatifs du marché — votre caviste ajustera au millésime près.
           </p>
         </div>
+      )}
+
+      {wineSelected && (
+        <FicheVin wine={wineSelected} onClose={() => setWineSelected(null)} />
       )}
     </div>
   )

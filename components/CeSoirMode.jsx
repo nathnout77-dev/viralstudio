@@ -7,6 +7,7 @@ import JaugesGout from './JaugesGout'
 import RegionsPrefFilter from './RegionsPrefFilter'
 import { EnvieButton } from './Envies'
 import useModalBehavior from '../lib/useModal'
+import { FicheVin } from './BibliothequeView'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // « Ce soir, je bois quoi ? » — 5 questions guidées → le meilleur vin pour vous
@@ -129,6 +130,7 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
   const [answers, setAnswers] = useState({})
   const [done, setDone]       = useState(false)
   const [regionsPref, setRegionsPrefState] = useState(() => getRegionsPref())
+  const [wineSelected, setWineSelected] = useState(null)
   // Profil appris des dégustations : bonus doux (~30 %), n'écrase pas le quiz.
   const profilAppris = useMemo(() => computeProfilAppris(), [])
   const isConnaisseur = mode === 'expert'
@@ -264,8 +266,13 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
               {results.map((w, i) => {
                 const diff = DIFFICULTE_CONFIG[w.difficulte]
                 return (
-                  <div key={w.id} className={`card p-4 animate-slide-up ${i === 0 ? 'ring-1 ring-gold-600/60' : ''}`}
-                       style={{ animationDelay: `${i * 90}ms`, animationFillMode: 'both' }}>
+                  <div
+                    key={w.id}
+                    onClick={() => setWineSelected(w)}
+                    role="button" tabIndex={0}
+                    onKeyDown={e => e.key === 'Enter' && setWineSelected(w)}
+                    className={`card p-4 animate-slide-up cursor-pointer hover:border-gold-500/30 hover:-translate-y-0.5 transition-all ${i === 0 ? 'ring-1 ring-gold-600/60' : ''}`}
+                    style={{ animationDelay: `${i * 90}ms`, animationFillMode: 'both' }}>
                     {i === 0 && (
                       <div className="text-[10px] font-bold text-gold-600 uppercase tracking-wider mb-2 flex items-center gap-1">
                         <Sparkles size={10} /> Notre coup de cœur pour ce soir
@@ -282,7 +289,7 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
                             <div className="font-serif text-sm font-bold text-anthracite-900">{w.appellation}</div>
                             <div className="text-[11px] text-anthracite-400">{w.region} · {w.typeLabel} · ~{w.prixMoyen} €</div>
                           </div>
-                          <span className="flex items-center gap-1.5 flex-shrink-0">
+                          <span className="flex items-center gap-1.5 flex-shrink-0" onClick={e => e.stopPropagation()}>
                             <EnvieButton appellation={w.appellation} size={12} className="!w-6 !h-6" />
                             <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
                                   style={{ background: diff.bg, color: diff.color }}>
@@ -318,6 +325,10 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
           )}
         </div>
       </div>
+
+      {wineSelected && (
+        <FicheVin wine={wineSelected} onClose={() => setWineSelected(null)} />
+      )}
     </div>
   )
 }
