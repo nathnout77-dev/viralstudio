@@ -19,8 +19,8 @@ function blockToPart(block) {
   if (block?.type === 'text') return { text: block.text || '' }
   if (block?.type === 'image' && block.source?.data) {
     return {
-      inline_data: {
-        mime_type: block.source.media_type || 'image/jpeg',
+      inlineData: {
+        mimeType: block.source.media_type || 'image/jpeg',
         data: block.source.data,
       },
     }
@@ -66,13 +66,13 @@ export default async function handler(req, res) {
       },
     }
     if (system) {
-      payload.system_instruction = { parts: [{ text: String(system) }] }
+      payload.systemInstruction = { parts: [{ text: String(system) }] }
     }
     // Grounding web natif de Gemini quand la requête le demande.
     // En cas d'incompatibilité, on dégrade proprement (voir plus bas).
     const webSearch = wantsWebSearch(tools)
     if (webSearch) {
-      payload.tools = [{ google_search: {} }]
+      payload.tools = [{ googleSearch: {} }]
     }
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${process.env.GEMINI_API_KEY}`
