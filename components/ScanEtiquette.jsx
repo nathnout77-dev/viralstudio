@@ -8,6 +8,7 @@ import { FicheVin } from './BibliothequeView'
 import { toggleEnvie, useEnvies } from './Envies'
 import useModalBehavior from '../lib/useModal'
 import { loadDecouvertes, matchDecouverte, decouverteFromVision, addDecouverte, updateDecouverte } from '../lib/decouvertes'
+import { askIA } from '../lib/askIA'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ScanEtiquette — photographiez une étiquette, Œno la décode.
@@ -83,18 +84,13 @@ Règles :
 // Enrichissement web : renvoie les champs fusionnables, ou null si échec/pas de données.
 async function rechercheWeb(json) {
   try {
-    const res = await fetch('/api/claude', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-5',
-        max_tokens: 1200,
-        messages: [{ role: 'user', content: enrichPrompt(json) }],
-        tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: 3 }],
-      }),
+    const { ok, data } = await askIA({
+      model: 'claude-sonnet-5',
+      max_tokens: 1200,
+      messages: [{ role: 'user', content: enrichPrompt(json) }],
+      tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: 3 }],
     })
-    const data = await res.json()
-    if (!res.ok || data.error || data.type === 'error') return null
+    if (!ok) return null
     const raw = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n')
     const start = raw.indexOf('{')
     const end = raw.lastIndexOf('}')
@@ -411,26 +407,21 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
     setStep('loading')
     try {
       const base64 = photo.split(',')[1]
-      const res = await fetch('/api/claude', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-5',
-          max_tokens: 700,
-          system: SYSTEM_PROMPT,
-          messages: [
-            {
-              role: 'user',
-              content: [
-                { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: base64 } },
-                { type: 'text', text: "Lis cette étiquette de vin et renvoie uniquement le JSON." },
-              ],
-            },
-          ],
-        }),
+      const { ok, data } = await askIA({
+        model: 'claude-sonnet-5',
+        max_tokens: 700,
+        system: SYSTEM_PROMPT,
+        messages: [
+          {
+            role: 'user',
+            content: [
+              { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: base64 } },
+              { type: 'text', text: "Lis cette étiquette de vin et renvoie uniquement le JSON." },
+            ],
+          },
+        ],
       })
-      const data = await res.json()
-      if (!res.ok || data.error || data.type === 'error') {
+      if (!ok) {
         setErrType('api')
         setStep('error')
         return

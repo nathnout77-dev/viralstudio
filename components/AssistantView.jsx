@@ -5,6 +5,7 @@ import { GLOSSAIRE_LIST } from '../data/glossaire'
 import { profilApprisPourAssistant } from '../data/goutsAppris'
 import JaugesGout from './JaugesGout'
 import useModalBehavior from '../lib/useModal'
+import { askIA } from '../lib/askIA'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Assistant conversationnel « Œno » — profilage, menu, chat IA + fallback
@@ -315,17 +316,12 @@ export default function AssistantView({ onClose }) {
         body.tools = [{ type: 'web_search_20250305', name: 'web_search', max_uses: 3 }]
       }
 
-      const res = await fetch('/api/claude', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      })
-      const data = await res.json()
+      const { ok, data } = await askIA(body)
 
       const textBlocks = (data.content || []).filter(b => b.type === 'text').map(b => b.text)
       const answer = textBlocks.join('\n\n')
 
-      if (!res.ok || !answer) throw new Error(data?.error?.message || 'empty')
+      if (!ok || !answer) throw new Error(data?.error?.message || 'empty')
 
       setMessages(prev => [...prev, { role: 'assistant', content: answer }])
     } catch {

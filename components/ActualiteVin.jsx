@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Newspaper, RefreshCw, ExternalLink, CloudOff, Grape, Sparkles, CalendarDays, TrendingUp } from 'lucide-react'
+import { askIA } from '../lib/askIA'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Actualité vivante — 4 à 6 actualités fraîches du monde du vin, obtenues
@@ -77,20 +78,15 @@ export default function ActualiteVin() {
     setLoading(true)
     setError(false)
     try {
-      const res = await fetch('/api/claude', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-5',
-          max_tokens: 2000,
-          messages: [{ role: 'user', content: PROMPT }],
-          tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: 4 }],
-        }),
+      const { ok, data } = await askIA({
+        model: 'claude-sonnet-5',
+        max_tokens: 2000,
+        messages: [{ role: 'user', content: PROMPT }],
+        tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: 4 }],
       })
-      const data = await res.json()
       const raw = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n')
       const parsed = parseItems(raw)
-      if (!res.ok || !parsed) throw new Error('empty')
+      if (!ok || !parsed) throw new Error('empty')
       const now = Date.now()
       setItems(parsed)
       setFetchedAt(now)
