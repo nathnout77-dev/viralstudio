@@ -29,13 +29,11 @@ export default function Document() {
 
         {/* Inter / Fraunces / Tangerine sont désormais auto-hébergées via
             next/font/google (voir lib/fonts.js + pages/_app.jsx) : plus de
-            <link> vers fonts.googleapis.com. */}
-        <link
-          rel="stylesheet"
-          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-          crossOrigin=""
-        />
+            <link> vers fonts.googleapis.com.
+            Le CSS de Leaflet est désormais importé localement depuis
+            node_modules (voir pages/_app.jsx) plutôt que via ce CDN externe,
+            qui rendait la carte des vignobles cassée dès que unpkg.com
+            n'était pas joignable (réseau restreint, offline, etc.). */}
       </Head>
       <body>
         <Main />

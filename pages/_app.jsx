@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import '../styles/globals.css'
+import 'leaflet/dist/leaflet.css'
 import { Toaster } from '../components/Toast'
 import { inter, fraunces, tangerine } from '../lib/fonts'
 
