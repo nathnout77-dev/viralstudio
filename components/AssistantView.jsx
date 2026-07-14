@@ -6,6 +6,7 @@ import { profilApprisPourAssistant } from '../data/goutsAppris'
 import JaugesGout from './JaugesGout'
 import useModalBehavior from '../lib/useModal'
 import { askIA } from '../lib/askIA'
+import { FicheVin } from './BibliothequeView'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Assistant conversationnel « Œno » — profilage, menu, chat IA + fallback
@@ -183,10 +184,14 @@ function findMentionedWines(text) {
   return WINE_DB.filter(w => lower.includes(w.appellation.toLowerCase())).slice(0, 3)
 }
 
-function InlineWineCard({ wine }) {
+function InlineWineCard({ wine, onSelect }) {
   const diff = DIFFICULTE_CONFIG[wine.difficulte]
   return (
-    <div className="card p-3 mt-2 flex items-start gap-3">
+    <div
+      onClick={() => onSelect?.(wine)}
+      role="button" tabIndex={0}
+      onKeyDown={e => e.key === 'Enter' && onSelect?.(wine)}
+      className="card p-3 mt-2 flex items-start gap-3 cursor-pointer hover:border-gold-500/30 hover:-translate-y-0.5 transition-all">
       <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
            style={{ background: `${wine.color}18` }}>
         {wine.emoji}
@@ -242,6 +247,7 @@ export default function AssistantView({ onClose }) {
   const [messages, setMessages]           = useState([])
   const [input, setInput]                 = useState('')
   const [loading, setLoading]             = useState(false)
+  const [wineSelected, setWineSelected]   = useState(null)
   const scrollRef = useRef(null)
 
   useEffect(() => {
@@ -446,7 +452,7 @@ export default function AssistantView({ onClose }) {
                   : (
                     <>
                       {renderMarkdown(m.content)}
-                      {findMentionedWines(m.content).map(w => <InlineWineCard key={w.id} wine={w} />)}
+                      {findMentionedWines(m.content).map(w => <InlineWineCard key={w.id} wine={w} onSelect={setWineSelected} />)}
                       {m.fallback && (
                         <p className="text-[10px] text-anthracite-400 mt-2 italic">Mode hors-ligne — contenu depuis la base locale.</p>
                       )}
@@ -506,6 +512,10 @@ export default function AssistantView({ onClose }) {
           </div>
         )}
       </div>
+
+      {wineSelected && (
+        <FicheVin wine={wineSelected} onClose={() => setWineSelected(null)} />
+      )}
     </div>
   )
 }
