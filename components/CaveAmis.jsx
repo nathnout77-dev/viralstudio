@@ -5,6 +5,8 @@ import { snapshotLocal } from './CompteSync'
 import WineCard from './WineCard'
 import { loadEnvies } from './Envies'
 import useModalBehavior from '../lib/useModal'
+import { WINE_DB } from '../data/wineDatabase'
+import { FicheVin } from './BibliothequeView'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Cave entre amis — partage par snapshot + code court.
@@ -166,6 +168,7 @@ export function CaveAmieViewer({ code, onClose }) {
   useModalBehavior(onClose)
   const [state, setState] = useState({ loading: true, partage: null, error: null })
   const [offert, setOffert] = useState(null) // id du dernier vin offert (feedback)
+  const [wineSelected, setWineSelected] = useState(null)
 
   useEffect(() => {
     if (!supabase) {
@@ -198,6 +201,13 @@ export function CaveAmieViewer({ code, onClose }) {
     setOffert(wine.id)
     setTimeout(() => setOffert(null), 2000)
   }, [pseudo])
+
+  // Retrouve la fiche catalogue correspondant à une bouteille de la cave partagée
+  const openFiche = useCallback(wine => {
+    const appellation = wine.appellation || wine.name
+    const full = WINE_DB.find(w => w.appellation === appellation)
+    if (full) setWineSelected(full)
+  }, [])
 
   return (
     <div className="fixed inset-0 z-[80] overflow-y-auto bg-cream animate-fade-in">
@@ -254,7 +264,7 @@ export function CaveAmieViewer({ code, onClose }) {
               <div className="flex flex-col gap-2 mb-12">
                 {cave.map((w, i) => (
                   <div key={w.id || i} className="relative">
-                    <WineCard wine={w} compact />
+                    <WineCard wine={w} compact onSelect={openFiche} />
                     <button
                       onClick={() => offrir(w)}
                       className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[11px] font-bold text-cream bg-wine-800 hover:brightness-110 active:scale-[0.97] shadow-wine transition-all cursor-pointer"
@@ -278,7 +288,13 @@ export function CaveAmieViewer({ code, onClose }) {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {envies.map((e, i) => (
-                  <div key={e.id || i} className="card p-4 flex items-center gap-3">
+                  <div
+                    key={e.id || i}
+                    onClick={() => openFiche({ appellation: e.appellation })}
+                    role="button" tabIndex={0}
+                    onKeyDown={ev => ev.key === 'Enter' && openFiche({ appellation: e.appellation })}
+                    className="card p-4 flex items-center gap-3 cursor-pointer hover:border-gold-500/30 transition-all"
+                  >
                     <div className="w-9 h-9 rounded-2xl bg-wine-50 flex items-center justify-center flex-shrink-0">
                       <Heart size={14} className="text-wine-700" />
                     </div>
@@ -287,7 +303,7 @@ export function CaveAmieViewer({ code, onClose }) {
                       <div className="text-[10px] text-anthracite-400 mt-1">Repéré le {new Date(e.addedAt).toLocaleDateString('fr-FR')}</div>
                     </div>
                     <button
-                      onClick={() => offrir({ id: e.id, appellation: e.appellation, name: e.appellation })}
+                      onClick={ev => { ev.stopPropagation(); offrir({ id: e.id, appellation: e.appellation, name: e.appellation }) }}
                       className="flex items-center gap-1.5 px-3 py-2 rounded-full text-[11px] font-bold text-cream bg-wine-800 hover:brightness-110 active:scale-[0.97] shadow-wine transition-all cursor-pointer flex-shrink-0"
                     >
                       {offert === e.id ? <><Check size={12} /> Noté !</> : <><Gift size={12} /> Offrir</>}
@@ -299,6 +315,10 @@ export function CaveAmieViewer({ code, onClose }) {
           </>
         )}
       </main>
+
+      {wineSelected && (
+        <FicheVin wine={wineSelected} onClose={() => setWineSelected(null)} />
+      )}
     </div>
   )
 }
