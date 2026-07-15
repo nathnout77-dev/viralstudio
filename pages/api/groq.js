@@ -23,8 +23,12 @@ const GROQ_TEXT_MODELS = [
   'openai/gpt-oss-20b',
   'llama-3.1-8b-instant',
 ]
-// Modèle multimodal (vision) pour le scan d'étiquette.
-const GROQ_VISION_MODEL = 'llama-3.2-90b-vision-preview'
+// Modèles multimodaux (vision) pour le scan d'étiquette, même logique de
+// chaîne : quotas séparés par modèle, 404 toléré si le catalogue évolue.
+const GROQ_VISION_MODELS = [
+  'meta-llama/llama-4-scout-17b-16e-instruct',
+  'meta-llama/llama-4-maverick-17b-128e-instruct',
+]
 
 // Traduit un bloc de contenu Anthropic → « part » OpenAI.
 function blockToPart(block) {
@@ -69,7 +73,7 @@ export default async function handler(req, res) {
 
   try {
     const { system, messages, max_tokens } = req.body || {}
-    const models = hasImage(messages) ? [GROQ_VISION_MODEL] : GROQ_TEXT_MODELS
+    const models = hasImage(messages) ? GROQ_VISION_MODELS : GROQ_TEXT_MODELS
 
     const basePayload = {
       messages: messagesToOpenAI(messages, system),
