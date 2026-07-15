@@ -13,6 +13,10 @@ export const config = {
 
 // Modèle texte rapide et gratuit sur Groq.
 const GROQ_TEXT_MODEL = 'llama-3.3-70b-versatile'
+// Modèle de secours : les quotas gratuits Groq sont PAR MODÈLE, donc quand
+// le 70b atteint sa limite par minute (429), le 8b a encore son propre
+// budget intact — on double ainsi la capacité de conversation.
+const GROQ_FALLBACK_MODEL = 'llama-3.1-8b-instant'
 // Modèle multimodal (vision) pour le scan d'étiquette.
 const GROQ_VISION_MODEL = 'llama-3.2-90b-vision-preview'
 
@@ -67,21 +71,31 @@ export default async function handler(req, res) {
       max_tokens: max_tokens || 1500,
     }
 
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const callGroq = body => fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(body),
     })
+
+    let response = await callGroq(payload)
+
+    // Limite par minute atteinte sur le modèle principal (429/413) : le
+    // modèle de secours a son propre quota séparé, on retente aussitôt.
+    if (!response.ok && (response.status === 429 || response.status === 413) && model === GROQ_TEXT_MODEL) {
+      console.error(`[groq] ${response.status} sur ${model}, bascule sur ${GROQ_FALLBACK_MODEL}`)
+      response = await callGroq({ ...payload, model: GROQ_FALLBACK_MODEL })
+    }
 
     const data = await response.json()
 
     if (!response.ok) {
-      const message = response.status === 429
+      const message = response.status === 429 || response.status === 413
         ? 'Quota Groq momentanément dépassé — réessayez dans une minute.'
         : (data?.error?.message || 'groq_error')
+      console.error('[groq] erreur API', response.status, data?.error?.message || '')
       return res.status(response.status).json({ error: message })
     }
 

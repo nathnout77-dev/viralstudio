@@ -334,11 +334,23 @@ export default function AssistantView({ onClose }) {
       const textBlocks = (data.content || []).filter(b => b.type === 'text').map(b => b.text)
       const answer = textBlocks.join('\n\n')
 
-      if (!ok || !answer) throw new Error(data?.error?.message || 'empty')
+      if (!ok || !answer) {
+        // Quota temporairement dépassé ≠ service hors-ligne : on le dit
+        // honnêtement plutôt que d'afficher le contenu de secours local.
+        const err = new Error(data?.error?.message || data?.error || 'empty')
+        err.rateLimited = data?.error === 'rate_limited' || /quota|429/i.test(String(data?.error || ''))
+        throw err
+      }
 
       setMessages(prev => [...prev, { role: 'assistant', content: answer }])
-    } catch {
-      setMessages(prev => [...prev, { role: 'assistant', content: fallbackFor(menuId, profil), fallback: true }])
+    } catch (e) {
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: e?.rateLimited
+          ? `Vous êtes en pleine forme, et moi j'ai besoin de reprendre mon souffle une petite minute ! 😅 Le temps de reposer mes idées, reposez-moi votre question dans quelques instants — en attendant, l'onglet **Vins** et le **Guide** sont là.`
+          : fallbackFor(menuId, profil),
+        fallback: true,
+      }])
     } finally {
       setLoading(false)
     }
