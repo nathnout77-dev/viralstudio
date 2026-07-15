@@ -69,16 +69,18 @@ function enrichPrompt(json) {
 - Appellation : ${json.appellation || 'inconnue'}
 - Millésime : ${json.millesime || 'inconnu'}
 - Région : ${json.region || 'inconnue'}
-Recherche sur le web des informations fiables et récentes sur ce domaine et ce vin, puis réponds STRICTEMENT avec un objet JSON valide, sans aucun texte autour, sans balises markdown :
-{"histoireDomaine": string, "styleVin": string, "accords": string[], "fourchettePrix": {"min": number, "max": number}|null, "siteWeb": string|null}
+Recherche sur le web des informations fiables et récentes sur ce domaine et ce vin, VÉRIFIE la lecture d'étiquette ci-dessus, puis réponds STRICTEMENT avec un objet JSON valide, sans aucun texte autour, sans balises markdown :
+{"verifie": boolean, "histoireDomaine": string, "styleVin": string, "accords": string[], "fourchettePrix": {"min": number, "max": number}|null, "siteWeb": string|null, "correctionAppellation": string|null, "correctionRegion": string|null}
 Règles :
+- "verifie" : true UNIQUEMENT si tu as réellement trouvé sur le web des informations sur CE domaine ou CE vin précis. Si tes recherches ne donnent rien de spécifique, mets false et ne remplis que ce que tu sais avec certitude.
+- Tout ce que tu écris doit venir des résultats de recherche, pas de suppositions. Une information introuvable = null (ou [] pour "accords"). N'invente RIEN : mieux vaut un champ vide qu'une erreur présentée avec assurance.
 - "histoireDomaine" : 2 à 3 phrases sur l'histoire, la taille et l'esprit du domaine, ton chaleureux et précis, en français.
-- "styleVin" : 1 à 2 phrases sur le style de ce vin en particulier.
+- "styleVin" : 1 à 2 phrases sur le style de ce vin en particulier, d'après les sources trouvées.
 - "accords" : 3 à 4 plats concrets qui l'accompagnent bien.
 - "fourchettePrix" : fourchette de prix habituelle constatée en euros {min, max}, ou null si introuvable.
 - "siteWeb" : URL du site officiel du domaine si tu la trouves, sinon null.
-- Ne mentionne JAMAIS de supermarché, de grande distribution ni aucune enseigne commerciale de distribution ; tu documentes le vin, jamais où l'acheter.
-- Si une information reste introuvable, mets null (ou [] pour "accords") plutôt que d'inventer.`
+- "correctionAppellation" / "correctionRegion" : si le web contredit la lecture d'étiquette (mauvaise appellation ou région), donne la bonne valeur ; sinon null.
+- Ne mentionne JAMAIS de supermarché, de grande distribution ni aucune enseigne commerciale de distribution ; tu documentes le vin, jamais où l'acheter.`
 }
 
 // Enrichissement web : renvoie les champs fusionnables, ou null si échec/pas de données.
@@ -98,11 +100,14 @@ async function rechercheWeb(json) {
     const obj = JSON.parse(raw.slice(start, end + 1))
     const usedWeb = (data.content || []).some(b => b.type === 'web_search_tool_result' || b.type === 'server_tool_use')
     return {
+      verifie: obj.verifie === true,
       histoire: typeof obj.histoireDomaine === 'string' ? obj.histoireDomaine.trim() : '',
       styleWeb: typeof obj.styleVin === 'string' ? obj.styleVin.trim() : '',
       accordsWeb: Array.isArray(obj.accords) ? obj.accords.filter(a => typeof a === 'string') : [],
       fourchettePrixWeb: obj.fourchettePrix && obj.fourchettePrix.min != null ? obj.fourchettePrix : null,
       siteWeb: typeof obj.siteWeb === 'string' && obj.siteWeb.startsWith('http') ? obj.siteWeb : null,
+      correctionAppellation: typeof obj.correctionAppellation === 'string' && obj.correctionAppellation.trim() ? obj.correctionAppellation.trim() : null,
+      correctionRegion: typeof obj.correctionRegion === 'string' && obj.correctionRegion.trim() ? obj.correctionRegion.trim() : null,
       usedWeb,
     }
   } catch {
@@ -248,7 +253,9 @@ function PrixRayonBloc({ verdict, prixRayon, editingPrix, prixDraft, setPrixDraf
 }
 
 // Bloc "Notre avis" (style/qualité, pour qui) + "À table avec" (accords), réutilisé dans les deux fiches.
-function AvisEtAccords({ parsed }) {
+// `fiabilite` (vins hors bibliothèque) : la description a-t-elle été confirmée
+// par une recherche web, ou reste-t-elle une estimation d'après l'appellation ?
+function AvisEtAccords({ parsed, fiabilite = null, enrichState = 'idle' }) {
   if (!parsed?.styleEtQualite && !parsed?.accordsSuggeres?.length) return null
   return (
     <>
@@ -257,6 +264,22 @@ function AvisEtAccords({ parsed }) {
           <div className="text-[10px] uppercase tracking-wider font-bold text-gold-700 mb-1.5">Notre avis</div>
           {parsed.styleEtQualite && <p className="text-xs text-anthracite-700 leading-relaxed">{parsed.styleEtQualite}</p>}
           {parsed.pourQui && <p className="text-xs text-anthracite-500 italic mt-1.5">{parsed.pourQui}</p>}
+          {enrichState === 'loading' && (
+            <div className="flex items-center gap-1.5 mt-2.5 text-[10px] text-anthracite-400" aria-live="polite">
+              <span className="w-2.5 h-2.5 rounded-full border border-gold-500/40 border-t-gold-600 animate-spin flex-shrink-0" />
+              Vérification en ligne de cette description…
+            </div>
+          )}
+          {enrichState === 'done' && fiabilite === 'verifiee' && (
+            <div className="flex items-center gap-1.5 mt-2.5 text-[10px] font-semibold text-emerald-700">
+              <Globe size={10} className="flex-shrink-0" /> Description vérifiée en ligne
+            </div>
+          )}
+          {enrichState === 'done' && fiabilite === 'estimation' && (
+            <div className="flex items-center gap-1.5 mt-2.5 text-[10px] text-anthracite-400">
+              <Globe size={10} className="flex-shrink-0 opacity-50" /> Estimation d'après l'appellation — vin introuvable en ligne
+            </div>
+          )}
         </div>
       )}
       {parsed.accordsSuggeres?.length > 0 && (
@@ -355,6 +378,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
   // Bibliothèque personnelle « Mes découvertes »
   const [dejaConnu, setDejaConnu] = useState(false)     // vin déjà en WINE_DB ou en découvertes
   const [enrichState, setEnrichState] = useState('idle') // 'idle' | 'loading' | 'done'
+  const [fiabilite, setFiabilite] = useState(null) // null | 'verifiee' | 'estimation' — vins hors bibliothèque uniquement
   const [decouverte, setDecouverte] = useState(null)     // enregistrement sauvegardé
   const cameraRef = useRef(null)
   const galleryRef = useRef(null)
@@ -370,11 +394,17 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
     // Vin inconnu : on mémorise d'abord la lecture vision (capture garantie)…
     let record = addDecouverte(decouverteFromVision(json))
     setDecouverte(record)
-    // …puis on tente un enrichissement web, non bloquant.
+    // …puis vérification web, non bloquante. Pour un vin hors bibliothèque,
+    // la lecture vision seule est sujette aux approximations : quand le web
+    // confirme, ses données remplacent l'estimation DANS LA FICHE AFFICHÉE
+    // (style, accords, prix, voire correction d'appellation) ; sinon la
+    // fiche est marquée honnêtement comme estimation non vérifiée.
     setEnrichState('loading')
     const web = await rechercheWeb(json)
     if (web) {
       const merged = updateDecouverte(record.id, {
+        appellation: web.correctionAppellation || record.appellation,
+        region: web.correctionRegion || record.region,
         histoire: web.histoire || record.histoire,
         description: web.styleWeb || record.description,
         styleEtQualite: web.styleWeb || record.styleEtQualite,
@@ -382,8 +412,24 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
         fourchettePrix: web.fourchettePrixWeb || record.fourchettePrix,
         siteWeb: web.siteWeb,
         sourceWeb: !!web.usedWeb,
+        verifie: !!web.verifie,
       })
       if (merged) setDecouverte(merged)
+      if (web.verifie) {
+        setParsed(prev => prev ? {
+          ...prev,
+          appellation: web.correctionAppellation || prev.appellation,
+          region: web.correctionRegion || prev.region,
+          styleEtQualite: web.styleWeb || prev.styleEtQualite,
+          accordsSuggeres: web.accordsWeb.length ? web.accordsWeb : prev.accordsSuggeres,
+          fourchettePrixHabituelle: web.fourchettePrixWeb || prev.fourchettePrixHabituelle,
+        } : prev)
+        setFiabilite('verifiee')
+      } else {
+        setFiabilite('estimation')
+      }
+    } else {
+      setFiabilite('estimation')
     }
     setEnrichState('done')
   }
@@ -463,6 +509,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
     setDejaConnu(false)
     setEnrichState('idle')
     setDecouverte(null)
+    setFiabilite(null)
   }
 
   const confirmerPrix = () => {
@@ -910,7 +957,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                     </div>
                   )}
 
-                  <AvisEtAccords parsed={parsed} />
+                  <AvisEtAccords parsed={parsed} fiabilite={fiabilite} enrichState={enrichState} />
                 </div>
               </div>
 
