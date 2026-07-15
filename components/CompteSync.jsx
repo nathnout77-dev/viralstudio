@@ -265,13 +265,16 @@ export default function CompteSync({ onClose, extraSection = null }) {
     } catch (err) {
       // On affiche la cause réelle : le message générique masquait tout
       // (limite d'envoi du mailer gratuit Supabase, inscriptions coupées…).
-      const msg = String(err?.message || '')
-      if (/rate limit|too many|429/i.test(msg)) {
-        setError('Limite d\'envoi d\'emails atteinte — le service gratuit n\'envoie que quelques emails par heure. Réessayez dans une heure.')
+      const msg = String(err?.message || '').replace(/^\{\}$/, '')
+      const status = err?.status || err?.code || ''
+      if (/rate limit|too many/i.test(msg) || status === 429) {
+        setError('Limite d\'envoi d\'emails atteinte. Patientez une minute (ou une heure si ça persiste) puis réessayez.')
       } else if (/signup|not allowed|disabled/i.test(msg)) {
         setError('Les inscriptions par email sont désactivées côté serveur (Supabase → Authentication → Sign In / Up → Email).')
+      } else if (/error sending|smtp|mail/i.test(msg) || status >= 500 || (!msg && status === '')) {
+        setError('Le serveur n\'a pas réussi à envoyer l\'email : la configuration SMTP (Brevo) côté Supabase semble incorrecte — expéditeur non validé, mauvais port ou mauvaise clé SMTP.')
       } else {
-        setError(msg ? `Envoi impossible : ${msg}` : 'Envoi du lien impossible. Vérifiez l\'adresse et réessayez.')
+        setError(`Envoi impossible${msg ? ` : ${msg}` : ''}${status ? ` (code ${status})` : ''}. Vérifiez l'adresse et réessayez.`)
       }
     } finally { setBusy(false) }
   }, [email])
