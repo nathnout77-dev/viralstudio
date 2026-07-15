@@ -190,6 +190,13 @@ export default function CompteSync({ onClose, extraSection = null }) {
   const [code, setCode]         = useState('')
   const [busy, setBusy]         = useState(false)
   const [error, setError]       = useState(null)
+  const [resendIn, setResendIn] = useState(0)   // secondes avant de pouvoir renvoyer l'email
+
+  useEffect(() => {
+    if (resendIn <= 0) return
+    const id = setInterval(() => setResendIn(s => (s > 1 ? s - 1 : 0)), 1000)
+    return () => clearInterval(id)
+  }, [resendIn > 0]) // eslint-disable-line react-hooks/exhaustive-deps
   const [conflict, setConflict] = useState(null)  // { cloudRow } → choix utilisateur
   const [syncState, setSyncState] = useState('idle') // idle | syncing | synced
   const lastPushed = useRef(null)
@@ -251,8 +258,10 @@ export default function CompteSync({ onClose, extraSection = null }) {
     return () => clearInterval(id)
   }, [user?.id, conflict]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const sendLink = useCallback(async e => {
-    e.preventDefault()
+  // Envoi (et renvoi) de l'email de connexion. Supabase impose ~60 s entre
+  // deux envois vers la même adresse : le compte à rebours l'affiche plutôt
+  // que de laisser l'utilisateur prendre un « rate limit » en réessayant.
+  const doSend = useCallback(async () => {
     if (!email.trim()) return
     setBusy(true); setError(null)
     try {
@@ -262,6 +271,7 @@ export default function CompteSync({ onClose, extraSection = null }) {
       })
       if (error) throw error
       setSent(true)
+      setResendIn(60)
     } catch (err) {
       // On affiche la cause réelle : le message générique masquait tout
       // (limite d'envoi du mailer gratuit Supabase, inscriptions coupées…).
@@ -278,6 +288,8 @@ export default function CompteSync({ onClose, extraSection = null }) {
       }
     } finally { setBusy(false) }
   }, [email])
+
+  const sendLink = useCallback(e => { e.preventDefault(); doSend() }, [doSend])
 
   // Connexion par code à 6 chiffres (contenu dans le même email que le lien) :
   // fonctionne même si le lien magique redirige vers une mauvaise adresse.
@@ -400,7 +412,20 @@ export default function CompteSync({ onClose, extraSection = null }) {
                   {busy ? 'Vérification…' : 'Me connecter avec ce code'}
                 </button>
               </form>
-              <button onClick={() => { setSent(false); setCode(''); setError(null) }} className="btn-ghost text-xs px-4 py-2 mt-4">Changer d'adresse</button>
+              <p className="text-[11px] text-anthracite-400 mt-5">
+                Rien reçu ? Vérifiez vos indésirables (spam), puis :
+              </p>
+              <div className="flex items-center justify-center gap-2 mt-2">
+                <button
+                  onClick={doSend}
+                  disabled={busy || resendIn > 0}
+                  className="btn-ghost text-xs px-4 py-2 disabled:opacity-50"
+                >
+                  <RefreshCw size={12} className={busy ? 'animate-spin' : ''} />
+                  {resendIn > 0 ? `Renvoyer l'email (${resendIn}s)` : 'Renvoyer l\'email'}
+                </button>
+                <button onClick={() => { setSent(false); setCode(''); setError(null) }} className="btn-ghost text-xs px-4 py-2">Changer d'adresse</button>
+              </div>
             </div>
           )}
 
