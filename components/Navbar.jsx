@@ -1,4 +1,5 @@
 import { Wine, Library, MapPin, Sparkles, BookOpen, Plus, Utensils, ScanLine, UserCircle2 } from 'lucide-react'
+import LogoOeno from './LogoOeno'
 import useCtaBreathe from '../lib/useCtaBreathe'
 
 const TABS = [
@@ -27,10 +28,7 @@ export default function Navbar({ tab, setTab, total, mode, onProfil, onAdd, onLa
         <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6">
           {/* Logo */}
           <button onClick={onLanding} className="flex items-center gap-3 cursor-pointer group">
-            <div className="w-9 h-9 rounded-full flex items-center justify-center transition-transform duration-500 group-hover:scale-105"
-                 style={{ background: 'linear-gradient(135deg, #8c2f39 0%, #5c0d22 100%)', boxShadow: '0 0 0 1px rgba(201,168,76,0.25)' }}>
-              <Wine size={17} className="text-gold-400" />
-            </div>
+            <LogoOeno size={36} className="transition-transform duration-500 group-hover:scale-105" />
             <div className="text-left">
               <div className="font-serif text-lg text-anthracite-950 tracking-wide leading-none">Œno</div>
               <div className="text-[9px] text-gold-600 uppercase tracking-[0.2em] mt-1">{total} bouteille{total > 1 ? 's' : ''} en cave</div>

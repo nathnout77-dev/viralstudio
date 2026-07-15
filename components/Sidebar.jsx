@@ -1,5 +1,6 @@
 import { Wine, Library, MapPin, Sparkles, BookOpen, Plus, Utensils, ScanLine, UserCircle2, MessageCircleHeart } from 'lucide-react'
 import RollingNumber from './RollingNumber'
+import LogoOeno from './LogoOeno'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Sidebar desktop (≥ lg) — signature luxe : noir profond, textes crème,
@@ -58,12 +59,7 @@ export default function Sidebar({ tab, setTab, total, mode, onProfil, onAdd, onL
     >
       {/* Wordmark */}
       <button onClick={onLanding} className="flex items-center gap-3 px-6 pt-8 pb-7 cursor-pointer group text-left">
-        <div
-          className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-transform duration-500 group-hover:scale-105"
-          style={{ background: 'linear-gradient(135deg, #8c2f39 0%, #5c0d22 100%)', boxShadow: '0 0 0 1px rgba(201,168,76,0.3)' }}
-        >
-          <Wine size={17} className="text-gold-400" />
-        </div>
+        <LogoOeno size={40} className="transition-transform duration-500 group-hover:scale-105" />
         <div>
           <div className="font-serif text-2xl text-cream tracking-wide leading-none">Œno</div>
           <div className="text-[9px] text-gold-500 uppercase tracking-[0.22em] mt-1.5">

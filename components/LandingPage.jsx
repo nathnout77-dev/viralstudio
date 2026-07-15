@@ -6,6 +6,7 @@ import { WINE_DB, MILLESIMES_DB, CONFIDENTIEL_DOMAINES, WINE_DB_BY_REGION } from
 import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
 import RoueAromes from './RoueAromes'
 import useCtaBreathe from '../lib/useCtaBreathe'
+import LogoOeno from './LogoOeno'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ŒNO — Landing cinématique scroll-driven (façon keynote produit)
@@ -633,10 +634,7 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
       {/* ════ FOOTER ════ */}
       <footer className="py-12 px-6 border-t border-white/[0.06] text-center" style={{ background: '#0C0A09' }}>
         <div className="flex items-center justify-center gap-3 mb-4">
-          <div className="w-9 h-9 rounded-full flex items-center justify-center"
-               style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)', boxShadow: '0 0 0 1px rgba(201,168,76,0.25)' }}>
-            <Wine size={14} className="text-gold-400" />
-          </div>
+          <LogoOeno size={36} />
           <span className="font-serif text-cream text-lg">Œno</span>
         </div>
         <p className="text-anthracite-500 text-xs font-light tracking-wide">Le vin, enfin simple. L'abus d'alcool est dangereux pour la santé.</p>
