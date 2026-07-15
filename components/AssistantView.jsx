@@ -91,11 +91,18 @@ const MENU = [
 
 function buildSystemPrompt(profil) {
   const appris = profilApprisPourAssistant()
-  const vins = WINE_DB.map(w => ({
-    a: w.appellation, r: w.region, t: w.typeLabel, prix: w.prixMoyen,
-    niv: w.difficulte, j: w.jauges, ar: w.aromes,
-    acc: w.accords.slice(0, 3), dom: w.domaines.slice(0, 2).map(d => d.name),
-  }))
+  // Format tabulaire compact (une ligne par vin) plutôt que JSON verbeux :
+  // le prompt entier doit rester sous la limite par requête du palier
+  // gratuit Groq (~6k tokens), sinon lib/askIA.js saute Groq et le chat
+  // perd son fournisseur principal. Les arômes/accords détaillés sont dans
+  // les fiches de l'app ; le modèle connaît déjà bien ces appellations.
+  const vins = WINE_DB.map(w =>
+    [w.appellation, w.region, w.typeLabel, `${w.prixMoyen}€`, w.difficulte,
+     `P${w.jauges.puissance}D${w.jauges.douceur}T${w.jauges.tanins}`,
+     (w.domaines[0] && w.domaines[0].name) || ''].join('|')
+  ).join('\n')
+  const millesimes = MILLESIMES_DB.filter(m => m[0] >= 2019)
+    .map(m => [m[0], m[2], m[3], `garde ${m[5]} ans`, m[7]].join('|')).join('\n')
   const lexique = GLOSSAIRE_LIST.map(g => `${g.terme}: ${g.simple}`).join('\n')
   const today = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
 
@@ -120,17 +127,17 @@ ${JSON.stringify(appris)}
 Utilise ces tendances RÉELLES pour affiner tes recommandations (jauges aimées, types, régions, arômes, fourchette de prix). Elles complètent le profil déclaré sans le remplacer.` : ''}
 
 # Base de vins de l'application (recommande d'abord depuis cette liste)
-${JSON.stringify(vins)}
-Champs : a=appellation, r=région, t=type, prix=€/bouteille moyen, niv=difficulté (facile/explorer/pointu), j=jauges 1-5 {puissance,douceur,tanins}, ar=arômes, acc=accords, dom=domaines recommandés.
+Format : appellation|région|type|prix moyen|difficulté (facile/explorer/pointu)|jauges 1-5 (P=puissance D=douceur T=tanins)|domaine recommandé
+${vins}
 
-# Millésimes (année, type, région, appellation, garde max, recommandation)
-${JSON.stringify(MILLESIMES_DB.map(m => [m[0], m[1], m[2], m[3], m[5], m[7]]))}
+# Millésimes récents (année|région|appellation|garde|recommandation)
+${millesimes}
 
 # Lexique (utilise CES définitions simples quand tu expliques un terme)
 ${lexique}
 
 # Règles impératives
-1. JAMAIS de redirection vers des supermarchés ou grandes surfaces (Intermarché, Leclerc, Carrefour…). Pour l'achat, recommande : les domaines listés dans la base (champ dom), les cavistes indépendants de quartier, ou des cavistes en ligne réputés pour leur sélection.
+1. JAMAIS de redirection vers des supermarchés ou grandes surfaces (Intermarché, Leclerc, Carrefour…). Pour l'achat, recommande : les domaines listés dans la base (dernière colonne), les cavistes indépendants de quartier, ou des cavistes en ligne réputés pour leur sélection.
 2. Réponses CONCISES et scannables : titres courts, listes à puces, 2-4 recommandations max par réponse. Pas de pavés.
 3. Chaque vin recommandé : nom + région + prix approx + UNE phrase sur pourquoi il plaira + domaine/caviste où le trouver.
 4. Termes techniques : explique-les entre parenthèses en langage simple à la première utilisation, en réutilisant le lexique.
@@ -316,7 +323,7 @@ export default function AssistantView({ onClose }) {
         model: 'claude-sonnet-5',
         max_tokens: 1500,
         system: buildSystemPrompt(profil),
-        messages: history.slice(-12).map(m => ({ role: m.role, content: m.content })),
+        messages: history.slice(-8).map(m => ({ role: m.role, content: m.content })),
       }
       if (menuId === 'actualite' || /actualité|concours|vendange|salon|médaill/i.test(text)) {
         body.tools = [{ type: 'web_search_20250305', name: 'web_search', max_uses: 3 }]
