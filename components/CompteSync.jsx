@@ -262,8 +262,17 @@ export default function CompteSync({ onClose, extraSection = null }) {
       })
       if (error) throw error
       setSent(true)
-    } catch {
-      setError('Envoi du lien impossible. Vérifiez l\'adresse et réessayez.')
+    } catch (err) {
+      // On affiche la cause réelle : le message générique masquait tout
+      // (limite d'envoi du mailer gratuit Supabase, inscriptions coupées…).
+      const msg = String(err?.message || '')
+      if (/rate limit|too many|429/i.test(msg)) {
+        setError('Limite d\'envoi d\'emails atteinte — le service gratuit n\'envoie que quelques emails par heure. Réessayez dans une heure.')
+      } else if (/signup|not allowed|disabled/i.test(msg)) {
+        setError('Les inscriptions par email sont désactivées côté serveur (Supabase → Authentication → Sign In / Up → Email).')
+      } else {
+        setError(msg ? `Envoi impossible : ${msg}` : 'Envoi du lien impossible. Vérifiez l\'adresse et réessayez.')
+      }
     } finally { setBusy(false) }
   }, [email])
 
