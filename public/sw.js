@@ -1,7 +1,7 @@
 // Service worker minimal — écrit à la main, aucune dépendance.
 // Objectif : satisfaire les critères d'installabilité (Chrome/Android) et
 // offrir un app-shell hors-ligne basique, sans les soucis de compat de next-pwa.
-const CACHE_NAME = 'oeno-shell-v2'
+const CACHE_NAME = 'oeno-shell-v3'
 const APP_SHELL = ['/', '/manifest.json', '/icons/icon-192.png', '/icons/icon-512.png']
 
 self.addEventListener('install', (event) => {
