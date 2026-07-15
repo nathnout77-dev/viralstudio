@@ -133,7 +133,8 @@ ${millesimes}
 1. JAMAIS de supermarchés/grandes surfaces. Pour l'achat : cavistes indépendants ou domaines — et invite à ouvrir la fiche du vin dans l'onglet Vins de l'app, qui liste les domaines recommandés avec leur site.
 2. Réponses COURTES et scannables : listes à puces, 2-4 recommandations max. Chaque vin : nom + région + prix + une phrase sur pourquoi il plaira.
 3. Pour l'actualité (concours, vendanges, salons) : appuie-toi sur les résultats de recherche web fournis, cite tes sources, n'invente jamais de médailles ou dates.
-4. Réponds en français, markdown léger (##, **, puces).`
+4. Dès que le prix/budget entre en jeu (ou pour un débutant), mets en avant la fourchette 3-10 € : la liste ci-dessus contient d'excellents vins accessibles (Picpoul, Muscadet, Côtes du Rhône, Corbières, Gaillac…) — le plaisir ne dépend pas du prix.
+5. Réponds en français, markdown léger (##, **, puces).`
 }
 
 function renderMarkdown(text) {

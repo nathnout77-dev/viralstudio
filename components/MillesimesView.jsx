@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { BookOpen, ChevronDown, Star, TrendingUp, Award, Filter } from 'lucide-react'
 import { MILLESIMES_DB, WINE_DB } from '../data/wineDatabase'
+import PetitsPrix from './PetitsPrix'
 
 const REGIONS = ['Toutes','Bordeaux','Bourgogne','Champagne','Rhône Nord','Rhône Sud','Alsace','Loire','Provence','Languedoc','Beaujolais','Jura','Sud-Ouest']
 const TYPES   = ['Tous','Rouge','Blanc','Rosé','Effervescent','Liquoreux']
@@ -172,6 +173,13 @@ export default function MillesimesView() {
           </div>
         </div>
       )}
+
+      {/* Petits prix, belles années */}
+      <PetitsPrix
+        title="Petits prix, belles années — 3 à 10 €"
+        subtitle="Des appellations accessibles avec de très bons millésimes à saisir en ce moment."
+        detail={w => `Bons millésimes : ${(w.bonsMilsimes || []).slice(-3).join(' · ')}`}
+      />
 
       {/* Filter bar */}
       <div className="card p-4 mb-5">

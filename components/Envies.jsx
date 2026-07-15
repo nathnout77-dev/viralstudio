@@ -3,6 +3,7 @@ import { Heart, Trash2, ShoppingBag, Share2, Wine } from 'lucide-react'
 import { WINE_DB } from '../data/wineDatabase'
 import { toast } from './Toast'
 import { FicheVin } from './BibliothequeView'
+import PetitsPrix from './PetitsPrix'
 import WineTile from './WineTile'
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -178,12 +179,18 @@ export default function EnviesView({ onBuy }) {
 
   if (envies.length === 0) {
     return (
-      <div className="card p-12 text-center animate-fade-in">
-        <Heart size={36} className="text-anthracite-200 mx-auto mb-4" />
-        <p className="font-serif text-base text-anthracite-400 mb-1">Aucune envie pour l'instant</p>
-        <p className="text-xs text-anthracite-300 max-w-sm mx-auto">
-          Repérez un vin dans la Bibliothèque, sur la Carte ou via le Budget caviste, et touchez le petit cœur : il vous attendra ici.
-        </p>
+      <div className="animate-fade-in">
+        <div className="card p-12 text-center mb-6">
+          <Heart size={36} className="text-anthracite-200 mx-auto mb-4" />
+          <p className="font-serif text-base text-anthracite-400 mb-1">Aucune envie pour l'instant</p>
+          <p className="text-xs text-anthracite-300 max-w-sm mx-auto">
+            Repérez un vin dans la Bibliothèque, sur la Carte ou via le Budget caviste, et touchez le petit cœur : il vous attendra ici.
+          </p>
+        </div>
+        <PetitsPrix
+          title="Des envies à petit prix ? — 3 à 10 €"
+          subtitle="De belles bouteilles accessibles pour commencer votre liste — ouvrez la fiche et touchez le cœur."
+        />
       </div>
     )
   }
@@ -271,6 +278,13 @@ export default function EnviesView({ onBuy }) {
           )
         })}
       </div>
+
+      {/* Idées accessibles pour compléter la liste */}
+      <PetitsPrix
+        className="mt-8"
+        title="Des envies à petit prix ? — 3 à 10 €"
+        subtitle="De belles bouteilles accessibles à ajouter à votre liste — ouvrez la fiche et touchez le cœur."
+      />
 
       {wineSelected && (
         <FicheVin wine={wineSelected} onClose={() => setWineSelected(null)} />

@@ -12,7 +12,7 @@ import { FicheVin } from './BibliothequeView'
 // avec le pourquoi de chaque vin et les domaines où le trouver.
 // ═══════════════════════════════════════════════════════════════════════════
 
-const BUDGET_CHIPS = [30, 50, 100, 200]
+const BUDGET_CHIPS = [15, 30, 50, 100, 200]
 
 const OCCASIONS = [
   { id: 'diner',   label: 'Dîner entre amis', Icon: Users,       hint: 'De quoi accompagner tout le repas' },
@@ -150,7 +150,7 @@ export default function BudgetCaviste() {
           ))}
           <div className="relative">
             <input
-              type="number" min="15" max="2000" placeholder="Autre…"
+              type="number" min="10" max="2000" placeholder="Autre…"
               value={custom}
               onChange={e => setCustom(e.target.value)}
               className={`w-28 pl-3 pr-8 py-2.5 rounded-xl text-sm font-semibold border focus:outline-none focus:ring-2 focus:ring-gold-600/40 transition-all ${

@@ -6,6 +6,7 @@ import { EnvieButton } from './Envies'
 import dynamic from 'next/dynamic'
 import { WINE_DB, WINE_DB_DOMAINES, gardeForMillesime } from '../data/wineDatabase'
 import { regionInfo } from '../data/regionsInfo'
+import PetitsPrix from './PetitsPrix'
 import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
 
 const TYPE_COLORS = {
@@ -501,6 +502,15 @@ export default function InteractiveMap({ onAddWine, onNoter }) {
           </div>
         </div>
       </div>
+
+      {/* Petits prix de la région affichée */}
+      <PetitsPrix
+        className="mt-6"
+        region={activeRegion}
+        title={activeRegion === 'Toutes' ? 'Petits prix sur la carte — 3 à 10 €' : `Petits prix en ${activeRegion} — 3 à 10 €`}
+        subtitle="Des appellations accessibles et vraiment intéressantes à déguster, pour explorer sans se ruiner."
+        onAddWine={onAddWine}
+      />
       </>
       )}
     </div>

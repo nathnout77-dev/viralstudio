@@ -71,7 +71,7 @@ const QUIZ = [
     id: 'budget',
     question: 'Et pour cette bouteille, on part sur…',
     options: [
-      { emoji: '🪙', label: 'Moins de 10 €',  effect: { budgetMax: 10 } },
+      { emoji: '🪙', label: '3 à 10 €',       effect: { budgetMin: 3, budgetMax: 10 } },
       { emoji: '💶', label: '10 à 20 €',      effect: { budgetMin: 10, budgetMax: 20 } },
       { emoji: '💰', label: '20 à 50 €',      effect: { budgetMin: 20, budgetMax: 50 } },
       { emoji: '👑', label: 'Pas de limite',  effect: { budgetMin: 0, budgetMax: 9999 } },

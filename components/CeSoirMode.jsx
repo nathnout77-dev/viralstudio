@@ -51,7 +51,7 @@ const QUESTIONS = [
     id: 'budget',
     q: 'Votre budget pour cette bouteille ?',
     options: [
-      { emoji: '🪙', label: 'Moins de 10 €',  v: 10 },
+      { emoji: '🪙', label: '3 à 10 €',       v: 10 },
       { emoji: '💶', label: '10 à 20 €',      v: 20 },
       { emoji: '💰', label: '20 à 50 €',      v: 50 },
       { emoji: '👑', label: 'Pas de limite',  v: 9999 },

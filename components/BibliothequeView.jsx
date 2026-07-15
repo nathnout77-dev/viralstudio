@@ -195,7 +195,7 @@ const TYPE_FILTERS = [
 
 const BUDGET_FILTERS = [
   { value: 'all',   label: 'Tout budget' },
-  { value: '0-10',  label: 'Moins de 10 €' },
+  { value: '0-10',  label: '🪙 3 – 10 € (petits prix)' },
   { value: '10-20', label: '10 – 20 €' },
   { value: '20-50', label: '20 – 50 €' },
   { value: '50+',   label: '50 € et +' },
