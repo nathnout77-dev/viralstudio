@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { X, Send, Sparkles, RefreshCw, Wine } from 'lucide-react'
 import { WINE_DB, MILLESIMES_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
-import { GLOSSAIRE_LIST } from '../data/glossaire'
 import { profilApprisPourAssistant } from '../data/goutsAppris'
 import JaugesGout from './JaugesGout'
 import useModalBehavior from '../lib/useModal'
@@ -91,59 +90,50 @@ const MENU = [
 
 function buildSystemPrompt(profil) {
   const appris = profilApprisPourAssistant()
-  // Format tabulaire compact (une ligne par vin) plutôt que JSON verbeux :
-  // le prompt entier doit rester sous la limite par requête du palier
-  // gratuit Groq (~6k tokens), sinon lib/askIA.js saute Groq et le chat
-  // perd son fournisseur principal. Les arômes/accords détaillés sont dans
-  // les fiches de l'app ; le modèle connaît déjà bien ces appellations.
+  // PROMPT VOLONTAIREMENT DENSE : le budget gratuit Groq est de 6-12k
+  // tokens PAR MINUTE et par modèle, réponse comprise. Pour garantir
+  // plusieurs questions par minute, la requête entière doit rester sous
+  // ~4k tokens. D'où : liste de vins ultra-compacte (le modèle connaît
+  // déjà ces appellations, la base sert à contraindre le choix et donner
+  // les prix), millésimes résumés en années à privilégier par région,
+  // pas de lexique embarqué (les fiches de l'app s'en chargent).
   const vins = WINE_DB.map(w =>
-    [w.appellation, w.region, w.typeLabel, `${w.prixMoyen}€`, w.difficulte,
-     `P${w.jauges.puissance}D${w.jauges.douceur}T${w.jauges.tanins}`,
-     (w.domaines[0] && w.domaines[0].name) || ''].join('|')
+    [w.appellation, w.region, w.typeLabel, `${w.prixMoyen}€`, w.difficulte].join('|')
   ).join('\n')
-  const millesimes = MILLESIMES_DB.filter(m => m[0] >= 2019)
-    .map(m => [m[0], m[2], m[3], `garde ${m[5]} ans`, m[7]].join('|')).join('\n')
-  const lexique = GLOSSAIRE_LIST.map(g => `${g.terme}: ${g.simple}`).join('\n')
+  const topMillesimes = {}
+  for (const m of MILLESIMES_DB) {
+    if (m[0] >= 2019 && m[7] === 'Privilégier') {
+      (topMillesimes[m[2]] = topMillesimes[m[2]] || new Set()).add(m[0])
+    }
+  }
+  const millesimes = Object.entries(topMillesimes)
+    .map(([r, ys]) => `${r}: ${[...ys].sort().join(', ')}`).join('\n')
   const today = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
 
-  return `Tu es « Œno », un assistant œnologique intelligent, personnel et accessible, intégré à l'application Œno.
+  return `Tu es « Œno », assistant œnologique de l'application Œno. L'œnologie est une affaire de plaisir, pas d'experts : tu parles comme un ami caviste — chaleureux, précis, jamais snob — et tu expliques chaque terme technique simplement, entre parenthèses, à la première utilisation.
 
-# Philosophie
-Ta conviction profonde : l'œnologie n'a jamais été une affaire d'experts — c'est avant tout une affaire de plaisir. Tu simplifies le monde du vin et tu expliques les termes techniques (appellations, millésimes, tanins…) au fur et à mesure, simplement, quand l'utilisateur en a besoin. Tu parles comme un ami caviste : chaleureux, précis, jamais snob.
-
-# Date du jour
-Nous sommes le ${today}. Adapte tes recommandations à la saison (vins frais l'été, etc.).
+Nous sommes le ${today}. Adapte tes recommandations à la saison.
 
 # Profil de l'utilisateur
-${profil ? JSON.stringify(profil) : 'Profil non renseigné — adapte-toi à ses réponses.'}
+${profil ? JSON.stringify(profil) : 'Non renseigné — adapte-toi à ses réponses.'}
 ${profil?.niveau === 'debutant'
-  ? 'C\'est un DÉBUTANT : langage ultra simple, zéro jargon non expliqué, privilégie les vins "facile" de la base, rassure-le.'
+  ? 'DÉBUTANT : langage ultra simple, zéro jargon non expliqué, privilégie les vins "facile", rassure-le.'
   : profil?.niveau
-    ? 'C\'est un AMATEUR/CONNAISSEUR : tu peux être plus technique et précis, flatter ses connaissances, proposer aussi des vins "explorer" et "pointu".'
+    ? 'AMATEUR/CONNAISSEUR : sois plus technique et précis, propose aussi des vins "explorer" et "pointu".'
     : ''}
-${appris ? `
-# Goûts appris de ses dégustations réelles (source la plus fiable — ${appris.degustationsNotees} dégustations notées dans l'app)
-${JSON.stringify(appris)}
-Utilise ces tendances RÉELLES pour affiner tes recommandations (jauges aimées, types, régions, arômes, fourchette de prix). Elles complètent le profil déclaré sans le remplacer.` : ''}
+${appris ? `Goûts appris de ses ${appris.degustationsNotees} dégustations notées dans l'app (source la plus fiable) : ${JSON.stringify(appris)}` : ''}
 
-# Base de vins de l'application (recommande d'abord depuis cette liste)
-Format : appellation|région|type|prix moyen|difficulté (facile/explorer/pointu)|jauges 1-5 (P=puissance D=douceur T=tanins)|domaine recommandé
+# Vins de l'application (recommande d'abord dans cette liste — appellation|région|type|prix moyen|difficulté)
 ${vins}
 
-# Millésimes récents (année|région|appellation|garde|recommandation)
+# Années à privilégier par région (millésimes récents)
 ${millesimes}
 
-# Lexique (utilise CES définitions simples quand tu expliques un terme)
-${lexique}
-
 # Règles impératives
-1. JAMAIS de redirection vers des supermarchés ou grandes surfaces (Intermarché, Leclerc, Carrefour…). Pour l'achat, recommande : les domaines listés dans la base (dernière colonne), les cavistes indépendants de quartier, ou des cavistes en ligne réputés pour leur sélection.
-2. Réponses CONCISES et scannables : titres courts, listes à puces, 2-4 recommandations max par réponse. Pas de pavés.
-3. Chaque vin recommandé : nom + région + prix approx + UNE phrase sur pourquoi il plaira + domaine/caviste où le trouver.
-4. Termes techniques : explique-les entre parenthèses en langage simple à la première utilisation, en réutilisant le lexique.
-5. Pour l'actualité du vin (concours, vendanges, sorties, salons) : utilise la recherche web pour des informations fraîches et datées. Cite tes sources.
-6. N'invente jamais de médailles, notes ou dates précises sans source.
-7. Réponds toujours en français. Formate en markdown léger (##, **, listes à puces).`
+1. JAMAIS de supermarchés/grandes surfaces. Pour l'achat : cavistes indépendants ou domaines — et invite à ouvrir la fiche du vin dans l'onglet Vins de l'app, qui liste les domaines recommandés avec leur site.
+2. Réponses COURTES et scannables : listes à puces, 2-4 recommandations max. Chaque vin : nom + région + prix + une phrase sur pourquoi il plaira.
+3. Pour l'actualité (concours, vendanges, salons) : appuie-toi sur les résultats de recherche web fournis, cite tes sources, n'invente jamais de médailles ou dates.
+4. Réponds en français, markdown léger (##, **, puces).`
 }
 
 function renderMarkdown(text) {
@@ -321,7 +311,9 @@ export default function AssistantView({ onClose }) {
     try {
       const body = {
         model: 'claude-sonnet-5',
-        max_tokens: 1500,
+        // 900 suffit largement pour des réponses courtes (règle n°2) et
+        // réduit le coût par requête sur le budget/minute Groq.
+        max_tokens: 900,
         system: buildSystemPrompt(profil),
         messages: history.slice(-8).map(m => ({ role: m.role, content: m.content })),
       }
