@@ -9,6 +9,7 @@ import { toggleEnvie, useEnvies } from './Envies'
 import useModalBehavior from '../lib/useModal'
 import { loadDecouvertes, matchDecouverte, decouverteFromVision, addDecouverte, updateDecouverte } from '../lib/decouvertes'
 import { askIA } from '../lib/askIA'
+import { cepagesOfficiels } from '../data/appellationsCepages'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ScanEtiquette — photographiez une étiquette, Œno la décode.
@@ -53,7 +54,7 @@ On te montre la photo d'une étiquette de bouteille. Réponds STRICTEMENT avec u
 Règles :
 - "appellation" : l'appellation d'origine (ex. "Gevrey-Chambertin", "Chianti Classico"), pas le nom de cuvée.
 - "region" : la région viticole, si possible parmi "Bordeaux", "Bourgogne", "Rhône Nord", "Rhône Sud", "Loire", "Alsace", "Beaujolais", "Provence", "Languedoc", "Roussillon", "Sud-Ouest", "Jura", "Savoie", "Corse", "Champagne", "Italie", "Espagne", "Portugal".
-- "cepages" : les cépages probables, même s'ils ne figurent pas sur l'étiquette (déduis-les de l'appellation).
+- "cepages" : les cépages probables, même s'ils ne figurent pas sur l'étiquette — déduis-les de l'appellation en respectant STRICTEMENT son cahier des charges (ex. un Anjou blanc = Chenin blanc, un Cahors = Malbec ; JAMAIS un cépage étranger à l'appellation).
 - "type" : la couleur du vin ("red", "white", "rosé", ou "sweet" pour un liquoreux).
 - "confiance" : ton niveau de certitude global sur la lecture.
 - "styleEtQualite" : 2 à 3 phrases, ton simple et sans jargon, décrivant le style et les qualités attendues de ce type de vin (ex. structure, texture, ce qui le caractérise). Comme un ami connaisseur qui te dit honnêtement à quoi t'attendre.
@@ -70,12 +71,13 @@ function enrichPrompt(json) {
 - Millésime : ${json.millesime || 'inconnu'}
 - Région : ${json.region || 'inconnue'}
 Recherche sur le web des informations fiables et récentes sur ce domaine et ce vin, VÉRIFIE la lecture d'étiquette ci-dessus, puis réponds STRICTEMENT avec un objet JSON valide, sans aucun texte autour, sans balises markdown :
-{"verifie": boolean, "histoireDomaine": string, "styleVin": string, "accords": string[], "fourchettePrix": {"min": number, "max": number}|null, "siteWeb": string|null, "correctionAppellation": string|null, "correctionRegion": string|null}
+{"verifie": boolean, "histoireDomaine": string, "styleVin": string, "cepages": string[], "accords": string[], "fourchettePrix": {"min": number, "max": number}|null, "siteWeb": string|null, "correctionAppellation": string|null, "correctionRegion": string|null}
 Règles :
 - "verifie" : true UNIQUEMENT si tu as réellement trouvé sur le web des informations sur CE domaine ou CE vin précis. Si tes recherches ne donnent rien de spécifique, mets false et ne remplis que ce que tu sais avec certitude.
 - Tout ce que tu écris doit venir des résultats de recherche, pas de suppositions. Une information introuvable = null (ou [] pour "accords"). N'invente RIEN : mieux vaut un champ vide qu'une erreur présentée avec assurance.
 - "histoireDomaine" : 2 à 3 phrases sur l'histoire, la taille et l'esprit du domaine, ton chaleureux et précis, en français.
 - "styleVin" : 1 à 2 phrases sur le style de ce vin en particulier, d'après les sources trouvées.
+- "cepages" : les cépages RÉELS de ce vin d'après les sources ou le cahier des charges de l'appellation (ex. un Anjou blanc = ["Chenin blanc"], jamais du Chardonnay) ; [] si introuvable.
 - "accords" : 3 à 4 plats concrets qui l'accompagnent bien.
 - "fourchettePrix" : fourchette de prix habituelle constatée en euros {min, max}, ou null si introuvable.
 - "siteWeb" : URL du site officiel du domaine si tu la trouves, sinon null.
@@ -86,9 +88,14 @@ Règles :
 // Enrichissement web : renvoie les champs fusionnables, ou null si échec/pas de données.
 async function rechercheWeb(json) {
   try {
+    // Requête de recherche courte et ciblée (le prompt complet, lui, sert
+    // d'instruction au modèle — jamais de requête à un moteur de recherche).
+    const webQuery = [json.domaine, json.appellation, json.millesime, 'vin domaine']
+      .filter(Boolean).join(' ')
     const { ok, data } = await askIA({
       model: 'claude-sonnet-5',
       max_tokens: 1200,
+      webQuery,
       messages: [{ role: 'user', content: enrichPrompt(json) }],
       tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: 3 }],
     })
@@ -103,6 +110,7 @@ async function rechercheWeb(json) {
       verifie: obj.verifie === true,
       histoire: typeof obj.histoireDomaine === 'string' ? obj.histoireDomaine.trim() : '',
       styleWeb: typeof obj.styleVin === 'string' ? obj.styleVin.trim() : '',
+      cepagesWeb: Array.isArray(obj.cepages) ? obj.cepages.filter(c => typeof c === 'string' && c.trim()) : [],
       accordsWeb: Array.isArray(obj.accords) ? obj.accords.filter(a => typeof a === 'string') : [],
       fourchettePrixWeb: obj.fourchettePrix && obj.fourchettePrix.min != null ? obj.fourchettePrix : null,
       siteWeb: typeof obj.siteWeb === 'string' && obj.siteWeb.startsWith('http') ? obj.siteWeb : null,
@@ -385,33 +393,55 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
 
   // Après identification vision : mémoriser et enrichir si le vin est inconnu.
   const traiterDecouverte = async (json, matchedWine) => {
-    const existante = matchDecouverte(loadDecouvertes(), json)
-    if (matchedWine || existante) {
-      // Déjà connu : pas de re-recherche, mention sobre.
+    if (matchedWine) {
       setDejaConnu(true)
       return
     }
-    // Vin inconnu : on mémorise d'abord la lecture vision (capture garantie)…
-    let record = addDecouverte(decouverteFromVision(json))
+    const existante = matchDecouverte(loadDecouvertes(), json)
+    // Déjà scanné ET vérifié en ligne : la base a appris ce vin — on affiche
+    // les données vérifiées stockées, pas la lecture vision brute.
+    if (existante?.verifie) {
+      setDecouverte(existante)
+      setDejaConnu(true)
+      setParsed(prev => prev ? {
+        ...prev,
+        appellation: existante.appellation || prev.appellation,
+        region: existante.region || prev.region,
+        cepages: existante.cepages?.length ? existante.cepages : prev.cepages,
+        styleEtQualite: existante.styleEtQualite || prev.styleEtQualite,
+        accordsSuggeres: existante.accords?.length ? existante.accords : prev.accordsSuggeres,
+        fourchettePrixHabituelle: existante.fourchettePrix || prev.fourchettePrixHabituelle,
+      } : prev)
+      setFiabilite('verifiee')
+      setEnrichState('done')
+      return
+    }
+    // Vin inconnu (ou déjà scanné mais jamais vérifié : on retente à chaque
+    // scan jusqu'à ce que la base soit instruite). Mémorisation d'abord…
+    const record = existante || addDecouverte(decouverteFromVision(json))
     setDecouverte(record)
     // …puis vérification web, non bloquante. Pour un vin hors bibliothèque,
     // la lecture vision seule est sujette aux approximations : quand le web
     // confirme, ses données remplacent l'estimation DANS LA FICHE AFFICHÉE
-    // (style, accords, prix, voire correction d'appellation) ; sinon la
-    // fiche est marquée honnêtement comme estimation non vérifiée.
+    // (style, cépages, accords, prix, voire correction d'appellation) ;
+    // sinon la fiche est marquée honnêtement comme estimation non vérifiée.
     setEnrichState('loading')
     const web = await rechercheWeb(json)
     if (web) {
       const merged = updateDecouverte(record.id, {
+        // garde la lecture d'origine pour reconnaître ce vin au prochain scan,
+        // même si l'appellation affichée a été corrigée par le web
+        appellationLue: record.appellationLue || record.appellation,
         appellation: web.correctionAppellation || record.appellation,
         region: web.correctionRegion || record.region,
+        cepages: web.cepagesWeb.length ? web.cepagesWeb : record.cepages,
         histoire: web.histoire || record.histoire,
         description: web.styleWeb || record.description,
         styleEtQualite: web.styleWeb || record.styleEtQualite,
         accords: [...new Set([...(record.accords || []), ...web.accordsWeb])],
         fourchettePrix: web.fourchettePrixWeb || record.fourchettePrix,
-        siteWeb: web.siteWeb,
-        sourceWeb: !!web.usedWeb,
+        siteWeb: web.siteWeb || record.siteWeb,
+        sourceWeb: !!web.usedWeb || !!record.sourceWeb,
         verifie: !!web.verifie,
       })
       if (merged) setDecouverte(merged)
@@ -420,6 +450,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
           ...prev,
           appellation: web.correctionAppellation || prev.appellation,
           region: web.correctionRegion || prev.region,
+          cepages: web.cepagesWeb.length ? web.cepagesWeb : prev.cepages,
           styleEtQualite: web.styleWeb || prev.styleEtQualite,
           accordsSuggeres: web.accordsWeb.length ? web.accordsWeb : prev.accordsSuggeres,
           fourchettePrixHabituelle: web.fourchettePrixWeb || prev.fourchettePrixHabituelle,
@@ -483,6 +514,12 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
         setStep('error')
         return
       }
+      // Garde-fou factuel : le modèle vision devine parfois des cépages
+      // étrangers à l'appellation (ex. Chardonnay pour un Anjou blanc).
+      // Quand l'encépagement officiel de l'appellation est connu, il remplace
+      // la supposition — vrai même sans connexion ni vérification web.
+      const officiels = cepagesOfficiels(json.appellation, json.type, json.region)
+      if (officiels) json.cepages = officiels
       const matchedWine = matchWine(json)
       setParsed(json)
       setMatched(matchedWine)
