@@ -187,6 +187,7 @@ export default function CompteSync({ onClose, extraSection = null }) {
 
   const [email, setEmail]       = useState('')
   const [sent, setSent]         = useState(false)
+  const [code, setCode]         = useState('')
   const [busy, setBusy]         = useState(false)
   const [error, setError]       = useState(null)
   const [conflict, setConflict] = useState(null)  // { cloudRow } → choix utilisateur
@@ -265,6 +266,22 @@ export default function CompteSync({ onClose, extraSection = null }) {
       setError('Envoi du lien impossible. Vérifiez l\'adresse et réessayez.')
     } finally { setBusy(false) }
   }, [email])
+
+  // Connexion par code à 6 chiffres (contenu dans le même email que le lien) :
+  // fonctionne même si le lien magique redirige vers une mauvaise adresse.
+  const verifyCode = useCallback(async e => {
+    e.preventDefault()
+    const token = code.trim().replace(/\s/g, '')
+    if (!token) return
+    setBusy(true); setError(null)
+    try {
+      const { error } = await supabase.auth.verifyOtp({ email: email.trim(), token, type: 'email' })
+      if (error) throw error
+      setSent(false); setCode('')
+    } catch {
+      setError('Code invalide ou expiré. Vérifiez-le, ou renvoyez un email.')
+    } finally { setBusy(false) }
+  }, [email, code])
 
   const keepLocal = useCallback(async () => {
     setConflict(null); setSyncState('syncing')
@@ -353,12 +370,25 @@ export default function CompteSync({ onClose, extraSection = null }) {
               <div className="w-12 h-12 rounded-full bg-gold-500/15 flex items-center justify-center mx-auto mb-4">
                 <Mail size={20} className="text-gold-600" />
               </div>
-              <p className="font-serif text-base text-anthracite-800 mb-2">Le lien est en route</p>
+              <p className="font-serif text-base text-anthracite-800 mb-2">L'email est en route</p>
               <p className="text-xs text-anthracite-400 leading-relaxed max-w-xs mx-auto">
-                Ouvrez l'email envoyé à <span className="font-semibold text-anthracite-600">{email}</span> et
-                cliquez sur le lien : vous serez connecté ici même.
+                Ouvrez l'email envoyé à <span className="font-semibold text-anthracite-600">{email}</span> :
+                cliquez sur le lien, ou recopiez ici le code à 6 chiffres qu'il contient.
               </p>
-              <button onClick={() => setSent(false)} className="btn-ghost text-xs px-4 py-2 mt-5">Changer d'adresse</button>
+              <form onSubmit={verifyCode} className="mt-5 max-w-[240px] mx-auto">
+                <input
+                  type="text" inputMode="numeric" autoComplete="one-time-code"
+                  value={code} onChange={e => setCode(e.target.value)}
+                  placeholder="Code à 6 chiffres"
+                  className="input-field text-center tracking-[0.3em] font-semibold"
+                  maxLength={8}
+                />
+                {error && <p className="text-xs text-red-700 mt-2">{error}</p>}
+                <button type="submit" disabled={busy || !code.trim()} className="btn-gold w-full justify-center mt-3 disabled:opacity-60">
+                  {busy ? 'Vérification…' : 'Me connecter avec ce code'}
+                </button>
+              </form>
+              <button onClick={() => { setSent(false); setCode(''); setError(null) }} className="btn-ghost text-xs px-4 py-2 mt-4">Changer d'adresse</button>
             </div>
           )}
 
