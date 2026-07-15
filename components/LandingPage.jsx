@@ -326,7 +326,10 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
 
           {/* Mini header */}
           <header className="relative z-10 flex items-center justify-between max-w-6xl mx-auto w-full px-6 pt-5">
-            <span className="font-serif text-cream text-xl tracking-tight">Œno</span>
+            <span className="flex items-center gap-2.5">
+              <LogoOeno size={30} />
+              <span className="font-serif text-cream text-xl tracking-tight">Œno</span>
+            </span>
             <button onClick={onEnter}
                     className="min-h-[44px] inline-flex items-center gap-2 px-5 rounded-full text-sm font-medium text-cream border border-white/20 bg-white/[0.04] backdrop-blur-sm hover:bg-white/10 active:scale-[0.98] transition-all duration-300 cursor-pointer">
               Entrer dans l'app
