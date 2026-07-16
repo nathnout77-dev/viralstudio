@@ -1,5 +1,10 @@
 import { useState, useMemo } from 'react'
-import { Sparkles, ChevronLeft, Utensils, Coins, GraduationCap, UtensilsCrossed, Quote } from 'lucide-react'
+import {
+  Sparkles, ChevronLeft, Utensils, Coins, GraduationCap, UtensilsCrossed, Quote,
+  Coffee, Leaf, Candy, CupSoda, Cherry, Croissant, Citrus, Flame,
+  CakeSlice, IceCream2, Apple, Beef, Soup, Milk, Sandwich,
+  Sofa, Compass, Rocket, Banknote, PiggyBank, Crown,
+} from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG, MILLESIMES_DB } from '../data/wineDatabase'
 import { computeProfilAppris, bonusProfilAppris } from '../data/goutsAppris'
 import { diversifyByRegion, buildRaison, getRegionsPref } from '../lib/suggestions'
@@ -23,59 +28,59 @@ const QUIZ = [
     id: 'boisson',
     question: 'Au petit-déj, vous êtes plutôt…',
     options: [
-      { emoji: '☕', label: 'Café serré',        effect: { puissance: +2, tanins: +1 } },
-      { emoji: '🍵', label: 'Thé vert',          effect: { puissance: -1, fraicheur: +2 } },
-      { emoji: '🍫', label: 'Chocolat chaud',    effect: { douceur: +2, rondeur: +1 } },
-      { emoji: '🧃', label: 'Jus de fruits',     effect: { fruit: +2, douceur: +1 } },
+      { Icon: Coffee,   label: 'Café serré',        effect: { puissance: +2, tanins: +1 } },
+      { Icon: Leaf,     label: 'Thé vert',          effect: { puissance: -1, fraicheur: +2 } },
+      { Icon: Candy,    label: 'Chocolat chaud',    effect: { douceur: +2, rondeur: +1 } },
+      { Icon: CupSoda,  label: 'Jus de fruits',     effect: { fruit: +2, douceur: +1 } },
     ],
   },
   {
     id: 'tartine',
     question: 'Sur une tartine, vous mettez…',
     options: [
-      { emoji: '🍓', label: 'Confiture',            effect: { douceur: +2, fruit: +1 } },
-      { emoji: '🧈', label: 'Beurre salé',           effect: { rondeur: +2 } },
-      { emoji: '🍋', label: 'Citron & miel',         effect: { fraicheur: +2 } },
-      { emoji: '🥑', label: 'Avocat & piment',       effect: { puissance: +1, fraicheur: +1 } },
+      { Icon: Cherry,    label: 'Confiture',            effect: { douceur: +2, fruit: +1 } },
+      { Icon: Croissant, label: 'Beurre salé',           effect: { rondeur: +2 } },
+      { Icon: Citrus,    label: 'Citron & miel',         effect: { fraicheur: +2 } },
+      { Icon: Flame,     label: 'Avocat & piment',       effect: { puissance: +1, fraicheur: +1 } },
     ],
   },
   {
     id: 'dessert',
     question: 'Le dessert de vos rêves…',
     options: [
-      { emoji: '🍰', label: 'Tarte au citron',      effect: { fraicheur: +2 } },
-      { emoji: '🍮', label: 'Crème brûlée',          effect: { rondeur: +2, douceur: +1 } },
-      { emoji: '🍫', label: 'Fondant au chocolat',  effect: { puissance: +2, tanins: +1 } },
-      { emoji: '🍓', label: 'Salade de fruits',     effect: { fruit: +2, fraicheur: +1 } },
+      { Icon: CakeSlice, label: 'Tarte au citron',      effect: { fraicheur: +2 } },
+      { Icon: IceCream2, label: 'Crème brûlée',          effect: { rondeur: +2, douceur: +1 } },
+      { Icon: Candy,     label: 'Fondant au chocolat',  effect: { puissance: +2, tanins: +1 } },
+      { Icon: Apple,     label: 'Salade de fruits',     effect: { fruit: +2, fraicheur: +1 } },
     ],
   },
   {
     id: 'plat_prefere',
     question: 'Votre plat réconfort ?',
     options: [
-      { emoji: '🥩', label: 'Belle côte de bœuf',  effect: { puissance: +2, tanins: +2 } },
-      { emoji: '🍜', label: 'Ramen / cuisine asiatique', effect: { fraicheur: +1, douceur: +1 } },
-      { emoji: '🧀', label: 'Raclette entre amis', effect: { rondeur: +2 } },
-      { emoji: '🍝', label: 'Pâtes à la tomate',   effect: { fruit: +1, fraicheur: +1 } },
+      { Icon: Beef,     label: 'Belle côte de bœuf',  effect: { puissance: +2, tanins: +2 } },
+      { Icon: Soup,     label: 'Ramen / cuisine asiatique', effect: { fraicheur: +1, douceur: +1 } },
+      { Icon: Milk,     label: 'Raclette entre amis', effect: { rondeur: +2 } },
+      { Icon: Sandwich, label: 'Pâtes à la tomate',   effect: { fruit: +1, fraicheur: +1 } },
     ],
   },
   {
     id: 'aventure',
     question: 'Côté découvertes, vous êtes…',
     options: [
-      { emoji: '🛋️', label: 'Valeurs sûres',       effect: { difficulte: 'facile' } },
-      { emoji: '🧭', label: 'Curieux modéré',       effect: { difficulte: 'explorer' } },
-      { emoji: '🚀', label: 'Toujours à fond',      effect: { difficulte: 'pointu' } },
+      { Icon: Sofa,     label: 'Valeurs sûres',       effect: { difficulte: 'facile' } },
+      { Icon: Compass,  label: 'Curieux modéré',       effect: { difficulte: 'explorer' } },
+      { Icon: Rocket,   label: 'Toujours à fond',      effect: { difficulte: 'pointu' } },
     ],
   },
   {
     id: 'budget',
     question: 'Et pour cette bouteille, on part sur…',
     options: [
-      { emoji: '🪙', label: '3 à 10 €',       effect: { budgetMin: 3, budgetMax: 10 } },
-      { emoji: '💶', label: '10 à 20 €',      effect: { budgetMin: 10, budgetMax: 20 } },
-      { emoji: '💰', label: '20 à 50 €',      effect: { budgetMin: 20, budgetMax: 50 } },
-      { emoji: '👑', label: 'Pas de limite',  effect: { budgetMin: 0, budgetMax: 9999 } },
+      { Icon: Coins,      label: '3 à 10 €',       effect: { budgetMin: 3, budgetMax: 10 } },
+      { Icon: Banknote,   label: '10 à 20 €',      effect: { budgetMin: 10, budgetMax: 20 } },
+      { Icon: PiggyBank,  label: '20 à 50 €',      effect: { budgetMin: 20, budgetMax: 50 } },
+      { Icon: Crown,      label: 'Pas de limite',  effect: { budgetMin: 0, budgetMax: 9999 } },
     ],
   },
 ]
@@ -269,7 +274,10 @@ export default function SommelierForm({ onOpenBibliotheque }) {
     return (
       <div className="max-w-2xl mx-auto animate-fade-in">
         <div className="text-center mb-8">
-          <div className="text-4xl mb-3">🎯</div>
+          <div className="inline-flex w-14 h-14 rounded-3xl items-center justify-center shadow-wine mb-3"
+               style={{ background: 'linear-gradient(135deg, #0C0A09 0%, #3a0616 60%, #5c0d22 100%)' }}>
+            <Sparkles size={22} className="text-gold-400" />
+          </div>
           <h2 className="font-serif text-2xl font-bold text-anthracite-900">Votre profil est prêt !</h2>
           <p className="text-sm text-anthracite-500 mt-1">Voici {results.length} vins choisis rien que pour vous.</p>
           {profilAppris && (
@@ -423,7 +431,9 @@ export default function SommelierForm({ onOpenBibliotheque }) {
               }`}
               style={{ animationDelay: `${i * 60}ms`, animationFillMode: 'both' }}
             >
-              <div className="text-3xl mb-2">{opt.emoji}</div>
+              <div className="w-11 h-11 rounded-2xl flex items-center justify-center mx-auto mb-2.5 bg-wine-50">
+                <opt.Icon size={20} className="text-wine-700" />
+              </div>
               <div className="text-sm font-semibold text-anthracite-800">{opt.label}</div>
             </button>
           ))}
