@@ -17,13 +17,13 @@ const PLATS = [
   { id: 'viande_rouge',   label: 'Viande rouge',    emoji: '🥩', types: ['red'],          desc: 'Bœuf, agneau, gibier, canard' },
   { id: 'viande_blanche', label: 'Viande blanche',  emoji: '🍗', types: ['red','white'],   desc: 'Poulet, veau, porc, lapin' },
   { id: 'poisson',        label: 'Poisson',          emoji: '🐟', types: ['white','rosé'],  desc: 'Sole, bar, saumon, thon' },
-  { id: 'fruits_mer',     label: 'Fruits de mer',   emoji: '🦞', types: ['white','sparkling'], desc: 'Huîtres, langoustines, crevettes' },
+  { id: 'fruits_mer',     label: 'Fruits de mer',   emoji: '🦞', types: ['white'], desc: 'Huîtres, langoustines, crevettes' },
   { id: 'fromage',        label: 'Fromage',          emoji: '🧀', types: ['red','white','sweet'], desc: 'Plateau de fromages variés' },
-  { id: 'dessert',        label: 'Dessert',          emoji: '🍮', types: ['sweet','sparkling'], desc: 'Chocolat, fruits, pâtisseries' },
+  { id: 'dessert',        label: 'Dessert',          emoji: '🍮', types: ['sweet'], desc: 'Chocolat, fruits, pâtisseries' },
   { id: 'vegetarien',     label: 'Végétarien',       emoji: '🥗', types: ['white','rosé'],  desc: 'Légumes, pâtes, risotto, quiche' },
   { id: 'charcuterie',    label: 'Charcuterie',      emoji: '🥓', types: ['red','rosé'],    desc: 'Jambon, saucisson, pâté' },
   { id: 'champignons',    label: 'Champignons',      emoji: '🍄', types: ['red','white'],   desc: 'Risotto, velouté, poêlée' },
-  { id: 'foie_gras',      label: 'Foie gras',        emoji: '⭐', types: ['sweet','sparkling','white'], desc: 'Terrine, poêlé, en conserve' },
+  { id: 'foie_gras',      label: 'Foie gras',        emoji: '⭐', types: ['sweet','white'], desc: 'Terrine, poêlé, en conserve' },
 ]
 
 const ACCORDS = {
@@ -40,7 +40,7 @@ const ACCORDS = {
   ],
   fruits_mer: [
     { appellation:'Muscadet sur Lie', region:'Loire', type:'white', cepages:'Melon de Bourgogne', note:'★★★ L\'accord iodé', reason:'L\'accord classique absolu : le Muscadet et ses notes iodées et minérales avec les huîtres.' },
-    { appellation:'Champagne Blanc de Blancs', region:'Champagne', type:'sparkling', cepages:'Chardonnay', note:'★★★ Accord festif', reason:'La finesse des bulles et l\'acidité du Blanc de Blancs réhaussent la fraîcheur des crustacés.' },
+    { appellation:'Chablis', region:'Bourgogne', type:'white', cepages:'Chardonnay', note:'★★★ Accord minéral', reason:'Né sur d\'anciens fonds marins, le Chablis retrouve les crustacés comme une évidence : tension, craie et citron.' },
     { appellation:'Picpoul de Pinet', region:'Languedoc', type:'white', cepages:'Picpoul', note:'★★ Accord abordable', reason:'Ce blanc vif et citronné du Languedoc est fait pour les plateaux de fruits de mer.' },
   ],
   fromage: [
@@ -50,7 +50,7 @@ const ACCORDS = {
   ],
   dessert: [
     { appellation:'Sauternes', region:'Bordeaux', type:'sweet', cepages:'Sémillon, Sauvignon', note:'★★★ L\'accord intemporel', reason:'Le Sauternes et ses notes d\'abricot confit, de miel et de vanille est l\'accompagnement suprême.' },
-    { appellation:'Champagne Rosé', region:'Champagne', type:'sparkling', cepages:'Pinot Noir, Chardonnay', note:'★★ Desserts aux fruits', reason:'L\'acidité et les petites bulles du Champagne rosé allègent la richesse des desserts fruités.' },
+    { appellation:'Cabernet d\'Anjou', region:'Loire', type:'rosé', cepages:'Cabernet Franc, Cabernet Sauvignon', note:'★★ Desserts aux fruits', reason:'Sa tendre sucrosité et sa fraîcheur accompagnent les desserts aux fruits rouges sans les écraser.' },
     { appellation:'Banyuls Rimage', region:'Languedoc-Roussillon', type:'sweet', cepages:'Grenache Noir', note:'★★★ Chocolat noir', reason:'L\'accord ultime pour le chocolat noir : le Banyuls avec ses notes de cacao, de figue et de café.' },
   ],
   vegetarien: [
@@ -72,7 +72,7 @@ const ACCORDS = {
   ],
   foie_gras: [
     { appellation:'Sauternes', region:'Bordeaux', type:'sweet', cepages:'Sémillon', note:'★★★ L\'accord royal', reason:'Le Sauternes et le foie gras : un mariage légendaire entre richesse, douceur et fraîcheur.' },
-    { appellation:'Champagne Brut Millésimé', region:'Champagne', type:'sparkling', cepages:'Chardonnay, Pinot Noir', note:'★★ Accord moderne', reason:'L\'effervescence et l\'acidité du Champagne contrebalancent la richesse du foie gras en terrine.' },
+    { appellation:'Jurançon', region:'Sud-Ouest', type:'sweet', cepages:'Petit Manseng', note:'★★ Accord du Sud-Ouest', reason:'Son moelleux exotique tendu d\'acidité contrebalance la richesse du foie gras — l\'accord béarnais historique.' },
     { appellation:'Condrieu', region:'Rhône Nord', type:'white', cepages:'Viognier', note:'★ Accord aromatique', reason:'La rondeur exotique du Condrieu avec un foie gras poêlé aux fruits tropicaux.' },
   ],
 }

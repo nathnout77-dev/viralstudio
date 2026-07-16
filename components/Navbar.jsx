@@ -1,4 +1,4 @@
-import { Wine, Library, MapPin, Sparkles, BookOpen, Plus, Utensils, ScanLine, UserCircle2 } from 'lucide-react'
+import { Wine, Library, MapPin, Sparkles, BookOpen, Plus, Utensils, ScanLine, UserCircle2, Sprout, GraduationCap } from 'lucide-react'
 import LogoOeno from './LogoOeno'
 import useCtaBreathe from '../lib/useCtaBreathe'
 
@@ -11,9 +11,9 @@ const TABS = [
 ]
 
 const MODE_BADGE = {
-  debutant: { emoji: '🌱', label: 'Débutant' },
-  amateur:  { emoji: '🍷', label: 'Amateur' },
-  expert:   { emoji: '🎓', label: 'Expert' },
+  debutant: { Icon: Sprout,        label: 'Débutant' },
+  amateur:  { Icon: Wine,          label: 'Amateur' },
+  expert:   { Icon: GraduationCap, label: 'Expert' },
 }
 
 export default function Navbar({ tab, setTab, total, mode, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte }) {
@@ -61,7 +61,7 @@ export default function Navbar({ tab, setTab, total, mode, onProfil, onAdd, onLa
                 title="Changer de mode / refaire mon profil"
                 className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[11px] font-semibold uppercase tracking-[0.1em] text-anthracite-700 border border-anthracite-900/15 hover:border-anthracite-900/40 active:scale-[0.98] transition-all duration-300 cursor-pointer"
               >
-                <span className="normal-case">{badge.emoji}</span>
+                <badge.Icon size={12} className="text-gold-600" />
                 {badge.label}
               </button>
             )}

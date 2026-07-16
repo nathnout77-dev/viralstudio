@@ -5,6 +5,7 @@ import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
 import { regionInfo } from '../data/regionsInfo'
 import { normaliser } from '../data/aromes'
 import JaugesGout from './JaugesGout'
+import WineVisuel from './WineVisuel'
 import { FicheVin } from './BibliothequeView'
 import { toggleEnvie, useEnvies } from './Envies'
 import useModalBehavior from '../lib/useModal'
@@ -206,12 +207,12 @@ function verdictPrix(prix, fourchette) {
   const p = Number(prix)
   if (!p || p <= 0 || !fourchette || fourchette.min == null || fourchette.max == null) return null
   if (p < fourchette.min) {
-    return { label: 'Bonne affaire', emoji: '✨', bg: 'rgba(74,124,89,0.12)', color: '#3f6b4c' }
+    return { label: 'Bonne affaire', emoji: '', bg: 'rgba(74,124,89,0.12)', color: '#3f6b4c' }
   }
   if (p > fourchette.max) {
-    return { label: 'Plutôt cher pour ce type de vin', emoji: '💶', bg: 'rgba(140,47,57,0.10)', color: '#8c2f39' }
+    return { label: 'Plutôt cher pour ce type de vin', emoji: '', bg: 'rgba(140,47,57,0.10)', color: '#8c2f39' }
   }
-  return { label: 'Prix cohérent', emoji: '👍', bg: 'rgba(199,161,90,0.16)', color: '#8a6a1f' }
+  return { label: 'Prix cohérent', emoji: '', bg: 'rgba(199,161,90,0.16)', color: '#8a6a1f' }
 }
 
 // Bloc verdict qualité/prix + édition du prix, affiché en tête de la fiche résultat.
@@ -248,7 +249,7 @@ function PrixRayonBloc({ verdict, prixRayon, editingPrix, prixDraft, setPrixDraf
     <div className="flex items-center justify-between gap-2">
       {verdict ? (
         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold" style={{ background: verdict.bg, color: verdict.color }}>
-          {verdict.emoji} {verdict.label} <span className="font-normal opacity-70">— {prixRayon} €</span>
+          {verdict.label} <span className="font-normal opacity-70">— {prixRayon} €</span>
         </span>
       ) : (
         <span className="text-xs text-anthracite-400">Prix non renseigné</span>
@@ -579,7 +580,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
         carafage: matched.carafage,
         estimatedValue: matched.prixMoyen,
         foodPairings: matched.accords,
-        notes: `${matched.emoji} ${matched.enUneMot} — ajouté via le scan d'étiquette`,
+        notes: `${matched.enUneMot} — ajouté via le scan d'étiquette`,
       })
     } else if (parsed) {
       const vintage = Number(parsed.millesime) || new Date().getFullYear() - 2
@@ -599,7 +600,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
         carafage: null,
         estimatedValue: 0,
         foodPairings: [],
-        notes: '📷 Ajouté via le scan d\'étiquette',
+        notes: 'Ajouté via le scan d\'étiquette',
       })
     }
     setAdded(true)
@@ -814,9 +815,11 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
               <div className="rounded-2xl overflow-hidden border border-anthracite-900/[0.07] shadow-card">
                 <div className="p-5 relative overflow-hidden"
                      style={{ background: `linear-gradient(150deg, ${matched.color} 0%, ${matched.color}cc 60%, #1e2426 150%)` }}>
-                  <div className="absolute -top-6 -right-6 text-[90px] opacity-15 select-none leading-none" aria-hidden="true">{matched.emoji}</div>
+                  <div className="absolute -top-2 -right-3 opacity-20 select-none pointer-events-none" aria-hidden="true">
+                    <WineVisuel type={matched.type} size={75} />
+                  </div>
                   <div className="relative">
-                    <div className="text-2xl mb-1">{matched.emoji}</div>
+                    <WineVisuel type={matched.type} size={20} className="mb-1" />
                     <div className="font-wine-name text-4xl text-cream">{matched.appellation}</div>
                     <p className="text-cream/70 text-xs mt-1 flex items-center gap-1.5">
                       <MapPin size={10} /> {matched.region} · {matched.typeLabel}
@@ -872,7 +875,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                     </span>
                     <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold"
                           style={{ background: DIFFICULTE_CONFIG[matched.difficulte].bg, color: DIFFICULTE_CONFIG[matched.difficulte].color }}>
-                      {DIFFICULTE_CONFIG[matched.difficulte].emoji} {DIFFICULTE_CONFIG[matched.difficulte].label}
+                      {DIFFICULTE_CONFIG[matched.difficulte].label}
                     </span>
                   </div>
 
@@ -997,7 +1000,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                             className="min-h-[44px] inline-flex items-center gap-2 pl-3 pr-3.5 rounded-full bg-cream border border-anthracite-900/10 hover:border-gold-500/60 active:scale-[0.98] transition-all duration-300 cursor-pointer"
                             title={`Ouvrir la fiche ${w.appellation}`}
                           >
-                            <span aria-hidden="true">{w.emoji}</span>
+                            <WineVisuel type={w.type} size={13} />
                             <span className="text-xs font-semibold text-anthracite-800">{w.appellation}</span>
                           </button>
                         ))}
@@ -1066,7 +1069,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
               carafage: w.carafage,
               estimatedValue: w.prixMoyen,
               foodPairings: w.accords,
-              notes: `${w.emoji} ${w.enUneMot} — Arômes : ${w.aromes}`,
+              notes: `${w.enUneMot} — Arômes : ${w.aromes}`,
             })
           } : undefined}
         />

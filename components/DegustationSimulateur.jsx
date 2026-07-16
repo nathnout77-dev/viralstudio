@@ -2,6 +2,7 @@ import { useState, useMemo, useRef } from 'react'
 import {
   X, Eye, Wind, Wine, Target, Thermometer, Clock, Grape,
   ArrowRight, ArrowLeft, NotebookPen, Check, Sparkles, Feather, Loader2,
+  Award, Sprout, BookOpen, SearchCheck, Compass,
 } from 'lucide-react'
 import { construirePrediction } from '../lib/predictionDegustation'
 import { AROME_FAMILLES } from '../data/aromes'
@@ -95,10 +96,10 @@ function SectionTitre({ icon: Icon, titre, sous }) {
 
 // ── Bilan : verdicts ludiques ────────────────────────────────────────────────
 function badgeNez(taux) {
-  if (taux >= 0.75) return { emoji: '🏅', titre: 'Nez d\'exception !', texte: 'Vous avez retrouvé presque tous les arômes annoncés. Les sommeliers n\'ont qu\'à bien se tenir.' }
-  if (taux >= 0.5) return { emoji: '👃', titre: 'Beau nez !', texte: 'Plus de la moitié des arômes retrouvés — votre nez se forme, et vite.' }
-  if (taux > 0) return { emoji: '🌱', titre: 'Le nez s\'éveille', texte: 'Quelques arômes retrouvés : c\'est comme ça qu\'on apprend. Resentez le verre dans 10 minutes, le vin change.' }
-  return { emoji: '🎯', titre: 'Tout reste à découvrir', texte: 'Aucun arôme annoncé retrouvé — et c\'est très bien ! Votre ressenti compte plus que la théorie. La prochaine fois, laissez le vin s\'ouvrir 15 minutes.' }
+  if (taux >= 0.75) return { Icon: Award, titre: 'Nez d\'exception !', texte: 'Vous avez retrouvé presque tous les arômes annoncés. Les sommeliers n\'ont qu\'à bien se tenir.' }
+  if (taux >= 0.5) return { Icon: Wind, titre: 'Beau nez !', texte: 'Plus de la moitié des arômes retrouvés — votre nez se forme, et vite.' }
+  if (taux > 0) return { Icon: Sprout, titre: 'Le nez s\'éveille', texte: 'Quelques arômes retrouvés : c\'est comme ça qu\'on apprend. Resentez le verre dans 10 minutes, le vin change.' }
+  return { Icon: Target, titre: 'Tout reste à découvrir', texte: 'Aucun arôme annoncé retrouvé — et c\'est très bien ! Votre ressenti compte plus que la théorie. La prochaine fois, laissez le vin s\'ouvrir 15 minutes.' }
 }
 
 function verdictJauges(prediction, ressenti) {
@@ -249,7 +250,7 @@ export default function DegustationSimulateur({ vin, onClose }) {
         jaugesPredites: prediction.jauges,
         jaugesRessenties,
         objectif: prediction.objectif,
-        badge: `${badge.emoji} ${badge.titre}`,
+        badge: badge.titre,
         ...(avisOeno ? { avisOeno } : {}),
       },
     }
@@ -312,7 +313,8 @@ export default function DegustationSimulateur({ vin, onClose }) {
           {step === 'avis' && (
             <div className="space-y-5 animate-fade-in">
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-gold-500/15 text-gold-700">
-                {prediction.fiabilite.emoji} {prediction.fiabilite.label}
+                {{ bibliotheque: <BookOpen size={11} />, verifie: <SearchCheck size={11} />, cepages: <Grape size={11} />, type: <Compass size={11} /> }[prediction.source]}
+                {prediction.fiabilite.label}
               </span>
 
               <div className="card p-4">
@@ -451,7 +453,9 @@ export default function DegustationSimulateur({ vin, onClose }) {
             <div className="space-y-5 animate-fade-in">
               {/* Badge nez */}
               <div className="card p-5 text-center">
-                <div className="text-4xl mb-2">{badge.emoji}</div>
+                <div className="w-14 h-14 rounded-2xl bg-wine-800 flex items-center justify-center mx-auto mb-3 shadow-wine">
+                  <badge.Icon size={24} className="text-gold-400" />
+                </div>
                 <div className="font-serif text-xl font-bold text-anthracite-900">{badge.titre}</div>
                 <p className="text-xs text-anthracite-500 mt-1.5 max-w-sm mx-auto leading-relaxed">{badge.texte}</p>
                 {prediction.nez.length > 0 && (

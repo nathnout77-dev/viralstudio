@@ -3,6 +3,7 @@ import { X, Send, Sparkles, RefreshCw, Wine } from 'lucide-react'
 import { WINE_DB, MILLESIMES_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
 import { profilApprisPourAssistant } from '../data/goutsAppris'
 import JaugesGout from './JaugesGout'
+import WineVisuel from './WineVisuel'
 import useModalBehavior from '../lib/useModal'
 import { askIA } from '../lib/askIA'
 import { FicheVin } from './BibliothequeView'
@@ -192,16 +193,16 @@ function InlineWineCard({ wine, onSelect }) {
       role="button" tabIndex={0}
       onKeyDown={e => e.key === 'Enter' && onSelect?.(wine)}
       className="card p-3 mt-2 flex items-start gap-3 cursor-pointer hover:border-gold-500/30 hover:-translate-y-0.5 transition-all">
-      <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
            style={{ background: `${wine.color}18` }}>
-        {wine.emoji}
+        <WineVisuel type={wine.type} size={18} />
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
           <div className="font-serif text-[13px] font-bold text-anthracite-900 truncate">{wine.appellation}</div>
           <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0"
                 style={{ background: diff.bg, color: diff.color }}>
-            {diff.emoji} ~{wine.prixMoyen}€
+            ~{wine.prixMoyen}€
           </span>
         </div>
         <p className="text-[11px] text-anthracite-400 italic mb-1.5">« {wine.enUneMot} »</p>
@@ -236,7 +237,7 @@ function fallbackFor(menuId, profil) {
     return `## Mes suggestions pour vous\n` +
       picks.map(w => `- **${w.appellation}** (${w.region}, ~${w.prixMoyen}€) — ${w.pourQui}. À chercher chez : ${w.domaines[0]?.name || 'votre caviste'}.`).join('\n')
   }
-  return `Je n'arrive pas à joindre mon cerveau distant pour le moment 😅. En attendant, explorez l'onglet **Vins** (plus de 200 appellations décodées) ou le **Guide** (millésimes, accords, lexique) — tout y est disponible hors-ligne !`
+  return `Je n'arrive pas à joindre mon cerveau distant pour le moment. En attendant, explorez l'onglet **Vins** (plus de 200 appellations décodées) ou le **Guide** (millésimes, accords, lexique) — tout y est disponible hors-ligne !`
 }
 
 export default function AssistantView({ onClose }) {
@@ -342,7 +343,7 @@ export default function AssistantView({ onClose }) {
       setMessages(prev => [...prev, {
         role: 'assistant',
         content: e?.rateLimited
-          ? `Vous êtes en pleine forme, et moi j'ai besoin de reprendre mon souffle une petite minute ! 😅 Le temps de reposer mes idées, reposez-moi votre question dans quelques instants — en attendant, l'onglet **Vins** et le **Guide** sont là.`
+          ? `Vous êtes en pleine forme, et moi j'ai besoin de reprendre mon souffle une petite minute ! Le temps de reposer mes idées, reposez-moi votre question dans quelques instants — en attendant, l'onglet **Vins** et le **Guide** sont là.`
           : fallbackFor(menuId, profil),
         fallback: true,
       }])

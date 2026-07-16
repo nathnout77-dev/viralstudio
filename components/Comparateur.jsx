@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { X, Scale, Search, Trophy, Plus, BookOpen, RefreshCw, UtensilsCrossed } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
 import JaugesGout from './JaugesGout'
+import WineVisuel from './WineVisuel'
 import { FicheVin } from './BibliothequeView'
 import useModalBehavior from '../lib/useModal'
 
@@ -254,7 +255,7 @@ export default function Comparateur({ onClose, onAddWine }) {
                 <div className="flex flex-wrap gap-2">
                   {vins.map(w => (
                     <span key={w.id} className="inline-flex items-center gap-2 pl-3 pr-1.5 py-1.5 rounded-full bg-wine-800 text-cream text-xs font-semibold">
-                      <span aria-hidden="true">{w.emoji}</span> {w.appellation}
+                      <WineVisuel type={w.type} size={12} /> {w.appellation}
                       <button onClick={() => retirer(w.id)} aria-label={`Retirer ${w.appellation}`}
                               className="w-5 h-5 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/40 cursor-pointer transition-colors">
                         <X size={10} />
@@ -287,7 +288,7 @@ export default function Comparateur({ onClose, onAddWine }) {
                       onClick={() => ajouter(w.id)}
                       className="w-full flex items-center gap-3 p-3 rounded-xl border border-anthracite-900/[0.07] bg-white hover:border-gold-500/50 active:scale-[0.99] transition-all cursor-pointer text-left"
                     >
-                      <span className="text-xl flex-shrink-0" aria-hidden="true">{w.emoji}</span>
+                      <WineVisuel type={w.type} size={16} className="flex-shrink-0" />
                       <span className="min-w-0 flex-1">
                         <span className="font-wine-name text-xl text-anthracite-900 block leading-tight">{w.appellation}</span>
                         <span className="text-[11px] text-anthracite-500">{w.region} · {w.typeLabel} · ~{w.prixMoyen} €</span>
@@ -343,7 +344,7 @@ export default function Comparateur({ onClose, onAddWine }) {
                           <Trophy size={8} /> Notre choix
                         </span>
                       )}
-                      <div className="text-xl mb-1">{w.emoji}</div>
+                      <WineVisuel type={w.type} size={16} className="mb-1" />
                       <div className="font-wine-name text-2xl leading-tight">{w.appellation}</div>
                       <div className="text-cream/70 text-[11px] mt-0.5">{w.region} · {w.typeLabel} · ~{w.prixMoyen} €</div>
                       <div className="mt-2.5 flex items-baseline gap-1">
@@ -430,7 +431,7 @@ export default function Comparateur({ onClose, onAddWine }) {
               carafage: w.carafage,
               estimatedValue: w.prixMoyen,
               foodPairings: w.accords,
-              notes: `${w.emoji} ${w.enUneMot} — choisi via le comparateur`,
+              notes: `${w.enUneMot} — choisi via le comparateur`,
             })
           } : undefined}
         />

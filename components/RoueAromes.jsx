@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { AROME_FAMILLES, vinsPourFamille } from '../data/aromes'
+import WineVisuel from './WineVisuel'
 import { WINE_DB } from '../data/wineDatabase'
 import { FicheVin } from './BibliothequeView'
 
@@ -360,7 +361,7 @@ export default function RoueAromes() {
                       className="min-h-[44px] inline-flex items-center gap-2 pl-3 pr-4 rounded-full bg-white border border-anthracite-900/10 shadow-card hover:border-gold-500/60 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300 cursor-pointer"
                       title={`Ouvrir la fiche ${w.appellation}`}
                     >
-                      <span className="text-lg" aria-hidden="true">{w.emoji}</span>
+                      <WineVisuel type={w.type} size={14} />
                       <span className="text-sm font-medium text-anthracite-800">{w.appellation}</span>
                       <span className="text-[11px] text-anthracite-400">{w.region}</span>
                     </button>

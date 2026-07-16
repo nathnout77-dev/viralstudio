@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { Coins } from 'lucide-react'
 import { WINE_DB } from '../data/wineDatabase'
+import WineVisuel from './WineVisuel'
 import { FicheVin } from './BibliothequeView'
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -46,7 +47,7 @@ export default function PetitsPrix({
             className="flex-shrink-0 card p-4 min-w-[190px] max-w-[220px] text-left group hover:-translate-y-1 hover:border-gold-500/50 transition-all duration-300 cursor-pointer"
           >
             <div className="flex items-center justify-between gap-2 mb-1.5">
-              <span className="text-xl leading-none" aria-hidden="true">{w.emoji}</span>
+              <WineVisuel type={w.type} size={15} />
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-gold-500/15 text-gold-700">
                 ~ {w.prixMoyen} €
               </span>
@@ -82,7 +83,7 @@ export default function PetitsPrix({
               carafage: w.carafage,
               estimatedValue: w.prixMoyen,
               foodPairings: w.accords,
-              notes: `${w.emoji} ${w.enUneMot} — petit prix repéré dans Œno`,
+              notes: `${w.enUneMot} — petit prix repéré dans Œno`,
             })
           } : undefined}
         />

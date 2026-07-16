@@ -3,13 +3,14 @@ import { Library, Search, X, Plus, Check, Thermometer, Clock, Wine, MapPin, Chev
 import dynamic from 'next/dynamic'
 import AccordInverse from './AccordInverse'
 import { EnvieButton } from './Envies'
-import { WINE_DB, REGIONS_LIST, DIFFICULTE_CONFIG, MILLESIMES_DB, gardeForMillesime } from '../data/wineDatabase'
+import { WINE_DB, REGIONS_LIST, DIFFICULTE_CONFIG, MILLESIMES_DB, gardeForMillesime, variantesDe } from '../data/wineDatabase'
 import JaugesGout from './JaugesGout'
 import Terme from './Tooltip'
 import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
 import useModalBehavior from '../lib/useModal'
 import { tintStyle, pastilleStyle, regionMonogram, collectionNumero } from '../lib/wineStyle'
 import WineTile from './WineTile'
+import WineVisuel from './WineVisuel'
 import { loadDecouvertes, removeDecouverte, decouverteNumero } from '../lib/decouvertes'
 
 // Chargé dynamiquement : Comparateur importe FicheVin de ce fichier — le
@@ -84,7 +85,9 @@ function DecouverteFiche({ dec, onClose, onDelete }) {
       <div className="modal-panel sm:max-w-lg max-h-[92vh] shadow-card-hover" onClick={e => e.stopPropagation()}>
         <div className="p-6 pb-5 flex-shrink-0 relative overflow-hidden text-cream"
              style={{ background: `linear-gradient(150deg, ${color} 0%, ${color}cc 55%, #1e2426 145%)` }}>
-          <div className="absolute -top-6 -right-6 text-[90px] opacity-10 select-none leading-none" aria-hidden="true">🍷</div>
+          <div className="absolute -top-2 -right-4 opacity-15 select-none pointer-events-none" aria-hidden="true">
+            <WineVisuel type={dec.type || 'red'} size={80} />
+          </div>
           <div className="relative flex items-start justify-between gap-3">
             <div className="min-w-0">
               <div className="flex items-center gap-2 mb-1.5">
@@ -192,16 +195,15 @@ const WINE_INDEX = new Map(WINE_DB.map((w, i) => [w.id, i]))
 
 const TYPE_FILTERS = [
   { value: 'all',       label: 'Tous' },
-  { value: 'red',       label: '🍷 Rouge' },
-  { value: 'white',     label: '🥂 Blanc' },
-  { value: 'rosé',      label: '🌸 Rosé' },
-  { value: 'sweet',     label: '🍯 Doux' },
-  { value: 'sparkling', label: '🍾 Bulles' },
+  { value: 'red',       label: 'Rouge' },
+  { value: 'white',     label: 'Blanc' },
+  { value: 'rosé',      label: 'Rosé' },
+  { value: 'sweet',     label: 'Doux' },
 ]
 
 const BUDGET_FILTERS = [
   { value: 'all',   label: 'Tout budget' },
-  { value: '0-10',  label: '🪙 3 – 10 € (petits prix)' },
+  { value: '0-10',  label: '3 – 10 € (petits prix)' },
   { value: '10-20', label: '10 – 20 €' },
   { value: '20-50', label: '20 – 50 €' },
   { value: '50+',   label: '50 € et +' },
@@ -209,14 +211,19 @@ const BUDGET_FILTERS = [
 
 const DIFF_FILTERS = [
   { value: 'all',      label: 'Tous niveaux' },
-  { value: 'facile',   label: '😊 Facile à aimer' },
-  { value: 'explorer', label: '🧭 Pour explorer' },
-  { value: 'pointu',   label: '🎓 Pointu' },
+  { value: 'facile',   label: 'Facile à aimer' },
+  { value: 'explorer', label: 'Pour explorer' },
+  { value: 'pointu',   label: 'Pointu' },
 ]
 
 // ── Fiche détaillée ────────────────────────────────────────────────────────────
-export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
+export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter }) {
   useModalBehavior(onClose)
+  // Le vin affiché est un état : les chips « Existe aussi en… » permettent de
+  // basculer entre les variantes de couleur d'une même appellation.
+  const [wine, setWine] = useState(wineProp)
+  useEffect(() => { setWine(wineProp) }, [wineProp?.id]) // eslint-disable-line react-hooks/exhaustive-deps
+  const variantes = variantesDe(wine)
   const [millesime, setMillesime] = useState(wine.bonsMilsimes[wine.bonsMilsimes.length - 1])
   // Si la fiche reste montée mais change de vin, on repart sur son dernier bon millésime
   useEffect(() => {
@@ -247,11 +254,13 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
           className="p-6 pb-5 lg:py-4 lg:px-7 flex-shrink-0 relative overflow-hidden gold-sheen"
           style={{ background: `linear-gradient(150deg, ${wine.color} 0%, ${wine.color}cc 55%, #1e2426 145%)` }}
         >
-          <div className="absolute -top-8 -right-8 text-[120px] lg:text-[80px] opacity-15 select-none leading-none">{wine.emoji}</div>
+          <div className="absolute -top-2 -right-4 opacity-20 select-none pointer-events-none">
+            <WineVisuel type={wine.type} size={110} />
+          </div>
           <div className="relative flex items-start lg:items-center justify-between gap-3">
             <div className="min-w-0">
               <div className="flex items-center gap-2.5 mb-1.5 lg:mb-1">
-                <span className="text-3xl lg:text-xl">{wine.emoji}</span>
+                <WineVisuel type={wine.type} size={22} className="flex-shrink-0" />
                 <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-cream/60">
                   {collectionNumero(WINE_INDEX.get(wine.id) ?? 0)}
                 </span>
@@ -300,7 +309,7 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
               className="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
               style={{ background: diff.bg, color: diff.color }}
             >
-              {diff.emoji} {diff.label}
+              {diff.label}
             </span>
             <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-anthracite-100 text-anthracite-700">
               ~ {wine.prixMoyen} € la bouteille
@@ -309,6 +318,24 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
           <p className="text-sm text-anthracite-600 leading-relaxed -mt-1">
             <span className="font-semibold text-anthracite-800">Pour qui ? </span>{wine.pourQui}
           </p>
+
+          {/* Variantes de couleur de la même appellation */}
+          {variantes.length > 0 && (
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400">Existe aussi en :</span>
+              {variantes.map(v => (
+                <button
+                  key={v.id}
+                  onClick={() => setWine(v)}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border border-anthracite-200 bg-white text-anthracite-700 hover:border-gold-500/60 transition-all cursor-pointer"
+                  title={`Voir ${v.appellation}`}
+                >
+                  <span className="w-2.5 h-2.5 rounded-full ring-1 ring-anthracite-900/10" style={pastilleStyle(v.type)} aria-hidden="true" />
+                  {v.typeLabel}
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Jauges */}
           <div className="card p-4">
@@ -408,7 +435,7 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
 
           {/* Le mot du caviste */}
           <div className="rounded-2xl p-4" style={{ background: '#f0e9dd' }}>
-            <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-1.5">💬 Le mot du caviste</div>
+            <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-1.5">Le mot du caviste</div>
             <p className="text-sm text-anthracite-700 leading-relaxed italic">{wine.description}</p>
           </div>
         </div>
@@ -436,7 +463,7 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
               </div>
               {garde && (
                 <p className="text-[11px] text-anthracite-500 mb-3 lg:mb-0">
-                  🕰️ À boire entre <span className="font-semibold text-anthracite-700">{garde.from}</span> et <span className="font-semibold text-anthracite-700">{garde.until}</span>
+                  À boire entre <span className="font-semibold text-anthracite-700">{garde.from}</span> et <span className="font-semibold text-anthracite-700">{garde.until}</span>
                 </p>
               )}
             </div>
@@ -553,7 +580,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
       carafage: wine.carafage,
       estimatedValue: wine.prixMoyen,
       foodPairings: wine.accords,
-      notes: `${wine.emoji} ${wine.enUneMot} — Arômes : ${wine.aromes}`,
+      notes: `${wine.enUneMot} — Arômes : ${wine.aromes}`,
     })
     setAdded(prev => new Set([...prev, `${wine.id}-${millesime}`]))
   }

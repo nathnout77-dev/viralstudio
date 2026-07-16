@@ -172,7 +172,7 @@ export default function EnviesView({ onBuy }) {
       carafage: wine?.carafage,
       estimatedValue: wine?.prixMoyen || '',
       foodPairings: wine?.accords || [],
-      notes: wine ? `${wine.emoji} ${wine.enUneMot} — Arômes : ${wine.aromes}` : '',
+      notes: wine ? `${wine.enUneMot} — Arômes : ${wine.aromes}` : '',
       _envieId: id,
     })
   }, [onBuy])

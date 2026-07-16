@@ -1,4 +1,4 @@
-import { Wine, Library, MapPin, Sparkles, BookOpen, Plus, Utensils, ScanLine, UserCircle2, MessageCircleHeart } from 'lucide-react'
+import { Wine, Library, MapPin, Sparkles, BookOpen, Plus, Utensils, ScanLine, UserCircle2, MessageCircleHeart, Sprout, GraduationCap } from 'lucide-react'
 import RollingNumber from './RollingNumber'
 import LogoOeno from './LogoOeno'
 
@@ -17,9 +17,9 @@ const TABS = [
 ]
 
 const MODE_BADGE = {
-  debutant: { emoji: '🌱', label: 'Débutant' },
-  amateur:  { emoji: '🍷', label: 'Amateur' },
-  expert:   { emoji: '🎓', label: 'Expert' },
+  debutant: { Icon: Sprout,        label: 'Débutant' },
+  amateur:  { Icon: Wine,          label: 'Amateur' },
+  expert:   { Icon: GraduationCap, label: 'Expert' },
 }
 
 function NavItem({ active, onClick, Icon, label, accent = false }) {
@@ -101,7 +101,7 @@ export default function Sidebar({ tab, setTab, total, mode, onProfil, onAdd, onL
             title="Changer de mode / refaire mon profil"
             className="w-full flex items-center gap-2 px-3 py-2 mb-3 rounded-full text-[10px] font-semibold uppercase tracking-[0.12em] text-stone-400 border border-white/10 hover:border-gold-500/60 hover:text-cream transition-all duration-300 cursor-pointer"
           >
-            <span className="normal-case">{badge.emoji}</span>
+            <badge.Icon size={12} className="text-gold-500" />
             {badge.label}
           </button>
         )}

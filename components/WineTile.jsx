@@ -1,5 +1,6 @@
 import { Quote, Sparkles } from 'lucide-react'
 import { DIFFICULTE_CONFIG } from '../data/wineDatabase'
+import WineVisuel from './WineVisuel'
 import { tintStyle, pastilleStyle, regionMonogram, collectionNumero } from '../lib/wineStyle'
 import { MiniVerre, fillLevelFromJauges } from './WineGlassAnim'
 import { EnvieButton } from './Envies'
@@ -51,7 +52,6 @@ export default function WineTile({
   const type = wine.type || 'red'
   const prixMoyen = wine.prixMoyen ?? wine.estimatedValue
   const typeLabel = wine.typeLabel
-  const emoji = wine.emoji
   const color = wine.color
   const enUneMot = wine.enUneMot
   const diff = wine.difficulte ? DIFFICULTE_CONFIG[wine.difficulte] : null
@@ -82,7 +82,7 @@ export default function WineTile({
 
         <div className="text-center mb-2 min-w-0">
           <div className="font-wine-name text-2xl text-anthracite-900 leading-tight line-clamp-2 whitespace-normal">
-            {emoji} {appellation}
+            {appellation}
           </div>
           <div className="text-[9px] uppercase tracking-[0.22em] text-anthracite-400 mt-1.5">
             {region}{prixMoyen != null ? ` · ~${prixMoyen} €` : ''}
@@ -103,14 +103,14 @@ export default function WineTile({
               className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold"
               style={{ background: diff.bg, color: diff.color }}
             >
-              {diff.emoji} {diff.label}
+              {diff.label}
             </span>
           ) : <span />}
           <div className="flex items-center gap-1.5">
             {showEnvie && <EnvieButton appellation={appellation} size={12} className="!w-6 !h-6" />}
             {hasPetitDomaine && (
-              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-gold-500/15 text-gold-700" title="Contient un petit domaine">
-                ✨
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-gold-500/15 text-gold-700" title="Contient un petit domaine">
+                <Sparkles size={9} />
               </span>
             )}
           </div>
@@ -138,7 +138,7 @@ export default function WineTile({
           className={`flex items-center justify-center flex-shrink-0 ${iconClass}`}
           style={{ background: color ? `${color}18` : '#f0e9dd' }}
         >
-          {emoji || <span className="text-anthracite-400">🍷</span>}
+          <WineVisuel type={type} size={22} />
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
@@ -151,9 +151,7 @@ export default function WineTile({
             <span className="flex items-center gap-1.5 flex-shrink-0" onClick={e => e.stopPropagation()}>
               {showEnvie && <EnvieButton appellation={appellation} size={12} className="!w-6 !h-6" />}
               {diff && (
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: diff.bg, color: diff.color }}>
-                  {diff.emoji}
-                </span>
+                <span className="w-2.5 h-2.5 rounded-full ring-2 ring-white flex-shrink-0" style={{ background: diff.color }} title={diff.label} />
               )}
             </span>
           </div>

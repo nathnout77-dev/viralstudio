@@ -4,7 +4,7 @@ import { MILLESIMES_DB, WINE_DB } from '../data/wineDatabase'
 import PetitsPrix from './PetitsPrix'
 
 const REGIONS = ['Toutes','Bordeaux','Bourgogne','Champagne','Rhône Nord','Rhône Sud','Alsace','Loire','Provence','Languedoc','Beaujolais','Jura','Sud-Ouest']
-const TYPES   = ['Tous','Rouge','Blanc','Rosé','Effervescent','Liquoreux']
+const TYPES   = ['Tous','Rouge','Blanc','Rosé','Liquoreux']
 
 const REC_CONFIG = {
   'Privilégier':         { bg: 'bg-emerald-100', text: 'text-emerald-800', dot: 'bg-emerald-500', score: 4 },

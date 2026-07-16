@@ -160,7 +160,7 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
             const garde = gardeForMillesime(wine, millesime)
             return garde ? (
               <p className="text-[11px] text-anthracite-500 mt-2">
-                🕰️ À boire entre <span className="font-semibold text-anthracite-700">{garde.from}</span> et <span className="font-semibold text-anthracite-700">{garde.until}</span>
+                À boire entre <span className="font-semibold text-anthracite-700">{garde.from}</span> et <span className="font-semibold text-anthracite-700">{garde.until}</span>
               </p>
             ) : null
           })()}

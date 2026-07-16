@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import {
   NotebookPen, Grape, X, Plus, Search, Trash2, Pencil, ArrowLeft,
-  Calendar, Users, Feather, ChevronDown, BookHeart, Share2,
+  Calendar, Users, Feather, ChevronDown, BookHeart, Share2, Sparkles,
 } from 'lucide-react'
 import dynamic from 'next/dynamic'
 
@@ -388,7 +388,7 @@ function CarnetPage({ entry, onClose, onEdit, onDelete }) {
           {entry.simulation && (
             <div className="mt-6 rounded-2xl border border-gold-500/30 bg-gold-500/[0.07] p-5">
               <div className="text-[10px] uppercase tracking-wider font-bold text-gold-700 mb-3">
-                ✨ Dégustation guidée avec Œno
+                Dégustation guidée avec Œno
               </div>
               {entry.simulation.badge && (
                 <p className="font-serif text-lg font-bold text-anthracite-900 mb-1">{entry.simulation.badge}</p>
@@ -460,7 +460,7 @@ function EntryCard({ entry, onSelect, index }) {
       <div className="flex items-start justify-between gap-3 mb-2">
         <span className="eyebrow !text-[10px]">
           {formatDate(entry.tastedAt)}
-          {entry.simulation && <span className="ml-1.5" title="Dégustation guidée avec Œno">✨</span>}
+          {entry.simulation && <Sparkles size={10} className="inline ml-1.5 -mt-0.5 text-gold-600" title="Dégustation guidée avec Œno" />}
         </span>
         <NoteGrappe value={entry.note} readOnly size={12} />
       </div>

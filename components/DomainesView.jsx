@@ -106,7 +106,7 @@ export default function DomainesView({ onAddWine }) {
       carafage: wine.carafage,
       estimatedValue: wine.prixMoyen,
       foodPairings: wine.accords,
-      notes: `${wine.emoji} ${wine.enUneMot} — Arômes : ${wine.aromes}`,
+      notes: `${wine.enUneMot} — Arômes : ${wine.aromes}`,
     })
     setAdded(prev => new Set([...prev, `${wine.id}-${millesime}`]))
   }

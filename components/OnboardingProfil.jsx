@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback } from 'react'
 import { Wine, ArrowRight, Quote } from 'lucide-react'
 import { WINE_DB } from '../data/wineDatabase'
+import WineVisuel from './WineVisuel'
 import { diversifyByRegion, buildRaison, getRegionsPref } from '../lib/suggestions'
 import RegionsPrefFilter from './RegionsPrefFilter'
 import useModalBehavior from '../lib/useModal'
@@ -283,7 +284,7 @@ export default function OnboardingProfil({ onComplete }) {
                     className="card p-4 flex items-start gap-3 animate-scale-in"
                     style={{ animationDelay: `${i * 90}ms`, animationFillMode: 'both' }}
                   >
-                    <span className="text-2xl flex-shrink-0">{w.emoji}</span>
+                    <WineVisuel type={w.type} size={20} className="flex-shrink-0" />
                     <span className="min-w-0 flex-1">
                       <span className="block text-sm font-bold text-anthracite-900 truncate">{w.appellation}</span>
                       <span className="block text-xs text-anthracite-400 truncate">{w.region} · ~{w.prixMoyen} €</span>

@@ -4,6 +4,7 @@ import {
 } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
 import { EnvieButton } from './Envies'
+import WineVisuel from './WineVisuel'
 import { FicheVin } from './BibliothequeView'
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -280,9 +281,9 @@ export default function BudgetCaviste() {
                 style={{ animationDelay: `${i * 80}ms`, animationFillMode: 'both' }}
               >
                 <div className="flex items-start gap-3">
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
                        style={{ background: `${w.color}18` }}>
-                    {w.emoji}
+                    <WineVisuel type={w.type} size={22} />
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
@@ -301,7 +302,7 @@ export default function BudgetCaviste() {
                     <div className="flex items-center gap-2 mt-2 flex-wrap">
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold"
                             style={{ background: diff.bg, color: diff.color }}>
-                        {diff.emoji} {diff.label}
+                        {diff.label}
                       </span>
                     </div>
                     {w.domaines.length > 0 && (
