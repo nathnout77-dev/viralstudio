@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react'
-import { Route, CalendarDays, Lightbulb, ChevronLeft, ExternalLink, Wine, MapPin } from 'lucide-react'
+import { Route, CalendarDays, Lightbulb, ChevronLeft, ExternalLink, Wine, MapPin, Navigation, Car } from 'lucide-react'
 import { WINE_DB } from '../data/wineDatabase'
 import { ROUTES_DES_VINS } from '../data/routesDesVins'
 import { WinePanel } from './InteractiveMap'
@@ -11,6 +11,30 @@ import { WinePanel } from './InteractiveMap'
 // ═══════════════════════════════════════════════════════════════════════════
 
 const wineById = id => WINE_DB.find(w => w.id === id) || null
+
+// ── Itinéraire GPS (Google Maps, mode voiture) ───────────────────────────────
+// Le voyage est déjà organisé jour par jour : on envoie les étapes dans cet
+// ordre, Google calcule le trajet routier le plus court entre chacune.
+// dir_action=navigate lance directement le guidage sur mobile.
+function gpsUrl(etapes) {
+  const pts = etapes
+    .map(e => `${e.lat},${e.lng}`)
+    .filter((p, i, arr) => i === 0 || p !== arr[i - 1]) // étapes co-localisées dédupliquées
+  if (pts.length === 0) return null
+  const origin = pts[0]
+  const destination = pts[pts.length - 1]
+  const waypoints = pts.slice(1, -1).join('|')
+  const params = new URLSearchParams({
+    api: '1', origin, destination, travelmode: 'driving', dir_action: 'navigate',
+  })
+  if (waypoints) params.set('waypoints', waypoints)
+  return `https://www.google.com/maps/dir/?${params.toString()}`
+}
+
+const gpsEtapeUrl = (e) =>
+  `https://www.google.com/maps/dir/?${new URLSearchParams({
+    api: '1', destination: `${e.lat},${e.lng}`, travelmode: 'driving', dir_action: 'navigate',
+  }).toString()}`
 
 export default function RoutesDesVins({ onAddWine, onNoter }) {
   const [route, setRoute] = useState(null)
@@ -97,6 +121,16 @@ export default function RoutesDesVins({ onAddWine, onNoter }) {
         <span className="eyebrow mb-1">{route.region} · {route.duree}</span>
         <h3 className="font-serif text-xl sm:text-2xl font-bold text-anthracite-900">{route.titre}</h3>
         <p className="text-sm text-anthracite-500 leading-relaxed mt-2 max-w-2xl">{route.intro}</p>
+        <a
+          href={gpsUrl(route.etapes)}
+          target="_blank" rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 mt-3 px-5 py-2.5 rounded-full text-xs font-bold text-cream shadow-wine hover:brightness-110 active:scale-[0.98] transition-all cursor-pointer"
+          style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
+          title="Ouvre Google Maps en mode voiture avec toutes les étapes du voyage, dans l'ordre"
+        >
+          <Navigation size={13} className="text-gold-400" />
+          Lancer l'itinéraire GPS ({route.etapes.length} étapes en voiture)
+        </a>
       </div>
 
       {/* Desktop : carte sticky à gauche, déroulé en colonne droite · Mobile : empilé */}
@@ -164,8 +198,18 @@ export default function RoutesDesVins({ onAddWine, onNoter }) {
                   {i + 1}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-1">
-                    <CalendarDays size={11} /> Jour {e.jour}
+                  <div className="flex items-center justify-between gap-2 mb-1">
+                    <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider font-bold text-anthracite-400">
+                      <CalendarDays size={11} /> Jour {e.jour}
+                    </div>
+                    <a
+                      href={gpsEtapeUrl(e)}
+                      target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer flex-shrink-0"
+                      title={`Itinéraire voiture jusqu'à : ${e.titre}`}
+                    >
+                      <Car size={10} /> Y aller
+                    </a>
                   </div>
                   <h4 className="font-serif text-base font-bold text-anthracite-900 mb-1.5">{e.titre}</h4>
                   <p className="text-sm text-anthracite-600 leading-relaxed">{e.texte}</p>

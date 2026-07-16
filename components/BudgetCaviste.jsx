@@ -45,31 +45,56 @@ function shuffle(arr) {
 }
 
 // Compose une sélection : tirages aléatoires notés, on garde la meilleure.
+// Fonctionne pour TOUT budget : le nombre de bouteilles visé par l'occasion
+// s'adapte à ce que le budget peut réellement financer (jusqu'à une seule
+// bouteille bien choisie), et un filet de sécurité garantit une proposition
+// dès qu'au moins un vin rentre dans l'enveloppe.
 export function composeSelection(budget, occasion, couleur) {
   const rules = OCCASION_RULES[occasion] || OCCASION_RULES.diner
   const lo = budget * 0.9
   const hi = budget * 1.1
 
-  let candidates = WINE_DB.filter(w => {
-    if (couleur === 'red' && w.type !== 'red') return false
-    if (couleur === 'white' && !['white', 'sparkling', 'sweet'].includes(w.type)) return false
-    if (w.prixMoyen > budget * (occasion === 'grande' || occasion === 'cadeau' ? 0.75 : 0.5)) return false
-    if (w.prixMoyen < budget * rules.minShare * 0.4) return false
-    return true
-  })
-  if (candidates.length < rules.min) {
-    candidates = WINE_DB.filter(w =>
-      (couleur === 'mixte' || (couleur === 'red' ? w.type === 'red' : w.type !== 'red')) && w.prixMoyen <= budget
-    )
+  const matchCouleur = w =>
+    couleur === 'mixte' ||
+    (couleur === 'red' ? w.type === 'red' : ['white', 'sparkling', 'sweet'].includes(w.type))
+
+  const affordable = WINE_DB.filter(w => matchCouleur(w) && w.prixMoyen <= hi)
+  if (affordable.length === 0) {
+    // Vraiment aucun vin dans l'enveloppe : on indique le ticket d'entrée.
+    const pool = WINE_DB.filter(matchCouleur)
+    const minPrix = pool.length ? Math.min(...pool.map(w => w.prixMoyen)) : null
+    return { wines: null, minPrix }
   }
 
+  // Nombre de bouteilles atteignable : l'idéal de l'occasion, plafonné par
+  // ce que le budget permet avec les vins les moins chers disponibles.
+  const cheapest = [...affordable].sort((a, b) => a.prixMoyen - b.prixMoyen)
+  let affordableCount = 0, acc = 0
+  for (const w of cheapest) {
+    if (acc + w.prixMoyen > hi) break
+    acc += w.prixMoyen
+    affordableCount++
+    if (affordableCount >= rules.max) break
+  }
+  const min = Math.max(1, Math.min(rules.min, affordableCount))
+  const max = Math.max(min, Math.min(rules.max, affordableCount))
+
+  // Candidats préférés (équilibre du panier) — uniquement quand le panier est
+  // assez grand pour que ces contraintes aient un sens.
+  let candidates = affordable.filter(w => {
+    if (min >= 3 && w.prixMoyen > budget * (occasion === 'grande' || occasion === 'cadeau' ? 0.75 : 0.5)) return false
+    if (min >= 3 && w.prixMoyen < budget * rules.minShare * 0.4) return false
+    return true
+  })
+  if (candidates.length < min) candidates = affordable
+
   let best = null
-  for (let attempt = 0; attempt < 80; attempt++) {
+  for (let attempt = 0; attempt < 120; attempt++) {
     const pool = shuffle(candidates)
     const pick = []
     let sum = 0
     for (const w of pool) {
-      if (pick.length >= rules.max) break
+      if (pick.length >= max) break
       if (sum + w.prixMoyen > hi) continue
       if (pick.some(p => p.appellation === w.appellation)) continue
       // Diversité : éviter deux fois la même région sur les gros paniers
@@ -77,7 +102,7 @@ export function composeSelection(budget, occasion, couleur) {
       pick.push(w)
       sum += w.prixMoyen
     }
-    if (pick.length < rules.min) continue
+    if (pick.length < min) continue
 
     // Score : proximité du budget + biais d'occasion
     let score = -Math.abs(sum - budget) / budget * 100
@@ -93,7 +118,11 @@ export function composeSelection(budget, occasion, couleur) {
     if (!best || score > best.score) best = { pick, sum, score }
   }
 
-  if (!best) return null
+  // Filet de sécurité : la plus belle bouteille qui rentre dans l'enveloppe.
+  if (!best) {
+    const w = [...affordable].sort((a, b) => b.prixMoyen - a.prixMoyen)[0]
+    return { wines: [w], total: w.prixMoyen }
+  }
   return { wines: best.pick, total: best.sum }
 }
 
@@ -118,7 +147,8 @@ export default function BudgetCaviste() {
   const [spinning, setSpinning] = useState(false)
   const [wineSelected, setWineSelected] = useState(null)
 
-  const effectiveBudget = custom ? Math.max(15, Number(custom) || 0) : budget
+  // Budget libre accepté dès 5 € — plus de plancher silencieux à 15 €.
+  const effectiveBudget = custom ? Math.max(0, Number(custom) || 0) : budget
 
   const compose = useCallback(() => {
     setSpinning(true)
@@ -150,7 +180,7 @@ export default function BudgetCaviste() {
           ))}
           <div className="relative">
             <input
-              type="number" min="10" max="2000" placeholder="Autre…"
+              type="number" min="5" max="2000" placeholder="Autre…"
               value={custom}
               onChange={e => setCustom(e.target.value)}
               className={`w-28 pl-3 pr-8 py-2.5 rounded-xl text-sm font-semibold border focus:outline-none focus:ring-2 focus:ring-gold-600/40 transition-all ${
@@ -198,7 +228,7 @@ export default function BudgetCaviste() {
               </button>
             ))}
           </div>
-          <button onClick={compose} className="btn-gold text-sm px-6 py-3" disabled={spinning || effectiveBudget < 15}>
+          <button onClick={compose} className="btn-gold text-sm px-6 py-3" disabled={spinning || effectiveBudget < 1}>
             <Sparkles size={14} className={spinning ? 'animate-spin' : ''} />
             {selection ? 'Recomposer' : 'Composez ma sélection'}
           </button>
@@ -215,7 +245,10 @@ export default function BudgetCaviste() {
 
       {selection && !selection.wines && (
         <div className="card p-8 text-center">
-          <p className="text-sm text-anthracite-500">Budget trop serré pour composer une belle sélection — essayez un peu plus large.</p>
+          <p className="text-sm text-anthracite-500">
+            Aucun vin de notre bibliothèque ne rentre dans cette enveloppe
+            {selection.minPrix ? <> — le ticket d'entrée est à <span className="font-bold text-wine-800">{selection.minPrix} €</span>{couleur !== 'mixte' ? ' pour cette couleur' : ''}.</> : '.'}
+          </p>
         </div>
       )}
 

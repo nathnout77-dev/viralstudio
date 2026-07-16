@@ -250,7 +250,7 @@ export default function App() {
       <>
         <Head>
           <title>Œno — Le vin, enfin simple</title>
-          <meta name="description" content="Vous n'y connaissez rien en vin ? Parfait. Œno traduit l'œnologie en langage humain : plus de 100 vins décodés, quiz de goût, carte des vignobles." />
+          <meta name="description" content="Vous n'y connaissez rien en vin ? Parfait. Œno traduit l'œnologie en langage humain : plus de 200 vins décodés, quiz de goût, carte des vignobles." />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
         <LandingPage onEnter={enterApp} onTabChange={handleTabChange} onCeSoir={openCeSoir} onScan={openScan} />
