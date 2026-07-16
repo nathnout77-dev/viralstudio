@@ -4745,9 +4745,9 @@ export const WINE_DB_DOMAINES = (() => {
 export const CONFIDENTIEL_DOMAINES = WINE_DB_DOMAINES.filter(d => d.confidentiel)
 
 export const DIFFICULTE_CONFIG = {
-  facile:   { label: 'Facile à aimer', emoji: '', color: '#4d7c50', bg: '#e8f0e8' },
-  explorer: { label: 'Pour explorer', emoji: '', color: '#b8722c', bg: '#f7ecd9' },
-  pointu:   { label: 'Pointu',         emoji: '', color: '#8c2f39', bg: '#f5e3e5' },
+  facile:   { label: 'Facile à aimer', color: '#4d7c50', bg: '#e8f0e8' },
+  explorer: { label: 'Pour explorer', color: '#b8722c', bg: '#f7ecd9' },
+  pointu:   { label: 'Pointu',         color: '#8c2f39', bg: '#f5e3e5' },
 }
 
 // ── Variantes de couleur d'une même appellation ──────────────────────────────

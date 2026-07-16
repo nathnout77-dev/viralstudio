@@ -3,7 +3,7 @@ import { BookOpen, ChevronDown, Star, TrendingUp, Award, Filter } from 'lucide-r
 import { MILLESIMES_DB, WINE_DB } from '../data/wineDatabase'
 import PetitsPrix from './PetitsPrix'
 
-const REGIONS = ['Toutes','Bordeaux','Bourgogne','Champagne','Rhône Nord','Rhône Sud','Alsace','Loire','Provence','Languedoc','Beaujolais','Jura','Sud-Ouest']
+const REGIONS = ['Toutes','Bordeaux','Bourgogne','Rhône Nord','Rhône Sud','Alsace','Loire','Provence','Languedoc','Beaujolais','Jura','Sud-Ouest']
 const TYPES   = ['Tous','Rouge','Blanc','Rosé','Liquoreux']
 
 const REC_CONFIG = {
@@ -17,7 +17,6 @@ const TYPE_STYLE = {
   'Rouge':       'bg-wine-100 text-wine-800',
   'Blanc':       'bg-amber-50 text-amber-800 border border-amber-200',
   'Rosé':        'bg-pink-50 text-pink-700 border border-pink-200',
-  'Effervescent':'bg-blue-50 text-blue-700 border border-blue-200',
   'Liquoreux':   'bg-amber-100 text-amber-900',
 }
 
