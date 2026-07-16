@@ -275,16 +275,24 @@ export default function BudgetCaviste() {
                       <div className="mt-3 pt-3 border-t border-anthracite-100">
                         <div className="text-[10px] uppercase tracking-wider font-semibold text-anthracite-400 mb-1.5">Où le trouver</div>
                         <div className="flex flex-wrap gap-1.5">
-                          {w.domaines.slice(0, 3).map(d => (
+                          {w.domaines.slice(0, 3).map(d => d.url ? (
                             <a
                               key={d.name}
-                              href={d.url || `https://www.google.com/search?q=${encodeURIComponent(`${d.name} ${w.appellation} acheter`)}`}
+                              href={d.url}
                               target="_blank" rel="noopener noreferrer"
                               onClick={e => e.stopPropagation()}
                               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
                             >
                               <ExternalLink size={9} /> {d.name}
                             </a>
+                          ) : (
+                            <span
+                              key={d.name}
+                              className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium text-anthracite-600 bg-white border border-anthracite-200"
+                              title="À demander chez votre caviste"
+                            >
+                              {d.name}
+                            </span>
                           ))}
                         </div>
                       </div>

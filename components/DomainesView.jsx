@@ -47,15 +47,17 @@ function DomaineCard({ domaine, onOpenWine, index }) {
           <Wine size={12} />
           Voir la fiche{domaine.wines.length > 1 ? ` (${domaine.wines.length} vins)` : ''}
         </button>
-        <a
-          href={domaine.url || `https://www.google.com/search?q=${encodeURIComponent(`${domaine.name} ${domaine.appellations[0]} site officiel`)}`}
-          target="_blank" rel="noopener noreferrer"
-          className="flex-shrink-0 flex items-center gap-1 px-3 py-2 rounded-full text-xs font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
-          title={`Visiter le site de ${domaine.name}`}
-        >
-          <ExternalLink size={11} />
-          Site
-        </a>
+        {domaine.url && (
+          <a
+            href={domaine.url}
+            target="_blank" rel="noopener noreferrer"
+            className="flex-shrink-0 flex items-center gap-1 px-3 py-2 rounded-full text-xs font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
+            title={`Visiter le site de ${domaine.name}`}
+          >
+            <ExternalLink size={11} />
+            Site
+          </a>
+        )}
       </div>
     </div>
   )

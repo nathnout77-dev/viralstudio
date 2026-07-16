@@ -381,16 +381,18 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
                         <p className="text-[11px] text-anthracite-500 italic mt-0.5 leading-relaxed">{d.histoire}</p>
                       )}
                     </div>
-                    <a
-                      href={d.url || `https://www.google.com/search?q=${encodeURIComponent(`${d.name} ${wine.appellation} site officiel`)}`}
-                      target="_blank" rel="noopener noreferrer"
-                      onClick={e => e.stopPropagation()}
-                      className="flex-shrink-0 flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
-                      title={`Visiter le site de ${d.name}`}
-                    >
-                      <ExternalLink size={9} />
-                      Site
-                    </a>
+                    {d.url && (
+                      <a
+                        href={d.url}
+                        target="_blank" rel="noopener noreferrer"
+                        onClick={e => e.stopPropagation()}
+                        className="flex-shrink-0 flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
+                        title={`Visiter le site de ${d.name}`}
+                      >
+                        <ExternalLink size={9} />
+                        Site
+                      </a>
+                    )}
                   </div>
                 ))}
               </div>
