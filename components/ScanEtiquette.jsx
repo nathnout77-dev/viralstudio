@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { X, Camera, Image as ImageIcon, RefreshCw, Sparkles, Plus, Check, MapPin, BookOpen, Tag, Pencil, UtensilsCrossed, Heart, Globe, Library } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
 import { regionInfo } from '../data/regionsInfo'
@@ -10,6 +11,8 @@ import useModalBehavior from '../lib/useModal'
 import { loadDecouvertes, matchDecouverte, decouverteFromVision, addDecouverte, updateDecouverte } from '../lib/decouvertes'
 import { askIA } from '../lib/askIA'
 import { cepagesOfficiels } from '../data/appellationsCepages'
+
+const DegustationSimulateur = dynamic(() => import('./DegustationSimulateur'), { ssr: false })
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ScanEtiquette — photographiez une étiquette, Œno la décode.
@@ -388,6 +391,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
   const [enrichState, setEnrichState] = useState('idle') // 'idle' | 'loading' | 'done'
   const [fiabilite, setFiabilite] = useState(null) // null | 'verifiee' | 'estimation' — vins hors bibliothèque uniquement
   const [decouverte, setDecouverte] = useState(null)     // enregistrement sauvegardé
+  const [showSimulateur, setShowSimulateur] = useState(false)
   const cameraRef = useRef(null)
   const galleryRef = useRef(null)
 
@@ -885,6 +889,13 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                 <BookOpen size={15} />
                 Voir la fiche complète
               </button>
+              <button
+                onClick={() => setShowSimulateur(true)}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-full text-sm font-semibold text-gold-700 bg-gold-500/10 border border-gold-500/30 hover:bg-gold-500/20 active:scale-[0.98] transition-all cursor-pointer"
+                title="L'avis d'Œno avant d'ouvrir, votre ressenti après"
+              >
+                <Sparkles size={14} /> Simuler la dégustation
+              </button>
               {nomEnvie && <EnvieAction appellation={nomEnvie} />}
               {onAddWine && (
                 <button
@@ -998,6 +1009,15 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                 </div>
               </div>
 
+              {(parsed.appellation || parsed.domaine) && (
+                <button
+                  onClick={() => setShowSimulateur(true)}
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-full text-sm font-semibold text-gold-700 bg-gold-500/10 border border-gold-500/30 hover:bg-gold-500/20 active:scale-[0.98] transition-all cursor-pointer"
+                  title="L'avis d'Œno avant d'ouvrir, votre ressenti après"
+                >
+                  <Sparkles size={14} /> Simuler la dégustation
+                </button>
+              )}
               {nomEnvie && <EnvieAction appellation={nomEnvie} />}
               {onAddWine && (parsed.appellation || parsed.domaine) && (
                 <button
@@ -1049,6 +1069,26 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
               notes: `${w.emoji} ${w.enUneMot} — Arômes : ${w.aromes}`,
             })
           } : undefined}
+        />
+      )}
+
+      {/* Simulateur de dégustation (z-[85], passe au-dessus du scan) */}
+      {showSimulateur && (
+        <DegustationSimulateur
+          vin={matched
+            ? { ...matched, nom: matched.appellation, domaine: parsed?.domaine || '', millesime: Number(parsed?.millesime) || null }
+            : {
+                nom: parsed?.appellation || parsed?.domaine || 'Vin scanné',
+                appellation: parsed?.appellation || '',
+                domaine: parsed?.domaine || '',
+                millesime: Number(parsed?.millesime) || null,
+                region: parsed?.region || '',
+                type: parsed?.type || 'red',
+                cepages: parsed?.cepages || [],
+                pourQui: decouverte?.pourQui || parsed?.pourQui || null,
+                aromes: decouverte?.aromes || null,
+              }}
+          onClose={() => setShowSimulateur(false)}
         />
       )}
     </div>

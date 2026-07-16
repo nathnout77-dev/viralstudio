@@ -384,6 +384,32 @@ function CarnetPage({ entry, onClose, onEdit, onDelete }) {
             <p className="font-wine-name text-4xl text-wine-700 text-center my-7">« {entry.unMot} »</p>
           )}
 
+          {/* Dégustation guidée : le bilan Vous vs Œno */}
+          {entry.simulation && (
+            <div className="mt-6 rounded-2xl border border-gold-500/30 bg-gold-500/[0.07] p-5">
+              <div className="text-[10px] uppercase tracking-wider font-bold text-gold-700 mb-3">
+                ✨ Dégustation guidée avec Œno
+              </div>
+              {entry.simulation.badge && (
+                <p className="font-serif text-lg font-bold text-anthracite-900 mb-1">{entry.simulation.badge}</p>
+              )}
+              {entry.simulation.aromesPredits?.length > 0 && (
+                <p className="text-sm text-anthracite-700 leading-relaxed">
+                  <span className="font-semibold">{entry.simulation.aromesTrouves?.length || 0} / {entry.simulation.aromesPredits.length}</span> arômes
+                  annoncés retrouvés
+                  {entry.simulation.aromesTrouves?.length > 0 && (
+                    <span className="text-anthracite-500"> ({entry.simulation.aromesTrouves.join(', ')})</span>
+                  )}.
+                </p>
+              )}
+              {entry.simulation.objectif && (
+                <p className="text-xs text-anthracite-500 italic mt-2 leading-relaxed">
+                  L'objectif du vin : {entry.simulation.objectif}
+                </p>
+              )}
+            </div>
+          )}
+
           {entry.ressenti && (
             <>
               <div className="divider-gold" />
@@ -418,7 +444,10 @@ function EntryCard({ entry, onSelect, index }) {
       style={{ animationDelay: `${Math.min(index * 40, 400)}ms`, animationFillMode: 'both' }}
     >
       <div className="flex items-start justify-between gap-3 mb-2">
-        <span className="eyebrow !text-[10px]">{formatDate(entry.tastedAt)}</span>
+        <span className="eyebrow !text-[10px]">
+          {formatDate(entry.tastedAt)}
+          {entry.simulation && <span className="ml-1.5" title="Dégustation guidée avec Œno">✨</span>}
+        </span>
         <NoteGrappe value={entry.note} readOnly size={12} />
       </div>
       <h3 className="font-wine-name text-4xl text-anthracite-900 leading-none truncate">{entry.name}</h3>
@@ -450,6 +479,11 @@ export default function JournalDegustation({ prefill, onConsumePrefill, onMarkFa
     setEntries(loadJournal())
     setCaveWines(loadCaveWines())
     setReady(true)
+    // Le simulateur de dégustation consigne directement dans localStorage :
+    // on recharge quand il signale une nouvelle entrée.
+    const reload = () => setEntries(loadJournal())
+    window.addEventListener('oeno-journal-changed', reload)
+    return () => window.removeEventListener('oeno-journal-changed', reload)
   }, [])
 
   useEffect(() => {

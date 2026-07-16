@@ -1,7 +1,11 @@
-import { X, Star, Thermometer, Clock, Wine, MapPin, Grape, TrendingUp, UtensilsCrossed, Edit2 } from 'lucide-react'
+import { useState } from 'react'
+import { X, Star, Thermometer, Clock, Wine, MapPin, Grape, TrendingUp, UtensilsCrossed, Edit2, Sparkles } from 'lucide-react'
+import dynamic from 'next/dynamic'
 import WineGlassAnim from './WineGlassAnim'
 import { FavoriStar } from './WineCard'
 import useModalBehavior from '../lib/useModal'
+
+const DegustationSimulateur = dynamic(() => import('./DegustationSimulateur'), { ssr: false })
 
 const ACCORD_ICONS = { '🥩':'🥩','🐟':'🐟','🧀':'🧀','🍮':'🍮','🍄':'🍄','🦞':'🦞','🍗':'🍗' }
 
@@ -54,6 +58,7 @@ function ApogeeBar({ wine }) {
 
 export default function WineDetail({ wine, onClose, onEdit, onToggleFavori }) {
   useModalBehavior(onClose)
+  const [showSimulateur, setShowSimulateur] = useState(false)
   if (!wine) return null
 
   const typeLabels = { red:'Rouge', white:'Blanc', rosé:'Rosé', sparkling:'Effervescent', sweet:'Liquoreux' }
@@ -125,6 +130,15 @@ export default function WineDetail({ wine, onClose, onEdit, onToggleFavori }) {
           {/* Apogée */}
           <ApogeeBar wine={wine} />
 
+          {/* Simulateur de dégustation */}
+          <button
+            onClick={() => setShowSimulateur(true)}
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-full text-xs font-bold text-gold-700 bg-gold-500/10 border border-gold-500/30 hover:bg-gold-500/20 transition-colors cursor-pointer"
+            title="L'avis d'Œno avant d'ouvrir, votre ressenti après"
+          >
+            <Sparkles size={13} /> Simuler la dégustation de cette bouteille
+          </button>
+
           {/* Details */}
           <div className="card p-4">
             <Row icon={MapPin}         label="Appellation" value={wine.appellation} />
@@ -161,6 +175,22 @@ export default function WineDetail({ wine, onClose, onEdit, onToggleFavori }) {
           )}
         </div>
       </div>
+
+      {showSimulateur && (
+        <DegustationSimulateur
+          vin={{
+            nom: wine.name,
+            appellation: wine.appellation || wine.name,
+            domaine: wine.domain || '',
+            millesime: wine.vintage || null,
+            region: wine.region,
+            type: wine.type,
+            cepages: wine.cepages || [],
+            carafage: wine.carafage,
+          }}
+          onClose={() => setShowSimulateur(false)}
+        />
+      )}
     </div>
   )
 }

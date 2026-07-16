@@ -9,6 +9,8 @@ import { regionInfo } from '../data/regionsInfo'
 import PetitsPrix from './PetitsPrix'
 import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
 
+const DegustationSimulateur = dynamic(() => import('./DegustationSimulateur'), { ssr: false })
+
 const TYPE_COLORS = {
   red:       { bg: 'bg-wine-100',  text: 'text-wine-800',  label: 'Rouge' },
   white:     { bg: 'bg-amber-50',  text: 'text-amber-800', label: 'Blanc' },
@@ -27,6 +29,7 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
     setQty(1)
   }, [wine.id]) // eslint-disable-line react-hooks/exhaustive-deps
   const [showAccordInverse, setShowAccordInverse] = useState(false)
+  const [showSimulateur, setShowSimulateur] = useState(false)
   const isAdded = addedIds.has(`${wine.id}-${millesime}`)
   const hasPetitDomaine = wine.domaines.some(d => d.confidentiel)
 
@@ -253,6 +256,13 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
             }
           </button>
         </div>
+        <button
+          onClick={() => setShowSimulateur(true)}
+          className="w-full flex items-center justify-center gap-1.5 py-2 mt-2 rounded-full text-xs font-semibold text-gold-700 bg-gold-500/10 border border-gold-500/30 hover:bg-gold-500/20 transition-colors cursor-pointer"
+          title="L'avis d'Œno avant d'ouvrir, votre ressenti après"
+        >
+          <Sparkles size={12} /> Simuler la dégustation
+        </button>
         {onNoter && (
           <button
             onClick={() => onNoter({ name: wine.appellation, domain: wine.domaines?.[0]?.name || '', vintage: millesime, type: wine.type })}
@@ -265,6 +275,12 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
 
       {showAccordInverse && (
         <AccordInverse wine={wine} onClose={() => setShowAccordInverse(false)} />
+      )}
+      {showSimulateur && (
+        <DegustationSimulateur
+          vin={{ ...wine, nom: wine.appellation, domaine: wine.domaines?.[0]?.name || '', millesime }}
+          onClose={() => setShowSimulateur(false)}
+        />
       )}
     </div>
   )

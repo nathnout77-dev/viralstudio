@@ -15,6 +15,7 @@ import { loadDecouvertes, removeDecouverte, decouverteNumero } from '../lib/deco
 // Chargé dynamiquement : Comparateur importe FicheVin de ce fichier — le
 // dynamic() évite le cycle d'imports au chargement du module.
 const Comparateur = dynamic(() => import('./Comparateur'), { ssr: false })
+const DegustationSimulateur = dynamic(() => import('./DegustationSimulateur'), { ssr: false })
 
 const TYPE_LABELS = { red: 'Rouge', white: 'Blanc', 'rosé': 'Rosé', sweet: 'Liquoreux', sparkling: 'Effervescent' }
 
@@ -222,6 +223,7 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
     setMillesime(wine.bonsMilsimes[wine.bonsMilsimes.length - 1])
   }, [wine.id]) // eslint-disable-line react-hooks/exhaustive-deps
   const [showAccordInverse, setShowAccordInverse] = useState(false)
+  const [showSimulateur, setShowSimulateur] = useState(false)
   const diff = DIFFICULTE_CONFIG[wine.difficulte]
   const addedSet = added || new Set()
   const isAdded = addedSet.has(`${wine.id}-${millesime}`)
@@ -453,6 +455,13 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
                 {isAdded ? <><Check size={15} /> Ajouté à ma cave</> : <><Plus size={15} /> Ajouter à ma cave ({millesime})</>}
               </button>
               )}
+              <button
+                onClick={() => setShowSimulateur(true)}
+                className="w-full lg:w-auto flex items-center justify-center gap-1.5 py-2.5 lg:px-4 mt-2 lg:mt-0 rounded-full text-xs font-semibold text-gold-700 bg-gold-500/10 border border-gold-500/30 hover:bg-gold-500/20 transition-colors cursor-pointer"
+                title="L'avis d'Œno avant d'ouvrir, votre ressenti après"
+              >
+                <Sparkles size={13} /> Simuler la dégustation
+              </button>
               {onNoter && (
                 <button
                   onClick={() => onNoter({ name: wine.appellation, domain: wine.domaines?.[0]?.name || '', vintage: millesime, type: wine.type })}
@@ -468,6 +477,12 @@ export function FicheVin({ wine, onClose, onAddToCave, added, onNoter }) {
 
       {showAccordInverse && (
         <AccordInverse wine={wine} onClose={() => setShowAccordInverse(false)} />
+      )}
+      {showSimulateur && (
+        <DegustationSimulateur
+          vin={{ ...wine, nom: wine.appellation, domaine: wine.domaines?.[0]?.name || '', millesime }}
+          onClose={() => setShowSimulateur(false)}
+        />
       )}
     </div>
   )
