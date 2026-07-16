@@ -1,13 +1,14 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import {
   X, Eye, Wind, Wine, Target, Thermometer, Clock, Grape,
-  ArrowRight, ArrowLeft, NotebookPen, Check, Sparkles,
+  ArrowRight, ArrowLeft, NotebookPen, Check, Sparkles, Feather, Loader2,
 } from 'lucide-react'
 import { construirePrediction } from '../lib/predictionDegustation'
 import { AROME_FAMILLES } from '../data/aromes'
 import JaugesGout from './JaugesGout'
 import useModalBehavior from '../lib/useModal'
 import { toast } from './Toast'
+import { askIA } from '../lib/askIA'
 
 const JOURNAL_KEY = 'oeno-journal'
 const todayISO = () => new Date().toISOString().slice(0, 10)
@@ -121,8 +122,28 @@ function verdictJauges(prediction, ressenti) {
   }
 }
 
-// ── Composant principal ──────────────────────────────────────────────────────
-// vin : { nom, appellation, domaine, millesime, region, type, cepages, ... }
+// ── Lecture de la description par Œno ────────────────────────────────────────
+// Envoie la description écrite + le profil attendu du vin à l'IA, qui juge la
+// cohérence (avec bienveillance : un ressenti n'est jamais « faux »).
+function promptLecture(prediction, texte, jaugesRessenties, aromesTrouves) {
+  const j = prediction.jauges
+  return `Tu es Œno, sommelier pédagogue, chaleureux et honnête. Un amateur vient de déguster ce vin et a écrit sa description.
+
+LE VIN : ${prediction.nom}${prediction.domaine ? `, ${prediction.domaine}` : ''}${prediction.millesime ? `, millésime ${prediction.millesime}` : ''} (${prediction.type === 'red' ? 'rouge' : prediction.type === 'white' ? 'blanc' : prediction.type})
+PROFIL ATTENDU : arômes ${prediction.nez.map(n => n.arome).join(', ')} · puissance ${j.puissance}/5 · douceur ${j.douceur}/5 · tanins ${j.tanins}/5${prediction.idee.enUneMot ? ` · « ${prediction.idee.enUneMot} »` : ''}
+SON RESSENTI GUIDÉ : arômes retrouvés [${aromesTrouves.join(', ') || 'aucun'}] · puissance perçue ${jaugesRessenties.puissance}/5 · douceur ${jaugesRessenties.douceur}/5 · tanins ${jaugesRessenties.tanins}/5
+
+SA DESCRIPTION ÉCRITE :
+"${texte.slice(0, 900)}"
+
+Évalue la COHÉRENCE entre sa description écrite et le profil attendu du vin. Règles :
+- Le ressenti est subjectif : ne dis jamais qu'il « a tort ». Une divergence est une « surprise », pas une erreur.
+- Salue ce qui colle au profil (vocabulaire juste, arômes plausibles, structure bien perçue).
+- Note de cohérence de 0 à 10 (10 = description qui colle parfaitement au vin).
+- Termine par UN conseil concret pour progresser en dégustation.
+Réponds UNIQUEMENT avec ce JSON, sans markdown :
+{"note": <0-10>, "avis": "<3-4 phrases chaleureuses en français, tutoiement interdit, vouvoie>", "pointsJustes": ["<ce qui colle>", ...], "surprises": ["<ce qui diverge du profil, formulé avec bienveillance>", ...], "conseil": "<un conseil concret>"}`
+}
 export default function DegustationSimulateur({ vin, onClose }) {
   useModalBehavior(onClose)
   const prediction = useMemo(() => construirePrediction(vin || {}), [vin])
@@ -137,6 +158,11 @@ export default function DegustationSimulateur({ vin, onClose }) {
   const [note, setNote] = useState(0)
   const [ressenti, setRessenti] = useState('')
 
+  // Lecture de la description par Œno (cohérence avec le profil du vin)
+  const [lectureState, setLectureState] = useState('idle') // 'idle' | 'loading' | 'done' | 'error'
+  const [avisOeno, setAvisOeno] = useState(null)
+  const savedIdRef = useRef(null)
+
   const toggle = (list, setList, v) =>
     setList(list.includes(v) ? list.filter(x => x !== v) : [...list, v])
 
@@ -147,6 +173,48 @@ export default function DegustationSimulateur({ vin, onClose }) {
   const taux = prediction.nez.length ? aromesTrouves.length / prediction.nez.length : 0
   const badge = badgeNez(taux)
   const jaugesVerdict = verdictJauges(prediction, jaugesRessenties)
+
+  // ── Œno lit la description écrite et juge sa cohérence ───────────────────
+  const lireDescription = async () => {
+    if (lectureState === 'loading' || ressenti.trim().length < 15) return
+    setLectureState('loading')
+    try {
+      const { ok, data } = await askIA({
+        model: 'claude-sonnet-5',
+        max_tokens: 600,
+        messages: [{ role: 'user', content: promptLecture(prediction, ressenti.trim(), jaugesRessenties, aromesTrouves) }],
+      })
+      if (!ok) { setLectureState('error'); return }
+      const raw = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n')
+      const start = raw.indexOf('{')
+      const end = raw.lastIndexOf('}')
+      if (start === -1 || end <= start) { setLectureState('error'); return }
+      const obj = JSON.parse(raw.slice(start, end + 1))
+      const avis = {
+        note: Math.max(0, Math.min(10, Number(obj.note) || 0)),
+        avis: String(obj.avis || '').trim(),
+        pointsJustes: Array.isArray(obj.pointsJustes) ? obj.pointsJustes.slice(0, 4) : [],
+        surprises: Array.isArray(obj.surprises) ? obj.surprises.slice(0, 4) : [],
+        conseil: String(obj.conseil || '').trim(),
+      }
+      setAvisOeno(avis)
+      setLectureState('done')
+      // Déjà consigné ? On enrichit l'entrée du carnet après coup.
+      if (savedIdRef.current) {
+        try {
+          const raw = localStorage.getItem(JOURNAL_KEY)
+          const list = raw ? JSON.parse(raw) : []
+          const next = list.map(e => e.id === savedIdRef.current
+            ? { ...e, simulation: { ...e.simulation, avisOeno: avis }, updatedAt: Date.now() }
+            : e)
+          localStorage.setItem(JOURNAL_KEY, JSON.stringify(next))
+          window.dispatchEvent(new Event('oeno-journal-changed'))
+        } catch { /* quota / mode privé */ }
+      }
+    } catch {
+      setLectureState('error')
+    }
+  }
 
   // ── Consigner dans les Mémoires de Vin ────────────────────────────────────
   const consigner = () => {
@@ -182,8 +250,10 @@ export default function DegustationSimulateur({ vin, onClose }) {
         jaugesRessenties,
         objectif: prediction.objectif,
         badge: `${badge.emoji} ${badge.titre}`,
+        ...(avisOeno ? { avisOeno } : {}),
       },
     }
+    savedIdRef.current = entry.id
     try {
       const raw = localStorage.getItem(JOURNAL_KEY)
       const list = raw ? JSON.parse(raw) : []
@@ -353,10 +423,10 @@ export default function DegustationSimulateur({ vin, onClose }) {
               </div>
 
               <div>
-                <label className="label">Votre avis, librement</label>
+                <label className="label">Décrivez votre dégustation, librement</label>
                 <textarea
                   className="input-field resize-none" rows={3}
-                  placeholder="Ce que ce vin vous a évoqué…"
+                  placeholder="Robe, nez, bouche, ce que ce vin vous a évoqué… Au bilan, Œno lira votre description et vous dira si elle colle au vin."
                   value={ressenti} onChange={e => setRessenti(e.target.value)}
                 />
               </div>
@@ -430,6 +500,77 @@ export default function DegustationSimulateur({ vin, onClose }) {
                   <p className="text-xs text-anthracite-600 mt-2.5 font-medium">
                     {note >= 4 ? '🎉 Vu votre note, mission accomplie.' : note === 3 ? 'Verdict mitigé — peut-être un autre millésime, ou un autre jour.' : 'Pas convaincu·e cette fois — c\'est noté, et ça compte autant qu\'un coup de cœur.'}
                   </p>
+                )}
+              </div>
+
+              {/* Œno lit votre description */}
+              <div className="card p-4">
+                <SectionTitre icon={Feather} titre="Votre description, lue par Œno"
+                              sous="Décrivez la dégustation avec vos mots — Œno vérifie la cohérence avec le profil du vin" />
+                {lectureState !== 'done' && (
+                  <>
+                    <textarea
+                      className="input-field resize-none" rows={3}
+                      placeholder="Ex. « Robe claire, un nez de petits fruits rouges, très frais en bouche, presque croquant, avec une finale légère… »"
+                      value={ressenti} onChange={e => setRessenti(e.target.value)}
+                    />
+                    <button
+                      onClick={lireDescription}
+                      disabled={lectureState === 'loading' || ressenti.trim().length < 15}
+                      className={`mt-3 w-full flex items-center justify-center gap-2 py-2.5 rounded-full text-xs font-bold transition-all ${
+                        ressenti.trim().length < 15
+                          ? 'bg-anthracite-100 text-anthracite-400 cursor-default'
+                          : 'text-gold-700 bg-gold-500/10 border border-gold-500/30 hover:bg-gold-500/20 cursor-pointer'
+                      }`}
+                    >
+                      {lectureState === 'loading'
+                        ? <><Loader2 size={13} className="animate-spin" /> Œno lit votre description…</>
+                        : <><Sparkles size={13} /> Œno, qu'en penses-tu ?</>}
+                    </button>
+                    {lectureState === 'error' && (
+                      <p className="text-[11px] text-anthracite-400 italic mt-2 text-center">
+                        Œno n'a pas réussi à lire votre description (connexion ou service momentanément indisponible) — réessayez dans un instant.
+                      </p>
+                    )}
+                    {ressenti.trim().length > 0 && ressenti.trim().length < 15 && (
+                      <p className="text-[11px] text-anthracite-400 mt-2 text-center">Encore quelques mots et Œno pourra vous lire…</p>
+                    )}
+                  </>
+                )}
+                {lectureState === 'done' && avisOeno && (
+                  <div className="animate-fade-in">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gold-500/15">
+                        <span className="text-sm font-bold text-gold-700">{avisOeno.note}/10</span>
+                        <span className="text-[10px] uppercase tracking-wider font-bold text-gold-700">cohérence</span>
+                      </div>
+                      <div className="flex gap-1 h-1.5 flex-1">
+                        {[...Array(10)].map((_, i) => (
+                          <div key={i} className="flex-1 rounded-full" style={{ background: i < avisOeno.note ? '#c9a84c' : '#e7e5e4' }} />
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-sm text-anthracite-700 leading-relaxed">{avisOeno.avis}</p>
+                    {avisOeno.pointsJustes.length > 0 && (
+                      <div className="mt-3 space-y-1">
+                        {avisOeno.pointsJustes.map((p, i) => (
+                          <p key={i} className="text-xs text-emerald-700 flex items-start gap-1.5"><Check size={12} className="mt-0.5 flex-shrink-0" /> {p}</p>
+                        ))}
+                      </div>
+                    )}
+                    {avisOeno.surprises.length > 0 && (
+                      <div className="mt-2 space-y-1">
+                        {avisOeno.surprises.map((s, i) => (
+                          <p key={i} className="text-xs text-gold-700 flex items-start gap-1.5"><span className="flex-shrink-0">✧</span> {s}</p>
+                        ))}
+                      </div>
+                    )}
+                    {avisOeno.conseil && (
+                      <p className="text-xs text-anthracite-600 italic mt-3 pt-3 border-t border-anthracite-100">
+                        💡 {avisOeno.conseil}
+                      </p>
+                    )}
+                  </div>
                 )}
               </div>
 

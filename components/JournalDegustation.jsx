@@ -407,6 +407,20 @@ function CarnetPage({ entry, onClose, onEdit, onDelete }) {
                   L'objectif du vin : {entry.simulation.objectif}
                 </p>
               )}
+              {entry.simulation.avisOeno && (
+                <div className="mt-4 pt-4 border-t border-gold-500/20">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-[10px] uppercase tracking-wider font-bold text-gold-700">La lecture d'Œno</span>
+                    <span className="px-2 py-0.5 rounded-full bg-gold-500/15 text-[11px] font-bold text-gold-700">
+                      Cohérence {entry.simulation.avisOeno.note}/10
+                    </span>
+                  </div>
+                  <p className="text-sm text-anthracite-700 leading-relaxed">{entry.simulation.avisOeno.avis}</p>
+                  {entry.simulation.avisOeno.conseil && (
+                    <p className="text-xs text-anthracite-500 italic mt-2">💡 {entry.simulation.avisOeno.conseil}</p>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
