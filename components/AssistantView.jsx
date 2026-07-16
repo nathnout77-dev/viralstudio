@@ -71,6 +71,8 @@ const PROFILING = {
         { emoji: '🍷', label: 'Bordeaux & Sud-Ouest' },
         { emoji: '🍒', label: 'Bourgogne & Beaujolais' },
         { emoji: '☀️', label: 'Rhône & Sud' },
+        { emoji: '🏰', label: 'Loire' },
+        { emoji: '🥨', label: 'Grand Est (Alsace, Champagne, Jura)' },
         { emoji: '🌍', label: 'Éclectique, tout m\'intéresse' },
       ],
     },

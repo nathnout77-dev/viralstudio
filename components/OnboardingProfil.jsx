@@ -92,6 +92,8 @@ const QUESTIONS = {
         { emoji: '🍷', label: 'Bordeaux & Sud-Ouest' },
         { emoji: '🍒', label: 'Bourgogne & Beaujolais' },
         { emoji: '☀️', label: 'Rhône & Sud' },
+        { emoji: '🏰', label: 'Loire' },
+        { emoji: '🥨', label: 'Grand Est (Alsace, Champagne, Jura)' },
         { emoji: '🌍', label: 'Éclectique, tout m\'intéresse' },
       ],
     },
@@ -150,6 +152,8 @@ function scoreWine(w, niveau, gouts) {
     if (gouts.regions.includes('Bordeaux') && /Bordeaux|Sud-Ouest/.test(w.region)) s += 2
     if (gouts.regions.includes('Bourgogne') && /Bourgogne|Beaujolais/.test(w.region)) s += 2
     if (gouts.regions.includes('Rhône') && /Rhône|Languedoc|Roussillon|Provence/.test(w.region)) s += 2
+    if (gouts.regions.includes('Loire') && /Loire/.test(w.region)) s += 2
+    if (gouts.regions.includes('Grand Est') && /Alsace|Champagne|Jura|Savoie/.test(w.region)) s += 2
   }
 
   const max = budgetMax(gouts.budget)

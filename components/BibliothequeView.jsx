@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react'
-import { Library, Search, X, Plus, Check, Thermometer, Clock, Wine, MapPin, ChevronDown, ExternalLink, Sparkles, NotebookPen, ChefHat, Camera, Globe, Trash2, Grape, UtensilsCrossed, Calendar } from 'lucide-react'
+import { Library, Search, X, Plus, Check, Thermometer, Clock, Wine, MapPin, ChevronDown, ExternalLink, Sparkles, NotebookPen, ChefHat, Camera, Globe, Trash2, Grape, UtensilsCrossed, Calendar, Scale } from 'lucide-react'
+import dynamic from 'next/dynamic'
 import AccordInverse from './AccordInverse'
 import { EnvieButton } from './Envies'
 import { WINE_DB, REGIONS_LIST, DIFFICULTE_CONFIG, MILLESIMES_DB, gardeForMillesime } from '../data/wineDatabase'
@@ -10,6 +11,10 @@ import useModalBehavior from '../lib/useModal'
 import { tintStyle, pastilleStyle, regionMonogram, collectionNumero } from '../lib/wineStyle'
 import WineTile from './WineTile'
 import { loadDecouvertes, removeDecouverte, decouverteNumero } from '../lib/decouvertes'
+
+// Chargé dynamiquement : Comparateur importe FicheVin de ce fichier — le
+// dynamic() évite le cycle d'imports au chargement du module.
+const Comparateur = dynamic(() => import('./Comparateur'), { ssr: false })
 
 const TYPE_LABELS = { red: 'Rouge', white: 'Blanc', 'rosé': 'Rosé', sweet: 'Liquoreux', sparkling: 'Effervescent' }
 
@@ -482,6 +487,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
   const [onglet, setOnglet]   = useState('collection')
   const [decouvertes, setDecouvertes] = useState([])
   const [selectedDec, setSelectedDec] = useState(null)
+  const [showComparateur, setShowComparateur] = useState(false)
 
   // Rechargement des découvertes à l'affichage de l'onglet (un scan a pu en ajouter)
   useEffect(() => {
@@ -540,15 +546,23 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
   return (
     <div className="animate-fade-in">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-3 mb-6 flex-wrap">
         <div className="w-10 h-10 rounded-2xl bg-wine-800 flex items-center justify-center shadow-wine">
           <Library size={18} className="text-gold-400" />
         </div>
-        <div>
+        <div className="flex-1 min-w-0">
           <span className="eyebrow mb-1">La collection</span>
           <h2 className="section-title">Bibliothèque des Vins</h2>
           <p className="section-sub">{WINE_DB.length} appellations décodées pour vous — cliquez pour tout comprendre</p>
         </div>
+        <button
+          onClick={() => setShowComparateur(true)}
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-xs font-bold text-anthracite-700 bg-white border border-anthracite-200 hover:border-gold-500/70 hover:text-anthracite-950 active:scale-[0.98] transition-all cursor-pointer"
+          title="Comparer 2 ou 3 vins côte à côte"
+        >
+          <Scale size={13} className="text-gold-600" />
+          Comparer
+        </button>
       </div>
 
       {/* Chips : La collection / Mes découvertes */}
@@ -689,6 +703,11 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
       {/* Fiche découverte */}
       {selectedDec && (
         <DecouverteFiche dec={selectedDec} onClose={() => setSelectedDec(null)} onDelete={supprimerDecouverte} />
+      )}
+
+      {/* Comparateur de vins */}
+      {showComparateur && (
+        <Comparateur onClose={() => setShowComparateur(false)} onAddWine={onAddWine} />
       )}
     </div>
   )
