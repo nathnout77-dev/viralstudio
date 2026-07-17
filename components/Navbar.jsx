@@ -1,13 +1,27 @@
-import { Wine, Library, MapPin, Sparkles, BookOpen, Plus, Utensils, ScanLine, UserCircle2, Sprout, GraduationCap } from 'lucide-react'
+import { Wine, Sparkles, Plus, Utensils, ScanLine, UserCircle2, Sprout, GraduationCap, Home, Search, LayoutGrid, Library, Map } from 'lucide-react'
 import LogoOeno from './LogoOeno'
 import useCtaBreathe from '../lib/useCtaBreathe'
 
-const TABS = [
-  { id: 'cave',      label: 'Ma Cave',   Icon: Wine },
+// ═══════════════════════════════════════════════════════════════════════════
+// Navbar mobile/tablette (< lg) — mode guidé : la bottom nav ne liste plus
+// 5 fonctions mais 4 repères : Accueil (hub), Trouver, Ma cave, Menu
+// (grille d'accès à tout Œno). L'assistant reste la bulle flottante.
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Nav condensée pour tablettes (le header est masqué ≥ lg, la sidebar prend le relais)
+const TABLET_NAV = [
+  { id: 'hub',       label: 'Accueil',   Icon: Home },
+  { id: 'trouver',   label: 'Trouver',   Icon: Search },
+  { id: 'cave',      label: 'Cave',      Icon: Wine },
   { id: 'vins',      label: 'Vins',      Icon: Library },
-  { id: 'carte',     label: 'Carte',     Icon: MapPin },
-  { id: 'sommelier', label: 'Sommelier', Icon: Sparkles },
-  { id: 'guide',     label: 'Guide',     Icon: BookOpen },
+  { id: 'explorer',  label: 'Explorer',  Icon: Map },
+  { id: 'apprendre', label: 'Apprendre', Icon: GraduationCap },
+]
+
+const BOTTOM_NAV = [
+  { id: 'hub',     label: 'Accueil', Icon: Home },
+  { id: 'trouver', label: 'Trouver', Icon: Search },
+  { id: 'cave',    label: 'Ma cave', Icon: Wine },
 ]
 
 const MODE_BADGE = {
@@ -16,7 +30,7 @@ const MODE_BADGE = {
   expert:   { Icon: GraduationCap, label: 'Expert' },
 }
 
-export default function Navbar({ tab, setTab, total, mode, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte }) {
+export default function Navbar({ view, setView, total, mode, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte, onMenu }) {
   const badge = MODE_BADGE[mode]
   const { breatheClass, settle } = useCtaBreathe() // halo du CTA « Ce soir ? »
   const ceSoir = () => { settle(); onCeSoir?.() }
@@ -35,19 +49,19 @@ export default function Navbar({ tab, setTab, total, mode, onProfil, onAdd, onLa
             </div>
           </button>
 
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-2" role="navigation">
-            {TABS.map(({ id, label }) => (
+          {/* Nav tablette (md → lg) */}
+          <nav className="hidden md:flex items-center gap-1" role="navigation">
+            {TABLET_NAV.map(({ id, label }) => (
               <button
                 key={id}
-                onClick={() => setTab(id)}
-                className={`relative px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.15em] transition-colors duration-500 cursor-pointer ${
-                  tab === id ? 'text-anthracite-950' : 'text-anthracite-500 hover:text-anthracite-900'
+                onClick={() => setView(id)}
+                className={`relative px-3 py-2.5 text-[11px] font-semibold uppercase tracking-[0.12em] transition-colors duration-500 cursor-pointer ${
+                  view === id ? 'text-anthracite-950' : 'text-anthracite-500 hover:text-anthracite-900'
                 }`}
               >
                 {label}
-                <span className={`absolute bottom-0.5 left-4 right-4 h-px transition-all duration-500 ${
-                  tab === id ? 'bg-gold-600 opacity-100' : 'opacity-0'
+                <span className={`absolute bottom-0.5 left-3 right-3 h-px transition-all duration-500 ${
+                  view === id ? 'bg-gold-600 opacity-100' : 'opacity-0'
                 }`} />
               </button>
             ))}
@@ -66,7 +80,7 @@ export default function Navbar({ tab, setTab, total, mode, onProfil, onAdd, onLa
               </button>
             )}
 
-            {/* Compte & synchronisation (desktop) */}
+            {/* Compte & synchronisation (tablette) */}
             <button
               onClick={onCompte}
               title="Mon compte — sauvegarde & synchronisation"
@@ -76,7 +90,7 @@ export default function Navbar({ tab, setTab, total, mode, onProfil, onAdd, onLa
               <UserCircle2 size={18} strokeWidth={1.6} />
             </button>
 
-            {/* Scanner une étiquette (desktop) */}
+            {/* Scanner une étiquette */}
             <button
               onClick={onScan}
               title="Scanner une étiquette de vin"
@@ -116,44 +130,44 @@ export default function Navbar({ tab, setTab, total, mode, onProfil, onAdd, onLa
         </div>
       </header>
 
-      {/* Mobile bottom nav — translucide, icônes fines */}
+      {/* Mobile bottom nav — 4 repères du mode guidé */}
       <nav
         className="fixed bottom-0 left-0 right-0 z-50 md:hidden backdrop-blur-xl border-t border-anthracite-900/[0.08]"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)', background: 'rgba(250,250,249,0.88)' }}
         role="navigation"
       >
         <div className="flex h-[64px]">
-          {TABS.map(({ id, label, Icon }) => (
+          {BOTTOM_NAV.map(({ id, label, Icon }) => (
             <button
               key={id}
-              onClick={() => setTab(id)}
+              onClick={() => setView(id)}
               className="flex-1 flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all duration-300 relative"
               aria-label={label}
-              aria-current={tab === id ? 'page' : undefined}
+              aria-current={view === id ? 'page' : undefined}
             >
               <Icon
                 size={19}
-                strokeWidth={tab === id ? 2 : 1.5}
-                className={`transition-all duration-300 ${tab === id ? 'text-anthracite-950' : 'text-anthracite-400'}`}
+                strokeWidth={view === id ? 2 : 1.5}
+                className={`transition-all duration-300 ${view === id ? 'text-anthracite-950' : 'text-anthracite-400'}`}
               />
-              <span className={`text-[10px] uppercase tracking-[0.1em] font-medium ${tab === id ? 'text-anthracite-950' : 'text-anthracite-400'}`}>
+              <span className={`text-[10px] uppercase tracking-[0.1em] font-medium ${view === id ? 'text-anthracite-950' : 'text-anthracite-400'}`}>
                 {label}
               </span>
-              {tab === id && (
+              {view === id && (
                 <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-px bg-gold-600 animate-fade-in" />
               )}
             </button>
           ))}
 
-          {/* Scanner une étiquette (mobile) — action, pas un onglet */}
+          {/* Menu — grille d'accès à tout Œno */}
           <button
-            onClick={onScan}
+            onClick={onMenu}
             className="flex-1 flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all duration-300 relative"
-            aria-label="Scanner une étiquette de vin"
+            aria-label="Ouvrir le menu Tout Œno"
           >
-            <ScanLine size={19} strokeWidth={1.5} className="text-gold-600" />
+            <LayoutGrid size={19} strokeWidth={1.5} className="text-gold-600" />
             <span className="text-[10px] uppercase tracking-[0.1em] font-medium text-gold-600">
-              Scanner
+              Menu
             </span>
           </button>
         </div>

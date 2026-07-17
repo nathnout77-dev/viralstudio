@@ -1,19 +1,21 @@
-import { Wine, Library, MapPin, Sparkles, BookOpen, Plus, Utensils, ScanLine, UserCircle2, MessageCircleHeart, Sprout, GraduationCap } from 'lucide-react'
+import { Wine, Library, Map, Sparkles, Plus, Utensils, ScanLine, UserCircle2, MessageCircleHeart, Sprout, GraduationCap, Home, Search, LayoutGrid } from 'lucide-react'
 import RollingNumber from './RollingNumber'
 import LogoOeno from './LogoOeno'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Sidebar desktop (≥ lg) — signature luxe : noir profond, textes crème,
-// filet or à gauche sur l'onglet actif. Remplace la topbar en desktop.
-// Rendue en `hidden lg:flex`, z-30 : toujours sous les modals (z-[60/70]).
+// filet or à gauche sur l'onglet actif. Navigation par PARCOURS (mode
+// guidé) : Accueil d'abord, puis les intentions. « Tout Œno » ouvre la
+// grille d'accès direct pour les habitués.
 // ═══════════════════════════════════════════════════════════════════════════
 
-const TABS = [
-  { id: 'cave',      label: 'Ma Cave',   Icon: Wine },
-  { id: 'vins',      label: 'Vins',      Icon: Library },
-  { id: 'carte',     label: 'Carte',     Icon: MapPin },
-  { id: 'sommelier', label: 'Sommelier', Icon: Sparkles },
-  { id: 'guide',     label: 'Guide',     Icon: BookOpen },
+const PARCOURS = [
+  { id: 'hub',       label: 'Accueil',      Icon: Home },
+  { id: 'trouver',   label: 'Trouver un vin', Icon: Search },
+  { id: 'cave',      label: 'Ma Cave',      Icon: Wine },
+  { id: 'vins',      label: 'Bibliothèque', Icon: Library },
+  { id: 'explorer',  label: 'Explorer',     Icon: Map },
+  { id: 'apprendre', label: 'Apprendre',    Icon: GraduationCap },
 ]
 
 const MODE_BADGE = {
@@ -49,7 +51,7 @@ function NavItem({ active, onClick, Icon, label, accent = false }) {
   )
 }
 
-export default function Sidebar({ tab, setTab, total, mode, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte, onAssistant }) {
+export default function Sidebar({ view, setView, total, mode, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte, onAssistant, onMenu }) {
   const badge = MODE_BADGE[mode]
   return (
     <aside
@@ -70,11 +72,12 @@ export default function Sidebar({ tab, setTab, total, mode, onProfil, onAdd, onL
 
       <div className="mx-6 h-px" style={{ background: 'linear-gradient(to right, rgba(201,168,76,0.35), transparent)' }} />
 
-      {/* Navigation */}
+      {/* Navigation par parcours */}
       <nav className="flex flex-col gap-1 py-5" role="navigation">
-        {TABS.map(({ id, label, Icon }) => (
-          <NavItem key={id} active={tab === id} onClick={() => setTab(id)} Icon={Icon} label={label} />
+        {PARCOURS.map(({ id, label, Icon }) => (
+          <NavItem key={id} active={view === id} onClick={() => setView(id)} Icon={Icon} label={label} />
         ))}
+        <NavItem accent onClick={onMenu} Icon={LayoutGrid} label="Tout Œno" />
       </nav>
 
       <div className="mx-6 h-px bg-white/[0.06]" />
@@ -108,7 +111,7 @@ export default function Sidebar({ tab, setTab, total, mode, onProfil, onAdd, onL
         <button onClick={onLanding} className="block text-[10px] text-stone-600 hover:text-gold-500 uppercase tracking-[0.18em] transition-colors duration-300 cursor-pointer">
           Découvrir Œno
         </button>
-        <div className="text-[9px] text-stone-700 uppercase tracking-[0.18em] mt-2">Œno · v2</div>
+        <div className="text-[9px] text-stone-700 uppercase tracking-[0.18em] mt-2">Œno · v3</div>
       </div>
     </aside>
   )

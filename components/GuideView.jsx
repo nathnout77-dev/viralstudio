@@ -17,7 +17,7 @@ const SUBTABS = [
   { id: 'actualite',  label: 'Actualité',         Icon: Newspaper },
 ]
 
-function LexiqueView() {
+export function LexiqueView() {
   return (
     <div className="animate-fade-in">
       <div className="flex items-center gap-3 mb-6">

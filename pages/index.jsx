@@ -11,11 +11,17 @@ import SommelierForm    from '../components/SommelierForm'
 import GuideView        from '../components/GuideView'
 import BibliothequeView from '../components/BibliothequeView'
 import LandingPage      from '../components/LandingPage'
+import HubGuide         from '../components/HubGuide'
+import FilAriane        from '../components/FilAriane'
+import ParcoursVin      from '../components/ParcoursVin'
+import ParcoursApprendre from '../components/ParcoursApprendre'
+import ParcoursExplorer from '../components/ParcoursExplorer'
+import MenuGrille       from '../components/MenuGrille'
 import OnboardingProfil, { loadProfil } from '../components/OnboardingProfil'
 import { removeEnvie } from '../components/Envies'
 import { toast } from '../components/Toast'
 import { normaliser } from '../data/aromes'
-import { Sparkles }     from 'lucide-react'
+import { Sparkles, NotebookPen, Wine as WineIcon, X } from 'lucide-react'
 
 const InteractiveMap = dynamic(() => import('../components/InteractiveMap'), { ssr: false })
 // Overlays lourds, chargés uniquement à l'ouverture (jamais au premier rendu)
@@ -74,9 +80,21 @@ const DEMO_WINES = [
   },
 ]
 
+// Intitulés du fil d'Ariane pour chaque parcours (le hub n'en a pas)
+const VUES = {
+  trouver:   { titre: 'Trouver un vin',        sousTitre: 'On vous guide en 2 questions' },
+  cave:      { titre: 'Ma cave',                sousTitre: 'Bouteilles, dégustations, envies' },
+  vins:      { titre: 'La bibliothèque',        sousTitre: '232 vins décodés' },
+  explorer:  { titre: 'Explorer les régions',   sousTitre: 'Carte, routes des vins, domaines' },
+  apprendre: { titre: 'Apprendre',              sousTitre: 'Votre parcours du vin' },
+  carte:     { titre: 'Carte des vignobles',    sousTitre: 'Accès direct' },
+  sommelier: { titre: 'Sommelier',              sousTitre: 'Goût-o-mètre · Budget · Dîner' },
+  guide:     { titre: 'Guide complet',          sousTitre: 'Accords, millésimes, actualité…' },
+}
+
 export default function App() {
   const [wines, setWines]             = useState([])
-  const [tab, setTab]                 = useState('cave')
+  const [view, setView]               = useState('hub')
   const [ready, setReady]             = useState(false)
   const [showLanding, setShowLanding] = useState(true)
   const [detailWine, setDetailWine]   = useState(null)
@@ -85,6 +103,7 @@ export default function App() {
   const [showCeSoir, setShowCeSoir]   = useState(false)
   const [showScan, setShowScan]       = useState(false)
   const [showAssistant, setShowAssistant] = useState(false)
+  const [showMenu, setShowMenu]       = useState(false)
   const [profil, setProfil]           = useState(null)
   const [showOnboarding, setShowOnboarding] = useState(false)
   const [librarySearch, setLibrarySearch] = useState('')
@@ -92,6 +111,7 @@ export default function App() {
   const [enviePrefill, setEnviePrefill] = useState(null) // « J'ai acheté » depuis la liste d'envies
   const [showCompte, setShowCompte]   = useState(false)
   const [friendCode, setFriendCode]   = useState(null) // ?cave=CODE → cave d'un ami
+  const [nextStep, setNextStep]       = useState(null) // guidage : prochaine étape après un ajout
 
   useEffect(() => {
     // Lecture robuste : un localStorage corrompu ne doit jamais bloquer l'app
@@ -134,14 +154,16 @@ export default function App() {
   const enterApp = useCallback(() => {
     sessionStorage.setItem('landing-seen', '1')
     setShowLanding(false)
+    setView('hub')
     if (!loadProfil()) setShowOnboarding(true)
   }, [])
 
-  const handleTabChange = useCallback((newTab, searchTerm) => {
+  // Navigation générale — utilisée par le hub, la landing, le menu grille…
+  const goTo = useCallback((newView, searchTerm) => {
     sessionStorage.setItem('landing-seen', '1')
     setShowLanding(false)
     setLibrarySearch(searchTerm || '')
-    setTab(newTab)
+    setView(newView)
     if (!loadProfil()) setShowOnboarding(true)
   }, [])
 
@@ -161,8 +183,9 @@ export default function App() {
   const noterDegustation = useCallback((seed) => {
     sessionStorage.setItem('landing-seen', '1')
     setShowLanding(false)
+    setNextStep(null)
     setJournalPrefill({ ...seed, _key: Date.now() })
-    setTab('cave')
+    setView('cave')
   }, [])
 
   const saveWine = useCallback(w => {
@@ -174,6 +197,8 @@ export default function App() {
     setShowForm(false)
     setEditWine(null)
     toast('Enregistré dans votre cave')
+    // Guidage : proposer la prochaine étape naturelle après un ajout
+    setNextStep({ type: 'vin-ajoute', wine: w })
     // Si l'ajout vient de la liste d'envies, l'envie est honorée : on la retire.
     setEnviePrefill(prev => {
       if (prev?._envieId) removeEnvie(prev._envieId)
@@ -224,6 +249,7 @@ export default function App() {
   }, [wines])
 
   const total = wines.reduce((s, w) => s + w.quantity, 0)
+  const ariane = VUES[view]
 
   if (!ready) {
     return (
@@ -253,13 +279,13 @@ export default function App() {
           <meta name="description" content="Vous n'y connaissez rien en vin ? Parfait. Œno traduit l'œnologie en langage humain : plus de 200 vins décodés, quiz de goût, carte des vignobles." />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
-        <LandingPage onEnter={enterApp} onTabChange={handleTabChange} onCeSoir={openCeSoir} onScan={openScan} />
+        <LandingPage onEnter={enterApp} onTabChange={goTo} onCeSoir={openCeSoir} onScan={openScan} />
         {friendCode && <CaveAmieViewer code={friendCode} onClose={closeFriendCave} />}
         {showCeSoir && (
           <CeSoirMode
             mode={mode}
             onClose={() => setShowCeSoir(false)}
-            onOpenBibliotheque={() => handleTabChange('vins')}
+            onOpenBibliotheque={() => goTo('vins')}
           />
         )}
         {showScan && (
@@ -280,10 +306,10 @@ export default function App() {
       </Head>
 
       <div className="min-h-dvh bg-cream font-sans lg:pl-64">
-        {/* Mobile / tablette : topbar + bottom nav */}
+        {/* Mobile / tablette : topbar + bottom nav guidée */}
         <Navbar
-          tab={tab}
-          setTab={setTab}
+          view={view}
+          setView={goTo}
           total={total}
           mode={mode}
           onProfil={redoProfil}
@@ -292,12 +318,13 @@ export default function App() {
           onCeSoir={() => setShowCeSoir(true)}
           onScan={() => setShowScan(true)}
           onCompte={() => setShowCompte(true)}
+          onMenu={() => setShowMenu(true)}
         />
 
         {/* Desktop ≥ lg : sidebar fixe noire, signature luxe */}
         <Sidebar
-          tab={tab}
-          setTab={setTab}
+          view={view}
+          setView={goTo}
           total={total}
           mode={mode}
           onProfil={redoProfil}
@@ -307,14 +334,31 @@ export default function App() {
           onScan={() => setShowScan(true)}
           onCompte={() => setShowCompte(true)}
           onAssistant={() => setShowAssistant(true)}
+          onMenu={() => setShowMenu(true)}
         />
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-6 lg:py-10 pb-24 md:pb-10">
-          {/* key={tab} remonte le conteneur : la nouvelle vue entre sous un
-              voile bordeaux qui se dissout (les vues, conditionnelles, se
-              remontaient déjà à chaque changement d'onglet — état inchangé). */}
-          <div key={tab} className="view-transition">
-          {tab === 'cave' && (
+          {/* key={view} remonte le conteneur : la nouvelle vue entre sous un
+              voile bordeaux qui se dissout. */}
+          <div key={view} className="view-transition">
+          {/* Fil d'Ariane — présent sur tous les parcours, jamais sur le hub */}
+          {view !== 'hub' && ariane && (
+            <FilAriane titre={ariane.titre} sousTitre={ariane.sousTitre} onAccueil={() => goTo('hub')} />
+          )}
+
+          {view === 'hub' && (
+            <HubGuide
+              wines={wines}
+              prenom={profil?.prenom}
+              onParcours={goTo}
+              onScan={() => setShowScan(true)}
+              onAssistant={() => setShowAssistant(true)}
+            />
+          )}
+          {view === 'trouver' && (
+            <ParcoursVin mode={mode} onOpenBibliotheque={() => goTo('vins')} />
+          )}
+          {view === 'cave' && (
             <CaveView
               wines={wines}
               onAdd={() => setShowForm(true)}
@@ -330,10 +374,13 @@ export default function App() {
               onCompte={() => setShowCompte(true)}
             />
           )}
-          {tab === 'vins'      && <BibliothequeView onAddWine={saveWine} mode={mode} initialSearch={librarySearch} onNoter={noterDegustation} />}
-          {tab === 'carte'     && <InteractiveMap onAddWine={saveWine} onNoter={noterDegustation} />}
-          {tab === 'sommelier' && <SommelierForm onOpenBibliotheque={() => setTab('vins')} />}
-          {tab === 'guide'     && <GuideView onAddWine={saveWine} />}
+          {view === 'vins'      && <BibliothequeView onAddWine={saveWine} mode={mode} initialSearch={librarySearch} onNoter={noterDegustation} />}
+          {view === 'explorer'  && <ParcoursExplorer onAddWine={saveWine} onNoter={noterDegustation} />}
+          {view === 'apprendre' && <ParcoursApprendre />}
+          {/* Accès directs conservés pour les habitués (menu « Tout Œno ») */}
+          {view === 'carte'     && <InteractiveMap onAddWine={saveWine} onNoter={noterDegustation} />}
+          {view === 'sommelier' && <SommelierForm onOpenBibliotheque={() => goTo('vins')} />}
+          {view === 'guide'     && <GuideView onAddWine={saveWine} />}
           </div>
         </main>
 
@@ -356,7 +403,7 @@ export default function App() {
           <CeSoirMode
             mode={mode}
             onClose={() => setShowCeSoir(false)}
-            onOpenBibliotheque={() => setTab('vins')}
+            onOpenBibliotheque={() => goTo('vins')}
           />
         )}
         {showScan && (
@@ -368,7 +415,49 @@ export default function App() {
         {friendCode && <CaveAmieViewer code={friendCode} onClose={closeFriendCave} />}
         {showCompte && <CompteSync onClose={() => setShowCompte(false)} />}
         {showAssistant && <AssistantView onClose={() => setShowAssistant(false)} />}
+        {showMenu && (
+          <MenuGrille
+            onGo={goTo}
+            onScan={() => setShowScan(true)}
+            onAssistant={() => setShowAssistant(true)}
+            onCeSoir={() => setShowCeSoir(true)}
+            onCompte={() => setShowCompte(true)}
+            onAdd={() => setShowForm(true)}
+            onClose={() => setShowMenu(false)}
+          />
+        )}
         {showOnboarding && <OnboardingProfil onComplete={completeOnboarding} />}
+
+        {/* Guidage : prochaine étape naturelle après un ajout en cave */}
+        {nextStep?.type === 'vin-ajoute' && !showForm && !editWine && (
+          <div className="fixed bottom-36 md:bottom-6 left-4 right-4 md:left-auto md:right-24 z-40 md:w-96 card !bg-anthracite-950 !border-white/10 p-4 shadow-2xl animate-slide-up">
+            <button
+              onClick={() => setNextStep(null)}
+              className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full flex items-center justify-center text-stone-500 hover:text-cream transition-colors cursor-pointer"
+              aria-label="Fermer"
+            >
+              <X size={13} />
+            </button>
+            <div className="text-[10px] uppercase tracking-[0.18em] font-bold text-gold-500 mb-1">Et maintenant ?</div>
+            <div className="text-sm font-semibold text-cream mb-3 pr-6">
+              « {nextStep.wine?.name} » est dans votre cave.
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => { setNextStep(null); goTo('cave') }}
+                className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-full text-[11px] font-bold text-anthracite-950 bg-gold-500 hover:brightness-110 active:scale-[0.98] transition-all cursor-pointer"
+              >
+                <WineIcon size={12} /> Voir ma cave
+              </button>
+              <button
+                onClick={() => noterDegustation({ name: nextStep.wine?.name || '' })}
+                className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-full text-[11px] font-bold text-cream border border-white/20 hover:border-gold-500/60 active:scale-[0.98] transition-all cursor-pointer"
+              >
+                <NotebookPen size={12} /> La noter
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Bulle flottante Assistant Œno */}
         {!showAssistant && (
