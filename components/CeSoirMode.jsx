@@ -18,12 +18,12 @@ const QUESTIONS = [
     q: 'Vous mangez quoi ce soir ?',
     options: [
       { emoji: '🥩', label: 'Viande rouge',        v: 'viande_rouge' },
-      { emoji: '🍗', label: 'Poulet / volaille',   v: 'volaille' },
+      { emoji: '🍗', label: 'Viandes blanches',    v: 'viande_blanche' },
       { emoji: '🐟', label: 'Poisson / fruits de mer', v: 'poisson' },
       { emoji: '🍝', label: 'Pâtes / pizza',       v: 'pates' },
       { emoji: '🧀', label: 'Fromage / raclette',  v: 'fromage' },
       { emoji: '🥗', label: 'Végétarien / léger',  v: 'vege' },
-      { emoji: '🍰', label: 'Un dessert',          v: 'dessert' },
+      { emoji: '🔥', label: 'Grillades / barbecue', v: 'grillades' },
       { emoji: '🥜', label: 'Juste l\'apéro',      v: 'apero' },
     ],
   },
@@ -70,14 +70,53 @@ const QUESTIONS = [
 ]
 
 const PLAT_TYPES = {
-  viande_rouge: ['red'],
-  volaille:     ['white', 'red'],
-  poisson:      ['white', 'rosé'],
-  pates:        ['red', 'rosé'],
-  fromage:      ['white', 'red'],
-  vege:         ['white', 'rosé', 'red'],
-  dessert:      ['sweet'],
-  apero:        ['white', 'rosé', 'sparkling'],
+  viande_rouge:   ['red'],
+  viande_blanche: ['white', 'red'],
+  poisson:        ['white', 'rosé'],
+  pates:          ['red', 'rosé'],
+  fromage:        ['white', 'red'],
+  vege:           ['white', 'rosé', 'red'],
+  grillades:      ['red', 'rosé'],
+  apero:          ['white', 'rosé', 'sparkling'],
+}
+
+// Question conditionnelle : quand une viande est choisie, on précise laquelle.
+const VIANDE_QUESTION = {
+  viande_rouge: {
+    id: 'viande',
+    q: 'Laquelle, précisément ?',
+    options: [
+      { emoji: '🐂', label: 'Bœuf',            v: 'boeuf' },
+      { emoji: '🐑', label: 'Agneau',          v: 'agneau' },
+      { emoji: '🦌', label: 'Gibier',          v: 'gibier' },
+      { emoji: '🦆', label: 'Canard / magret', v: 'canard' },
+      { emoji: '🍖', label: 'Un peu de tout',  v: 'tout' },
+    ],
+  },
+  viande_blanche: {
+    id: 'viande',
+    q: 'Laquelle, précisément ?',
+    options: [
+      { emoji: '🐔', label: 'Poulet / volaille', v: 'poulet' },
+      { emoji: '🐄', label: 'Veau',             v: 'veau' },
+      { emoji: '🐖', label: 'Porc',             v: 'porc' },
+      { emoji: '🐇', label: 'Lapin',            v: 'lapin' },
+      { emoji: '🍖', label: 'Un peu de tout',   v: 'tout' },
+    ],
+  },
+}
+
+// Affinage par viande précise : mots-clés cherchés dans les accords du vin
+// + orientation de jauges (le bonus pèse sans écraser les autres critères).
+const VIANDE_AFFINAGE = {
+  boeuf:  { accords: /bœuf|boeuf|entrecôte|côte de|daube|steak|viandes? grillées|viandes? rouges?/i, jauges: w => (w.jauges.puissance >= 3 ? 2 : -1) },
+  agneau: { accords: /agneau/i,                     jauges: w => (w.jauges.puissance >= 3 && w.jauges.tanins >= 3 ? 2 : 0) },
+  gibier: { accords: /gibier|chevreuil|sanglier/i,  jauges: w => (w.jauges.puissance >= 4 ? 2 : w.jauges.puissance <= 2 ? -2 : 0) },
+  canard: { accords: /canard|magret/i,              jauges: w => (w.jauges.puissance >= 3 ? 1.5 : 0) },
+  poulet: { accords: /volaille|poulet/i,            jauges: w => (w.jauges.puissance <= 3 ? 1.5 : -1) },
+  veau:   { accords: /veau|blanquette|volaille/i,   jauges: w => (w.jauges.tanins <= 3 ? 1.5 : -1) },
+  porc:   { accords: /porc|charcuterie|cochon/i,    jauges: w => (w.jauges.puissance <= 3 && w.jauges.tanins <= 3 ? 1.5 : 0) },
+  lapin:  { accords: /lapin|volaille/i,             jauges: w => (w.jauges.puissance <= 3 ? 1.5 : -1) },
 }
 
 function score(w, a, mode) {
@@ -86,6 +125,20 @@ function score(w, a, mode) {
   const types = PLAT_TYPES[a.plat] || ['red', 'white', 'rosé']
   if (!types.includes(w.type)) s -= 15
   else if (w.type === types[0]) s += 3
+
+  // Grillades : privilégier les vins dont les accords parlent de grillades/barbecue
+  if (a.plat === 'grillades') {
+    const accords = (w.accords || []).join(' ')
+    if (/grill|barbecue|entrecôte|côte de bœuf|magret|viandes? rouges?/i.test(accords)) s += 4
+    if (w.type === 'red' && w.jauges.puissance >= 3 && w.jauges.puissance <= 4) s += 1.5
+  }
+
+  // Viande précise (question conditionnelle après viande rouge / blanche)
+  if (a.viande && a.viande !== 'tout' && VIANDE_AFFINAGE[a.viande]) {
+    const aff = VIANDE_AFFINAGE[a.viande]
+    if (aff.accords.test((w.accords || []).join(' '))) s += 4
+    s += aff.jauges(w)
+  }
 
   // Couleur explicite
   if (a.couleur !== 'any') {
@@ -134,7 +187,14 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
   const profilAppris = useMemo(() => computeProfilAppris(), [])
   const isConnaisseur = mode === 'expert'
 
-  const current = QUESTIONS[step]
+  // Liste dynamique : la question « Laquelle, précisément ? » s'insère juste
+  // après le plat quand une viande (rouge ou blanche) est choisie.
+  const questions = useMemo(() => {
+    const viandeQ = VIANDE_QUESTION[answers.plat]
+    return viandeQ ? [QUESTIONS[0], viandeQ, ...QUESTIONS.slice(1)] : QUESTIONS
+  }, [answers.plat])
+
+  const current = questions[step]
 
   // Résultats recalculés à chaque changement de réponses ou de régions préférées
   const results = useMemo(() => {
@@ -150,15 +210,20 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
   }, [done, answers, mode, profilAppris, regionsPref, isConnaisseur])
 
   const criteresFor = (w) => ({
-    plat: answers.plat, style: answers.style, budget: answers.budget,
+    plat: answers.plat, viande: answers.viande, style: answers.style, budget: answers.budget,
     occasion: answers.occasion, niveau: mode, profilAppris: !!profilAppris,
     regionPref: isConnaisseur && regionsPref.includes(w.region),
   })
 
   const select = (v) => {
     const next = { ...answers, [current.id]: v }
+    // Changer de plat purge la précision de viande devenue obsolète
+    if (current.id === 'plat' && v !== answers.plat) delete next.viande
     setAnswers(next)
-    if (step < QUESTIONS.length - 1) {
+    const total = VIANDE_QUESTION[current.id === 'plat' ? v : next.plat]
+      ? QUESTIONS.length + 1
+      : QUESTIONS.length
+    if (step < total - 1) {
       setTimeout(() => setStep(s => s + 1), 180)
     } else {
       setDone(true)
@@ -187,7 +252,7 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
               <span className="eyebrow-dark mb-2">Sommelier express</span>
               <h3 className="font-serif text-2xl font-medium">Ce soir, je bois quoi ?</h3>
               <p className="text-cream/70 text-sm mt-1">
-                {results ? `Vos ${results.length} vins, choisis pour vous.` : '5 petites questions → le vin parfait pour votre soirée.'}
+                {results ? `Vos ${results.length} vins, choisis pour vous.` : 'Quelques questions → le vin parfait pour votre soirée.'}
               </p>
             </div>
             <button onClick={onClose}
@@ -203,7 +268,7 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
             <>
               {/* Progress */}
               <div className="flex items-center justify-center gap-1.5 mb-6">
-                {QUESTIONS.map((_, i) => (
+                {questions.map((_, i) => (
                   <span key={i} className="rounded-full transition-all duration-300"
                         style={{ width: i === step ? 24 : 7, height: 7,
                                  background: i <= step ? '#5c0d22' : '#e7e5e4' }} />
