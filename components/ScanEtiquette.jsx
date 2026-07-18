@@ -480,6 +480,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
   const [manuel, setManuel] = useState('')        // mode secours : nom du vin tapé à la main
   const [manuelIntrouvable, setManuelIntrouvable] = useState(false)
   const [retryIn, setRetryIn] = useState(0)       // quota : compte à rebours avant relance auto
+  const [errDetail, setErrDetail] = useState(null) // trace technique de /api/scan (diagnostic)
   const autoRetriesRef = useRef(0)                // relances auto déjà tentées sur cette photo
   const [ficheWine, setFicheWine] = useState(null)
   const [added, setAdded] = useState(false)
@@ -632,52 +633,35 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
       return
     }
     try {
-      const { ok, data } = await askIA({
-        model: 'claude-sonnet-5',
-        max_tokens: 700,
-        system: SYSTEM_PROMPT,
-        messages: [
-          {
-            role: 'user',
-            content: [
-              { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: base64 } },
-              { type: 'text', text: "Lis cette étiquette de vin et renvoie uniquement le JSON." },
-            ],
-          },
-        ],
+      // Un seul appel : /api/scan exécute TOUTE la chaîne côté serveur
+      // (Groq multi-modèles + découverte catalogue → Gemini → Claude) et
+      // renvoie soit le JSON lu, soit un verdict précis avec le détail de
+      // chaque tentative — affiché à l'écran pour un diagnostic immédiat.
+      const res = await fetch('/api/scan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: base64 }),
       })
-      if (!ok) {
-        const err = String(data?.error || '')
-        const quota = /quota|429|rate.?limit/i.test(err)
-        setErrType(
-          quota ? 'quota'
-          : /missing_api_key|all_failed/i.test(err) ? 'config'
-          : 'api'
-        )
+      const data = await res.json().catch(() => ({}))
+
+      if (!res.ok || !data.json) {
+        setErrDetail(data.detail || `HTTP ${res.status}`)
+        const type = ['quota', 'config', 'api'].includes(data.error) ? data.error : 'api'
+        setErrType(type)
         // Quota par minute : nouvelle tentative automatique quand la fenêtre
-        // se rouvre — l'utilisateur n'a rien à faire, ça franchit le cap seul.
-        // Après 2 relances toujours bloquées, le quota est probablement
-        // journalier : on arrête de boucler et on oriente vers la saisie
-        // manuelle plutôt que de promettre une relance qui n'aboutira pas.
-        if (quota && autoRetriesRef.current < 2) {
+        // se rouvre. Après 2 relances toujours bloquées (quota journalier
+        // probable), on arrête de boucler → saisie manuelle.
+        if (type === 'quota' && autoRetriesRef.current < 2) {
           autoRetriesRef.current += 1
           setRetryIn(35)
         }
         setStep('error')
         return
       }
-      const text = (data.content || []).find(b => b.type === 'text')?.text || ''
-      const json = parseJSONRobuste(text)
-      if (!json) {
-        // Le modèle a répondu mais pas en JSON exploitable : problème de
-        // service (réponse tronquée/bavarde), pas de photo — on n'accuse
-        // pas l'étiquette et on invite à réessayer.
-        setErrType('api')
-        setStep('error')
-        return
-      }
 
+      const json = data.json
       if (!json.appellation && !json.region && !json.domaine) {
+        setErrDetail(null)
         setErrType('unreadable')
         setStep('error')
         return
@@ -685,7 +669,8 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
       ecrireCacheScan(hash, json)
       ecrireCachePartage(hash, json)
       afficherLecture(json)
-    } catch {
+    } catch (e) {
+      setErrDetail(`réseau : ${e?.message || 'inconnu'}`)
       setErrType('api')
       setStep('error')
     }
@@ -715,6 +700,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
     setManuel('')
     setManuelIntrouvable(false)
     setRetryIn(0)
+    setErrDetail(null)
     autoRetriesRef.current = 0
     setAdded(false)
     setPrixRayon('')
@@ -966,6 +952,11 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                   ? "Le service de lecture est momentanément indisponible. Toutes nos excuses — réessayez dans un instant."
                   : "Réessayez avec plus de lumière, l'étiquette bien à plat et cadrée en entier."}
               </p>
+              {errDetail && (
+                <p className="text-[10px] text-anthracite-400 mt-3 max-w-[19rem] leading-relaxed break-words font-mono">
+                  Détail technique : {errDetail}
+                </p>
+              )}
               {errType !== 'config' && (
                 <button
                   onClick={recommencer}
