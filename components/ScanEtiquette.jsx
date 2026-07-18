@@ -128,17 +128,15 @@ async function rechercheWeb(json) {
   }
 }
 
-// Redimensionnement côté client : max 900px de large, JPEG qualité 0.72.
-// Une étiquette reste parfaitement lisible à cette taille et chaque lecture
-// consomme nettement moins de tokens vision — le quota gratuit par minute
-// permet donc plus de scans.
+// Redimensionnement côté client : max 1024px de large, JPEG qualité 0.8 —
+// les réglages éprouvés pour une lecture OCR fiable des étiquettes.
 function resizeImage(file) {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(file)
     const img = new Image()
     img.onload = () => {
       try {
-        const scale = Math.min(1, 900 / img.width, 1350 / img.height)
+        const scale = Math.min(1, 1024 / img.width, 1536 / img.height)
         const w = Math.max(1, Math.round(img.width * scale))
         const h = Math.max(1, Math.round(img.height * scale))
         const canvas = document.createElement('canvas')
@@ -146,7 +144,7 @@ function resizeImage(file) {
         canvas.height = h
         canvas.getContext('2d').drawImage(img, 0, 0, w, h)
         URL.revokeObjectURL(url)
-        resolve(canvas.toDataURL('image/jpeg', 0.72))
+        resolve(canvas.toDataURL('image/jpeg', 0.8))
       } catch (e) {
         URL.revokeObjectURL(url)
         reject(e)
@@ -194,6 +192,43 @@ function ecrireCacheScan(hash, json) {
     }
     localStorage.setItem(SCAN_CACHE_KEY, JSON.stringify(cache))
   } catch { /* stockage plein : le cache est un bonus, jamais bloquant */ }
+}
+
+// Extraction JSON tolérante : les modèles vision entourent parfois le JSON
+// de bavardage ou le tronquent en fin de réponse (limite de tokens). On
+// isole le premier bloc {...}, et s'il est tronqué on le répare en coupant
+// à la dernière valeur complète puis en refermant les accolades.
+function parseJSONRobuste(text) {
+  const cleaned = String(text || '').replace(/```json|```/g, '').trim()
+  const start = cleaned.indexOf('{')
+  if (start === -1) return null
+  const end = cleaned.lastIndexOf('}')
+  if (end > start) {
+    try { return JSON.parse(cleaned.slice(start, end + 1)) } catch { /* on tente la réparation */ }
+  }
+  // Réparation d'un JSON tronqué : on retire la dernière propriété
+  // incomplète et on referme ce qui doit l'être.
+  let brut = cleaned.slice(start)
+  for (let i = 0; i < 24; i++) {
+    const coupe = Math.max(brut.lastIndexOf(','), brut.lastIndexOf('['), brut.lastIndexOf('{'))
+    if (coupe <= 0) return null
+    brut = brut.slice(0, coupe)
+    // Referme les crochets/accolades encore ouverts (hors chaînes)
+    let fermetures = ''
+    let dansChaine = false
+    const pile = []
+    for (let j = 0; j < brut.length; j++) {
+      const c = brut[j]
+      if (c === '"' && brut[j - 1] !== '\\') dansChaine = !dansChaine
+      if (dansChaine) continue
+      if (c === '{' || c === '[') pile.push(c)
+      if (c === '}' || c === ']') pile.pop()
+    }
+    if (dansChaine) continue // coupé au milieu d'une chaîne : on recoupe plus tôt
+    for (let j = pile.length - 1; j >= 0; j--) fermetures += pile[j] === '{' ? '}' : ']'
+    try { return JSON.parse(brut + fermetures) } catch { /* on recoupe plus tôt */ }
+  }
+  return null
 }
 
 // Cache PARTAGÉ (Supabase, optionnel) : une étiquette lue par n'importe quel
@@ -599,7 +634,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
     try {
       const { ok, data } = await askIA({
         model: 'claude-sonnet-5',
-        max_tokens: 500,
+        max_tokens: 700,
         system: SYSTEM_PROMPT,
         messages: [
           {
@@ -632,10 +667,15 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
         return
       }
       const text = (data.content || []).find(b => b.type === 'text')?.text || ''
-      const cleaned = text.replace(/```json|```/g, '').trim()
-      const jsonStart = cleaned.indexOf('{')
-      const jsonEnd = cleaned.lastIndexOf('}')
-      const json = JSON.parse(cleaned.slice(jsonStart, jsonEnd + 1))
+      const json = parseJSONRobuste(text)
+      if (!json) {
+        // Le modèle a répondu mais pas en JSON exploitable : problème de
+        // service (réponse tronquée/bavarde), pas de photo — on n'accuse
+        // pas l'étiquette et on invite à réessayer.
+        setErrType('api')
+        setStep('error')
+        return
+      }
 
       if (!json.appellation && !json.region && !json.domaine) {
         setErrType('unreadable')
@@ -646,7 +686,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
       ecrireCachePartage(hash, json)
       afficherLecture(json)
     } catch {
-      setErrType('unreadable')
+      setErrType('api')
       setStep('error')
     }
   }
