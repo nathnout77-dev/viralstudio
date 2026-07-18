@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { X, Camera, Image as ImageIcon, RefreshCw, Sparkles, Plus, Check, MapPin, BookOpen, Tag, Pencil, UtensilsCrossed, Heart, Globe, Library } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
@@ -127,14 +127,17 @@ async function rechercheWeb(json) {
   }
 }
 
-// Redimensionnement côté client : max 1024px de large, JPEG qualité 0.8
+// Redimensionnement côté client : max 900px de large, JPEG qualité 0.72.
+// Une étiquette reste parfaitement lisible à cette taille et chaque lecture
+// consomme nettement moins de tokens vision — le quota gratuit par minute
+// permet donc plus de scans.
 function resizeImage(file) {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(file)
     const img = new Image()
     img.onload = () => {
       try {
-        const scale = Math.min(1, 1024 / img.width, 1536 / img.height)
+        const scale = Math.min(1, 900 / img.width, 1350 / img.height)
         const w = Math.max(1, Math.round(img.width * scale))
         const h = Math.max(1, Math.round(img.height * scale))
         const canvas = document.createElement('canvas')
@@ -142,7 +145,7 @@ function resizeImage(file) {
         canvas.height = h
         canvas.getContext('2d').drawImage(img, 0, 0, w, h)
         URL.revokeObjectURL(url)
-        resolve(canvas.toDataURL('image/jpeg', 0.8))
+        resolve(canvas.toDataURL('image/jpeg', 0.72))
       } catch (e) {
         URL.revokeObjectURL(url)
         reject(e)
@@ -154,6 +157,42 @@ function resizeImage(file) {
     }
     img.src = url
   })
+}
+
+// ── Cache des lectures ───────────────────────────────────────────────────────
+// Chaque étiquette déjà lue est mémorisée (hash de l'image → JSON décodé) :
+// re-scanner la même photo ne consomme AUCUN quota, réponse instantanée.
+const SCAN_CACHE_KEY = 'oeno-scan-cache'
+const SCAN_CACHE_MAX = 25
+
+function hashBase64(b64) {
+  // djb2 sur un échantillonnage de la chaîne : rapide même sur 200 Ko
+  let h = 5381
+  const step = Math.max(1, Math.floor(b64.length / 4096))
+  for (let i = 0; i < b64.length; i += step) h = ((h * 33) ^ b64.charCodeAt(i)) >>> 0
+  return `${h.toString(36)}-${b64.length}`
+}
+
+function lireCacheScan(hash) {
+  try {
+    const cache = JSON.parse(localStorage.getItem(SCAN_CACHE_KEY)) || {}
+    return cache[hash]?.json || null
+  } catch { return null }
+}
+
+function ecrireCacheScan(hash, json) {
+  try {
+    const cache = JSON.parse(localStorage.getItem(SCAN_CACHE_KEY)) || {}
+    cache[hash] = { json, t: Date.now() }
+    // Éviction des plus anciennes entrées au-delà de la limite
+    const keys = Object.keys(cache)
+    if (keys.length > SCAN_CACHE_MAX) {
+      keys.sort((a, b) => (cache[a].t || 0) - (cache[b].t || 0))
+        .slice(0, keys.length - SCAN_CACHE_MAX)
+        .forEach(k => delete cache[k])
+    }
+    localStorage.setItem(SCAN_CACHE_KEY, JSON.stringify(cache))
+  } catch { /* stockage plein : le cache est un bonus, jamais bloquant */ }
 }
 
 // Matching insensible à la casse/accents, inclusion partielle, contre WINE_DB
@@ -384,6 +423,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
   const [errType, setErrType] = useState(null)    // 'unreadable' | 'api' | 'quota' | 'config'
   const [manuel, setManuel] = useState('')        // mode secours : nom du vin tapé à la main
   const [manuelIntrouvable, setManuelIntrouvable] = useState(false)
+  const [retryIn, setRetryIn] = useState(0)       // quota : compte à rebours avant relance auto
   const [ficheWine, setFicheWine] = useState(null)
   const [added, setAdded] = useState(false)
   const [prixRayon, setPrixRayon] = useState('')  // prix saisi en rayon (string du champ)
@@ -486,14 +526,50 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
     }
   }
 
+  // Compte à rebours quota : à zéro, on relance la lecture automatiquement
+  // (les quotas gratuits sont par minute — la fenêtre se rouvre d'elle-même).
+  useEffect(() => {
+    if (step !== 'error' || errType !== 'quota' || retryIn <= 0) return
+    const t = setTimeout(() => {
+      setRetryIn(v => {
+        if (v <= 1) { analyser(); return 0 }
+        return v - 1
+      })
+    }, 1000)
+    return () => clearTimeout(t)
+  }, [retryIn, step, errType]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Succès de lecture (IA ou cache) → écran résultat
+  const afficherLecture = (json) => {
+    // Garde-fou factuel : le modèle vision devine parfois des cépages
+    // étrangers à l'appellation (ex. Chardonnay pour un Anjou blanc).
+    // Quand l'encépagement officiel de l'appellation est connu, il remplace
+    // la supposition — vrai même sans connexion ni vérification web.
+    const officiels = cepagesOfficiels(json.appellation, json.type, json.region)
+    if (officiels) json.cepages = officiels
+    const matchedWine = matchWine(json)
+    setParsed(json)
+    setMatched(matchedWine)
+    setAdded(false)
+    setStep('result')
+    // Bibliothèque personnelle : mémorisation + enrichissement web (non bloquant)
+    traiterDecouverte(json, matchedWine)
+  }
+
   const analyser = async () => {
     if (!photo) return
+    setRetryIn(0)
+    const base64 = photo.split(',')[1]
+    // Étiquette déjà lue ? Réponse instantanée, zéro quota consommé.
+    const hash = hashBase64(base64)
+    const enCache = lireCacheScan(hash)
+    if (enCache) { afficherLecture({ ...enCache }); return }
+
     setStep('loading')
     try {
-      const base64 = photo.split(',')[1]
       const { ok, data } = await askIA({
         model: 'claude-sonnet-5',
-        max_tokens: 700,
+        max_tokens: 500,
         system: SYSTEM_PROMPT,
         messages: [
           {
@@ -507,11 +583,15 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
       })
       if (!ok) {
         const err = String(data?.error || '')
+        const quota = /quota|429|rate.?limit/i.test(err)
         setErrType(
-          /quota|429|rate.?limit/i.test(err) ? 'quota'
+          quota ? 'quota'
           : /missing_api_key|all_failed/i.test(err) ? 'config'
           : 'api'
         )
+        // Quota par minute : nouvelle tentative automatique quand la fenêtre
+        // se rouvre — l'utilisateur n'a rien à faire, ça franchit le cap seul.
+        if (quota) setRetryIn(35)
         setStep('error')
         return
       }
@@ -526,19 +606,8 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
         setStep('error')
         return
       }
-      // Garde-fou factuel : le modèle vision devine parfois des cépages
-      // étrangers à l'appellation (ex. Chardonnay pour un Anjou blanc).
-      // Quand l'encépagement officiel de l'appellation est connu, il remplace
-      // la supposition — vrai même sans connexion ni vérification web.
-      const officiels = cepagesOfficiels(json.appellation, json.type, json.region)
-      if (officiels) json.cepages = officiels
-      const matchedWine = matchWine(json)
-      setParsed(json)
-      setMatched(matchedWine)
-      setAdded(false)
-      setStep('result')
-      // Bibliothèque personnelle : mémorisation + enrichissement web (non bloquant)
-      traiterDecouverte(json, matchedWine)
+      ecrireCacheScan(hash, json)
+      afficherLecture(json)
     } catch {
       setErrType('unreadable')
       setStep('error')
@@ -568,6 +637,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
     setErrType(null)
     setManuel('')
     setManuelIntrouvable(false)
+    setRetryIn(0)
     setAdded(false)
     setPrixRayon('')
     setPrixDraft('')
@@ -809,7 +879,9 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
               </div>
               <p className="text-sm text-anthracite-500 mt-2 max-w-[19rem] leading-relaxed">
                 {errType === 'quota'
-                  ? "Le quota gratuit du service de lecture est atteint pour l'instant. Patientez une minute puis réessayez."
+                  ? (retryIn > 0
+                      ? `Le quota gratuit du service de lecture est atteint pour l'instant. Nouvelle tentative automatique dans ${retryIn} s — vous n'avez rien à faire.`
+                      : "Le quota gratuit du service de lecture est atteint pour l'instant. Patientez une minute puis réessayez.")
                   : errType === 'config'
                   ? "Le service de lecture d'étiquettes n'est pas encore activé sur ce déploiement. En attendant, identifiez votre vin par son nom ci-dessous."
                   : errType === 'api'
