@@ -12,6 +12,7 @@ import useModalBehavior from '../lib/useModal'
 import { loadDecouvertes, matchDecouverte, decouverteFromVision, addDecouverte, updateDecouverte } from '../lib/decouvertes'
 import { askIA } from '../lib/askIA'
 import { cepagesOfficiels } from '../data/appellationsCepages'
+import { supabase } from '../lib/supabase'
 
 const DegustationSimulateur = dynamic(() => import('./DegustationSimulateur'), { ssr: false })
 
@@ -193,6 +194,26 @@ function ecrireCacheScan(hash, json) {
     }
     localStorage.setItem(SCAN_CACHE_KEY, JSON.stringify(cache))
   } catch { /* stockage plein : le cache est un bonus, jamais bloquant */ }
+}
+
+// Cache PARTAGÉ (Supabase, optionnel) : une étiquette lue par n'importe quel
+// utilisateur est resservie à tous — zéro quota IA consommé sur les
+// bouteilles déjà connues de la communauté. Silencieux si Supabase est
+// absent ou si la table n'existe pas encore : le scan fonctionne sans.
+async function lireCachePartage(hash) {
+  if (!supabase) return null
+  try {
+    const { data, error } = await supabase
+      .from('scan_cache').select('json').eq('hash', hash).maybeSingle()
+    if (error || !data?.json) return null
+    return data.json
+  } catch { return null }
+}
+
+function ecrireCachePartage(hash, json) {
+  if (!supabase) return
+  // Fire-and-forget : l'écriture ne doit jamais ralentir ni casser le scan
+  supabase.from('scan_cache').upsert({ hash, json }).then(() => {}, () => {})
 }
 
 // Matching insensible à la casse/accents, inclusion partielle, contre WINE_DB
@@ -562,12 +583,19 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
     if (!photo) return
     setRetryIn(0)
     const base64 = photo.split(',')[1]
-    // Étiquette déjà lue ? Réponse instantanée, zéro quota consommé.
+    // Étiquette déjà lue sur CET appareil ? Réponse instantanée, zéro quota.
     const hash = hashBase64(base64)
     const enCache = lireCacheScan(hash)
     if (enCache) { afficherLecture({ ...enCache }); return }
 
     setStep('loading')
+    // Étiquette déjà lue par la communauté ? (cache partagé Supabase)
+    const partage = await lireCachePartage(hash)
+    if (partage) {
+      ecrireCacheScan(hash, partage)
+      afficherLecture({ ...partage })
+      return
+    }
     try {
       const { ok, data } = await askIA({
         model: 'claude-sonnet-5',
@@ -615,6 +643,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
         return
       }
       ecrireCacheScan(hash, json)
+      ecrireCachePartage(hash, json)
       afficherLecture(json)
     } catch {
       setErrType('unreadable')
