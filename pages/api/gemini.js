@@ -10,8 +10,16 @@ export const config = {
   },
 }
 
-// Modèle multimodal stable et rapide, compatible grounding google_search.
-const GEMINI_MODEL = 'gemini-2.0-flash'
+// Chaîne de modèles multimodaux, du plus récent au plus ancien : Google
+// renouvelle son catalogue et retire les anciens (404) — un modèle mort est
+// simplement sauté, le suivant prend le relais. Tous gèrent la vision et le
+// grounding google_search.
+const GEMINI_MODELS = [
+  'gemini-2.5-flash',
+  'gemini-2.0-flash',
+  'gemini-2.5-flash-lite',
+  'gemini-flash-latest',
+]
 
 // Traduit un bloc de contenu Anthropic → « part » Gemini.
 function blockToPart(block) {
@@ -75,33 +83,40 @@ export default async function handler(req, res) {
       payload.tools = [{ googleSearch: {} }]
     }
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${process.env.GEMINI_API_KEY}`
+    const appeler = (model, body) => fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
+    )
 
-    let response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    })
+    let response = null
+    let data = null
+    for (const model of GEMINI_MODELS) {
+      response = await appeler(model, payload)
 
-    // Dégradation propre : si le grounding fait échouer la requête, on retente
-    // sans l'outil web plutôt que de planter (réponse sans recherche web).
-    // Jamais sur un 429 (quota) : ça ne ferait qu'aggraver la limitation.
-    if (!response.ok && webSearch && response.status !== 429) {
-      delete payload.tools
-      response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
+      // Dégradation propre : si le grounding fait échouer la requête, on
+      // retente ce modèle sans l'outil web plutôt que de planter. Jamais sur
+      // un 429 (quota) : ça ne ferait qu'aggraver la limitation.
+      if (!response.ok && webSearch && response.status !== 429) {
+        const sansOutil = { ...payload }
+        delete sansOutil.tools
+        response = await appeler(model, sansOutil)
+      }
+
+      data = await response.json().catch(() => null)
+      if (response.ok) break
+
+      // Modèle retiré du catalogue (404/400) ou quota de CE modèle atteint
+      // (429, quotas séparés par modèle) : le suivant prend le relais.
+      const skippable = [404, 400, 429].includes(response.status)
+      console.error(`[gemini] ${response.status} sur ${model}${skippable ? ', modèle suivant' : ''}`, data?.error?.message || '')
+      if (!skippable) break
     }
 
-    const data = await response.json()
-
-    if (!response.ok) {
-      const message = response.status === 429
+    if (!response || !response.ok) {
+      const message = response?.status === 429
         ? 'Quota Gemini momentanément dépassé — réessayez dans une minute.'
         : (data?.error?.message || 'gemini_error')
-      return res.status(response.status).json({ error: message })
+      return res.status(response ? response.status : 500).json({ error: message })
     }
 
     // Reconstruction du format Anthropic attendu par les composants.

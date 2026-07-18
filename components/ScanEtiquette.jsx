@@ -424,6 +424,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
   const [manuel, setManuel] = useState('')        // mode secours : nom du vin tapé à la main
   const [manuelIntrouvable, setManuelIntrouvable] = useState(false)
   const [retryIn, setRetryIn] = useState(0)       // quota : compte à rebours avant relance auto
+  const autoRetriesRef = useRef(0)                // relances auto déjà tentées sur cette photo
   const [ficheWine, setFicheWine] = useState(null)
   const [added, setAdded] = useState(false)
   const [prixRayon, setPrixRayon] = useState('')  // prix saisi en rayon (string du champ)
@@ -518,6 +519,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
     if (!file) return
     try {
       const dataUrl = await resizeImage(file)
+      autoRetriesRef.current = 0
       setPhoto(dataUrl)
       setStep('preview')
     } catch {
@@ -591,7 +593,13 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
         )
         // Quota par minute : nouvelle tentative automatique quand la fenêtre
         // se rouvre — l'utilisateur n'a rien à faire, ça franchit le cap seul.
-        if (quota) setRetryIn(35)
+        // Après 2 relances toujours bloquées, le quota est probablement
+        // journalier : on arrête de boucler et on oriente vers la saisie
+        // manuelle plutôt que de promettre une relance qui n'aboutira pas.
+        if (quota && autoRetriesRef.current < 2) {
+          autoRetriesRef.current += 1
+          setRetryIn(35)
+        }
         setStep('error')
         return
       }
@@ -638,6 +646,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
     setManuel('')
     setManuelIntrouvable(false)
     setRetryIn(0)
+    autoRetriesRef.current = 0
     setAdded(false)
     setPrixRayon('')
     setPrixDraft('')
@@ -881,7 +890,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                 {errType === 'quota'
                   ? (retryIn > 0
                       ? `Le quota gratuit du service de lecture est atteint pour l'instant. Nouvelle tentative automatique dans ${retryIn} s — vous n'avez rien à faire.`
-                      : "Le quota gratuit du service de lecture est atteint pour l'instant. Patientez une minute puis réessayez.")
+                      : "Le quota du service de lecture semble durablement atteint pour aujourd'hui. Identifiez votre vin par son nom ci-dessous — même résultat, sans attendre.")
                   : errType === 'config'
                   ? "Le service de lecture d'étiquettes n'est pas encore activé sur ce déploiement. En attendant, identifiez votre vin par son nom ci-dessous."
                   : errType === 'api'
