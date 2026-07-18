@@ -121,9 +121,12 @@ const VIANDE_AFFINAGE = {
 
 function score(w, a, mode) {
   let s = 0
-  // Plat
+  // Plat — quand une couleur explicite est demandée, elle prime sur l'accord
+  // théorique : on n'exclut pas un blanc sous prétexte que le plat appelle
+  // du rouge, l'utilisateur a choisi sa couleur en connaissance de cause.
   const types = PLAT_TYPES[a.plat] || ['red', 'white', 'rosé']
-  if (!types.includes(w.type)) s -= 15
+  const couleurExplicite = a.couleur && a.couleur !== 'any'
+  if (!types.includes(w.type)) { if (!couleurExplicite) s -= 15 }
   else if (w.type === types[0]) s += 3
 
   // Grillades : privilégier les vins dont les accords parlent de grillades/barbecue
@@ -140,12 +143,8 @@ function score(w, a, mode) {
     s += aff.jauges(w)
   }
 
-  // Couleur explicite
-  if (a.couleur !== 'any') {
-    if (w.type === a.couleur) s += 5
-    else if (a.couleur === 'white' && w.type === 'sweet') s += 1
-    else s -= 10
-  }
+  // Couleur explicite : plus de pénalité ici — le pool est déjà filtré en
+  // amont (filtre DUR dans results), la couleur demandée est donc garantie.
 
   // Style ↔ jauges
   if (a.style === 'leger')     s += (6 - w.jauges.puissance) + (6 - w.jauges.tanins) * 0.5
@@ -200,12 +199,21 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
   const results = useMemo(() => {
     if (!done) return null
     const activeRegions = isConnaisseur ? regionsPref : []
-    const pool = activeRegions.length ? WINE_DB.filter(w => activeRegions.includes(w.region)) : WINE_DB
+    let pool = activeRegions.length ? WINE_DB.filter(w => activeRegions.includes(w.region)) : WINE_DB
+    // Couleur demandée = couleur servie, sans exception : filtre DUR avant
+    // scoring. Aucun repli ne peut réintroduire une autre couleur — s'il y a
+    // moins de 5 vins de cette couleur, on en montre moins de 5.
+    if (answers.couleur && answers.couleur !== 'any') {
+      pool = pool.filter(w => w.type === answers.couleur)
+      // Filtre régions trop strict pour cette couleur → on relâche les
+      // régions plutôt que la couleur.
+      if (!pool.length) pool = WINE_DB.filter(w => w.type === answers.couleur)
+    }
     const scored = pool
       .map(w => ({ w, s: score(w, answers, mode) + bonusProfilAppris(w, profilAppris, 0.5) }))
       .sort((a, b) => b.s - a.s)
     let filtered = scored.filter(x => x.s > -5)
-    if (filtered.length < N_RESULTS) filtered = scored // fallback : garantir toujours 5 vins
+    if (filtered.length < N_RESULTS) filtered = scored // fallback : garantir 5 vins (dans la couleur choisie)
     return diversifyByRegion(filtered, N_RESULTS) // jamais deux vins de la même région
   }, [done, answers, mode, profilAppris, regionsPref, isConnaisseur])
 

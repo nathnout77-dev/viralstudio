@@ -28,7 +28,30 @@ const GROQ_TEXT_MODELS = [
 const GROQ_VISION_MODELS = [
   'meta-llama/llama-4-scout-17b-16e-instruct',
   'meta-llama/llama-4-maverick-17b-128e-instruct',
+  'llama-3.2-90b-vision-preview',
+  'llama-3.2-11b-vision-preview',
 ]
+
+// Filet de sécurité : si TOUTE la chaîne vision échoue (catalogue Groq
+// renouvelé), on interroge le catalogue en direct pour trouver les modèles
+// vision réellement servis, on les loggue (diagnostic immédiat dans les
+// logs Vercel) et on les tente à leur tour.
+async function discoverVisionModels() {
+  try {
+    const res = await fetch('https://api.groq.com/openai/v1/models', {
+      headers: { Authorization: `Bearer ${process.env.GROQ_API_KEY}` },
+    })
+    const data = await res.json().catch(() => null)
+    if (!res.ok || !Array.isArray(data?.data)) return []
+    const ids = data.data.map(m => m.id)
+    const vision = ids.filter(id => /vision|scout|maverick|llama-4|pixtral|multimodal/i.test(id))
+    console.error('[groq] catalogue modèles vision découverts :', vision.join(', ') || '(aucun)')
+    return vision.filter(id => !GROQ_VISION_MODELS.includes(id))
+  } catch (e) {
+    console.error('[groq] échec découverte catalogue :', e.message)
+    return []
+  }
+}
 
 // Traduit un bloc de contenu Anthropic → « part » OpenAI.
 function blockToPart(block) {
@@ -73,7 +96,8 @@ export default async function handler(req, res) {
 
   try {
     const { system, messages, max_tokens } = req.body || {}
-    const models = hasImage(messages) ? GROQ_VISION_MODELS : GROQ_TEXT_MODELS
+    const isVision = hasImage(messages)
+    let models = isVision ? GROQ_VISION_MODELS : GROQ_TEXT_MODELS
 
     const basePayload = {
       messages: messagesToOpenAI(messages, system),
@@ -92,20 +116,34 @@ export default async function handler(req, res) {
     let response = null
     let data = null
 
-    for (const model of models) {
-      response = await callGroq({ ...basePayload, model })
-      data = await response.json().catch(() => null)
+    const essayerChaine = async (chaine) => {
+      for (const model of chaine) {
+        response = await callGroq({ ...basePayload, model })
+        data = await response.json().catch(() => null)
 
-      if (response.ok) {
-        const text = data?.choices?.[0]?.message?.content || ''
-        return res.status(200).json({ content: [{ type: 'text', text }], provider: 'groq', model })
+        if (response.ok) {
+          const text = data?.choices?.[0]?.message?.content || ''
+          return { text, model }
+        }
+
+        // Quota par minute atteint (429/413) ou modèle retiré du catalogue
+        // (404/400) : le suivant de la chaîne a son propre budget, on continue.
+        const skippable = [429, 413, 404, 400].includes(response.status)
+        console.error(`[groq] ${response.status} sur ${model}${skippable ? ', modèle suivant' : ''}`, data?.error?.message || '')
+        if (!skippable) return null
       }
+      return null
+    }
 
-      // Quota par minute atteint (429/413) ou modèle retiré du catalogue
-      // (404/400) : le suivant de la chaîne a son propre budget, on continue.
-      const skippable = [429, 413, 404, 400].includes(response.status)
-      console.error(`[groq] ${response.status} sur ${model}${skippable ? ', modèle suivant' : ''}`, data?.error?.message || '')
-      if (!skippable) break
+    let hit = await essayerChaine(models)
+    // Vision : toute la chaîne codée en dur a échoué → découverte du
+    // catalogue en direct, dernière chance avant l'erreur.
+    if (!hit && isVision && response && [404, 400].includes(response.status)) {
+      const decouverts = await discoverVisionModels()
+      if (decouverts.length) hit = await essayerChaine(decouverts.slice(0, 3))
+    }
+    if (hit) {
+      return res.status(200).json({ content: [{ type: 'text', text: hit.text }], provider: 'groq', model: hit.model })
     }
 
     const message = response && (response.status === 429 || response.status === 413)
