@@ -381,7 +381,9 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
   const [photo, setPhoto] = useState(null)        // dataURL JPEG redimensionné
   const [parsed, setParsed] = useState(null)      // réponse JSON de Claude
   const [matched, setMatched] = useState(null)    // vin WINE_DB correspondant
-  const [errType, setErrType] = useState(null)    // 'unreadable' | 'api' | 'quota'
+  const [errType, setErrType] = useState(null)    // 'unreadable' | 'api' | 'quota' | 'config'
+  const [manuel, setManuel] = useState('')        // mode secours : nom du vin tapé à la main
+  const [manuelIntrouvable, setManuelIntrouvable] = useState(false)
   const [ficheWine, setFicheWine] = useState(null)
   const [added, setAdded] = useState(false)
   const [prixRayon, setPrixRayon] = useState('')  // prix saisi en rayon (string du champ)
@@ -504,7 +506,12 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
         ],
       })
       if (!ok) {
-        setErrType(/quota|429/i.test(data?.error || '') ? 'quota' : 'api')
+        const err = String(data?.error || '')
+        setErrType(
+          /quota|429|rate.?limit/i.test(err) ? 'quota'
+          : /missing_api_key|all_failed/i.test(err) ? 'config'
+          : 'api'
+        )
         setStep('error')
         return
       }
@@ -538,12 +545,29 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
     }
   }
 
+  // Mode secours : identifier le vin par son nom quand la lecture IA échoue.
+  // Réutilise matchWine → même écran résultat que le scan (fiche, prix, cave).
+  const chercherManuel = () => {
+    const q = manuel.trim()
+    if (q.length < 3) return
+    const m = matchWine({ appellation: q })
+    if (!m) { setManuelIntrouvable(true); return }
+    setParsed({ appellation: m.appellation, region: m.region, type: m.type, millesime: null })
+    setMatched(m)
+    setAdded(false)
+    setDejaConnu(true)
+    setManuelIntrouvable(false)
+    setStep('result')
+  }
+
   const recommencer = () => {
     setStep('idle')
     setPhoto(null)
     setParsed(null)
     setMatched(null)
     setErrType(null)
+    setManuel('')
+    setManuelIntrouvable(false)
     setAdded(false)
     setPrixRayon('')
     setPrixDraft('')
@@ -777,24 +801,60 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
           {/* ── ERROR : douce, avec retry ───────────────────────────────── */}
           {step === 'error' && (
             <div className="py-8 flex flex-col items-center text-center animate-fade-in">
-              <div className="text-4xl mb-4" aria-hidden="true">{errType === 'quota' ? '⏳' : errType === 'api' ? '🫥' : '🔍'}</div>
               <div className="font-serif text-lg text-anthracite-900">
-                {errType === 'quota' ? 'Trop de lectures en peu de temps' : errType === 'api' ? 'Notre sommelier fait une courte pause' : 'Étiquette illisible'}
+                {errType === 'quota' ? 'Trop de lectures en peu de temps'
+                  : errType === 'config' ? 'Lecture automatique indisponible'
+                  : errType === 'api' ? 'Notre sommelier fait une courte pause'
+                  : 'Étiquette illisible'}
               </div>
               <p className="text-sm text-anthracite-500 mt-2 max-w-[19rem] leading-relaxed">
                 {errType === 'quota'
                   ? "Le quota gratuit du service de lecture est atteint pour l'instant. Patientez une minute puis réessayez."
+                  : errType === 'config'
+                  ? "Le service de lecture d'étiquettes n'est pas encore activé sur ce déploiement. En attendant, identifiez votre vin par son nom ci-dessous."
                   : errType === 'api'
                   ? "Le service de lecture est momentanément indisponible. Toutes nos excuses — réessayez dans un instant."
                   : "Réessayez avec plus de lumière, l'étiquette bien à plat et cadrée en entier."}
               </p>
-              <button
-                onClick={recommencer}
-                className="mt-6 min-h-[48px] inline-flex items-center gap-2 px-8 rounded-full text-sm font-semibold text-cream cursor-pointer transition-all duration-300 hover:brightness-110 active:scale-[0.98]"
-                style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
-              >
-                <RefreshCw size={14} /> Réessayer
-              </button>
+              {errType !== 'config' && (
+                <button
+                  onClick={recommencer}
+                  className="mt-6 min-h-[48px] inline-flex items-center gap-2 px-8 rounded-full text-sm font-semibold text-cream cursor-pointer transition-all duration-300 hover:brightness-110 active:scale-[0.98]"
+                  style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
+                >
+                  <RefreshCw size={14} /> Réessayer
+                </button>
+              )}
+
+              {/* Mode secours : identifier le vin par son nom — le parcours aboutit toujours */}
+              <div className="mt-7 pt-6 border-t border-anthracite-100 w-full max-w-[19rem]">
+                <div className="text-[10px] uppercase tracking-[0.18em] font-bold text-anthracite-400 mb-2.5">
+                  {errType === 'config' ? 'Identifier mon vin' : 'Ou identifiez-le à la main'}
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    value={manuel}
+                    onChange={e => { setManuel(e.target.value); setManuelIntrouvable(false) }}
+                    onKeyDown={e => e.key === 'Enter' && chercherManuel()}
+                    placeholder="Ex. Chinon, Pauillac, Sancerre…"
+                    className="input-field flex-1 !text-sm"
+                    aria-label="Nom du vin"
+                  />
+                  <button
+                    onClick={chercherManuel}
+                    disabled={manuel.trim().length < 3}
+                    className="min-h-[44px] px-4 rounded-full text-sm font-semibold text-cream cursor-pointer transition-all duration-300 hover:brightness-110 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
+                    style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
+                  >
+                    Chercher
+                  </button>
+                </div>
+                {manuelIntrouvable && (
+                  <p className="text-[11px] text-wine-700 mt-2 text-left">
+                    Introuvable dans la bibliothèque — essayez le nom de l'appellation (ex. « Saint-Émilion » plutôt que le château).
+                  </p>
+                )}
+              </div>
             </div>
           )}
 
