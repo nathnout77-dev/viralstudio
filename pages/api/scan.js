@@ -212,53 +212,91 @@ export default async function handler(req, res) {
     return r.status
   }
 
-  try {
-    // 1. Groq — chaîne vision + découverte du catalogue en dernier recours
-    if (process.env.GROQ_API_KEY) {
-      let dernierStatus = null
-      for (const model of GROQ_VISION_MODELS) {
+  // ── Chaînes par fournisseur : résolvent avec le JSON, rejettent sinon ────
+  const chaineGroq = async () => {
+    if (!process.env.GROQ_API_KEY) { trace.push('groq:pas-de-clé'); throw new Error('groq') }
+    // Le modèle gagnant de la dernière lecture (lambda chaude) passe en tête,
+    // les modèles vus morts (404/400) sont écartés : zéro aller-retour perdu.
+    const ordre = [
+      ...(memoire.groqOk ? [memoire.groqOk] : []),
+      ...GROQ_VISION_MODELS.filter(m => m !== memoire.groqOk && !memoire.morts.has(m)),
+    ]
+    let dernierStatus = null
+    for (const model of ordre) {
+      const r = await tenter(() => essaiGroq(model, image, trace))
+      if (r && typeof r === 'object') { memoire.groqOk = model; return r }
+      if (typeof r === 'number') {
+        dernierStatus = r
+        if ([404, 400].includes(r)) memoire.morts.add(model)
+        if (!skippable(r)) break
+      }
+    }
+    if ([400, 404].includes(dernierStatus) || ordre.length === 0) {
+      const decouverts = await decouvrirModelesGroq(trace)
+      for (const model of decouverts.slice(0, 3)) {
         const r = await tenter(() => essaiGroq(model, image, trace))
-        if (r && typeof r === 'object') return res.status(200).json({ json: r, trace })
-        if (typeof r === 'number') { dernierStatus = r; if (!skippable(r)) break }
+        if (r && typeof r === 'object') { memoire.groqOk = model; return r }
       }
-      if ([400, 404].includes(dernierStatus)) {
-        const decouverts = await decouvrirModelesGroq(trace)
-        for (const model of decouverts.slice(0, 3)) {
-          const r = await tenter(() => essaiGroq(model, image, trace))
-          if (r && typeof r === 'object') return res.status(200).json({ json: r, trace })
-        }
+    }
+    throw new Error('groq')
+  }
+
+  const chaineGemini = async () => {
+    if (!process.env.GEMINI_API_KEY) { trace.push('gemini:pas-de-clé'); throw new Error('gemini') }
+    const ordre = [
+      ...(memoire.geminiOk ? [memoire.geminiOk] : []),
+      ...GEMINI_MODELS.filter(m => m !== memoire.geminiOk && !memoire.morts.has(m)),
+    ]
+    for (const model of ordre) {
+      const r = await tenter(() => essaiGemini(model, image, trace))
+      if (r && typeof r === 'object') { memoire.geminiOk = model; return r }
+      if (typeof r === 'number') {
+        if ([404, 400].includes(r)) memoire.morts.add(model)
+        if (!skippable(r)) break
       }
-    } else {
-      trace.push('groq:pas-de-clé')
     }
+    throw new Error('gemini')
+  }
 
-    // 2. Gemini — chaîne de modèles
-    if (process.env.GEMINI_API_KEY) {
-      for (const model of GEMINI_MODELS) {
-        const r = await tenter(() => essaiGemini(model, image, trace))
-        if (r && typeof r === 'object') return res.status(200).json({ json: r, trace })
-        if (typeof r === 'number' && !skippable(r)) break
-      }
-    } else {
-      trace.push('gemini:pas-de-clé')
+  const chaineClaude = async () => {
+    if (!process.env.ANTHROPIC_API_KEY) { trace.push('claude:pas-de-clé'); throw new Error('claude') }
+    const r = await tenter(() => essaiClaude(image, trace))
+    if (r && typeof r === 'object') return r
+    throw new Error('claude')
+  }
+
+  // ── Course décalée : Groq part immédiatement ; si aucune réponse en 4 s,
+  // Gemini entre en course en PARALLÈLE (puis Claude à 8 s). Le premier JSON
+  // valide gagne — le temps de lecture n'est plus la somme des échecs.
+  const delai = ms => new Promise(r => setTimeout(r, ms))
+  let gagne = false
+  const enCourse = (chaine, attente) => (async () => {
+    if (attente) {
+      await delai(attente)
+      if (gagne) throw new Error('déjà-gagné')
     }
+    const json = await chaine()
+    gagne = true
+    return json
+  })()
 
-    // 3. Claude — dernier recours
-    if (process.env.ANTHROPIC_API_KEY) {
-      const r = await tenter(() => essaiClaude(image, trace))
-      if (r && typeof r === 'object') return res.status(200).json({ json: r, trace })
-    } else {
-      trace.push('claude:pas-de-clé')
-    }
-
-    // Échec complet — verdict + trace complète pour diagnostic à l'écran
+  try {
+    const json = await Promise.any([
+      enCourse(chaineGroq, 0),
+      enCourse(chaineGemini, 4000),
+      enCourse(chaineClaude, 8000),
+    ])
+    return res.status(200).json({ json, trace })
+  } catch {
+    // Toutes les chaînes ont échoué — verdict + trace pour diagnostic
     const detail = trace.join(' · ')
     console.error('[scan] échec complet :', detail)
     const aucuneCle = !process.env.GROQ_API_KEY && !process.env.GEMINI_API_KEY && !process.env.ANTHROPIC_API_KEY
     const error = aucuneCle ? 'config' : vuQuota ? 'quota' : 'api'
     return res.status(vuQuota ? 429 : 502).json({ error, detail })
-  } catch (err) {
-    console.error('[scan] exception :', err.message)
-    return res.status(500).json({ error: 'api', detail: `exception serveur : ${err.message} · ${trace.join(' · ')}` })
   }
 }
+
+// Mémoire de la lambda chaude : modèle gagnant par fournisseur + modèles
+// morts (404/400), pour que les lectures suivantes partent du bon endroit.
+const memoire = { groqOk: null, geminiOk: null, morts: new Set() }
