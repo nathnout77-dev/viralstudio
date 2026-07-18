@@ -6,6 +6,7 @@
 // ═══════════════════════════════════════════════════════════════════════════
 
 import { WINE_DB } from '../data/wineDatabase'
+import { meilleurMillesime } from '../lib/millesimes'
 import { RECETTES } from '../data/recettes'
 import { normaliser as normBase } from '../data/aromes'
 import { bonusProfilAppris } from '../data/goutsAppris'
@@ -53,7 +54,9 @@ export function serviceRank(wine) {
 }
 
 // Millésime conseillé : le plus récent des bons millésimes
-export const millesimeConseille = w => w.bonsMilsimes[w.bonsMilsimes.length - 1]
+// Millésime conseillé : logique partagée avec tout le reste de l'app
+// (guide des millésimes croisé région + couleur, cf. lib/millesimes.js).
+export const millesimeConseille = w => meilleurMillesime(w) ?? w.bonsMilsimes[w.bonsMilsimes.length - 1]
 
 // ~1 bouteille pour 3 convives par service, arrondi supérieur
 export const bouteillesPour = convives => Math.max(1, Math.ceil(convives / 3))

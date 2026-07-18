@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { X, Scale, Search, Trophy, Plus, BookOpen, RefreshCw, UtensilsCrossed } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
+import { meilleurMillesime } from '../lib/millesimes'
 import JaugesGout from './JaugesGout'
 import WineVisuel from './WineVisuel'
 import { FicheVin } from './BibliothequeView'
@@ -346,7 +347,10 @@ export default function Comparateur({ onClose, onAddWine }) {
                       )}
                       <WineVisuel type={w.type} size={16} className="mb-1" />
                       <div className="font-wine-name text-2xl leading-tight">{w.appellation}</div>
-                      <div className="text-cream/70 text-[11px] mt-0.5">{w.region} · {w.typeLabel} · ~{w.prixMoyen} €</div>
+                      <div className="text-cream/70 text-[11px] mt-0.5">
+                        {w.region} · {w.typeLabel} · ~{w.prixMoyen} €
+                        {meilleurMillesime(w) ? <> · mill. conseillé {meilleurMillesime(w)}</> : null}
+                      </div>
                       <div className="mt-2.5 flex items-baseline gap-1">
                         <span className="font-serif text-3xl font-bold">{e.note}</span>
                         <span className="text-cream/60 text-xs">/20</span>

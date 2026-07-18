@@ -5,7 +5,8 @@ import {
   CakeSlice, IceCream2, Apple, Beef, Soup, Milk, Sandwich,
   Sofa, Compass, Rocket, Banknote, PiggyBank, Crown,
 } from 'lucide-react'
-import { WINE_DB, DIFFICULTE_CONFIG, MILLESIMES_DB } from '../data/wineDatabase'
+import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
+import { millesimesAPrivilegier } from '../lib/millesimes'
 import { computeProfilAppris, bonusProfilAppris } from '../data/goutsAppris'
 import { diversifyByRegion, buildRaison, getRegionsPref } from '../lib/suggestions'
 import { loadProfil } from './OnboardingProfil'
@@ -123,14 +124,7 @@ function scoreWine(w, p) {
   return s
 }
 
-function getMillesimesFor(wine) {
-  const label = { red: 'Rouge', white: 'Blanc', 'rosé': 'Rosé', sweet: 'Liquoreux' }[wine.type]
-  const hits = MILLESIMES_DB
-    .filter(m => m[2] === wine.region && m[1] === label && m[7] === 'Privilégier')
-    .map(m => m[0])
-  const uniq = [...new Set(hits)].sort((a, b) => b - a).slice(0, 4)
-  return uniq.length ? uniq : wine.bonsMilsimes.slice(-4).reverse()
-}
+const getMillesimesFor = (wine) => millesimesAPrivilegier(wine, 4)
 
 // ═══ UI ═════════════════════════════════════════════════════════════════════
 // Sélecteur d'outil : Goût-o-mètre (quiz), Budget caviste ou Mode Dîner

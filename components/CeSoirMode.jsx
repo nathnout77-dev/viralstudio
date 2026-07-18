@@ -336,6 +336,7 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
                   onOpen={setWineSelected}
                   showRaison
                   raisonCriteres={criteresFor(w)}
+                  showMillesime
                   showBadgeCoupDeCoeur
                   coupDeCoeurLabel="Notre coup de cœur pour ce soir"
                   nameClass="font-serif text-sm font-bold text-anthracite-900"

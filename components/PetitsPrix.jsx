@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { Coins } from 'lucide-react'
 import { WINE_DB } from '../data/wineDatabase'
+import { meilleurMillesime } from '../lib/millesimes'
 import WineVisuel from './WineVisuel'
 import { FicheVin } from './BibliothequeView'
 
@@ -53,7 +54,10 @@ export default function PetitsPrix({
               </span>
             </div>
             <div className="font-wine-name text-2xl text-anthracite-900 leading-tight">{w.appellation}</div>
-            <div className="text-[11px] text-anthracite-500 mt-0.5">{w.region} · {w.typeLabel}</div>
+            <div className="text-[11px] text-anthracite-500 mt-0.5">
+              {w.region} · {w.typeLabel}
+              {meilleurMillesime(w) ? <> · mill. <span className="font-semibold text-wine-800">{meilleurMillesime(w)}</span></> : null}
+            </div>
             <div className="text-[11px] text-anthracite-600 italic mt-1.5 line-clamp-2">« {w.enUneMot} »</div>
             {detail && (
               <div className="text-[10px] text-anthracite-400 mt-1.5">{detail(w)}</div>

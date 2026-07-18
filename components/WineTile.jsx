@@ -7,6 +7,7 @@ import { EnvieButton } from './Envies'
 import JaugesGout from './JaugesGout'
 import useTilt from '../lib/useTilt'
 import { buildRaison } from '../lib/suggestions'
+import { millesimesAPrivilegier } from '../lib/millesimes'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // WineTile — carte de vin unique et réutilisable.
@@ -37,6 +38,7 @@ export default function WineTile({
   raisonCriteres = null,
   showEnvie = true,
   showBadgeCoupDeCoeur = false,
+  showMillesime = false,
   coupDeCoeurLabel = 'Coup de cœur',
   className = '',
   children,
@@ -156,6 +158,16 @@ export default function WineTile({
             </span>
           </div>
           {enUneMot && <p className="text-xs text-anthracite-500 italic mt-1 line-clamp-1">« {enUneMot} »</p>}
+          {showMillesime && (() => {
+            const mils = millesimesAPrivilegier(wine, 3)
+            if (!mils.length) return null
+            return (
+              <p className="text-[11px] text-anthracite-600 mt-1.5">
+                Millésime conseillé : <span className="font-bold text-wine-800">{mils[0]}</span>
+                {mils.length > 1 && <span className="text-anthracite-400"> (ou {mils.slice(1).join(', ')})</span>}
+              </p>
+            )
+          })()}
           {wine.jauges && (
             <div className="mt-2">
               <JaugesGout jauges={wine.jauges} compact animate={false} />

@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic'
 import AccordInverse from './AccordInverse'
 import { EnvieButton } from './Envies'
 import { WINE_DB, REGIONS_LIST, DIFFICULTE_CONFIG, MILLESIMES_DB, gardeForMillesime, variantesDe } from '../data/wineDatabase'
+import { millesimesAPrivilegier } from '../lib/millesimes'
 import JaugesGout from './JaugesGout'
 import Terme from './Tooltip'
 import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
@@ -224,10 +225,17 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
   const [wine, setWine] = useState(wineProp)
   useEffect(() => { setWine(wineProp) }, [wineProp?.id]) // eslint-disable-line react-hooks/exhaustive-deps
   const variantes = variantesDe(wine)
-  const [millesime, setMillesime] = useState(wine.bonsMilsimes[wine.bonsMilsimes.length - 1])
-  // Si la fiche reste montée mais change de vin, on repart sur son dernier bon millésime
+  // Millésimes à privilégier (guide croisé région + couleur) : pré-sélection
+  // sur le meilleur, étoile sur les chips correspondantes.
+  const milsReco = millesimesAPrivilegier(wine, 4)
+  const defaultMillesime = (w) => {
+    const reco = millesimesAPrivilegier(w, 4).find(y => w.bonsMilsimes.includes(y))
+    return reco ?? w.bonsMilsimes[w.bonsMilsimes.length - 1]
+  }
+  const [millesime, setMillesime] = useState(() => defaultMillesime(wine))
+  // Si la fiche reste montée mais change de vin, on repart sur son meilleur millésime
   useEffect(() => {
-    setMillesime(wine.bonsMilsimes[wine.bonsMilsimes.length - 1])
+    setMillesime(defaultMillesime(wine))
   }, [wine.id]) // eslint-disable-line react-hooks/exhaustive-deps
   const [showAccordInverse, setShowAccordInverse] = useState(false)
   const [showSimulateur, setShowSimulateur] = useState(false)
@@ -448,18 +456,26 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
                 <span className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 flex-shrink-0">
                   <Terme id="millesime">Millésime</Terme> :
                 </span>
-                {wine.bonsMilsimes.map(y => (
-                  <button
-                    key={y}
-                    onClick={() => setMillesime(y)}
-                    className={`px-2.5 py-1 rounded-full text-xs font-semibold border transition-all cursor-pointer flex-shrink-0 ${
-                      millesime === y ? 'text-cream border-transparent' : 'bg-white border-anthracite-200 text-anthracite-600'
-                    }`}
-                    style={millesime === y ? { background: wine.color } : {}}
-                  >
-                    {y}
-                  </button>
-                ))}
+                {wine.bonsMilsimes.map(y => {
+                  const reco = milsReco.includes(y)
+                  return (
+                    <button
+                      key={y}
+                      onClick={() => setMillesime(y)}
+                      title={reco ? 'Millésime à privilégier' : undefined}
+                      className={`px-2.5 py-1 rounded-full text-xs font-semibold border transition-all cursor-pointer flex-shrink-0 ${
+                        millesime === y ? 'text-cream border-transparent' : 'bg-white border-anthracite-200 text-anthracite-600'
+                      }`}
+                      style={millesime === y ? { background: wine.color } : {}}
+                    >
+                      {reco && <span className={millesime === y ? 'text-gold-300' : 'text-gold-600'}>★ </span>}
+                      {y}
+                    </button>
+                  )
+                })}
+                {milsReco.some(y => wine.bonsMilsimes.includes(y)) && (
+                  <span className="text-[10px] text-anthracite-400 flex-shrink-0"><span className="text-gold-600">★</span> à privilégier</span>
+                )}
               </div>
               {garde && (
                 <p className="text-[11px] text-anthracite-500 mb-3 lg:mb-0">

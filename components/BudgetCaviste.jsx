@@ -3,6 +3,7 @@ import {
   Coins, RefreshCw, ExternalLink, Wine, Sparkles, Gift, Home, PartyPopper, Users, ChevronDown,
 } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
+import { millesimesAPrivilegier } from '../lib/millesimes'
 import { EnvieButton } from './Envies'
 import WineVisuel from './WineVisuel'
 import { FicheVin } from './BibliothequeView'
@@ -299,6 +300,15 @@ export default function BudgetCaviste() {
                     <p className="text-xs text-anthracite-600 mt-2 leading-relaxed">
                       <span className="font-semibold">Pourquoi lui ? </span>{buildWhy(w, occasion)}
                     </p>
+                    {(() => {
+                      const mils = millesimesAPrivilegier(w, 3)
+                      return mils.length ? (
+                        <p className="text-[11px] text-anthracite-600 mt-1.5">
+                          Millésime conseillé : <span className="font-bold text-wine-800">{mils[0]}</span>
+                          {mils.length > 1 && <span className="text-anthracite-400"> (ou {mils.slice(1).join(', ')})</span>}
+                        </p>
+                      ) : null
+                    })()}
                     <div className="flex items-center gap-2 mt-2 flex-wrap">
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold"
                             style={{ background: diff.bg, color: diff.color }}>
