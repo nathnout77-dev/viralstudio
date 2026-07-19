@@ -1,7 +1,11 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
-import { BookOpen, ChevronDown, Star, TrendingUp, Award, Filter } from 'lucide-react'
-import { MILLESIMES_DB, WINE_DB } from '../data/wineDatabase'
+import { BookOpen, ChevronDown, Star, TrendingUp, Award, Filter, Search, X } from 'lucide-react'
+import { MILLESIMES_DB, WINE_DB, gardeForMillesime } from '../data/wineDatabase'
+import { millesimesAPrivilegier, meilleurMillesime } from '../lib/millesimes'
+import { normaliser } from '../data/aromes'
 import PetitsPrix from './PetitsPrix'
+import WineVisuel from './WineVisuel'
+import { FicheVin } from './BibliothequeView'
 
 const REGIONS = ['Toutes','Bordeaux','Bourgogne','Rhône Nord','Rhône Sud','Alsace','Loire','Provence','Languedoc','Beaujolais','Jura','Sud-Ouest']
 const TYPES   = ['Tous','Rouge','Blanc','Rosé','Liquoreux']
@@ -100,18 +104,46 @@ export default function MillesimesView() {
   const [type,   setType]   = useState('Tous')
   const [year,   setYear]   = useState('')
   const [rec,    setRec]    = useState('Tous')
+  const [search, setSearch] = useState('')
+  const [vinChoisi, setVinChoisi] = useState(null) // vin sélectionné via la recherche
+  const [ficheVin, setFicheVin] = useState(null)   // fiche complète ouverte
   const [showFilters, setShowFilters] = useState(false)
   const headerRef = useRef(null)
 
   const years = useMemo(() => [...new Set(MILLESIMES_DB.map(r => r[0]))].sort((a,b) => b-a), [])
+
+  // Recherche par mot-clé : appellation, région ou cépage — chaque vin de la
+  // bibliothèque est trouvable, même sans ligne dédiée dans le guide.
+  const nq = normaliser(search.trim())
+  const vinsTrouves = useMemo(() => {
+    if (nq.length < 2) return []
+    return WINE_DB.filter(w =>
+      normaliser(w.appellation).includes(nq)
+      || normaliser(w.region).includes(nq)
+      || (w.cepages || []).some(c => normaliser(c).includes(nq))
+    ).slice(0, 8)
+  }, [nq])
+
+  // Le vin mis en avant : celui cliqué, sinon le meilleur match de la saisie
+  const vinFocus = vinChoisi || (nq.length >= 2 ? vinsTrouves[0] : null)
 
   const filtered = useMemo(() => MILLESIMES_DB.filter(r => {
     const matchR = region === 'Toutes' || r[2] === region
     const matchT = type   === 'Tous'   || r[1] === type
     const matchY = !year               || r[0] === Number(year)
     const matchC = rec    === 'Tous'   || r[7] === rec
-    return matchR && matchT && matchY && matchC
-  }).sort((a,b) => b[0] - a[0]), [region, type, year, rec])
+    // Recherche : lignes de l'appellation exacte, sinon celles de la
+    // région+couleur du vin trouvé (le guide raisonne par région).
+    let matchS = true
+    if (vinFocus) {
+      const labelType = { red: 'Rouge', white: 'Blanc', 'rosé': 'Rosé', sweet: 'Liquoreux' }[vinFocus.type]
+      matchS = normaliser(r[3] || '').includes(normaliser(vinFocus.appellation))
+        || (r[2] === vinFocus.region && r[1] === labelType)
+    } else if (nq.length >= 2) {
+      matchS = normaliser(r[3] || '').includes(nq) || normaliser(r[2] || '').includes(nq)
+    }
+    return matchR && matchT && matchY && matchC && matchS
+  }).sort((a,b) => b[0] - a[0]), [region, type, year, rec, nq, vinFocus])
 
   // Exceptional vintages for the highlight strip
   const exceptional = MILLESIMES_DB
@@ -180,6 +212,92 @@ export default function MillesimesView() {
         detail={w => `Bons millésimes : ${(w.bonsMilsimes || []).slice(-3).join(' · ')}`}
       />
 
+      {/* Recherche par vin : n'importe quelle appellation, région ou cépage */}
+      <div className="card p-4 mb-5">
+        <div className="relative">
+          <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-anthracite-400" />
+          <input
+            value={search}
+            onChange={e => { setSearch(e.target.value); setVinChoisi(null) }}
+            placeholder="Cherchez un vin : Menetou, Pauillac, Pinot Noir, Loire…"
+            className="input-field w-full !pl-10 !text-sm"
+            aria-label="Chercher un vin dans le guide des millésimes"
+          />
+          {search && (
+            <button
+              onClick={() => { setSearch(''); setVinChoisi(null) }}
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full flex items-center justify-center text-anthracite-400 hover:text-anthracite-700 cursor-pointer"
+              aria-label="Effacer la recherche"
+            >
+              <X size={13} />
+            </button>
+          )}
+        </div>
+
+        {/* Vins correspondants */}
+        {vinsTrouves.length > 1 && (
+          <div className="flex gap-2 flex-wrap mt-3">
+            {vinsTrouves.map(w => (
+              <button
+                key={w.id}
+                onClick={() => setVinChoisi(w)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
+                  vinFocus?.id === w.id ? 'bg-wine-800 text-cream border-transparent' : 'bg-white text-anthracite-600 border-anthracite-200 hover:border-wine-300'
+                }`}
+              >
+                <WineVisuel type={w.type} size={11} />
+                {w.appellation}
+              </button>
+            ))}
+          </div>
+        )}
+        {nq.length >= 2 && vinsTrouves.length === 0 && (
+          <p className="text-xs text-anthracite-500 mt-3">
+            Aucun vin trouvé pour « {search} » — essayez le nom de l'appellation (ex. « Menetou », « Cahors »).
+          </p>
+        )}
+
+        {/* Carte du vin : ses millésimes à privilégier, même sans ligne dédiée au guide */}
+        {vinFocus && (() => {
+          const mils = millesimesAPrivilegier(vinFocus, 4)
+          const meilleur = meilleurMillesime(vinFocus)
+          const garde = meilleur ? gardeForMillesime(vinFocus, meilleur) : null
+          return (
+            <div className="mt-4 rounded-2xl border border-gold-500/30 p-4"
+                 style={{ background: 'linear-gradient(135deg, #fdf9f0, #f7ecd9)' }}>
+              <div className="flex items-start gap-3">
+                <div className="w-11 h-11 rounded-2xl bg-white flex items-center justify-center flex-shrink-0 border border-anthracite-900/[0.06]">
+                  <WineVisuel type={vinFocus.type} size={22} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="font-serif text-base font-bold text-anthracite-900">{vinFocus.appellation}</div>
+                  <div className="text-[11px] text-anthracite-500">{vinFocus.region} · {vinFocus.typeLabel} · ~{vinFocus.prixMoyen} €</div>
+                  <div className="flex items-center gap-1.5 flex-wrap mt-2.5">
+                    <span className="text-[10px] uppercase tracking-wider font-bold text-gold-700">Millésimes à privilégier :</span>
+                    {mils.map(y => (
+                      <span key={y} className="px-2.5 py-1 rounded-full text-xs font-bold text-cream" style={{ background: vinFocus.color }}>
+                        {y}
+                      </span>
+                    ))}
+                  </div>
+                  {garde && (
+                    <p className="text-[11px] text-anthracite-500 mt-2">
+                      Le {meilleur} : à boire entre <span className="font-semibold text-anthracite-700">{garde.from}</span> et <span className="font-semibold text-anthracite-700">{garde.until}</span>
+                    </p>
+                  )}
+                  <button
+                    onClick={() => setFicheVin(vinFocus)}
+                    className="inline-flex items-center gap-1.5 text-[11px] font-bold text-wine-800 mt-2.5 cursor-pointer hover:underline"
+                  >
+                    <BookOpen size={11} /> Voir la fiche complète
+                  </button>
+                </div>
+              </div>
+            </div>
+          )
+        })()}
+      </div>
+
       {/* Filter bar */}
       <div className="card p-4 mb-5">
         <div className="flex items-center justify-between mb-3 sm:hidden">
@@ -211,9 +329,9 @@ export default function MillesimesView() {
           ))}
 
           {/* Active filters count */}
-          {(region !== 'Toutes' || type !== 'Tous' || year || rec !== 'Tous') && (
+          {(region !== 'Toutes' || type !== 'Tous' || year || rec !== 'Tous' || search) && (
             <button
-              onClick={() => { setRegion('Toutes'); setType('Tous'); setYear(''); setRec('Tous') }}
+              onClick={() => { setRegion('Toutes'); setType('Tous'); setYear(''); setRec('Tous'); setSearch(''); setVinChoisi(null) }}
               className="px-3 py-2 text-xs text-wine-700 bg-wine-50 border border-wine-200 rounded-full hover:bg-wine-100 transition-colors cursor-pointer"
             >
               Réinitialiser
@@ -277,7 +395,7 @@ export default function MillesimesView() {
               <BookOpen size={32} className="text-anthracite-200 mx-auto mb-3" />
               <p className="text-anthracite-400 text-sm">Aucun résultat pour ces critères.</p>
               <button
-                onClick={() => { setRegion('Toutes'); setType('Tous'); setYear(''); setRec('Tous') }}
+                onClick={() => { setRegion('Toutes'); setType('Tous'); setYear(''); setRec('Tous'); setSearch(''); setVinChoisi(null) }}
                 className="mt-3 text-xs text-gold-600 hover:text-gold-500 cursor-pointer underline"
               >
                 Réinitialiser les filtres
@@ -286,6 +404,8 @@ export default function MillesimesView() {
           )}
         </div>
       </div>
+
+      {ficheVin && <FicheVin wine={ficheVin} onClose={() => setFicheVin(null)} />}
     </div>
   )
 }
