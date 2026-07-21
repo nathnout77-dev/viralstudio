@@ -254,14 +254,26 @@ function ecrireCachePartage(hash, json) {
 // Matching insensible à la casse/accents, inclusion partielle, contre WINE_DB
 function matchWine(parsed) {
   const napp = normaliser(parsed?.appellation)
-  if (napp && napp.length >= 4) {
-    const hit = WINE_DB.find(w => {
-      const na = normaliser(w.appellation)
-      return na === napp || na.includes(napp) || napp.includes(na)
-    })
-    if (hit) return hit
-  }
-  return null
+  if (!napp || napp.length < 4) return null
+  // Respecte la couleur lue : sinon "Menetou-Salon" rouge tomberait sur la fiche
+  // blanche (première correspondance par sous-chaîne). Priorité couleur, dans
+  // l'ordre exact → variante de couleur → approximatif.
+  const memeCouleur = w => !parsed?.type || w.type === parsed.type
+  const exacts = WINE_DB.filter(w => normaliser(w.appellation) === napp)
+  const variantes = WINE_DB.filter(w => {
+    const na = normaliser(w.appellation)
+    return na === napp || na.startsWith(napp + ' ') || napp.startsWith(na + ' ')
+  })
+  const flous = WINE_DB.filter(w => {
+    const na = normaliser(w.appellation)
+    return na.includes(napp) || napp.includes(na)
+  })
+  return (
+    exacts.find(memeCouleur) ||
+    variantes.find(memeCouleur) ||
+    flous.find(memeCouleur) ||
+    exacts[0] || variantes[0] || flous[0] || null
+  )
 }
 
 // Vins de la bibliothèque « proches » de la lecture (même région, ou cépage commun)
