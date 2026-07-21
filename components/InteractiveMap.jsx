@@ -301,6 +301,32 @@ export default function InteractiveMap({ onAddWine, onNoter }) {
     ? WINE_DB
     : WINE_DB.filter(w => w.region === activeRegion)
 
+  // Anti-superposition : plusieurs vins (ex. variantes rouge/blanc/rosé d'une même
+  // appellation) partagent les mêmes coordonnées. Sans décalage, un seul marqueur est
+  // cliquable et les autres restent invisibles. On répartit les co-localisés sur un
+  // petit cercle (~1,5 km) pour que chacun des 244 vins soit visible et sélectionnable.
+  const positions = useMemo(() => {
+    const groupes = new Map()
+    for (const w of visibleWines) {
+      const cle = `${w.lat.toFixed(3)},${w.lng.toFixed(3)}`
+      if (!groupes.has(cle)) groupes.set(cle, [])
+      groupes.get(cle).push(w)
+    }
+    const pos = {}
+    for (const groupe of groupes.values()) {
+      if (groupe.length === 1) {
+        pos[groupe[0].id] = [groupe[0].lat, groupe[0].lng]
+        continue
+      }
+      const rayon = 0.018 // ~1,5 km, lisible dès le zoom région
+      groupe.forEach((w, i) => {
+        const angle = (2 * Math.PI * i) / groupe.length
+        pos[w.id] = [w.lat + rayon * Math.cos(angle), w.lng + rayon * Math.sin(angle)]
+      })
+    }
+    return pos
+  }, [visibleWines])
+
   // Domaines du terroir sélectionné, pour la carte narrative.
   const regionDomaines = useMemo(() => {
     if (activeRegion === 'Toutes') return []
@@ -459,7 +485,7 @@ export default function InteractiveMap({ onAddWine, onNoter }) {
                 {visibleWines.map(wine => (
                   <MapComponents.CircleMarker
                     key={wine.id}
-                    center={[wine.lat, wine.lng]}
+                    center={positions[wine.id] || [wine.lat, wine.lng]}
                     radius={selected?.id === wine.id ? 14 : 10}
                     pathOptions={{
                       color: '#fff',
