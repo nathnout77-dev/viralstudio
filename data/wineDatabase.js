@@ -5165,6 +5165,48 @@ export const REGIONS_LIST = [...new Set(WINE_DB.map(w => w.region))]
 export const WINE_DB_GRAND_PUBLIC = WINE_DB.filter(w => w.grandPublic)
 export const WINE_DB_TERROIR = WINE_DB.filter(w => !w.grandPublic)
 
+// ── Rapport qualité/prix — une pastille verte/orange/rouge sur chaque vin ────
+// Objectif : aider à choisir. La note (1-5) vient soit d'un champ `qpr` curé
+// (jugement réel, notamment pour les vins de supermarché recherchés), soit
+// d'un calcul « valeur relative » : un vin nettement moins cher que ses pairs
+// de même région ET même couleur offre un meilleur rapport ; un vin très cher
+// pour sa catégorie fait payer la rareté/le nom. Les vins faciles à aimer
+// gagnent un demi-point (plaisir immédiat au quotidien).
+const _prixMedianParStyle = (() => {
+  const groupes = {}
+  for (const w of WINE_DB) {
+    const k = `${w.region}|${w.type}`
+    ;(groupes[k] ||= []).push(w.prixMoyen || 15)
+  }
+  const med = {}
+  for (const [k, arr] of Object.entries(groupes)) {
+    arr.sort((a, b) => a - b)
+    med[k] = arr[Math.floor(arr.length / 2)]
+  }
+  return med
+})()
+
+const QPR_CONFIG = {
+  5: { niveau: 'Excellent rapport qualité/prix', court: 'Excellent rapport', couleur: '#16a34a', ton: 'vert' },
+  4: { niveau: 'Très bon rapport qualité/prix',  court: 'Très bon rapport', couleur: '#65a30d', ton: 'vert' },
+  3: { niveau: 'Rapport qualité/prix correct',   court: 'Rapport correct',  couleur: '#f59e0b', ton: 'orange' },
+  2: { niveau: 'Prix premium pour la catégorie', court: 'Prix premium',     couleur: '#ea580c', ton: 'rouge' },
+  1: { niveau: 'Vin de prestige — on paie la rareté', court: 'Prix de prestige', couleur: '#dc2626', ton: 'rouge' },
+}
+
+export function rapportQualitePrix(wine) {
+  if (!wine) return null
+  let note = wine.qpr
+  if (!note) {
+    const med = _prixMedianParStyle[`${wine.region}|${wine.type}`] || wine.prixMoyen || 15
+    const r = (wine.prixMoyen || med) / med
+    note = r <= 0.6 ? 5 : r <= 0.85 ? 4 : r <= 1.25 ? 3 : r <= 1.8 ? 2 : 1
+    if (wine.difficulte === 'facile' && note < 5) note += 0.5
+  }
+  note = Math.max(1, Math.min(5, Math.round(note)))
+  return { note, ...QPR_CONFIG[note] }
+}
+
 // WINE_DB_DOMAINES — annuaire dédupliqué de tous les domaines cités dans WINE_DB,
 // avec les vins/appellations/régions dans lesquels chacun apparaît.
 export const WINE_DB_DOMAINES = (() => {

@@ -5,6 +5,7 @@ import { millesimesAPrivilegier } from '../lib/millesimes'
 import { normaliser } from '../data/aromes'
 import WineVisuel from './WineVisuel'
 import BadgeGrandPublic from './BadgeGrandPublic'
+import PastilleQualitePrix from './PastilleQualitePrix'
 import { FicheVin } from './BibliothequeView'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -64,6 +65,7 @@ function LigneResultat({ w, via, onOpen }) {
         <div className="text-[11px] text-anthracite-400 mt-0.5 truncate">
           {w.region} · {w.typeLabel} · ~{w.prixMoyen} €
         </div>
+        <div className="mt-1"><PastilleQualitePrix wine={w} compact /></div>
         {/* Le cœur de la fonctionnalité : les millésimes à demander, sans clic */}
         {mils.length > 0 && (
           <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">

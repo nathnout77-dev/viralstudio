@@ -13,6 +13,7 @@ import { tintStyle, pastilleStyle, regionMonogram, collectionNumero } from '../l
 import WineTile from './WineTile'
 import WineVisuel from './WineVisuel'
 import BadgeGrandPublic from './BadgeGrandPublic'
+import PastilleQualitePrix from './PastilleQualitePrix'
 import { loadDecouvertes, removeDecouverte, decouverteNumero } from '../lib/decouvertes'
 import { partagerVin } from '../lib/partage'
 
@@ -337,6 +338,7 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
             <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-anthracite-100 text-anthracite-700">
               ~ {wine.prixMoyen} € la bouteille
             </span>
+            <PastilleQualitePrix wine={wine} />
             {wine.grandPublic && <BadgeGrandPublic />}
           </div>
           <p className="text-sm text-anthracite-600 leading-relaxed -mt-1">
