@@ -1,7 +1,9 @@
 import { useState, useMemo } from 'react'
-import { X, Wine, ChevronDown, Sparkles } from 'lucide-react'
-import { WINE_DB_APPELLATIONS } from '../data/wineDatabase'
+import { X, Wine, ChevronDown, Sparkles, Search, Globe, Loader2, ArrowLeft, PenLine } from 'lucide-react'
+import { WINE_DB, WINE_DB_APPELLATIONS } from '../data/wineDatabase'
+import { normaliser } from '../data/aromes'
 import useModalBehavior from '../lib/useModal'
+import WineVisuel from './WineVisuel'
 
 const TYPES = [
   { value: 'red',       label: 'Rouge' },
@@ -13,6 +15,26 @@ const TYPES = [
 const REGIONS = ['Bordeaux','Bourgogne','Champagne','Rhône Nord','Rhône Sud','Loire','Alsace','Provence','Languedoc','Beaujolais','Jura','Sud-Ouest','Corse','Italie','Espagne','Autre']
 const FOOD_OPTIONS = ['Viande rouge','Viande blanche','Gibier','Poisson','Fruits de mer','Fromage','Dessert','Charcuterie','Légumes','Champignons','Foie gras']
 const CURRENT_YEAR = new Date().getFullYear()
+
+// Recherche dans la bibliothèque : appellation > domaine > cépage > région
+function chercherDB(query) {
+  const q = normaliser(query.trim())
+  if (q.length < 2) return []
+  const res = []
+  for (const w of WINE_DB) {
+    const app = normaliser(w.appellation)
+    let score = 0
+    if (app.startsWith(q)) score = 100
+    else if (app.includes(q)) score = 80
+    else if ((w.domaines || []).some(d => normaliser(d.name).includes(q))) score = 55
+    else if ((w.cepages || []).some(c => normaliser(c).includes(q))) score = 45
+    else if (normaliser(w.region).includes(q)) score = 25
+    if (!score) continue
+    if (w.grandPublic) score -= 5
+    res.push({ w, score })
+  }
+  return res.sort((a, b) => b.score - a.score).slice(0, 8).map(r => r.w)
+}
 
 function Field({ label, children, error }) {
   return (
@@ -33,37 +55,52 @@ function SelectWrapper({ children }) {
   )
 }
 
+const blankForm = () => ({
+  id:             `w${Date.now()}`,
+  name:           '',
+  domain:         '',
+  appellation:    '',
+  region:         '',
+  type:           'red',
+  cepages:        '',
+  vintage:        CURRENT_YEAR - 3,
+  quantity:       1,
+  drinkFrom:      3,
+  drinkUntil:     10,
+  serviceTemp:    '',
+  carafage:       '',
+  estimatedValue: '',
+  rating:         '',
+  foodPairings:   [],
+  notes:          '',
+})
+
 export default function WineForm({ initial, onSave, onClose }) {
   useModalBehavior(onClose)
-  const [form, setForm] = useState({
-    id:             initial?.id || `w${Date.now()}`,
-    name:           initial?.name || '',
-    domain:         initial?.domain || '',
-    appellation:    initial?.appellation || '',
-    region:         initial?.region || '',
-    type:           initial?.type || 'red',
-    cepages:        Array.isArray(initial?.cepages) ? initial.cepages.join(', ') : (initial?.cepages || ''),
-    vintage:        initial?.vintage || CURRENT_YEAR - 3,
-    quantity:       initial?.quantity || 1,
-    drinkFrom:      initial?.drinkFrom || 3,
-    drinkUntil:     initial?.drinkUntil || 10,
-    serviceTemp:    initial?.serviceTemp || '',
-    carafage:       initial?.carafage || '',
-    estimatedValue: initial?.estimatedValue || '',
-    rating:         initial?.rating || '',
-    foodPairings:   initial?.foodPairings || [],
-    notes:          initial?.notes || '',
-  })
+
+  // En édition (initial fourni) on va droit au formulaire ; à l'ajout, on
+  // commence par une recherche pour préremplir sans tout ressaisir.
+  const [phase, setPhase] = useState(initial ? 'form' : 'recherche')
+  const [form, setForm] = useState(() => (initial ? {
+    ...blankForm(),
+    ...initial,
+    id:       initial.id || `w${Date.now()}`,
+    cepages:  Array.isArray(initial.cepages) ? initial.cepages.join(', ') : (initial.cepages || ''),
+    foodPairings: initial.foodPairings || [],
+  } : blankForm()))
   const [errors, setErrors] = useState({})
-  // 'Autre (saisie libre)' est sélectionné dès le départ si l'appellation actuelle
-  // ne correspond à aucune entrée connue de la base
   const [useFreeText, setUseFreeText] = useState(
     !!initial?.appellation && !WINE_DB_APPELLATIONS.some(a => a.appellation === initial.appellation)
   )
 
+  // État de l'étape recherche
+  const [query, setQuery] = useState('')
+  const [lookupLoading, setLookupLoading] = useState(false)
+  const [lookupError, setLookupError] = useState(null)
+  const resultats = useMemo(() => chercherDB(query), [query])
+
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
-  // Groupe les appellations par région, triées alphabétiquement
   const appellationsByRegion = useMemo(() => {
     const sorted = [...WINE_DB_APPELLATIONS].sort((a, b) => a.appellation.localeCompare(b.appellation, 'fr'))
     const groups = {}
@@ -101,6 +138,85 @@ export default function WineForm({ initial, onSave, onClose }) {
     }))
   }
 
+  // ── Préremplissage depuis un vin de la bibliothèque ────────────────────────
+  const prefillFromDB = (w) => {
+    setForm(f => ({
+      ...blankForm(),
+      id:           f.id,
+      quantity:     f.quantity,
+      name:         w.appellation,
+      appellation:  w.appellation,
+      region:       w.region,
+      type:         w.type,
+      cepages:      (w.cepages || []).join(', '),
+      serviceTemp:  w.serviceTemp || '',
+      carafage:     w.carafage || '',
+      drinkFrom:    w.drinkFrom ?? 3,
+      drinkUntil:   w.drinkUntil ?? 10,
+      estimatedValue: w.prixMoyen || '',
+      foodPairings: w.accords || [],
+    }))
+    setUseFreeText(!WINE_DB_APPELLATIONS.some(a => a.appellation === w.appellation))
+    setPhase('form')
+  }
+
+  // ── Préremplissage depuis la recherche internet (/api/wine-lookup) ─────────
+  const prefillFromLookup = (j, saisie) => {
+    setForm(f => ({
+      ...blankForm(),
+      id:           f.id,
+      quantity:     f.quantity,
+      name:         j.appellation || j.domaine || saisie,
+      domain:       j.domaine || '',
+      appellation:  j.appellation || '',
+      region:       j.region || '',
+      type:         j.type || 'red',
+      cepages:      Array.isArray(j.cepages) ? j.cepages.join(', ') : '',
+      vintage:      j.millesime || (CURRENT_YEAR - 3),
+      serviceTemp:  j.serviceTemp || '',
+      carafage:     j.carafage || '',
+      drinkFrom:    j.drinkFrom ?? 3,
+      drinkUntil:   j.drinkUntil ?? 10,
+      estimatedValue: j.prixMoyen || '',
+      foodPairings: Array.isArray(j.accords) ? j.accords.slice(0, 6) : [],
+      notes:        j.description || '',
+    }))
+    setUseFreeText(!j.appellation || !WINE_DB_APPELLATIONS.some(a => a.appellation === j.appellation))
+    setPhase('form')
+  }
+
+  const rechercheInternet = async () => {
+    const saisie = query.trim()
+    if (saisie.length < 2) return
+    setLookupError(null)
+    setLookupLoading(true)
+    try {
+      const res = await fetch('/api/wine-lookup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: saisie }),
+      })
+      const data = await res.json().catch(() => null)
+      if (res.ok && data?.json && data.json.trouve) {
+        prefillFromLookup(data.json, saisie)
+      } else if (res.ok && data?.json && !data.json.trouve) {
+        setLookupError('introuvable')
+      } else {
+        setLookupError(data?.error === 'quota' ? 'quota' : 'api')
+      }
+    } catch {
+      setLookupError('reseau')
+    } finally {
+      setLookupLoading(false)
+    }
+  }
+
+  const saisieManuelle = () => {
+    const saisie = query.trim()
+    if (saisie) set('name', saisie)
+    setPhase('form')
+  }
+
   const toggleFood = (f) => set('foodPairings', form.foodPairings.includes(f)
     ? form.foodPairings.filter(x => x !== f)
     : [...form.foodPairings, f]
@@ -131,6 +247,13 @@ export default function WineForm({ initial, onSave, onClose }) {
     })
   }
 
+  const errMsg = {
+    introuvable: "Vin introuvable. Vérifiez l'orthographe ou saisissez-le à la main.",
+    quota:       'Recherche momentanément indisponible (quota). Saisie manuelle possible ci-dessous.',
+    api:         "La recherche n'a rien renvoyé. Réessayez ou saisissez à la main.",
+    reseau:      'Pas de connexion. Saisie manuelle possible ci-dessous.',
+  }
+
   return (
     <div
       className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4"
@@ -145,6 +268,16 @@ export default function WineForm({ initial, onSave, onClose }) {
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-anthracite-100 flex-shrink-0">
           <div className="flex items-center gap-2.5">
+            {phase === 'form' && !initial && (
+              <button
+                type="button"
+                onClick={() => setPhase('recherche')}
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-anthracite-100 text-anthracite-500 transition-all cursor-pointer"
+                aria-label="Retour à la recherche"
+              >
+                <ArrowLeft size={16} />
+              </button>
+            )}
             <div className="w-8 h-8 rounded-lg bg-wine-100 flex items-center justify-center">
               <Wine size={14} className="text-wine-800" />
             </div>
@@ -157,7 +290,85 @@ export default function WineForm({ initial, onSave, onClose }) {
           </button>
         </div>
 
-        {/* Form */}
+        {/* ══ Étape recherche ══════════════════════════════════════════════ */}
+        {phase === 'recherche' && (
+          <div className="overflow-y-auto flex-1 p-5">
+            <p className="text-[13px] text-anthracite-500 mb-3 leading-relaxed">
+              Tapez le nom du vin : on le retrouve dans la bibliothèque et on préremplit la fiche.
+              Absent&nbsp;? On le cherche sur internet.
+            </p>
+            <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-white border border-anthracite-200 focus-within:border-gold-500/60 transition-colors">
+              <Search size={16} className="text-gold-600 flex-shrink-0" />
+              <input
+                autoFocus
+                type="text"
+                value={query}
+                onChange={e => { setQuery(e.target.value); setLookupError(null) }}
+                onKeyDown={e => { if (e.key === 'Enter' && resultats.length === 0) rechercheInternet() }}
+                placeholder="Château Margaux, Mouton Cadet 2020, Chablis…"
+                className="flex-1 bg-transparent text-[15px] text-anthracite-900 placeholder-anthracite-400 outline-none min-w-0"
+                aria-label="Rechercher un vin à ajouter"
+              />
+              {query && (
+                <button onClick={() => { setQuery(''); setLookupError(null) }} className="text-anthracite-400 hover:text-anthracite-700 cursor-pointer" aria-label="Effacer">
+                  <X size={15} />
+                </button>
+              )}
+            </div>
+
+            {/* Résultats bibliothèque */}
+            {resultats.length > 0 && (
+              <div className="mt-4 space-y-2">
+                <div className="text-[10px] uppercase tracking-[0.15em] font-bold text-anthracite-400">Dans la bibliothèque</div>
+                {resultats.map(w => (
+                  <button
+                    key={w.id}
+                    onClick={() => prefillFromDB(w)}
+                    className="w-full flex items-center gap-3 p-3 rounded-2xl bg-white border border-anthracite-200 hover:border-gold-500/60 active:scale-[0.99] transition-all cursor-pointer text-left"
+                  >
+                    <WineVisuel type={w.type} size={24} className="flex-shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[13px] font-bold text-anthracite-900 truncate">{w.appellation}</div>
+                      <div className="text-[11px] text-anthracite-400 truncate">{w.region} · {w.typeLabel}{w.prixMoyen ? ` · ~${w.prixMoyen} €` : ''}</div>
+                    </div>
+                    <Sparkles size={13} className="text-gold-500 flex-shrink-0" />
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Aucun résultat en bibliothèque → recherche internet */}
+            {query.trim().length >= 2 && resultats.length === 0 && (
+              <div className="mt-4">
+                {lookupError && (
+                  <p className="text-[12px] text-wine-700 bg-wine-50 border border-wine-100 rounded-xl px-3 py-2 mb-3">
+                    {errMsg[lookupError]}
+                  </p>
+                )}
+                <button
+                  onClick={rechercheInternet}
+                  disabled={lookupLoading}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-wine-800 text-cream font-semibold text-sm hover:bg-wine-900 active:scale-[0.99] transition-all cursor-pointer disabled:opacity-70 disabled:cursor-wait"
+                >
+                  {lookupLoading
+                    ? <><Loader2 size={16} className="animate-spin" /> Recherche sur internet…</>
+                    : <><Globe size={16} /> Rechercher « {query.trim()} » sur internet</>}
+                </button>
+                <p className="text-[11px] text-anthracite-400 mt-2 text-center">Pour les vins hors bibliothèque (crus rares, cuvées de rayon…).</p>
+              </div>
+            )}
+
+            {/* Suggestion vide */}
+            {query.trim().length < 2 && (
+              <p className="mt-6 text-[12px] text-anthracite-400 leading-relaxed text-center">
+                Commencez à taper le nom de votre bouteille.
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* ══ Étape formulaire ═════════════════════════════════════════════ */}
+        {phase === 'form' && (
         <form onSubmit={handleSubmit} className="overflow-y-auto flex-1 p-5 space-y-4">
           {/* Type selector */}
           <div>
@@ -314,13 +525,25 @@ export default function WineForm({ initial, onSave, onClose }) {
             />
           </Field>
         </form>
+        )}
 
         {/* Footer */}
         <div className="flex items-center justify-end gap-2.5 px-5 py-4 border-t border-anthracite-100 flex-shrink-0 bg-cream">
-          <button type="button" onClick={onClose} className="btn-ghost">Annuler</button>
-          <button onClick={handleSubmit} className="btn-gold">
-            {initial ? 'Enregistrer' : 'Ajouter à la cave'}
-          </button>
+          {phase === 'recherche' ? (
+            <>
+              <button type="button" onClick={saisieManuelle} className="btn-ghost inline-flex items-center gap-1.5">
+                <PenLine size={13} /> Saisir à la main
+              </button>
+              <button type="button" onClick={onClose} className="btn-ghost">Annuler</button>
+            </>
+          ) : (
+            <>
+              <button type="button" onClick={onClose} className="btn-ghost">Annuler</button>
+              <button onClick={handleSubmit} className="btn-gold">
+                {initial ? 'Enregistrer' : 'Ajouter à la cave'}
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>
