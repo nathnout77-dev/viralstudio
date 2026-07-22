@@ -1,8 +1,10 @@
 // ═══════════════════════════════════════════════════════════════════════════
 // /api/scan — LE point d'entrée unique de la lecture d'étiquette.
-// Reçoit l'image (base64 JPEG), exécute toute la chaîne côté serveur :
-//   Groq (modèles vision + découverte du catalogue) → Gemini (chaîne de
-//   modèles) → Claude — puis parse/répare le JSON du modèle.
+// Reçoit l'image (base64 JPEG), exécute une course décalée à tête adaptative
+// entre trois fournisseurs vision : Claude (maillon fiable, ouvre par défaut),
+// Groq (modèles vision + découverte du catalogue) et Gemini (chaîne de modèles),
+// en filets de sécurité — puis parse/répare le JSON du modèle. Le fournisseur
+// qui a réussi la dernière lecture mène la course suivante (lambda chaude).
 // Renvoie :
 //   200 { json }                       → lecture réussie
 //   4xx/5xx { error, detail }          → error: 'quota'|'config'|'api'|'unreadable'
@@ -42,10 +44,13 @@ const GROQ_VISION_MODELS = [
 ]
 
 const GEMINI_MODELS = [
+  // L'alias « latest » résiste au renouvellement du catalogue (les versions
+  // épinglées deviennent « indisponibles aux nouveaux comptes ») : on l'essaie
+  // en premier.
+  'gemini-flash-latest',
   'gemini-2.5-flash',
   'gemini-2.0-flash',
   'gemini-2.5-flash-lite',
-  'gemini-flash-latest',
 ]
 
 // ── Mode « rayon » : identifier PLUSIEURS bouteilles sur une photo de rayon ──
@@ -286,27 +291,35 @@ export default async function handler(req, res) {
     throw new Error('claude')
   }
 
-  // ── Course décalée : Groq part immédiatement ; si aucune réponse en 4 s,
-  // Gemini entre en course en PARALLÈLE (puis Claude à 8 s). Le premier JSON
-  // valide gagne — le temps de lecture n'est plus la somme des échecs.
+  // ── Course décalée à tête adaptative ────────────────────────────────────
+  // Le fournisseur qui a réussi la dernière lecture (lambda chaude) ouvre la
+  // course. À froid, c'est Claude : Groq et Gemini reposent sur des quotas
+  // gratuits volatils (modèles retirés, palier à 0) alors que la clé Anthropic
+  // répond de façon fiable — inutile de lui faire attendre 8 s derrière deux
+  // échecs. Les deux autres suivent en décalé comme filets de sécurité, prêts
+  // à prendre le relais si Claude est lui-même limité. Le premier JSON gagne.
   const delai = ms => new Promise(r => setTimeout(r, ms))
   let gagne = false
-  const enCourse = (chaine, attente) => (async () => {
+  const enCourse = (chaine, attente, nom) => (async () => {
     if (attente) {
       await delai(attente)
       if (gagne) throw new Error('déjà-gagné')
     }
     const json = await chaine()
     gagne = true
+    memoire.gagnant = nom
     return json
   })()
 
+  const chaines = { claude: chaineClaude, groq: chaineGroq, gemini: chaineGemini }
+  const ordreDefaut = ['claude', 'groq', 'gemini']
+  const tete = memoire.gagnant && ordreDefaut.includes(memoire.gagnant)
+    ? [memoire.gagnant, ...ordreDefaut.filter(f => f !== memoire.gagnant)]
+    : ordreDefaut
+  const delais = [0, 3000, 5000]
+
   try {
-    const json = await Promise.any([
-      enCourse(chaineGroq, 0),
-      enCourse(chaineGemini, 4000),
-      enCourse(chaineClaude, 8000),
-    ])
+    const json = await Promise.any(tete.map((nom, i) => enCourse(chaines[nom], delais[i], nom)))
     return res.status(200).json({ json, trace })
   } catch {
     // Toutes les chaînes ont échoué — verdict + trace pour diagnostic
@@ -320,4 +333,4 @@ export default async function handler(req, res) {
 
 // Mémoire de la lambda chaude : modèle gagnant par fournisseur + modèles
 // morts (404/400), pour que les lectures suivantes partent du bon endroit.
-const memoire = { groqOk: null, geminiOk: null, morts: new Set() }
+const memoire = { groqOk: null, geminiOk: null, gagnant: null, morts: new Set() }
