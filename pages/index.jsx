@@ -22,6 +22,11 @@ import { removeEnvie } from '../components/Envies'
 import { toast } from '../components/Toast'
 import { normaliser } from '../data/aromes'
 import { WINE_DB_TERROIR } from '../data/wineDatabase'
+import useSwipeNav from '../lib/useSwipeNav'
+
+// Ordre des onglets pour la navigation par glissement (mobile) — reprend les
+// parcours guidés de la nav.
+const SWIPE_ORDER = ['hub', 'trouver', 'cave', 'vins', 'explorer', 'apprendre']
 import { Sparkles, NotebookPen, Wine as WineIcon, X } from 'lucide-react'
 
 const InteractiveMap = dynamic(() => import('../components/InteractiveMap'), { ssr: false })
@@ -264,6 +269,26 @@ export default function App() {
 
   const total = wines.reduce((s, w) => s + w.quantity, 0)
   const ariane = VUES[view]
+
+  // Glissement horizontal entre onglets (mobile). Désactivé pendant la landing
+  // et dès qu'un overlay/fiche est ouvert : le geste ne doit agir que sur la
+  // vue principale.
+  const overlayOuvert = showLanding || showCeSoir || showScan || showAssistant ||
+    showMenu || showRecherche || showCompte || showForm || showOnboarding ||
+    !!detailWine || !!editWine || !!enviePrefill || !!friendCode
+  useSwipeNav({ order: SWIPE_ORDER, current: view, onNavigate: goTo, enabled: !overlayOuvert })
+
+  // Indice unique (tactile) : faire découvrir le glissement entre onglets.
+  useEffect(() => {
+    if (!ready || overlayOuvert) return
+    if (typeof window === 'undefined' || !('ontouchstart' in window)) return
+    try {
+      if (localStorage.getItem('oeno-swipe-hint')) return
+      localStorage.setItem('oeno-swipe-hint', '1')
+      const t = setTimeout(() => toast('Astuce : glissez ← → pour changer d’onglet'), 1200)
+      return () => clearTimeout(t)
+    } catch { /* stockage indisponible */ }
+  }, [ready, overlayOuvert])
 
   if (!ready) {
     return (
