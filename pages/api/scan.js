@@ -48,6 +48,18 @@ const GEMINI_MODELS = [
   'gemini-flash-latest',
 ]
 
+// ── Mode « rayon » : identifier PLUSIEURS bouteilles sur une photo de rayon ──
+const RAYON_PROMPT = `Tu es un sommelier expert. On te montre la photo d'un RAYON de magasin (supermarché, caviste) avec plusieurs bouteilles de vin. Identifie chaque bouteille dont l'étiquette est lisible, de gauche à droite (12 maximum).
+Réponds STRICTEMENT avec un objet JSON valide, sans aucun texte autour, sans balises markdown :
+{"vins":[{"nom": string, "appellation": string|null, "type": "red"|"white"|"rosé"|"sweet"|null, "millesime": number|null, "prixEtiquette": number|null, "confiance": "haute"|"moyenne"|"basse"}]}
+Règles :
+- "nom" : ce qui identifie le mieux la bouteille (marque, domaine ou appellation lisible).
+- "appellation" : l'appellation/IGP si lisible, sinon null. Ne devine pas.
+- "millesime" : l'année EXACTEMENT telle qu'imprimée, sinon null. N'invente jamais.
+- "prixEtiquette" : le prix affiché sur l'étiquette de rayon sous la bouteille, si lisible.
+- Ne liste jamais deux fois la même référence. Ignore les bouteilles trop floues.
+Si l'image n'est pas un rayon de vin ou est illisible : {"vins":[]}`
+
 // ── Parsing tolérant : isole le JSON, répare les réponses tronquées ────────
 function parseJSONRobuste(text) {
   const cleaned = String(text || '').replace(/```json|```/g, '').trim()
@@ -80,7 +92,8 @@ function parseJSONRobuste(text) {
 }
 
 // ── Fournisseurs ────────────────────────────────────────────────────────────
-async function essaiGroq(model, image, trace) {
+// `opts` : { prompt, maxTokens, consigne } — mode étiquette (défaut) ou rayon.
+async function essaiGroq(model, image, trace, opts) {
   const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -89,14 +102,14 @@ async function essaiGroq(model, image, trace) {
     },
     body: JSON.stringify({
       model,
-      max_tokens: 700,
+      max_tokens: opts.maxTokens,
       messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'system', content: opts.prompt },
         {
           role: 'user',
           content: [
             { type: 'image_url', image_url: { url: `data:image/jpeg;base64,${image}` } },
-            { type: 'text', text: "Lis cette étiquette de vin et renvoie uniquement le JSON." },
+            { type: 'text', text: opts.consigne },
           ],
         },
       ],
@@ -127,22 +140,22 @@ async function decouvrirModelesGroq(trace) {
   } catch { return [] }
 }
 
-async function essaiGemini(model, image, trace) {
+async function essaiGemini(model, image, trace, opts) {
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        systemInstruction: { parts: [{ text: opts.prompt }] },
         contents: [{
           role: 'user',
           parts: [
             { inlineData: { mimeType: 'image/jpeg', data: image } },
-            { text: "Lis cette étiquette de vin et renvoie uniquement le JSON." },
+            { text: opts.consigne },
           ],
         }],
-        generationConfig: { maxOutputTokens: 700 },
+        generationConfig: { maxOutputTokens: opts.maxTokens },
       }),
     }
   )
@@ -158,7 +171,7 @@ async function essaiGemini(model, image, trace) {
   return { status: res.status }
 }
 
-async function essaiClaude(image, trace) {
+async function essaiClaude(image, trace, opts) {
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -168,13 +181,13 @@ async function essaiClaude(image, trace) {
     },
     body: JSON.stringify({
       model: 'claude-sonnet-5',
-      max_tokens: 700,
-      system: SYSTEM_PROMPT,
+      max_tokens: opts.maxTokens,
+      system: opts.prompt,
       messages: [{
         role: 'user',
         content: [
           { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: image } },
-          { type: 'text', text: "Lis cette étiquette de vin et renvoie uniquement le JSON." },
+          { type: 'text', text: opts.consigne },
         ],
       }],
     }),
@@ -196,6 +209,12 @@ export default async function handler(req, res) {
   if (!image || typeof image !== 'string') {
     return res.status(400).json({ error: 'api', detail: 'image absente du corps de la requête' })
   }
+
+  // Mode : 'etiquette' (défaut, une bouteille) ou 'rayon' (plusieurs bouteilles).
+  const modeRayon = req.body?.mode === 'rayon'
+  const opts = modeRayon
+    ? { prompt: RAYON_PROMPT, maxTokens: 1600, consigne: 'Identifie chaque bouteille lisible de ce rayon et renvoie uniquement le JSON.' }
+    : { prompt: SYSTEM_PROMPT, maxTokens: 700, consigne: "Lis cette étiquette de vin et renvoie uniquement le JSON." }
 
   const trace = []
   let vuQuota = false
@@ -225,7 +244,7 @@ export default async function handler(req, res) {
     ]
     let dernierStatus = null
     for (const model of ordre) {
-      const r = await tenter(() => essaiGroq(model, image, trace))
+      const r = await tenter(() => essaiGroq(model, image, trace, opts))
       if (r && typeof r === 'object') { memoire.groqOk = model; return r }
       if (typeof r === 'number') {
         dernierStatus = r
@@ -236,7 +255,7 @@ export default async function handler(req, res) {
     if ([400, 404].includes(dernierStatus) || ordre.length === 0) {
       const decouverts = await decouvrirModelesGroq(trace)
       for (const model of decouverts.slice(0, 3)) {
-        const r = await tenter(() => essaiGroq(model, image, trace))
+        const r = await tenter(() => essaiGroq(model, image, trace, opts))
         if (r && typeof r === 'object') { memoire.groqOk = model; return r }
       }
     }
@@ -250,7 +269,7 @@ export default async function handler(req, res) {
       ...GEMINI_MODELS.filter(m => m !== memoire.geminiOk && !memoire.morts.has(m)),
     ]
     for (const model of ordre) {
-      const r = await tenter(() => essaiGemini(model, image, trace))
+      const r = await tenter(() => essaiGemini(model, image, trace, opts))
       if (r && typeof r === 'object') { memoire.geminiOk = model; return r }
       if (typeof r === 'number') {
         if ([404, 400].includes(r)) memoire.morts.add(model)
@@ -262,7 +281,7 @@ export default async function handler(req, res) {
 
   const chaineClaude = async () => {
     if (!process.env.ANTHROPIC_API_KEY) { trace.push('claude:pas-de-clé'); throw new Error('claude') }
-    const r = await tenter(() => essaiClaude(image, trace))
+    const r = await tenter(() => essaiClaude(image, trace, opts))
     if (r && typeof r === 'object') return r
     throw new Error('claude')
   }

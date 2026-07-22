@@ -15,6 +15,7 @@ import { cepagesOfficiels } from '../data/appellationsCepages'
 import { supabase } from '../lib/supabase'
 import { logAchat } from '../lib/achats'
 import { partagerVin } from '../lib/partage'
+import BadgeGrandPublic from './BadgeGrandPublic'
 
 const DegustationSimulateur = dynamic(() => import('./DegustationSimulateur'), { ssr: false })
 
@@ -547,6 +548,8 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
   const [added, setAdded] = useState(false)
   const [achat, setAchat] = useState(null) // décision en rayon : null | 'oui' | 'non'
   const [partageCopie, setPartageCopie] = useState(false)
+  const [modeRayon, setModeRayon] = useState(false) // photo d'un rayon entier (multi-bouteilles)
+  const [rayonVins, setRayonVins] = useState(null)  // bouteilles identifiées sur le rayon
   const [prixRayon, setPrixRayon] = useState('')  // prix saisi en rayon (string du champ)
   const [prixDraft, setPrixDraft] = useState('')  // brouillon pour l'édition post-résultat
   const [editingPrix, setEditingPrix] = useState(false)
@@ -735,7 +738,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
     if (step !== 'error' || errType !== 'quota' || retryIn <= 0) return
     const t = setTimeout(() => {
       setRetryIn(v => {
-        if (v <= 1) { analyser(); return 0 }
+        if (v <= 1) { (modeRayon ? analyserRayon : analyser)(); return 0 }
         return v - 1
       })
     }, 1000)
@@ -820,6 +823,58 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
     }
   }
 
+  // ── Mode rayon : une photo, plusieurs bouteilles identifiées d'un coup ────
+  const analyserRayon = async () => {
+    if (!photo) return
+    setRetryIn(0)
+    setStep('loading')
+    try {
+      const res = await fetch('/api/scan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: photo.split(',')[1], mode: 'rayon' }),
+      })
+      const data = await res.json().catch(() => ({}))
+      const vins = data?.json?.vins
+      if (!res.ok || !Array.isArray(vins)) {
+        setErrDetail(data.detail || `HTTP ${res.status}`)
+        const type = ['quota', 'config', 'api'].includes(data.error) ? data.error : 'api'
+        setErrType(type)
+        if (type === 'quota' && autoRetriesRef.current < 2) {
+          autoRetriesRef.current += 1
+          setRetryIn(35)
+        }
+        setStep('error')
+        return
+      }
+      if (!vins.length) {
+        setErrDetail(null)
+        setErrType('unreadable')
+        setStep('error')
+        return
+      }
+      // Chaque bouteille lue est rapprochée de la bibliothèque, puis les plus
+      // intéressantes remontent en tête (le « surlignage » du rayon).
+      const enrichis = vins.map(v => {
+        const m = matchWine({ appellation: v.appellation || v.nom, type: v.type })
+        const raisons = []
+        if (m) {
+          if (v.millesime && m.bonsMilsimes?.includes(Number(v.millesime))) raisons.push(`bon millésime (${v.millesime})`)
+          if (v.prixEtiquette && m.prixMoyen && v.prixEtiquette <= m.prixMoyen * 0.85) raisons.push('prix sous le marché')
+          if (m.difficulte === 'facile') raisons.push('facile à aimer')
+        }
+        return { ...v, matched: m, raisons, interessant: raisons.length > 0 }
+      })
+      enrichis.sort((a, b) => (b.interessant - a.interessant) || (!!b.matched - !!a.matched))
+      setRayonVins(enrichis)
+      setStep('rayon')
+    } catch (e) {
+      setErrDetail(`réseau : ${e?.message || 'inconnu'}`)
+      setErrType('api')
+      setStep('error')
+    }
+  }
+
   // Mode secours : identifier le vin par son nom quand la lecture IA échoue.
   // Réutilise matchWine → même écran résultat que le scan (fiche, prix, cave).
   const chercherManuel = () => {
@@ -849,6 +904,8 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
     autoRetriesRef.current = 0
     setAdded(false)
     setAchat(null)
+    setModeRayon(false)
+    setRayonVins(null)
     setPrixRayon('')
     setPrixDraft('')
     setEditingPrix(false)
@@ -993,6 +1050,16 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
               </button>
 
               <button
+                onClick={() => { setModeRayon(true); ouvrirCamera() }}
+                className="w-full min-h-[52px] flex items-center justify-center gap-2.5 rounded-2xl border border-gold-500/40 text-sm font-semibold text-anthracite-800 hover:border-gold-500/80 hover:bg-white active:scale-[0.99] transition-all duration-300 cursor-pointer"
+                style={{ background: 'rgba(199,161,90,0.07)' }}
+              >
+                <Library size={16} className="text-gold-600" />
+                Photographier un rayon entier
+                <span className="text-[9px] uppercase tracking-wider font-bold text-gold-700 bg-gold-500/15 px-1.5 py-0.5 rounded-full">Nouveau</span>
+              </button>
+
+              <button
                 onClick={() => galleryRef.current?.click()}
                 className="w-full min-h-[52px] flex items-center justify-center gap-2.5 rounded-2xl border border-anthracite-900/15 text-sm font-medium text-anthracite-700 hover:border-anthracite-900/40 hover:bg-white active:scale-[0.99] transition-all duration-300 cursor-pointer"
               >
@@ -1032,7 +1099,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                 </div>
                 <div className="absolute top-3 inset-x-0 text-center">
                   <span className="text-cream/90 text-xs font-medium px-3 py-1 rounded-full bg-black/35 backdrop-blur">
-                    Alignez l'étiquette dans le cadre
+                    {modeRayon ? 'Cadrez le rayon — plusieurs bouteilles à la fois' : "Alignez l'étiquette dans le cadre"}
                   </span>
                 </div>
                 {torchDispo && (
@@ -1078,12 +1145,12 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                 <img src={photo} alt="Aperçu de l'étiquette photographiée" className="max-h-72 w-auto max-w-full object-contain" />
               </div>
               <button
-                onClick={() => setStep('prix')}
+                onClick={() => (modeRayon ? analyserRayon() : setStep('prix'))}
                 className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full text-sm font-semibold text-cream cursor-pointer transition-all duration-300 hover:brightness-110 active:scale-[0.98] shadow-wine"
                 style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
               >
                 <Sparkles size={15} className="text-gold-400" />
-                Lire l'étiquette
+                {modeRayon ? 'Analyser le rayon' : "Lire l'étiquette"}
               </button>
               <button
                 onClick={recommencer}
@@ -1146,9 +1213,13 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                 <span className="absolute inset-0 rounded-full border-2 border-transparent border-t-gold-500 animate-spin" />
                 <span className="absolute inset-0 flex items-center justify-center text-2xl" aria-hidden="true">🍷</span>
               </div>
-              <div className="font-serif text-lg text-anthracite-900">Lecture de l'étiquette…</div>
+              <div className="font-serif text-lg text-anthracite-900">
+                {modeRayon ? 'Lecture du rayon…' : "Lecture de l'étiquette…"}
+              </div>
               <p className="text-xs text-anthracite-400 mt-2 max-w-[16rem] leading-relaxed">
-                Notre sommelier déchiffre l'appellation, le millésime et les cépages.
+                {modeRayon
+                  ? 'Notre sommelier identifie chaque bouteille lisible du rayon.'
+                  : "Notre sommelier déchiffre l'appellation, le millésime et les cépages."}
               </p>
             </div>
           )}
@@ -1221,6 +1292,75 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
           )}
 
           {/* ── RESULT : vin reconnu dans la bibliothèque ───────────────── */}
+          {/* ── RAYON : liste des bouteilles identifiées sur la photo ────── */}
+          {step === 'rayon' && rayonVins && (
+            <div className="space-y-3 animate-slide-up">
+              <div className="text-center pb-1">
+                <div className="font-serif text-lg text-anthracite-900">
+                  {rayonVins.length} bouteille{rayonVins.length > 1 ? 's' : ''} identifiée{rayonVins.length > 1 ? 's' : ''}
+                </div>
+                <p className="text-xs text-anthracite-500 mt-1">
+                  Les plus intéressantes d'abord — touchez un vin pour sa fiche complète.
+                </p>
+              </div>
+              {rayonVins.map((v, i) => (
+                <div
+                  key={`${v.nom}-${i}`}
+                  onClick={() => v.matched && setFicheWine(v.matched)}
+                  role={v.matched ? 'button' : undefined}
+                  className={`rounded-2xl border p-3.5 transition-all ${
+                    v.interessant
+                      ? 'border-gold-500/50 shadow-card cursor-pointer hover:-translate-y-0.5'
+                      : v.matched
+                        ? 'border-anthracite-900/[0.08] bg-white cursor-pointer hover:border-anthracite-900/25'
+                        : 'border-anthracite-900/[0.06] bg-anthracite-50/60'
+                  }`}
+                  style={v.interessant ? { background: 'rgba(199,161,90,0.08)' } : {}}
+                >
+                  <div className="flex items-start gap-3">
+                    <WineVisuel type={v.matched?.type || v.type || 'red'} size={20} className="mt-0.5 flex-shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-wine-name text-xl text-anthracite-900 leading-tight">
+                          {v.matched?.appellation || v.nom}
+                        </span>
+                        {v.interessant && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-gold-500/20 text-gold-700">
+                            <Sparkles size={9} /> À prendre
+                          </span>
+                        )}
+                        {v.matched?.grandPublic && <BadgeGrandPublic compact />}
+                      </div>
+                      <div className="text-[11px] text-anthracite-400 mt-0.5">
+                        {[
+                          v.matched?.region,
+                          v.millesime,
+                          v.prixEtiquette ? `${v.prixEtiquette} € en rayon` : (v.matched ? `~${v.matched.prixMoyen} € habituellement` : null),
+                        ].filter(Boolean).join(' · ')}
+                      </div>
+                      {v.raisons.length > 0 && (
+                        <p className="text-[11px] text-gold-700 font-medium mt-1">
+                          {v.raisons.join(' · ')}
+                        </p>
+                      )}
+                      {!v.matched && (
+                        <p className="text-[11px] text-anthracite-400 italic mt-1">
+                          Hors bibliothèque — scannez son étiquette seule pour l'analyser en détail.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <button
+                onClick={recommencer}
+                className="w-full min-h-[44px] flex items-center justify-center gap-2 rounded-full text-xs font-medium text-anthracite-500 hover:text-anthracite-800 transition-colors duration-300 cursor-pointer"
+              >
+                <Camera size={12} /> Photographier un autre rayon
+              </button>
+            </div>
+          )}
+
           {step === 'result' && matched && (
             <div className="space-y-4 animate-slide-up">
               <PrixRayonBloc
