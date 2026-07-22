@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import { X, Camera, Image as ImageIcon, RefreshCw, Sparkles, Plus, Check, MapPin, BookOpen, Tag, Pencil, UtensilsCrossed, Heart, Globe, Library } from 'lucide-react'
+import { X, Camera, Image as ImageIcon, RefreshCw, Sparkles, Plus, Check, MapPin, BookOpen, Tag, Pencil, UtensilsCrossed, Heart, Globe, Library, Zap, ZapOff } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
 import { regionInfo } from '../data/regionsInfo'
 import { normaliser } from '../data/aromes'
@@ -507,6 +507,87 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
   const [showSimulateur, setShowSimulateur] = useState(false)
   const cameraRef = useRef(null)
   const galleryRef = useRef(null)
+  // Caméra intégrée (flux live) — repli sur la caméra système si indisponible/refusée
+  const videoRef = useRef(null)
+  const streamRef = useRef(null)
+  const [torchDispo, setTorchDispo] = useState(false)
+  const [torchOn, setTorchOn] = useState(false)
+
+  const fermerCamera = () => {
+    const s = streamRef.current
+    if (s) { s.getTracks().forEach(t => t.stop()); streamRef.current = null }
+    if (videoRef.current) videoRef.current.srcObject = null
+    setTorchDispo(false)
+    setTorchOn(false)
+  }
+
+  const ouvrirCamera = async () => {
+    // Pas de caméra live possible (navigateur ancien, contexte non sécurisé) → caméra système
+    if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
+      cameraRef.current?.click()
+      return
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } },
+        audio: false,
+      })
+      streamRef.current = stream
+      const track = stream.getVideoTracks()[0]
+      setTorchDispo(!!track?.getCapabilities?.().torch)
+      setTorchOn(false)
+      setStep('camera') // le flux est rattaché à la balise <video> par l'effet ci-dessous
+    } catch {
+      // Permission refusée ou aucune caméra → repli transparent sur la caméra système
+      fermerCamera()
+      cameraRef.current?.click()
+    }
+  }
+
+  const basculerTorche = async () => {
+    const track = streamRef.current?.getVideoTracks?.()[0]
+    if (!track) return
+    try {
+      const next = !torchOn
+      await track.applyConstraints({ advanced: [{ torch: next }] })
+      setTorchOn(next)
+    } catch { /* torche non pilotable : on ignore */ }
+  }
+
+  const capturerDepuisVideo = async () => {
+    const video = videoRef.current
+    if (!video || !video.videoWidth) return
+    try {
+      // Même cadrage que resizeImage : max 1024×1536, JPEG 0.8
+      const scale = Math.min(1, 1024 / video.videoWidth, 1536 / video.videoHeight)
+      const w = Math.max(1, Math.round(video.videoWidth * scale))
+      const h = Math.max(1, Math.round(video.videoHeight * scale))
+      const canvas = document.createElement('canvas')
+      canvas.width = w
+      canvas.height = h
+      canvas.getContext('2d').drawImage(video, 0, 0, w, h)
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.8)
+      fermerCamera()
+      autoRetriesRef.current = 0
+      setPhoto(dataUrl)
+      setStep('preview')
+    } catch {
+      fermerCamera()
+      setErrType('unreadable')
+      setStep('error')
+    }
+  }
+
+  // Rattache le flux à la vidéo dès que l'écran caméra est monté (évite la course
+  // entre getUserMedia et le rendu React). Coupe la caméra au démontage du composant.
+  useEffect(() => {
+    if (step === 'camera' && streamRef.current && videoRef.current && !videoRef.current.srcObject) {
+      videoRef.current.srcObject = streamRef.current
+      videoRef.current.play().catch(() => {})
+    }
+  }, [step])
+
+  useEffect(() => () => fermerCamera(), []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Après identification vision : mémoriser et enrichir si le vin est inconnu.
   const traiterDecouverte = async (json, matchedWine) => {
@@ -704,6 +785,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
   }
 
   const recommencer = () => {
+    fermerCamera()
     setStep('idle')
     setPhoto(null)
     setParsed(null)
@@ -829,7 +911,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
           {step === 'idle' && (
             <div className="space-y-3 animate-fade-in">
               <button
-                onClick={() => cameraRef.current?.click()}
+                onClick={ouvrirCamera}
                 className="w-full flex flex-col items-center justify-center gap-3 py-10 rounded-2xl text-cream cursor-pointer transition-all duration-300 hover:brightness-110 active:scale-[0.99] shadow-wine"
                 style={{ background: 'linear-gradient(150deg, #8c2f39 0%, #5c0d22 100%)' }}
               >
@@ -858,6 +940,63 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                      className="hidden" onChange={onFile} aria-hidden="true" tabIndex={-1} />
               <input ref={galleryRef} type="file" accept="image/*"
                      className="hidden" onChange={onFile} aria-hidden="true" tabIndex={-1} />
+            </div>
+          )}
+
+          {/* ── CAMERA : flux live intégré ──────────────────────────────── */}
+          {step === 'camera' && (
+            <div className="animate-fade-in">
+              <div className="relative rounded-2xl overflow-hidden bg-black" style={{ aspectRatio: '3 / 4' }}>
+                {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+                <video
+                  ref={videoRef}
+                  playsInline
+                  muted
+                  autoPlay
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                {/* Cadre de visée */}
+                <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+                  <div className="w-[80%] h-[62%] rounded-lg border-2 border-gold-400/85"
+                       style={{ boxShadow: '0 0 0 2000px rgba(0,0,0,0.34)' }} />
+                </div>
+                <div className="absolute top-3 inset-x-0 text-center">
+                  <span className="text-cream/90 text-xs font-medium px-3 py-1 rounded-full bg-black/35 backdrop-blur">
+                    Alignez l'étiquette dans le cadre
+                  </span>
+                </div>
+                {torchDispo && (
+                  <button
+                    onClick={basculerTorche}
+                    className="absolute top-3 right-3 w-10 h-10 rounded-full bg-black/40 backdrop-blur flex items-center justify-center text-cream cursor-pointer"
+                    aria-label={torchOn ? 'Éteindre la torche' : 'Allumer la torche'}
+                  >
+                    {torchOn ? <Zap size={18} className="text-gold-400" /> : <ZapOff size={18} />}
+                  </button>
+                )}
+              </div>
+
+              <div className="flex items-center justify-between mt-5 px-2">
+                <button
+                  onClick={() => { fermerCamera(); setStep('idle') }}
+                  className="text-xs font-medium text-anthracite-500 hover:text-anthracite-800 transition-colors cursor-pointer w-20 text-left"
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={capturerDepuisVideo}
+                  aria-label="Prendre la photo"
+                  className="w-16 h-16 rounded-full border-4 border-wine-800 flex items-center justify-center bg-white active:scale-95 transition-transform cursor-pointer shadow-wine"
+                >
+                  <span className="w-12 h-12 rounded-full" style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }} />
+                </button>
+                <button
+                  onClick={() => { fermerCamera(); galleryRef.current?.click() }}
+                  className="text-xs font-medium text-anthracite-500 hover:text-anthracite-800 transition-colors cursor-pointer w-20 text-right"
+                >
+                  Galerie
+                </button>
+              </div>
             </div>
           )}
 
