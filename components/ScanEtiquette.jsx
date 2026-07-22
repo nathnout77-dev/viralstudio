@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import { X, Camera, Image as ImageIcon, RefreshCw, Sparkles, Plus, Check, MapPin, BookOpen, Tag, Pencil, UtensilsCrossed, Heart, Globe, Library, Zap, ZapOff } from 'lucide-react'
+import { X, Camera, Image as ImageIcon, RefreshCw, Sparkles, Plus, Check, MapPin, BookOpen, Tag, Pencil, UtensilsCrossed, Heart, Globe, Library, Zap, ZapOff, ShoppingCart } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
 import { regionInfo } from '../data/regionsInfo'
 import { normaliser } from '../data/aromes'
@@ -1173,6 +1173,11 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                   <div className="relative">
                     <WineVisuel type={matched.type} size={20} className="mb-1" />
                     <div className="font-wine-name text-4xl text-cream">{matched.appellation}</div>
+                    {matched.grandPublic && (
+                      <span className="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-white/20 text-cream">
+                        <ShoppingCart size={10} /> Produit grand public
+                      </span>
+                    )}
                     <p className="text-cream/70 text-xs mt-1 flex items-center gap-1.5">
                       <MapPin size={10} /> {matched.region} · {matched.typeLabel}
                       {parsed?.millesime ? ` · millésime lu : ${parsed.millesime}` : ''}

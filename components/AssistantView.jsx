@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { X, Send, Sparkles, RefreshCw, Wine } from 'lucide-react'
-import { WINE_DB, MILLESIMES_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
+import { WINE_DB, WINE_DB_TERROIR, WINE_DB_GRAND_PUBLIC, MILLESIMES_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
 import { profilApprisPourAssistant } from '../data/goutsAppris'
 import JaugesGout from './JaugesGout'
 import WineVisuel from './WineVisuel'
@@ -100,8 +100,11 @@ function buildSystemPrompt(profil) {
   // déjà ces appellations, la base sert à contraindre le choix et donner
   // les prix), millésimes résumés en années à privilégier par région,
   // pas de lexique embarqué (les fiches de l'app s'en chargent).
-  const vins = WINE_DB.map(w =>
+  const vins = WINE_DB_TERROIR.map(w =>
     [w.appellation, w.region, w.typeLabel, `${w.prixMoyen}€`, w.difficulte].join('|')
+  ).join('\n')
+  const vinsGrandPublic = WINE_DB_GRAND_PUBLIC.map(w =>
+    [w.appellation, w.region, w.typeLabel, `${w.prixMoyen}€`].join('|')
   ).join('\n')
   const topMillesimes = {}
   for (const m of MILLESIMES_DB) {
@@ -128,6 +131,9 @@ ${appris ? `Goûts appris de ses ${appris.degustationsNotees} dégustations not�
 
 # Vins de l'application (recommande d'abord dans cette liste — appellation|région|type|prix moyen|difficulté)
 ${vins}
+
+# Repères grand public / supermarché (marques de grande distribution — appellation|région|type|prix) — mentionne-les quand l'utilisateur parle rayon/enseigne/petit budget, et signale-les toujours « (grand public) »
+${vinsGrandPublic}
 
 # Années à privilégier par région (millésimes récents)
 ${millesimes}

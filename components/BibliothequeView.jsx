@@ -12,6 +12,7 @@ import useModalBehavior from '../lib/useModal'
 import { tintStyle, pastilleStyle, regionMonogram, collectionNumero } from '../lib/wineStyle'
 import WineTile from './WineTile'
 import WineVisuel from './WineVisuel'
+import BadgeGrandPublic from './BadgeGrandPublic'
 import { loadDecouvertes, removeDecouverte, decouverteNumero } from '../lib/decouvertes'
 
 // Chargé dynamiquement : Comparateur importe FicheVin de ce fichier — le
@@ -322,6 +323,7 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
             <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-anthracite-100 text-anthracite-700">
               ~ {wine.prixMoyen} € la bouteille
             </span>
+            {wine.grandPublic && <BadgeGrandPublic />}
           </div>
           <p className="text-sm text-anthracite-600 leading-relaxed -mt-1">
             <span className="font-semibold text-anthracite-800">Pour qui ? </span>{wine.pourQui}

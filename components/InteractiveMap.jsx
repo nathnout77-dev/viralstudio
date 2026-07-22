@@ -4,7 +4,11 @@ import RoutesDesVins from './RoutesDesVins'
 import AccordInverse from './AccordInverse'
 import { EnvieButton } from './Envies'
 import dynamic from 'next/dynamic'
-import { WINE_DB, WINE_DB_DOMAINES, gardeForMillesime } from '../data/wineDatabase'
+import { WINE_DB, WINE_DB_TERROIR, WINE_DB_GRAND_PUBLIC, WINE_DB_DOMAINES, gardeForMillesime } from '../data/wineDatabase'
+
+// La carte des vignobles ne montre QUE les terroirs (appellations) : les vins de
+// grande distribution (marques de supermarché) ne sont pas des terroirs.
+const GRAND_PUBLIC_IDS = new Set(WINE_DB_GRAND_PUBLIC.map(w => w.id))
 import { regionInfo } from '../data/regionsInfo'
 import PetitsPrix from './PetitsPrix'
 import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
@@ -295,11 +299,11 @@ export default function InteractiveMap({ onAddWine, onNoter }) {
   const [activeRegion, setActiveRegion] = useState('Toutes')
   const mapRef = useRef(null)
 
-  const regions = ['Toutes', ...new Set(WINE_DB.map(w => w.region))]
+  const regions = ['Toutes', ...new Set(WINE_DB_TERROIR.map(w => w.region))]
 
   const visibleWines = activeRegion === 'Toutes'
-    ? WINE_DB
-    : WINE_DB.filter(w => w.region === activeRegion)
+    ? WINE_DB_TERROIR
+    : WINE_DB_TERROIR.filter(w => w.region === activeRegion)
 
   // Anti-superposition : plusieurs vins (ex. variantes rouge/blanc/rosé d'une même
   // appellation) partagent les mêmes coordonnées. Sans décalage, un seul marqueur est
@@ -330,7 +334,9 @@ export default function InteractiveMap({ onAddWine, onNoter }) {
   // Domaines du terroir sélectionné, pour la carte narrative.
   const regionDomaines = useMemo(() => {
     if (activeRegion === 'Toutes') return []
-    return WINE_DB_DOMAINES.filter(d => d.regions.includes(activeRegion))
+    return WINE_DB_DOMAINES.filter(d =>
+      d.regions.includes(activeRegion) && d.wines.some(w => !GRAND_PUBLIC_IDS.has(w.id))
+    )
   }, [activeRegion])
 
   useEffect(() => {
@@ -349,7 +355,7 @@ export default function InteractiveMap({ onAddWine, onNoter }) {
       mapRef.current.flyTo([46.8, 2.5], 6, { duration: 1.3 })
       return
     }
-    const wines = WINE_DB.filter(w => w.region === activeRegion)
+    const wines = WINE_DB_TERROIR.filter(w => w.region === activeRegion)
     if (!wines.length) return
     const lat = wines.reduce((s, w) => s + w.lat, 0) / wines.length
     const lng = wines.reduce((s, w) => s + w.lng, 0) / wines.length
@@ -380,7 +386,7 @@ export default function InteractiveMap({ onAddWine, onNoter }) {
           <p className="section-sub">
             {view === 'routes'
               ? '6 itinéraires œnotouristiques, tracés jour par jour'
-              : `${WINE_DB.length} appellations — cliquez pour explorer et ajouter à votre cave`}
+              : `${WINE_DB_TERROIR.length} appellations — cliquez pour explorer et ajouter à votre cave`}
           </p>
         </div>
       </div>

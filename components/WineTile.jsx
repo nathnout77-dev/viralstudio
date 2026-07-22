@@ -8,6 +8,7 @@ import JaugesGout from './JaugesGout'
 import useTilt from '../lib/useTilt'
 import { buildRaison } from '../lib/suggestions'
 import { millesimesAPrivilegier } from '../lib/millesimes'
+import BadgeGrandPublic from './BadgeGrandPublic'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // WineTile — carte de vin unique et réutilisable.
@@ -96,6 +97,9 @@ export default function WineTile({
           {typeLabel && <span className="text-[9px] uppercase tracking-[0.18em] font-semibold text-anthracite-500">{typeLabel}</span>}
         </div>
 
+        {wine.grandPublic && (
+          <div className="flex justify-center mb-2"><BadgeGrandPublic compact /></div>
+        )}
         {enUneMot && <p className="text-xs text-anthracite-500 italic mb-3 line-clamp-1 text-center">« {enUneMot} »</p>}
         {wine.jauges && <JaugesGout jauges={wine.jauges} compact animate={false} />}
 
@@ -149,6 +153,7 @@ export default function WineTile({
               <div className="text-[11px] text-anthracite-400 mt-0.5">
                 {[region, typeLabel, prixMoyen != null ? `~${prixMoyen} €` : null].filter(Boolean).join(' · ')}
               </div>
+              {wine.grandPublic && <div className="mt-1"><BadgeGrandPublic compact /></div>}
             </div>
             <span className="flex items-center gap-1.5 flex-shrink-0" onClick={e => e.stopPropagation()}>
               {showEnvie && <EnvieButton appellation={appellation} size={12} className="!w-6 !h-6" />}

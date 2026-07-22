@@ -6,6 +6,7 @@ import { normaliser } from '../data/aromes'
 import PetitsPrix from './PetitsPrix'
 import WineVisuel from './WineVisuel'
 import { FicheVin } from './BibliothequeView'
+import BadgeGrandPublic from './BadgeGrandPublic'
 
 const REGIONS = ['Toutes','Bordeaux','Bourgogne','Rhône Nord','Rhône Sud','Alsace','Loire','Provence','Languedoc','Beaujolais','Jura','Sud-Ouest']
 const TYPES   = ['Tous','Rouge','Blanc','Rosé','Liquoreux']
@@ -270,7 +271,10 @@ export default function MillesimesView() {
                   <WineVisuel type={vinFocus.type} size={22} />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="font-serif text-base font-bold text-anthracite-900">{vinFocus.appellation}</div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <div className="font-serif text-base font-bold text-anthracite-900">{vinFocus.appellation}</div>
+                    {vinFocus.grandPublic && <BadgeGrandPublic compact />}
+                  </div>
                   <div className="text-[11px] text-anthracite-500">{vinFocus.region} · {vinFocus.typeLabel} · ~{vinFocus.prixMoyen} €</div>
                   <div className="flex items-center gap-1.5 flex-wrap mt-2.5">
                     <span className="text-[10px] uppercase tracking-wider font-bold text-gold-700">Millésimes à privilégier :</span>

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Wine, Library, MapPin, Sparkles, BookOpen, ChevronDown, Utensils, ArrowRight, Gauge, Hourglass, Camera, GraduationCap, Compass, NotebookPen, Users, Play, UtensilsCrossed } from 'lucide-react'
 import { CAPSULES } from '../data/capsules'
 import { CapsulePlayer } from './Capsules'
-import { WINE_DB, MILLESIMES_DB, CONFIDENTIEL_DOMAINES, WINE_DB_BY_REGION } from '../data/wineDatabase'
+import { WINE_DB, WINE_DB_TERROIR, WINE_DB_GRAND_PUBLIC, MILLESIMES_DB, CONFIDENTIEL_DOMAINES, WINE_DB_BY_REGION } from '../data/wineDatabase'
 import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
 import RoueAromes from './RoueAromes'
 import useCtaBreathe from '../lib/useCtaBreathe'
@@ -262,13 +262,14 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
   }, [])
 
   // ── Stats (calculées depuis WINE_DB / MILLESIMES_DB) ────────────────────
-  const totRegions  = new Set(WINE_DB.map(w => w.region)).size
-  const nVins       = useCountUp(WINE_DB.length, statsOn, reduced)
+  const totRegions  = new Set(WINE_DB_TERROIR.map(w => w.region)).size
+  const nVins       = useCountUp(WINE_DB_TERROIR.length, statsOn, reduced)
   const nRegions    = useCountUp(totRegions, statsOn, reduced)
   const nFaciles    = useCountUp(WINE_DB.filter(w => w.difficulte === 'facile').length, statsOn, reduced)
   const nDomaines   = useCountUp(WINE_DB.reduce((s, w) => s + w.domaines.length, 0), statsOn, reduced)
   const nMillesimes = useCountUp(MILLESIMES_DB.length, statsOn, reduced)
   const nCepages    = useCountUp(new Set(WINE_DB.flatMap(w => w.cepages)).size, statsOn, reduced)
+  const nGrandPublic = useCountUp(WINE_DB_GRAND_PUBLIC.length, statsOn, reduced)
 
   // ── Domaine du moment — un nouveau domaine à chaque visite de la page ──
   const [domaineIdx] = useState(() =>
@@ -287,7 +288,7 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
     { icon: Camera, title: 'Scannez une étiquette', desc: 'Une bouteille vous intrigue au restaurant ? Photographiez l\'étiquette : Œno vous la décode en quelques secondes.', action: onScan, cta: 'Scanner', color: '#a16207' },
     { icon: Sparkles, title: 'Le Goût-o-mètre', desc: 'Café ou thé ? Confiture ou citron ? Répondez sur VOS goûts, on trouve VOS vins.', action: () => onTabChange('sommelier'), cta: 'Faire le test', color: '#b8722c' },
     { icon: UtensilsCrossed, title: 'Le Mode Dîner', desc: 'Entrée, plat, dessert : composez le menu des vins de votre repas, comme au restaurant.', action: () => { try { sessionStorage.setItem('oeno-sommelier-tool', 'diner') } catch {} ; onTabChange('sommelier') }, cta: 'Composer', color: '#72102a' },
-    { icon: Library, title: `${WINE_DB.length} vins décodés`, desc: 'Chaque appellation expliquée simplement : jauges de goût, prix moyen, "pour qui ?".', action: () => onTabChange('vins'), cta: 'Explorer', color: '#4d7c50' },
+    { icon: Library, title: `${WINE_DB_TERROIR.length} vins décodés`, desc: 'Chaque appellation expliquée simplement : jauges de goût, prix moyen, "pour qui ?".', action: () => onTabChange('vins'), cta: 'Explorer', color: '#4d7c50' },
     { icon: MapPin, title: 'La carte des vignobles', desc: `Voyagez dans ${totRegions} régions, cliquez, découvrez, ajoutez à votre cave.`, action: () => onTabChange('carte'), cta: 'Voyager', color: '#3d5a80' },
     { icon: Wine, title: 'Votre cave, simplifiée', desc: 'Suivez vos bouteilles et sachez toujours laquelle ouvrir ce soir.', action: onEnter, cta: 'Ma cave', color: '#5c0d22' },
     { icon: BookOpen, title: 'Le lexique décodé', desc: 'Tanins, millésime, carafage… tous les mots compliqués expliqués comme à un ami.', action: () => onTabChange('guide'), cta: 'Apprendre', color: '#6b4a3a' },
@@ -300,7 +301,7 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
 
   // Caractéristiques autour de la bouteille (scène 3)
   const bottleFeats = [
-    { icon: Library,   t: `${WINE_DB.length} vins décodés`,     d: 'Chaque appellation en langage humain.' },
+    { icon: Library,   t: `${WINE_DB_TERROIR.length} vins décodés`,     d: 'Chaque appellation en langage humain.' },
     { icon: MapPin,    t: `${totRegions} régions viticoles`,    d: 'De Bordeaux à la Toscane, sans passeport.' },
     { icon: Gauge,     t: 'Jauges de goût',                     d: 'Puissance, douceur, tanins — lisibles en un regard.' },
     { icon: Hourglass, t: 'Garde par millésime',                d: 'Sait exactement quand ouvrir chaque bouteille.' },
@@ -521,6 +522,7 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
               [nMillesimes, 'Millésimes analysés'],
               [nDomaines,   'Domaines recommandés'],
               [nFaciles,    '« Faciles à aimer »'],
+              [nGrandPublic, 'Repères grand public'],
             ].map(([n, label]) => (
               <div key={label}>
                 <div className="font-serif text-6xl sm:text-7xl font-light text-anthracite-950 tabular-nums leading-none">{n}</div>
