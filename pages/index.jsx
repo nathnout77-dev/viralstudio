@@ -126,8 +126,18 @@ export default function App() {
     if (seen) setShowLanding(false)
     setProfil(loadProfil())
     // Lien « cave entre amis » : /?cave=CODE
-    const code = new URLSearchParams(window.location.search).get('cave')
+    const params = new URLSearchParams(window.location.search)
+    const code = params.get('cave')
     if (code) setFriendCode(code)
+    // Raccourcis écran d'accueil (manifest shortcuts) : /?action=scan | cesoir
+    const action = params.get('action')
+    if (action === 'scan' || action === 'cesoir') {
+      sessionStorage.setItem('landing-seen', '1')
+      setShowLanding(false)
+      if (action === 'scan') setShowScan(true)
+      else setShowCeSoir(true)
+      window.history.replaceState(null, '', window.location.pathname)
+    }
     setReady(true)
   }, [])
 

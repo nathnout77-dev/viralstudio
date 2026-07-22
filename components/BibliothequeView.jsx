@@ -1,9 +1,9 @@
 import { useState, useMemo, useEffect } from 'react'
-import { Library, Search, X, Plus, Check, Thermometer, Clock, Wine, MapPin, ChevronDown, ExternalLink, Sparkles, NotebookPen, ChefHat, Camera, Globe, Trash2, Grape, UtensilsCrossed, Calendar, Scale } from 'lucide-react'
+import { Library, Search, X, Plus, Check, Thermometer, Clock, Wine, MapPin, ChevronDown, ExternalLink, Sparkles, NotebookPen, ChefHat, Camera, Globe, Trash2, Grape, UtensilsCrossed, Calendar, Scale, Share2 } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import AccordInverse from './AccordInverse'
 import { EnvieButton } from './Envies'
-import { WINE_DB, REGIONS_LIST, DIFFICULTE_CONFIG, MILLESIMES_DB, gardeForMillesime, variantesDe } from '../data/wineDatabase'
+import { WINE_DB, REGIONS_LIST, DIFFICULTE_CONFIG, MILLESIMES_DB, gardeForMillesime, variantesDe, vinsSimilaires } from '../data/wineDatabase'
 import { millesimesAPrivilegier } from '../lib/millesimes'
 import JaugesGout from './JaugesGout'
 import Terme from './Tooltip'
@@ -14,6 +14,7 @@ import WineTile from './WineTile'
 import WineVisuel from './WineVisuel'
 import BadgeGrandPublic from './BadgeGrandPublic'
 import { loadDecouvertes, removeDecouverte, decouverteNumero } from '../lib/decouvertes'
+import { partagerVin } from '../lib/partage'
 
 // Chargé dynamiquement : Comparateur importe FicheVin de ce fichier — le
 // dynamic() évite le cycle d'imports au chargement du module.
@@ -226,6 +227,7 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
   const [wine, setWine] = useState(wineProp)
   useEffect(() => { setWine(wineProp) }, [wineProp?.id]) // eslint-disable-line react-hooks/exhaustive-deps
   const variantes = variantesDe(wine)
+  const similaires = vinsSimilaires(wine, 3)
   // Millésimes à privilégier (guide croisé région + couleur) : pré-sélection
   // sur le meilleur, étoile sur les chips correspondantes.
   const milsReco = millesimesAPrivilegier(wine, 4)
@@ -240,6 +242,7 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
   }, [wine.id]) // eslint-disable-line react-hooks/exhaustive-deps
   const [showAccordInverse, setShowAccordInverse] = useState(false)
   const [showSimulateur, setShowSimulateur] = useState(false)
+  const [partageCopie, setPartageCopie] = useState(false)
   const diff = DIFFICULTE_CONFIG[wine.difficulte]
   const addedSet = added || new Set()
   const isAdded = addedSet.has(`${wine.id}-${millesime}`)
@@ -303,6 +306,17 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
                 <X size={14} />
               </button>
               <EnvieButton appellation={wine.appellation} light />
+              <button
+                onClick={async () => {
+                  const r = await partagerVin(wine)
+                  if (r === 'copie') { setPartageCopie(true); setTimeout(() => setPartageCopie(false), 2000) }
+                }}
+                className="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/35 text-cream transition-all cursor-pointer"
+                aria-label="Partager ce vin"
+                title={partageCopie ? 'Copié !' : 'Partager ce coup de cœur'}
+              >
+                {partageCopie ? <Check size={14} /> : <Share2 size={13} />}
+              </button>
               <div className="lg:hidden">
                 <WineGlassAnim color="#f5f0e8" fillLevel={fillLevelFromJauges(wine.jauges)} size={44} />
               </div>
@@ -344,6 +358,27 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
                   {v.typeLabel}
                 </button>
               ))}
+            </div>
+          )}
+
+          {/* Plan B en magasin : vins proches si celui-ci n'est pas en rayon */}
+          {similaires.length > 0 && (
+            <div>
+              <span className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400">Introuvable en rayon ? Essayez plutôt :</span>
+              <div className="flex items-center gap-2 flex-wrap mt-1.5">
+                {similaires.map(v => (
+                  <button
+                    key={v.id}
+                    onClick={() => setWine(v)}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border border-anthracite-200 bg-white text-anthracite-700 hover:border-gold-500/60 transition-all cursor-pointer"
+                    title={`${v.region} · ~${v.prixMoyen} €`}
+                  >
+                    <span className="w-2.5 h-2.5 rounded-full ring-1 ring-anthracite-900/10" style={pastilleStyle(v.type)} aria-hidden="true" />
+                    {v.appellation}
+                    <span className="font-normal text-anthracite-400">~{v.prixMoyen} €</span>
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 

@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import { X, Camera, Image as ImageIcon, RefreshCw, Sparkles, Plus, Check, MapPin, BookOpen, Tag, Pencil, UtensilsCrossed, Heart, Globe, Library, Zap, ZapOff, ShoppingCart } from 'lucide-react'
+import { X, Camera, Image as ImageIcon, RefreshCw, Sparkles, Plus, Check, MapPin, BookOpen, Tag, Pencil, UtensilsCrossed, Heart, Globe, Library, Zap, ZapOff, ShoppingCart, Share2 } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
 import { regionInfo } from '../data/regionsInfo'
 import { normaliser } from '../data/aromes'
@@ -13,6 +13,8 @@ import { loadDecouvertes, matchDecouverte, decouverteFromVision, addDecouverte, 
 import { askIA } from '../lib/askIA'
 import { cepagesOfficiels } from '../data/appellationsCepages'
 import { supabase } from '../lib/supabase'
+import { logAchat } from '../lib/achats'
+import { partagerVin } from '../lib/partage'
 
 const DegustationSimulateur = dynamic(() => import('./DegustationSimulateur'), { ssr: false })
 
@@ -308,18 +310,60 @@ const CONFIANCE_LABEL = {
   basse: 'Lecture incertaine',
 }
 
+// Bloc de décision post-scan : « J'achète » ajoute à la cave, « Je n'achète
+// pas » mémorise quand même — dans les deux cas le vin reste retrouvable.
+function AchatBloc({ achat, onDecision, millesime }) {
+  return (
+    <div className="rounded-2xl border border-anthracite-900/[0.08] bg-white p-4">
+      <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-2.5">
+        Verdict en rayon ?
+      </div>
+      {achat === null && (
+        <div className="flex gap-2">
+          <button
+            onClick={() => onDecision('oui')}
+            className="flex-1 min-h-[46px] flex items-center justify-center gap-2 rounded-full text-sm font-semibold text-cream cursor-pointer transition-all duration-300 hover:brightness-110 active:scale-[0.98]"
+            style={{ background: 'linear-gradient(135deg, #3f6b4c, #2c4d36)' }}
+          >
+            <ShoppingCart size={14} /> J'achète
+          </button>
+          <button
+            onClick={() => onDecision('non')}
+            className="flex-1 min-h-[46px] flex items-center justify-center gap-2 rounded-full text-sm font-semibold border border-anthracite-900/15 text-anthracite-600 hover:border-anthracite-900/40 active:scale-[0.98] transition-all duration-300 cursor-pointer"
+          >
+            Je n'achète pas
+          </button>
+        </div>
+      )}
+      {achat === 'oui' && (
+        <p className="flex items-start gap-2 text-xs text-emerald-700 font-medium leading-relaxed">
+          <Check size={14} className="flex-shrink-0 mt-0.5" />
+          Ajouté à votre cave{millesime ? ` (millésime ${millesime})` : ''} — retrouvez-le dans Ma cave pour le noter après dégustation.
+        </p>
+      )}
+      {achat === 'non' && (
+        <p className="flex items-start gap-2 text-xs text-anthracite-500 leading-relaxed">
+          <BookOpen size={14} className="flex-shrink-0 mt-0.5" />
+          Noté ! Mémorisé dans Mes découvertes — retrouvable en deux secondes si vous changez d'avis.
+        </p>
+      )}
+    </div>
+  )
+}
+
 // Verdict qualité/prix calculé côté front à partir du prix saisi en rayon
 // et de la fourchette de prix habituelle estimée par l'IA.
+// `dot` : pastille feu tricolore (vert / orange / rouge) lisible d'un coup d'œil.
 function verdictPrix(prix, fourchette) {
   const p = Number(prix)
   if (!p || p <= 0 || !fourchette || fourchette.min == null || fourchette.max == null) return null
   if (p < fourchette.min) {
-    return { label: 'Bonne affaire', emoji: '', bg: 'rgba(74,124,89,0.12)', color: '#3f6b4c' }
+    return { label: 'Bonne affaire', dot: '#16a34a', bg: 'rgba(74,124,89,0.12)', color: '#3f6b4c' }
   }
   if (p > fourchette.max) {
-    return { label: 'Plutôt cher pour ce type de vin', emoji: '', bg: 'rgba(140,47,57,0.10)', color: '#8c2f39' }
+    return { label: 'Plutôt cher pour ce type de vin', dot: '#dc2626', bg: 'rgba(140,47,57,0.10)', color: '#8c2f39' }
   }
-  return { label: 'Prix cohérent', emoji: '', bg: 'rgba(199,161,90,0.16)', color: '#8a6a1f' }
+  return { label: 'Prix correct', dot: '#f59e0b', bg: 'rgba(199,161,90,0.16)', color: '#8a6a1f' }
 }
 
 // Bloc verdict qualité/prix + édition du prix, affiché en tête de la fiche résultat.
@@ -355,7 +399,12 @@ function PrixRayonBloc({ verdict, prixRayon, editingPrix, prixDraft, setPrixDraf
   return (
     <div className="flex items-center justify-between gap-2">
       {verdict ? (
-        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold" style={{ background: verdict.bg, color: verdict.color }}>
+        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold" style={{ background: verdict.bg, color: verdict.color }}>
+          <span
+            className="w-3 h-3 rounded-full flex-shrink-0 ring-2 ring-white shadow-sm"
+            style={{ background: verdict.dot }}
+            aria-hidden="true"
+          />
           {verdict.label} <span className="font-normal opacity-70">— {prixRayon} €</span>
         </span>
       ) : (
@@ -496,6 +545,8 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
   const autoRetriesRef = useRef(0)                // relances auto déjà tentées sur cette photo
   const [ficheWine, setFicheWine] = useState(null)
   const [added, setAdded] = useState(false)
+  const [achat, setAchat] = useState(null) // décision en rayon : null | 'oui' | 'non'
+  const [partageCopie, setPartageCopie] = useState(false)
   const [prixRayon, setPrixRayon] = useState('')  // prix saisi en rayon (string du champ)
   const [prixDraft, setPrixDraft] = useState('')  // brouillon pour l'édition post-résultat
   const [editingPrix, setEditingPrix] = useState(false)
@@ -797,6 +848,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
     setErrDetail(null)
     autoRetriesRef.current = 0
     setAdded(false)
+    setAchat(null)
     setPrixRayon('')
     setPrixDraft('')
     setEditingPrix(false)
@@ -856,6 +908,24 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
       })
     }
     setAdded(true)
+  }
+
+  // Décision d'achat : journalisée pour le profil de goûts, cave si « oui »
+  const deciderAchat = (decision) => {
+    if (achat) return
+    setAchat(decision)
+    logAchat({
+      appellation: matched?.appellation || parsed?.appellation || parsed?.domaine || 'Vin scanné',
+      region: matched?.region || parsed?.region || '',
+      type: matched?.type || parsed?.type || '',
+      prix: Number(prixRayon) || null,
+      achete: decision === 'oui',
+    })
+    if (decouverte) {
+      const m = updateDecouverte(decouverte.id, { achete: decision === 'oui' })
+      if (m) setDecouverte(m)
+    }
+    if (decision === 'oui') ajouterCave()
   }
 
   const proches = step === 'result' && !matched && parsed ? vinsProches(parsed) : []
@@ -1257,20 +1327,17 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                 <Sparkles size={14} /> Simuler la dégustation
               </button>
               {nomEnvie && <EnvieAction appellation={nomEnvie} />}
+              <button
+                onClick={async () => {
+                  const r = await partagerVin(matched)
+                  if (r === 'copie') { setPartageCopie(true); setTimeout(() => setPartageCopie(false), 2000) }
+                }}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-full text-sm font-semibold border border-anthracite-900/15 text-anthracite-600 hover:border-anthracite-900/40 active:scale-[0.98] transition-all cursor-pointer"
+              >
+                {partageCopie ? <><Check size={14} /> Copié dans le presse-papier</> : <><Share2 size={14} /> Partager ce coup de cœur</>}
+              </button>
               {onAddWine && (
-                <button
-                  onClick={ajouterCave}
-                  disabled={added}
-                  className={`w-full flex items-center justify-center gap-2 py-3 rounded-full text-sm font-semibold transition-all duration-300 cursor-pointer ${
-                    added
-                      ? 'bg-emerald-100 text-emerald-700'
-                      : 'border border-anthracite-900/15 text-anthracite-700 hover:border-anthracite-900/40 active:scale-[0.98]'
-                  }`}
-                >
-                  {added
-                    ? <><Check size={15} /> Ajouté à ma cave</>
-                    : <><Plus size={15} /> Ajouter à ma cave{parsed?.millesime ? ` (${pickMillesime(matched, parsed)})` : ''}</>}
-                </button>
+                <AchatBloc achat={achat} onDecision={deciderAchat} millesime={pickMillesime(matched, parsed)} />
               )}
               <button
                 onClick={recommencer}
@@ -1380,18 +1447,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
               )}
               {nomEnvie && <EnvieAction appellation={nomEnvie} />}
               {onAddWine && (parsed.appellation || parsed.domaine) && (
-                <button
-                  onClick={ajouterCave}
-                  disabled={added}
-                  className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-full text-sm font-semibold transition-all duration-300 cursor-pointer ${
-                    added
-                      ? 'bg-emerald-100 text-emerald-700'
-                      : 'text-cream shadow-wine hover:brightness-110 active:scale-[0.98]'
-                  }`}
-                  style={!added ? { background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' } : {}}
-                >
-                  {added ? <><Check size={15} /> Ajouté à ma cave</> : <><Plus size={15} /> Ajouter à ma cave</>}
-                </button>
+                <AchatBloc achat={achat} onDecision={deciderAchat} millesime={Number(parsed.millesime) || null} />
               )}
               <button
                 onClick={recommencer}

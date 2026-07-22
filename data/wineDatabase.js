@@ -5218,3 +5218,31 @@ export function variantesDe(wine) {
   const base = baseAppellation(wine.appellation)
   return WINE_DB.filter(w => w.id !== wine.id && baseAppellation(w.appellation) === base)
 }
+
+// ── Vins similaires — « introuvable en rayon ? essayez plutôt… » ─────────────
+// Même couleur obligatoire, puis proximité : cépage partagé, même région,
+// profil de goût (jauges) et prix comparables. Sert de plan B en magasin
+// quand l'appellation cherchée n'est pas en stock.
+export function vinsSimilaires(wine, n = 3) {
+  if (!wine) return []
+  const base = baseAppellation(wine.appellation || '')
+  const cepages = new Set((wine.cepages || []).map(c => c.toLowerCase()))
+  return WINE_DB
+    .filter(w => w.id !== wine.id && w.type === wine.type && baseAppellation(w.appellation) !== base)
+    .map(w => {
+      let s = 0
+      if (w.cepages?.some(c => cepages.has(c.toLowerCase()))) s += 4
+      if (w.region === wine.region) s += 2
+      if (wine.jauges && w.jauges) {
+        s += 3 - (Math.abs(w.jauges.puissance - wine.jauges.puissance)
+                + Math.abs(w.jauges.douceur - wine.jauges.douceur)
+                + Math.abs(w.jauges.tanins - wine.jauges.tanins)) / 2
+      }
+      const prixRef = wine.prixMoyen || 15
+      s -= Math.min(3, Math.abs((w.prixMoyen || 15) - prixRef) / prixRef * 3)
+      return { w, s }
+    })
+    .sort((a, b) => b.s - a.s)
+    .slice(0, n)
+    .map(x => x.w)
+}

@@ -57,16 +57,8 @@ const QUESTIONS = [
       { emoji: '👑', label: 'Pas de limite',  v: 9999 },
     ],
   },
-  {
-    id: 'occasion',
-    q: 'C\'est pour quelle occasion ?',
-    options: [
-      { emoji: '🛋️', label: 'Soirée tranquille',      v: 'tranquille' },
-      { emoji: '👥', label: 'Des invités à impressionner', v: 'invites' },
-      { emoji: '❤️', label: 'Un moment spécial',      v: 'special' },
-      { emoji: '🎉', label: 'Ça fait la fête',        v: 'fete' },
-    ],
-  },
+  // La question « occasion » a été retirée : retour utilisateur — le bon vin
+  // dépend du plat, du goût et du budget, pas du type de soirée.
 ]
 
 const PLAT_TYPES = {
@@ -156,12 +148,6 @@ function score(w, a, mode) {
   if (w.prixMoyen > a.budget) s -= 20
   else if (w.prixMoyen > a.budget * 0.4) s += 2 // profiter du budget
 
-  // Occasion
-  if (a.occasion === 'invites' && w.prixMoyen >= 20) s += 2
-  if (a.occasion === 'special' && ['explorer', 'pointu'].includes(w.difficulte)) s += 2
-  if (a.occasion === 'tranquille' && w.difficulte === 'facile') s += 2
-  if (a.occasion === 'fete' && ['sparkling', 'rosé'].includes(w.type)) s += 3
-
   // Mode global (profil utilisateur)
   if (mode === 'debutant') {
     if (w.difficulte === 'facile') s += 3
@@ -219,7 +205,7 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
 
   const criteresFor = (w) => ({
     plat: answers.plat, viande: answers.viande, style: answers.style, budget: answers.budget,
-    occasion: answers.occasion, niveau: mode, profilAppris: !!profilAppris,
+    niveau: mode, profilAppris: !!profilAppris,
     regionPref: isConnaisseur && regionsPref.includes(w.region),
   })
 

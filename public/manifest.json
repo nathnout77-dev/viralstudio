@@ -37,5 +37,20 @@
     "lifestyle",
     "food"
   ],
-  "lang": "fr"
+  "lang": "fr",
+  "shortcuts": [
+    {
+      "name": "Scanner une étiquette",
+      "short_name": "Scanner",
+      "description": "Photographier une bouteille pour la décoder",
+      "url": "/?action=scan",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Ce soir, je bois quoi ?",
+      "short_name": "Ce soir ?",
+      "url": "/?action=cesoir",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
 }

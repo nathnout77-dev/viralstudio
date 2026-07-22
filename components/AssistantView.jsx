@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { X, Send, Sparkles, RefreshCw, Wine } from 'lucide-react'
 import { WINE_DB, WINE_DB_TERROIR, WINE_DB_GRAND_PUBLIC, MILLESIMES_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
 import { profilApprisPourAssistant } from '../data/goutsAppris'
+import { resumeAchats } from '../lib/achats'
 import JaugesGout from './JaugesGout'
 import WineVisuel from './WineVisuel'
 import useModalBehavior from '../lib/useModal'
@@ -93,6 +94,7 @@ const MENU = [
 
 function buildSystemPrompt(profil) {
   const appris = profilApprisPourAssistant()
+  const achats = resumeAchats()
   // PROMPT VOLONTAIREMENT DENSE : le budget gratuit Groq est de 6-12k
   // tokens PAR MINUTE et par modèle, réponse comprise. Pour garantir
   // plusieurs questions par minute, la requête entière doit rester sous
@@ -128,6 +130,7 @@ ${profil?.niveau === 'debutant'
     ? 'AMATEUR/CONNAISSEUR : sois plus technique et précis, propose aussi des vins "explorer" et "pointu".'
     : ''}
 ${appris ? `Goûts appris de ses ${appris.degustationsNotees} dégustations notées dans l'app (source la plus fiable) : ${JSON.stringify(appris)}` : ''}
+${achats ? `Décisions récentes en rayon après scan (ACHETÉ = mis au panier, reposé = pas convaincu) — déduis-en ses goûts et son budget réels :\n${achats}` : ''}
 
 # Vins de l'application (recommande d'abord dans cette liste — appellation|région|type|prix moyen|difficulté)
 ${vins}
