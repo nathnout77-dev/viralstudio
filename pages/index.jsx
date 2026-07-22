@@ -162,9 +162,16 @@ export default function App() {
       else setShowCeSoir(true)
       window.history.replaceState(null, '', window.location.pathname)
     }
-    // Sur mobile, on atterrit directement sur la cave (le hub reste accessible
-    // via « Accueil »). Les raccourcis d'accueil (?action=) gardent la priorité.
-    if (window.innerWidth < 768 && !action && !code) setView('cave')
+    // Sur mobile, on saute l'écran d'intro (landing) et on entre directement
+    // dans l'app, sur Ma cave (le hub reste accessible via « Accueil »). Les
+    // raccourcis d'accueil (?action=) et les liens cave d'ami gardent la main.
+    if (window.innerWidth < 768 && !code) {
+      sessionStorage.setItem('landing-seen', '1')
+      setShowLanding(false)
+      if (!action) setView('cave')
+      // Nouveau visiteur sans profil : on propose l'onboarding tout de suite.
+      if (!loadProfil()) setShowOnboarding(true)
+    }
     setReady(true)
   }, [])
 
