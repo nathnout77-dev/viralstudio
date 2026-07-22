@@ -65,6 +65,19 @@ Règles :
 - Ne liste jamais deux fois la même référence. Ignore les bouteilles trop floues.
 Si l'image n'est pas un rayon de vin ou est illisible : {"vins":[]}`
 
+// ── Mode « plat » : accords mets-vins à partir d'une photo d'assiette ────────
+const PLAT_PROMPT = `Tu es un sommelier expert en accords mets-vins. On te montre la photo d'un PLAT, d'une assiette ou d'une recette. Identifie le plat et propose les accords vins adaptés.
+Réponds STRICTEMENT avec un objet JSON valide, sans aucun texte autour, sans balises markdown :
+{"plat": string|null, "description": string, "typesConseilles": ["red"|"white"|"rosé"|"sweet"|"sparkling"], "profilConseille": {"puissance": number, "douceur": number, "tanins": number}, "appellationsExemples": [string], "explication": string}
+Règles :
+- "plat" : le nom du plat identifié (ex : « bœuf bourguignon », « plateau de fromages », « sushi »). Si l'image n'est pas de la nourriture, mets null.
+- "description" : une phrase courte décrivant le plat (texture, richesse, saveurs dominantes).
+- "typesConseilles" : 1 à 3 couleurs de vin pertinentes, de la plus adaptée à la moins.
+- "profilConseille" : le profil idéal du vin d'accord, jauges de 1 à 5 (puissance légère→puissante, douceur sec→doux, tanins souple→costaud).
+- "appellationsExemples" : 2 à 4 appellations françaises classiques pour ce plat.
+- "explication" : 1 à 2 phrases simples, sans jargon, expliquant la logique de l'accord.
+Si l'image n'est pas un plat/aliment : {"plat":null,"description":"","typesConseilles":[],"profilConseille":null,"appellationsExemples":[],"explication":""}`
+
 // ── Parsing tolérant : isole le JSON, répare les réponses tronquées ────────
 function parseJSONRobuste(text) {
   const cleaned = String(text || '').replace(/```json|```/g, '').trim()
@@ -215,10 +228,13 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'api', detail: 'image absente du corps de la requête' })
   }
 
-  // Mode : 'etiquette' (défaut, une bouteille) ou 'rayon' (plusieurs bouteilles).
-  const modeRayon = req.body?.mode === 'rayon'
-  const opts = modeRayon
+  // Mode : 'etiquette' (défaut, une bouteille), 'rayon' (plusieurs bouteilles)
+  // ou 'plat' (accords mets-vins depuis une photo d'assiette).
+  const mode = req.body?.mode
+  const opts = mode === 'rayon'
     ? { prompt: RAYON_PROMPT, maxTokens: 1600, consigne: 'Identifie chaque bouteille lisible de ce rayon et renvoie uniquement le JSON.' }
+    : mode === 'plat'
+    ? { prompt: PLAT_PROMPT, maxTokens: 600, consigne: 'Identifie ce plat et propose les accords vins ; renvoie uniquement le JSON.' }
     : { prompt: SYSTEM_PROMPT, maxTokens: 700, consigne: "Lis cette étiquette de vin et renvoie uniquement le JSON." }
 
   const trace = []

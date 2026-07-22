@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { X, Send, Sparkles, RefreshCw, Wine } from 'lucide-react'
+import { X, Send, Sparkles, RefreshCw, Wine, Camera } from 'lucide-react'
 import { WINE_DB, WINE_DB_TERROIR, WINE_DB_GRAND_PUBLIC, MILLESIMES_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
 import { profilApprisPourAssistant } from '../data/goutsAppris'
 import { resumeAchats } from '../lib/achats'
+import { normaliser } from '../data/aromes'
 import JaugesGout from './JaugesGout'
 import WineVisuel from './WineVisuel'
 import useModalBehavior from '../lib/useModal'
@@ -194,6 +195,60 @@ function findMentionedWines(text) {
   return WINE_DB.filter(w => lower.includes(w.appellation.toLowerCase())).slice(0, 3)
 }
 
+// Lecture directe de la cave (l'assistant ne la reçoit pas en prop).
+function chargerCave() {
+  if (typeof window === 'undefined') return []
+  try { const v = JSON.parse(localStorage.getItem('oenotheque-v2')); return Array.isArray(v) ? v : [] } catch { return [] }
+}
+
+// Compose le message d'accord à partir du JSON d'analyse du plat : choisit de
+// vraies appellations de WINE_DB (jauges proches du profil conseillé, couleur
+// adaptée), en priorisant celles déjà en cave. Le texte NOMME les appellations
+// pour que findMentionedWines rende automatiquement leurs cartes.
+function messageAccord(json) {
+  if (!json || !json.plat) {
+    return "Je ne reconnais pas de plat sur cette photo 🤔 Réessayez avec une assiette bien cadrée, ou décrivez-moi simplement ce que vous mangez — je trouverai l'accord."
+  }
+  const types = Array.isArray(json.typesConseilles) && json.typesConseilles.length ? json.typesConseilles : null
+  const prof = json.profilConseille
+  const caveApps = new Set(chargerCave().map(w => normaliser(w.appellation)))
+  const score = (w) => {
+    let s = 0
+    if (types) s += Math.max(0, types.length - types.indexOf(w.type)) // couleur conseillée
+    else s += 0
+    if (prof && w.jauges) {
+      s += 3 - (Math.abs(w.jauges.puissance - prof.puissance) +
+                Math.abs(w.jauges.douceur - prof.douceur) +
+                Math.abs(w.jauges.tanins - prof.tanins)) / 2
+    }
+    if (caveApps.has(normaliser(w.appellation))) s += 6 // déjà en cave = idéal
+    if (w.difficulte === 'facile') s += 0.4
+    return s
+  }
+  const classes = WINE_DB
+    .filter(w => !types || types.includes(w.type))
+    .map(w => ({ w, s: score(w), enCave: caveApps.has(normaliser(w.appellation)) }))
+    .sort((a, b) => b.s - a.s)
+
+  const choix = []
+  const vus = new Set()
+  for (const c of classes) {
+    const base = normaliser(c.w.appellation).split(' ')[0]
+    if (vus.has(base)) continue // évite 3 variantes de la même appellation
+    vus.add(base)
+    choix.push(c)
+    if (choix.length === 3) break
+  }
+
+  const enCave = choix.find(c => c.enCave)
+  const noms = choix.map(c => `**${c.w.appellation}**`)
+  let msg = `🍽️ **${json.plat}**${json.description ? ` — ${json.description}` : ''}\n\n`
+  if (json.explication) msg += `${json.explication}\n\n`
+  msg += `Mes accords : ${noms.join(', ')}.`
+  if (enCave) msg += `\n\n✓ Vous avez déjà **${enCave.w.appellation}** en cave — parfait pour ce soir.`
+  return msg
+}
+
 function InlineWineCard({ wine, onSelect }) {
   const diff = DIFFICULTE_CONFIG[wine.difficulte]
   return (
@@ -259,6 +314,7 @@ export default function AssistantView({ onClose }) {
   const [loading, setLoading]             = useState(false)
   const [wineSelected, setWineSelected]   = useState(null)
   const scrollRef = useRef(null)
+  const platInputRef = useRef(null)
 
   useEffect(() => {
     try {
@@ -365,6 +421,42 @@ export default function AssistantView({ onClose }) {
       setLoading(false)
     }
   }, [messages, loading, profil])
+
+  // ── Accords à partir d'une photo de plat ──────────────────────────────────
+  const analyserPlat = useCallback(async (file) => {
+    if (!file || loading) return
+    setMessages(prev => [...prev, { role: 'user', content: '🍽️ (photo d’un plat)' }])
+    setLoading(true)
+    try {
+      const dataUrl = await new Promise((resolve, reject) => {
+        const r = new FileReader()
+        r.onload = () => resolve(r.result)
+        r.onerror = reject
+        r.readAsDataURL(file)
+      })
+      const base64 = String(dataUrl).split(',')[1]
+      const res = await fetch('/api/scan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: base64, mode: 'plat' }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok || !data?.json) {
+        const quota = data?.error === 'quota'
+        throw Object.assign(new Error('plat'), { rateLimited: quota })
+      }
+      setMessages(prev => [...prev, { role: 'assistant', content: messageAccord(data.json) }])
+    } catch (e) {
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: e?.rateLimited
+          ? "J'ai besoin d'une petite minute avant de relire une photo — réessayez dans un instant. En attendant, décrivez-moi le plat, je trouverai l'accord !"
+          : "Je n'ai pas réussi à lire cette photo. Réessayez avec une assiette bien éclairée, ou dites-moi simplement ce que vous mangez.",
+      }])
+    } finally {
+      setLoading(false)
+    }
+  }, [loading])
 
   const currentQ = profilStep >= 0 && profilStep < questions.length ? questions[profilStep] : null
 
@@ -505,6 +597,14 @@ export default function AssistantView({ onClose }) {
         {profilStep === 999 && (
           <div className="flex-shrink-0 border-t border-anthracite-100 bg-cream p-4 space-y-3">
             <div className="flex gap-2 overflow-x-auto hide-scrollbar">
+              <button
+                onClick={() => platInputRef.current?.click()}
+                disabled={loading}
+                className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold bg-wine-50 border border-wine-200 text-wine-800 hover:border-wine-400 transition-all cursor-pointer disabled:opacity-50"
+              >
+                <Camera size={13} />
+                Accord d’un plat
+              </button>
               {MENU.map(item => (
                 <button
                   key={item.id}
@@ -521,6 +621,25 @@ export default function AssistantView({ onClose }) {
               onSubmit={e => { e.preventDefault(); sendMessage(input) }}
               className="flex items-center gap-2"
             >
+              {/* Accords depuis une photo de plat */}
+              <input
+                ref={platInputRef}
+                type="file"
+                accept="image/*"
+                capture="environment"
+                className="hidden"
+                onChange={e => { const f = e.target.files?.[0]; e.target.value = ''; if (f) analyserPlat(f) }}
+              />
+              <button
+                type="button"
+                onClick={() => platInputRef.current?.click()}
+                disabled={loading}
+                title="Photographier un plat pour trouver l'accord vin"
+                aria-label="Photographier un plat pour l'accord mets-vins"
+                className="w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-2xl bg-white border border-anthracite-200 text-wine-700 hover:border-gold-500/70 hover:text-wine-900 transition-all cursor-pointer disabled:opacity-40"
+              >
+                <Camera size={17} />
+              </button>
               <input
                 className="flex-1 px-4 py-3 bg-white border border-anthracite-200 rounded-2xl text-sm placeholder-anthracite-400 focus:outline-none focus:ring-2 focus:ring-gold-600/40 focus:border-gold-500 transition-all"
                 placeholder="Posez votre question sur le vin…"
