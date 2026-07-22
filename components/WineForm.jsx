@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react'
-import { X, Wine, ChevronDown, Sparkles, Search, Globe, Loader2, ArrowLeft, PenLine } from 'lucide-react'
+import { X, Wine, ChevronDown, Sparkles, Search, Globe, Loader2, ArrowLeft, PenLine, Camera } from 'lucide-react'
 import { WINE_DB, WINE_DB_APPELLATIONS } from '../data/wineDatabase'
 import { normaliser } from '../data/aromes'
+import { getDecouvertesAsWines } from '../lib/decouvertes'
 import useModalBehavior from '../lib/useModal'
 import WineVisuel from './WineVisuel'
 
@@ -16,12 +17,13 @@ const REGIONS = ['Bordeaux','Bourgogne','Champagne','Rhône Nord','Rhône Sud','
 const FOOD_OPTIONS = ['Viande rouge','Viande blanche','Gibier','Poisson','Fruits de mer','Fromage','Dessert','Charcuterie','Légumes','Champignons','Foie gras']
 const CURRENT_YEAR = new Date().getFullYear()
 
-// Recherche dans la bibliothèque : appellation > domaine > cépage > région
-function chercherDB(query) {
+// Recherche dans la bibliothèque : appellation > domaine > cépage > région.
+// `extra` = découvertes personnelles (vins scannés) cherchables comme le reste.
+function chercherDB(query, extra = []) {
   const q = normaliser(query.trim())
   if (q.length < 2) return []
   const res = []
-  for (const w of WINE_DB) {
+  for (const w of [...WINE_DB, ...extra]) {
     const app = normaliser(w.appellation)
     let score = 0
     if (app.startsWith(q)) score = 100
@@ -97,7 +99,8 @@ export default function WineForm({ initial, onSave, onClose }) {
   const [query, setQuery] = useState('')
   const [lookupLoading, setLookupLoading] = useState(false)
   const [lookupError, setLookupError] = useState(null)
-  const resultats = useMemo(() => chercherDB(query), [query])
+  const [decouvertes] = useState(() => (initial ? [] : getDecouvertesAsWines()))
+  const resultats = useMemo(() => chercherDB(query, decouvertes), [query, decouvertes])
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
@@ -328,7 +331,10 @@ export default function WineForm({ initial, onSave, onClose }) {
                   >
                     <WineVisuel type={w.type} size={24} className="flex-shrink-0" />
                     <div className="min-w-0 flex-1">
-                      <div className="text-[13px] font-bold text-anthracite-900 truncate">{w.appellation}</div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[13px] font-bold text-anthracite-900 truncate">{w.appellation}</span>
+                        {w.decouverte && <Camera size={11} className="text-gold-600 flex-shrink-0" />}
+                      </div>
                       <div className="text-[11px] text-anthracite-400 truncate">{w.region} · {w.typeLabel}{w.prixMoyen ? ` · ~${w.prixMoyen} €` : ''}</div>
                     </div>
                     <Sparkles size={13} className="text-gold-500 flex-shrink-0" />

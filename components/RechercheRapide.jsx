@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
-import { Search, X, Star, Grape, ArrowRight, Library } from 'lucide-react'
+import { Search, X, Star, Grape, ArrowRight, Library, Camera } from 'lucide-react'
 import { WINE_DB } from '../data/wineDatabase'
 import { millesimesAPrivilegier } from '../lib/millesimes'
 import { normaliser } from '../data/aromes'
+import { getDecouvertesAsWines } from '../lib/decouvertes'
 import WineVisuel from './WineVisuel'
 import BadgeGrandPublic from './BadgeGrandPublic'
 import PastilleQualitePrix from './PastilleQualitePrix'
@@ -20,12 +21,13 @@ import { FicheVin } from './BibliothequeView'
 const SUGGESTIONS_APPELLATIONS = ['Chablis', 'Pouilly', 'Sancerre', 'Saint-Émilion', 'Côtes-du-Rhône', 'Chinon']
 const SUGGESTIONS_CEPAGES = ['Chardonnay', 'Sauvignon', 'Pinot Noir', 'Merlot', 'Syrah', 'Gamay']
 
-// Recherche multi-critères avec priorité : appellation > cépage > domaine > région
-function chercher(query) {
+// Recherche multi-critères avec priorité : appellation > cépage > domaine > région.
+// `extra` = découvertes personnelles converties en vins, cherchables comme le reste.
+function chercher(query, extra = []) {
   const q = normaliser(query.trim())
   if (q.length < 2) return []
   const res = []
-  for (const w of WINE_DB) {
+  for (const w of [...WINE_DB, ...extra]) {
     const app = normaliser(w.appellation)
     const cepageHit = (w.cepages || []).find(c => normaliser(c).includes(q))
     let score = 0
@@ -55,6 +57,11 @@ function LigneResultat({ w, via, onOpen }) {
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-[13px] font-bold text-anthracite-900 truncate">{w.appellation}</span>
+          {w.decouverte && (
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-gold-500/15 text-gold-700">
+              <Camera size={8} /> Ma découverte
+            </span>
+          )}
           {w.grandPublic && <BadgeGrandPublic compact />}
           {via?.type === 'cepage' && (
             <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-wine-50 text-wine-800">
@@ -94,7 +101,11 @@ function LigneResultat({ w, via, onOpen }) {
 export default function RechercheRapide({ onClose, onOpenBibliotheque }) {
   const [query, setQuery] = useState('')
   const [fiche, setFiche] = useState(null)
+  const [decouvertes, setDecouvertes] = useState([])
   const inputRef = useRef(null)
+
+  // Découvertes personnelles (vins scannés inconnus) : cherchables comme le reste
+  useEffect(() => { setDecouvertes(getDecouvertesAsWines()) }, [])
 
   useEffect(() => {
     // Échap : ferme la fiche ouverte d'abord, l'overlay ensuite
@@ -105,7 +116,7 @@ export default function RechercheRapide({ onClose, onOpenBibliotheque }) {
     return () => { window.removeEventListener('keydown', esc); document.body.style.overflow = '' }
   }, [onClose])
 
-  const resultats = useMemo(() => chercher(query), [query])
+  const resultats = useMemo(() => chercher(query, decouvertes), [query, decouvertes])
   const enRecherche = normaliser(query.trim()).length >= 2
 
   return (
