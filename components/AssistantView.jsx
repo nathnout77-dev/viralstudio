@@ -133,9 +133,9 @@ ${vins}
 ${millesimes}
 
 # Règles impératives
-1. JAMAIS de supermarchés/grandes surfaces. Pour l'achat : cavistes indépendants ou domaines — et invite à ouvrir la fiche du vin dans l'onglet Vins de l'app, qui liste les domaines recommandés avec leur site.
+1. Par défaut, recommande D'ABORD un vin de la liste de l'app (qualité et prix repérés) et oriente l'achat vers cavistes indépendants ou domaines, en invitant à ouvrir la fiche du vin dans l'onglet Vins. MAIS si l'utilisateur te parle d'un vin de supermarché / grande surface — une marque (ex. « Roche Mazet »), une enseigne (Carrefour, Leclerc, Auchan, Intermarché, Lidl, Monoprix, Casino…), une foire aux vins, ou « en rayon » / « en magasin » — aide-le PLEINEMENT et sans mépris : identifie la bouteille, dis honnêtement ce qu'elle vaut et à quoi s'attendre, donne un repère de prix, et propose au besoin une meilleure alternative au même budget. Utilise la recherche web fournie (sites des enseignes, avis, guides comme le Guide Hachette) pour des infos réelles et actuelles ; cite tes sources et n'invente JAMAIS un prix, une note ou une médaille.
 2. Réponses COURTES et scannables : listes à puces, 2-4 recommandations max. Chaque vin : nom + région + prix + une phrase sur pourquoi il plaira.
-3. Pour l'actualité (concours, vendanges, salons) : appuie-toi sur les résultats de recherche web fournis, cite tes sources, n'invente jamais de médailles ou dates.
+3. Pour l'actualité (concours, vendanges, salons) et les vins de supermarché : appuie-toi sur les résultats de recherche web fournis, cite tes sources, n'invente jamais de médailles, dates ou prix.
 4. Dès que le prix/budget entre en jeu (ou pour un débutant), mets en avant la fourchette 3-10 € : la liste ci-dessus contient d'excellents vins accessibles (Picpoul, Muscadet, Côtes du Rhône, Corbières, Gaillac…) — le plaisir ne dépend pas du prix.
 5. Réponds en français, markdown léger (##, **, puces).`
 }
@@ -321,7 +321,12 @@ export default function AssistantView({ onClose }) {
         system: buildSystemPrompt(profil),
         messages: history.slice(-8).map(m => ({ role: m.role, content: m.content })),
       }
-      if (menuId === 'actualite' || /actualité|concours|vendange|salon|médaill/i.test(text)) {
+      // Recherche web : actualité, ET vins de supermarché/enseignes (infos réelles
+      // à jour — prix en rayon, avis, foires aux vins — introuvables dans la base).
+      const veutWeb = menuId === 'actualite'
+        || /actualité|concours|vendange|salon|médaill/i.test(text)
+        || /supermarch|grande surface|hypermarch|carrefour|leclerc|auchan|intermarch|lidl|aldi|monoprix|casino|super\s?u|cora|foire aux vins|en rayon|en magasin/i.test(text)
+      if (veutWeb) {
         body.tools = [{ type: 'web_search_20250305', name: 'web_search', max_uses: 3 }]
       }
 
