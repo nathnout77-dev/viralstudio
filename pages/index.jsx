@@ -21,6 +21,7 @@ import OnboardingProfil, { loadProfil } from '../components/OnboardingProfil'
 import { removeEnvie } from '../components/Envies'
 import { toast } from '../components/Toast'
 import { normaliser } from '../data/aromes'
+import { WINE_DB_TERROIR } from '../data/wineDatabase'
 import { Sparkles, NotebookPen, Wine as WineIcon, X } from 'lucide-react'
 
 const InteractiveMap = dynamic(() => import('../components/InteractiveMap'), { ssr: false })
@@ -85,7 +86,7 @@ const DEMO_WINES = [
 const VUES = {
   trouver:   { titre: 'Trouver un vin',        sousTitre: 'On vous guide en 2 questions' },
   cave:      { titre: 'Ma cave',                sousTitre: 'Bouteilles, dégustations, envies' },
-  vins:      { titre: 'La bibliothèque',        sousTitre: '232 vins décodés' },
+  vins:      { titre: 'La bibliothèque',        sousTitre: `${WINE_DB_TERROIR.length} vins décodés` },
   explorer:  { titre: 'Explorer les régions',   sousTitre: 'Carte, routes des vins, domaines' },
   apprendre: { titre: 'Apprendre',              sousTitre: 'Votre parcours du vin' },
   carte:     { titre: 'Carte des vignobles',    sousTitre: 'Accès direct' },
@@ -289,7 +290,7 @@ export default function App() {
       <>
         <Head>
           <title>Œno — Le vin, enfin simple</title>
-          <meta name="description" content="Vous n'y connaissez rien en vin ? Parfait. Œno traduit l'œnologie en langage humain : plus de 200 vins décodés, quiz de goût, carte des vignobles." />
+          <meta name="description" content="Vous n'y connaissez rien en vin ? Parfait. Œno traduit l'œnologie en langage humain : plus de 250 vins décodés, quiz de goût, carte des vignobles." />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
         <LandingPage onEnter={enterApp} onTabChange={goTo} onCeSoir={openCeSoir} onScan={openScan} />

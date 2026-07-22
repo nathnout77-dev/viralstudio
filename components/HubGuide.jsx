@@ -4,6 +4,7 @@ import {
   ArrowRight, Sparkles, X, Lightbulb,
 } from 'lucide-react'
 import { computeSuggestionDuJour } from '../lib/suggestionDuJour'
+import { WINE_DB_TERROIR } from '../data/wineDatabase'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HubGuide — le nouvel écran d'accueil. L'app ne présente plus des onglets
@@ -29,7 +30,7 @@ const INTENTIONS = [
   {
     id: 'vins',
     titre: 'La bibliothèque',
-    texte: '232 vins décodés, comparés, expliqués simplement.',
+    texte: `${WINE_DB_TERROIR.length} vins décodés, comparés, expliqués simplement.`,
     Icon: Library,
   },
   {

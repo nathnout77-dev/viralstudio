@@ -16,15 +16,15 @@ export default function Document() {
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
 
         {/* SEO */}
-        <meta name="description" content="Œno traduit l'œnologie en langage humain : plus de 200 vins décodés, un Goût-o-mètre ludique, une carte des vignobles et votre cave, sans jargon." />
+        <meta name="description" content="Œno traduit l'œnologie en langage humain : plus de 250 vins décodés, un Goût-o-mètre ludique, une carte des vignobles et votre cave, sans jargon." />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Œno — Le vin, enfin simple" />
-        <meta property="og:description" content="Vous n'y connaissez rien en vin ? Parfait. plus de 200 appellations décodées, quiz de goût, carte des vignobles, gestion de cave — sans jargon." />
+        <meta property="og:description" content="Vous n'y connaissez rien en vin ? Parfait. plus de 240 appellations décodées, quiz de goût, carte des vignobles, gestion de cave — sans jargon." />
         <meta property="og:image" content="/icons/icon-512.png" />
         <meta property="og:locale" content="fr_FR" />
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content="Œno — Le vin, enfin simple" />
-        <meta name="twitter:description" content="Vous n'y connaissez rien en vin ? Parfait. Œno décode plus de 200 vins pour néophytes." />
+        <meta name="twitter:description" content="Vous n'y connaissez rien en vin ? Parfait. Œno décode plus de 250 vins pour néophytes." />
         <meta name="twitter:image" content="/icons/icon-512.png" />
 
         {/* Inter / Fraunces / Tangerine sont désormais auto-hébergées via
