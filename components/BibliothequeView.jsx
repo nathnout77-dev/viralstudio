@@ -739,14 +739,15 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
           <div className="hidden lg:block text-[10px] uppercase tracking-[0.2em] font-bold text-anthracite-400 mb-3">Affiner</div>
           <div className="flex gap-2 flex-wrap mb-6 lg:flex-col lg:gap-2.5">
             {[
-              { value: budget, set: setBudget, options: BUDGET_FILTERS },
-              { value: diff,   set: setDiff,   options: DIFF_FILTERS },
-              { value: region, set: setRegion, options: [{ value: 'all', label: 'Toutes régions' }, ...REGIONS_LIST.map(r => ({ value: r, label: r }))] },
-            ].map(({ value, set, options }, i) => (
+              { value: budget, set: setBudget, options: BUDGET_FILTERS, label: 'Filtrer par budget' },
+              { value: diff,   set: setDiff,   options: DIFF_FILTERS, label: 'Filtrer par difficulté' },
+              { value: region, set: setRegion, options: [{ value: 'all', label: 'Toutes régions' }, ...REGIONS_LIST.map(r => ({ value: r, label: r }))], label: 'Filtrer par région' },
+            ].map(({ value, set, options, label }, i) => (
               <div key={i} className="relative lg:w-full">
                 <select
                   value={value}
                   onChange={e => set(e.target.value)}
+                  aria-label={label}
                   className="pl-3 pr-8 py-2 lg:w-full bg-white border border-anthracite-200 rounded-xl text-xs text-anthracite-700 focus:outline-none focus:ring-2 focus:ring-gold-600/40 cursor-pointer appearance-none font-medium"
                 >
                   {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
