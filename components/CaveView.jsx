@@ -1,8 +1,9 @@
 import { useState, useMemo, useEffect } from 'react'
-import { Search, SlidersHorizontal, LayoutGrid, List, Wine, Plus, X, ChevronDown, BookHeart, BarChart3, Heart, CloudUpload, Star } from 'lucide-react'
+import { Search, SlidersHorizontal, LayoutGrid, List, Wine, Plus, X, ChevronDown, BookHeart, BarChart3, Heart, CloudUpload, Star, Sparkles } from 'lucide-react'
 import WineCard from './WineCard'
 import JournalDegustation from './JournalDegustation'
 import PanoramaCave from './PanoramaCave'
+import ProfilGout from './ProfilGout'
 import EnviesView, { useEnvies } from './Envies'
 import RollingNumber from './RollingNumber'
 
@@ -32,7 +33,7 @@ function SelectFilter({ value, onChange, options, label }) {
   )
 }
 
-export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onUpdateQty, onToggleFavori, onMarkFavori, journalPrefill, onConsumeJournalPrefill, onBuyEnvie, onCompte }) {
+export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onUpdateQty, onToggleFavori, onMarkFavori, journalPrefill, onConsumeJournalPrefill, onBuyEnvie, onCompte, onOpenBibliotheque }) {
   const envies = useEnvies()
   const [search, setSearch]   = useState('')
   const [typeFilter, setType] = useState('Tous')
@@ -94,6 +95,7 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
       <div className="flex gap-2 mb-6 overflow-x-auto hide-scrollbar">
         {[
           { id: 'cave',     label: 'Ma Cave',         Icon: Wine },
+          { id: 'gout',     label: 'Mon goût',        Icon: Sparkles },
           { id: 'journal',  label: 'Mémoires de Vin', Icon: BookHeart },
           { id: 'panorama', label: 'Panorama',        Icon: BarChart3 },
           { id: 'envies',   label: 'Envies',          Icon: Heart, badge: envies.length },
@@ -129,6 +131,8 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
           Mon compte & sauvegarde
         </button>
       </div>
+
+      {sub === 'gout' && <ProfilGout onOpenBibliotheque={onOpenBibliotheque} />}
 
       {sub === 'panorama' && <PanoramaCave wines={wines} />}
 

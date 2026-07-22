@@ -414,6 +414,7 @@ export default function App() {
               onConsumeJournalPrefill={() => setJournalPrefill(null)}
               onBuyEnvie={buyFromEnvie}
               onCompte={() => setShowCompte(true)}
+              onOpenBibliotheque={() => goTo('vins')}
             />
           )}
           {view === 'vins'      && <BibliothequeView onAddWine={saveWine} mode={mode} initialSearch={librarySearch} onNoter={noterDegustation} />}

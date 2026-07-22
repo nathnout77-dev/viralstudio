@@ -10,6 +10,7 @@ import { AROME_FAMILLES, normaliser } from './aromes'
 
 const JOURNAL_KEY = 'oeno-journal'
 const CAVE_KEY = 'oenotheque-v2'
+const ACHATS_KEY = 'oeno-achats'
 
 function safeParse(key) {
   if (typeof window === 'undefined') return []
@@ -49,6 +50,7 @@ function famillesPourTexte(texte) {
 export function computeProfilAppris() {
   const journal = safeParse(JOURNAL_KEY)
   const cave = safeParse(CAVE_KEY)
+  const achats = safeParse(ACHATS_KEY)
 
   // Dégustations notées : journal (note 1-5) + cave (rating /20 → /5)
   const notees = []
@@ -59,6 +61,13 @@ export function computeProfilAppris() {
   cave.forEach(w => {
     if (!w || !w.rating) return
     notees.push({ name: w.name, appellation: w.appellation, note: w.rating / 4, nez: '' })
+  })
+  // Décisions d'achat en rayon : ce qu'on met au panier / repose en dit long
+  // sur les goûts réels. ACHETÉ ≈ aimé (4,5), reposé ≈ boudé (2,2) — signal
+  // plus faible qu'une vraie note de dégustation, mais qui compte.
+  achats.forEach(a => {
+    if (!a || !a.appellation) return
+    notees.push({ name: a.appellation, appellation: a.appellation, note: a.achete ? 4.5 : 2.2, nez: '' })
   })
 
   if (notees.length < 3) return null
@@ -173,6 +182,49 @@ export function bonusProfilAppris(wine, profil, poids = 1) {
   }
   if (profil.prix && wine.prixMoyen >= profil.prix.min * 0.5 && wine.prixMoyen <= profil.prix.max * 1.5) b += 0.5
   return b * poids
+}
+
+// ── Recommandations proactives ───────────────────────────────────────────────
+// Ensemble des vins de WINE_DB que l'utilisateur connaît déjà (en cave, notés
+// au journal, ou vus en rayon) : on ne les re-recommande pas.
+function vinsConnusIds() {
+  const ids = new Set()
+  const marque = (name, appellation) => {
+    const v = matchDbWine(name, appellation)
+    if (v) ids.add(v.id)
+  }
+  safeParse(CAVE_KEY).forEach(w => w && marque(w.name, w.appellation))
+  safeParse(JOURNAL_KEY).forEach(e => e && marque(e.name, e.name))
+  safeParse(ACHATS_KEY).forEach(a => a && marque(a.appellation, a.appellation))
+  return ids
+}
+
+// Les meilleurs vins à découvrir selon le profil appris, hors vins déjà connus.
+// Retourne { profil, vins:[{ wine, raison }] } ou { profil:null, vins:[] }.
+export function recommandationsProfil(n = 4) {
+  const profil = computeProfilAppris()
+  if (!profil) return { profil: null, vins: [] }
+  const connus = vinsConnusIds()
+  const noms = { red: 'rouge', white: 'blanc', 'rosé': 'rosé', sweet: 'liquoreux', sparkling: 'effervescent' }
+  const scored = WINE_DB
+    .filter(w => !connus.has(w.id))
+    .map(w => ({ w, s: bonusProfilAppris(w, profil, 1) }))
+    .filter(x => x.s > 1.5) // seuil : une vraie affinité, pas un vin au hasard
+    .sort((a, b) => b.s - a.s)
+    .slice(0, n)
+    .map(({ w }) => {
+      // Raison courte et honnête, tirée du critère le plus fort.
+      let raison = 'proche de vos goûts'
+      if (profil.regionsFavorites.includes(w.region)) raison = `vous aimez ${w.region}`
+      else if (profil.typesPreferes[0] === w.type) raison = `votre couleur de prédilection (${noms[w.type] || w.type})`
+      else if (profil.famillesAromes.length) {
+        const fams = famillesPourTexte(w.aromes)
+        const commun = fams.find(f => profil.famillesAromes.some(pf => pf.id === f.id))
+        if (commun) raison = `arômes ${commun.label.toLowerCase()} que vous appréciez`
+      }
+      return { wine: w, raison }
+    })
+  return { profil, vins: scored }
 }
 
 // Résumé compact pour le contexte système de l'assistant.
