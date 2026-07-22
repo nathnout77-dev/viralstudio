@@ -1,12 +1,28 @@
-// Service worker minimal — écrit à la main, aucune dépendance.
-// Objectif : satisfaire les critères d'installabilité (Chrome/Android) et
-// offrir un app-shell hors-ligne basique, sans les soucis de compat de next-pwa.
-const CACHE_NAME = 'oeno-shell-v4'
+// Service worker Œno — écrit à la main, aucune dépendance.
+// Mode hors-ligne complet : le manifeste généré à la build
+// (/sw-precache.js, voir scripts/generate-sw-precache.js) liste tous les
+// chunks JS/CSS, y compris ceux des imports dynamiques — l'app entière
+// (bibliothèque, cave, quiz, recherche) fonctionne donc sans réseau.
+// Seules les fonctions IA (scan, assistant) exigent une connexion.
+let BUILD = 'dev'
+let PRECACHE_ASSETS = []
+try {
+  importScripts('/sw-precache.js')
+  BUILD = (self.__OENO_PRECACHE && self.__OENO_PRECACHE.build) || 'dev'
+  PRECACHE_ASSETS = (self.__OENO_PRECACHE && self.__OENO_PRECACHE.assets) || []
+} catch (e) { /* dev local sans build : app-shell seul */ }
+
+const CACHE_NAME = `oeno-${BUILD}`
 const APP_SHELL = ['/', '/manifest.json', '/icons/icon-192.png', '/icons/icon-512.png']
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)).catch(() => {})
+    caches.open(CACHE_NAME).then(async (cache) => {
+      await cache.addAll(APP_SHELL).catch(() => {})
+      // Ajouts individuels tolérants : un asset manquant ne doit pas
+      // faire échouer toute l'installation.
+      await Promise.all(PRECACHE_ASSETS.map((a) => cache.add(a).catch(() => {})))
+    })
   )
   self.skipWaiting()
 })
@@ -20,17 +36,45 @@ self.addEventListener('activate', (event) => {
   self.clients.claim()
 })
 
-// Network-first : toujours essayer le réseau (contenu à jour), fallback cache hors-ligne.
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return
+  const { request } = event
+  if (request.method !== 'GET') return
+  const url = new URL(request.url)
+  if (url.origin !== self.location.origin) return
+  // Jamais de cache pour l'IA : hors-ligne, ces appels échouent
+  // proprement et l'app affiche ses messages d'erreur habituels.
+  if (url.pathname.startsWith('/api/')) return
 
+  // Assets fingerprintés (immuables) : cache d'abord, réseau en secours.
+  if (url.pathname.startsWith('/_next/static/') || url.pathname.startsWith('/icons/')) {
+    event.respondWith(
+      caches.match(request).then((cached) =>
+        cached ||
+        fetch(request).then((response) => {
+          const copy = response.clone()
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy)).catch(() => {})
+          return response
+        })
+      )
+    )
+    return
+  }
+
+  // Pages et autres : réseau d'abord (contenu à jour), cache hors-ligne,
+  // et l'app-shell « / » en dernier recours pour les navigations.
   event.respondWith(
-    fetch(event.request)
+    fetch(request)
       .then((response) => {
         const copy = response.clone()
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy)).catch(() => {})
+        caches.open(CACHE_NAME).then((cache) => cache.put(request, copy)).catch(() => {})
         return response
       })
-      .catch(() => caches.match(event.request).then((cached) => cached || caches.match('/')))
+      .catch(() =>
+        caches.match(request).then((cached) => {
+          if (cached) return cached
+          if (request.mode === 'navigate') return caches.match('/')
+          return Response.error()
+        })
+      )
   )
 })
