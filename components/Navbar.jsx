@@ -134,7 +134,7 @@ export default function Navbar({ view, setView, total, mode, onProfil, onAdd, on
               <Plus size={14} />
               Ajouter
             </button>
-            <button onClick={onAdd} className="sm:hidden w-11 h-11 flex items-center justify-center rounded-full btn-gold !px-0 !py-0" aria-label="Ajouter un vin">
+            <button onClick={onAdd} data-tour="ajouter" className="sm:hidden w-11 h-11 flex items-center justify-center rounded-full btn-gold !px-0 !py-0" aria-label="Ajouter un vin">
               <Plus size={16} />
             </button>
           </div>
@@ -152,6 +152,7 @@ export default function Navbar({ view, setView, total, mode, onProfil, onAdd, on
             <Fragment key={id}>
               <button
                 onClick={() => setView(id)}
+                data-tour={id}
                 className="flex-1 flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all duration-300 relative"
                 aria-label={label}
                 aria-current={view === id ? 'page' : undefined}
@@ -172,6 +173,7 @@ export default function Navbar({ view, setView, total, mode, onProfil, onAdd, on
               {i === 1 && (
                 <button
                   onClick={onScan}
+                  data-tour="scan"
                   className="flex-1 flex flex-col items-center justify-center cursor-pointer relative -mt-4"
                   aria-label="Scanner une étiquette"
                 >
@@ -192,6 +194,7 @@ export default function Navbar({ view, setView, total, mode, onProfil, onAdd, on
           {/* Menu — grille d'accès à tout Œno */}
           <button
             onClick={onMenu}
+            data-tour="menu"
             className="flex-1 flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all duration-300 relative"
             aria-label="Ouvrir le menu Tout Œno"
           >

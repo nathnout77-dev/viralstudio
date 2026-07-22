@@ -37,6 +37,20 @@ const AssistantView  = dynamic(() => import('../components/AssistantView'), { ss
 const CompteSync     = dynamic(() => import('../components/CompteSync'), { ssr: false })
 const CaveAmieViewer = dynamic(() => import('../components/CaveAmis').then(m => m.CaveAmieViewer), { ssr: false })
 const RechercheRapide = dynamic(() => import('../components/RechercheRapide'), { ssr: false })
+const TourGuide       = dynamic(() => import('../components/TourGuide'), { ssr: false })
+
+// Étapes de la visite guidée (premier lancement mobile) : chaque étape éclaire
+// un vrai bouton de l'écran et explique sa fonction.
+const TOUR_KEY = 'oeno-tour-v1'
+const TOUR_STEPS = [
+  { title: 'Bienvenue dans Œno 🍷', text: "Voici votre cave. En quelques secondes, on vous montre l'essentiel — vous pourrez passer quand vous voulez." },
+  { selector: '[data-tour="cave"]',      placement: 'top',    title: 'Ma cave',              text: 'Vos bouteilles, vos dégustations et vos envies vivent ici. C’est votre point de départ.' },
+  { selector: '[data-tour="ajouter"]',   placement: 'bottom', title: 'Ajouter un vin',       text: 'Cherchez un vin ou scannez-le : sa fiche complète se remplit toute seule.' },
+  { selector: '[data-tour="scan"]',      placement: 'top',    title: 'Scanner une étiquette', text: 'En rayon ? Photographiez l’étiquette : Œno décode le vin, même inconnu, et le garde pour vous.' },
+  { selector: '[data-tour="trouver"]',   placement: 'top',    title: 'Trouver un vin',       text: 'Quoi boire ce soir, pour un plat, un budget… deux questions et Œno vous guide.' },
+  { selector: '[data-tour="menu"]',      placement: 'top',    title: 'Tout Œno',             text: 'Bibliothèque, carte des vignobles, école du vin… tout le reste est dans ce menu.' },
+  { selector: '[data-tour="assistant"]', placement: 'top',    title: 'Votre sommelier Œno',  text: 'Une question sur le vin ? Œno répond à tout moment, en langage simple.' },
+]
 
 // ─── Vins de démonstration ────────────────────────────────────────────────────
 const DEMO_WINES = [
@@ -120,6 +134,7 @@ export default function App() {
   const [showCompte, setShowCompte]   = useState(false)
   const [friendCode, setFriendCode]   = useState(null) // ?cave=CODE → cave d'un ami
   const [nextStep, setNextStep]       = useState(null) // guidage : prochaine étape après un ajout
+  const [showTour, setShowTour]       = useState(false) // visite guidée premier lancement mobile
 
   useEffect(() => {
     // Lecture robuste : un localStorage corrompu ne doit jamais bloquer l'app
@@ -147,7 +162,24 @@ export default function App() {
       else setShowCeSoir(true)
       window.history.replaceState(null, '', window.location.pathname)
     }
+    // Sur mobile, on atterrit directement sur la cave (le hub reste accessible
+    // via « Accueil »). Les raccourcis d'accueil (?action=) gardent la priorité.
+    if (window.innerWidth < 768 && !action && !code) setView('cave')
     setReady(true)
+  }, [])
+
+  // Visite guidée : premier lancement mobile, une seule fois. Se déclenche une
+  // fois l'écran d'accueil (landing) passé, quand la bottom nav est à l'écran.
+  useEffect(() => {
+    if (!ready || showLanding) return
+    if (typeof window === 'undefined' || window.innerWidth >= 768) return
+    try { if (!localStorage.getItem(TOUR_KEY)) setShowTour(true) } catch { /* stockage indispo : pas de visite */ }
+  }, [ready, showLanding])
+
+  const fermerTour = useCallback(() => {
+    setShowTour(false)
+    // On marque aussi le tour du hub comme vu : pas de double tutoriel.
+    try { localStorage.setItem(TOUR_KEY, '1'); localStorage.setItem('oeno-hub-tour', '1') } catch { /* ignore */ }
   }, [])
 
   const closeFriendCave = useCallback(() => {
@@ -509,10 +541,17 @@ export default function App() {
           </div>
         )}
 
+        {/* Visite guidée — premier lancement mobile. Ne s'affiche qu'écran
+            dégagé (sinon les cibles de la bottom nav sont masquées). */}
+        {showTour && !overlayOuvert && (
+          <TourGuide steps={TOUR_STEPS} onClose={fermerTour} />
+        )}
+
         {/* Bulle flottante Assistant Œno */}
         {!showAssistant && (
           <button
             onClick={() => setShowAssistant(true)}
+            data-tour="assistant"
             className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-40 w-14 h-14 rounded-full flex items-center justify-center text-cream shadow-wine-lg hover:scale-110 active:scale-95 transition-all cursor-pointer animate-pulse-gold"
             style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
             aria-label="Ouvrir l'assistant Œno"
