@@ -51,7 +51,7 @@ function NavItem({ active, onClick, Icon, label, accent = false }) {
   )
 }
 
-export default function Sidebar({ view, setView, total, mode, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte, onAssistant, onMenu }) {
+export default function Sidebar({ view, setView, total, mode, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte, onAssistant, onMenu, onRecherche }) {
   const badge = MODE_BADGE[mode]
   return (
     <aside
@@ -85,6 +85,7 @@ export default function Sidebar({ view, setView, total, mode, onProfil, onAdd, o
       {/* Actions */}
       <div className="flex flex-col gap-1 py-5">
         <div className="px-6 pb-2 text-[9px] uppercase tracking-[0.25em] text-stone-600 font-semibold">Actions</div>
+        <NavItem accent onClick={onRecherche} Icon={Search}            label="Recherche" />
         <NavItem accent onClick={onScan}      Icon={ScanLine}          label="Scanner" />
         <NavItem accent onClick={onAssistant} Icon={MessageCircleHeart} label="Assistant" />
         <NavItem accent onClick={onCeSoir}    Icon={Utensils}          label="Ce soir ?" />

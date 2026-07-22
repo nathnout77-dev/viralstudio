@@ -101,7 +101,7 @@ function TourBienvenue({ onClose }) {
   )
 }
 
-export default function HubGuide({ wines, onParcours, onScan, onAssistant, prenom }) {
+export default function HubGuide({ wines, onParcours, onScan, onAssistant, onRecherche, prenom }) {
   const [suggestion, setSuggestion] = useState(null)
   const [showTour, setShowTour] = useState(false)
 
@@ -134,6 +134,17 @@ export default function HubGuide({ wines, onParcours, onScan, onAssistant, preno
       </div>
 
       {showTour && <TourBienvenue onClose={closeTour} />}
+
+      {/* Recherche rapide — faux champ qui ouvre l'overlay : appellation ou
+          cépage → millésimes à privilégier, sans naviguer. Pensé rayon. */}
+      <button
+        onClick={onRecherche}
+        className="w-full flex items-center gap-3 px-4 py-3 mb-6 rounded-full bg-white border border-anthracite-200 hover:border-gold-500/50 active:scale-[0.99] transition-all cursor-pointer text-left"
+        aria-label="Recherche rapide — appellation, cépage, millésimes"
+      >
+        <Search size={15} className="text-gold-600 flex-shrink-0" />
+        <span className="text-[13px] text-anthracite-400 truncate">Chablis, Pouilly, Chardonnay… → les bons millésimes</span>
+      </button>
 
       {/* Suggestion du jour */}
       {suggestion && (

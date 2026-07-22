@@ -25,7 +25,7 @@ const CLASSIQUES = [
   { id: 'carte',     label: 'Carte seule',     Icon: GlassWater, sous: 'Vignobles & routes des vins' },
 ]
 
-export default function MenuGrille({ onGo, onScan, onAssistant, onCeSoir, onCompte, onAdd, onClose }) {
+export default function MenuGrille({ onGo, onScan, onAssistant, onCeSoir, onCompte, onAdd, onRecherche, onClose }) {
   useEffect(() => {
     const esc = e => { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', esc)
@@ -83,6 +83,9 @@ export default function MenuGrille({ onGo, onScan, onAssistant, onCeSoir, onComp
 
         <div className="text-[10px] uppercase tracking-[0.2em] font-bold text-anthracite-400 mb-2.5">Actions</div>
         <div className="grid grid-cols-2 gap-2.5">
+          <button onClick={() => go(onRecherche)} className="flex items-center gap-2.5 p-3.5 rounded-2xl bg-white border border-anthracite-200 hover:border-gold-500/50 active:scale-[0.97] transition-all cursor-pointer">
+            <Search size={15} className="text-gold-700" /><span className="text-xs font-semibold text-anthracite-800">Recherche</span>
+          </button>
           <button onClick={() => go(onScan)} className="flex items-center gap-2.5 p-3.5 rounded-2xl bg-white border border-anthracite-200 hover:border-gold-500/50 active:scale-[0.97] transition-all cursor-pointer">
             <ScanLine size={15} className="text-gold-700" /><span className="text-xs font-semibold text-anthracite-800">Scanner</span>
           </button>

@@ -31,7 +31,7 @@ const MODE_BADGE = {
   expert:   { Icon: GraduationCap, label: 'Expert' },
 }
 
-export default function Navbar({ view, setView, total, mode, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte, onMenu }) {
+export default function Navbar({ view, setView, total, mode, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte, onMenu, onRecherche }) {
   const badge = MODE_BADGE[mode]
   const { breatheClass, settle } = useCtaBreathe() // halo du CTA « Ce soir ? »
   const ceSoir = () => { settle(); onCeSoir?.() }
@@ -69,6 +69,16 @@ export default function Navbar({ view, setView, total, mode, onProfil, onAdd, on
           </nav>
 
           <div className="flex items-center gap-2">
+            {/* Recherche rapide — appellation, cépage → millésimes en 3 secondes */}
+            <button
+              onClick={onRecherche}
+              title="Recherche rapide — appellation, cépage, millésimes"
+              aria-label="Recherche rapide"
+              className="w-11 h-11 flex items-center justify-center rounded-full text-anthracite-500 border border-anthracite-900/15 hover:border-gold-500/70 hover:text-anthracite-900 active:scale-[0.95] transition-all duration-300 cursor-pointer"
+            >
+              <Search size={17} strokeWidth={1.7} />
+            </button>
+
             {/* Badge mode (cliquable → refaire le profil) */}
             {badge && (
               <button

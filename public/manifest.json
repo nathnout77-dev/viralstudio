@@ -51,6 +51,13 @@
       "short_name": "Ce soir ?",
       "url": "/?action=cesoir",
       "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Recherche rapide (millésimes)",
+      "short_name": "Recherche",
+      "description": "Appellation ou cépage → les millésimes à privilégier",
+      "url": "/?action=recherche",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }

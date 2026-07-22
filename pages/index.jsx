@@ -30,6 +30,7 @@ const ScanEtiquette  = dynamic(() => import('../components/ScanEtiquette'), { ss
 const AssistantView  = dynamic(() => import('../components/AssistantView'), { ssr: false })
 const CompteSync     = dynamic(() => import('../components/CompteSync'), { ssr: false })
 const CaveAmieViewer = dynamic(() => import('../components/CaveAmis').then(m => m.CaveAmieViewer), { ssr: false })
+const RechercheRapide = dynamic(() => import('../components/RechercheRapide'), { ssr: false })
 
 // ─── Vins de démonstration ────────────────────────────────────────────────────
 const DEMO_WINES = [
@@ -104,6 +105,7 @@ export default function App() {
   const [showScan, setShowScan]       = useState(false)
   const [showAssistant, setShowAssistant] = useState(false)
   const [showMenu, setShowMenu]       = useState(false)
+  const [showRecherche, setShowRecherche] = useState(false)
   const [profil, setProfil]           = useState(null)
   const [showOnboarding, setShowOnboarding] = useState(false)
   const [librarySearch, setLibrarySearch] = useState('')
@@ -129,12 +131,13 @@ export default function App() {
     const params = new URLSearchParams(window.location.search)
     const code = params.get('cave')
     if (code) setFriendCode(code)
-    // Raccourcis écran d'accueil (manifest shortcuts) : /?action=scan | cesoir
+    // Raccourcis écran d'accueil (manifest shortcuts) : /?action=scan | cesoir | recherche
     const action = params.get('action')
-    if (action === 'scan' || action === 'cesoir') {
+    if (action === 'scan' || action === 'cesoir' || action === 'recherche') {
       sessionStorage.setItem('landing-seen', '1')
       setShowLanding(false)
       if (action === 'scan') setShowScan(true)
+      else if (action === 'recherche') setShowRecherche(true)
       else setShowCeSoir(true)
       window.history.replaceState(null, '', window.location.pathname)
     }
@@ -329,6 +332,7 @@ export default function App() {
           onScan={() => setShowScan(true)}
           onCompte={() => setShowCompte(true)}
           onMenu={() => setShowMenu(true)}
+          onRecherche={() => setShowRecherche(true)}
         />
 
         {/* Desktop ≥ lg : sidebar fixe noire, signature luxe */}
@@ -345,6 +349,7 @@ export default function App() {
           onCompte={() => setShowCompte(true)}
           onAssistant={() => setShowAssistant(true)}
           onMenu={() => setShowMenu(true)}
+          onRecherche={() => setShowRecherche(true)}
         />
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-6 lg:py-10 pb-24 md:pb-10">
@@ -363,6 +368,7 @@ export default function App() {
               onParcours={goTo}
               onScan={() => setShowScan(true)}
               onAssistant={() => setShowAssistant(true)}
+              onRecherche={() => setShowRecherche(true)}
             />
           )}
           {view === 'trouver' && (
@@ -433,7 +439,14 @@ export default function App() {
             onCeSoir={() => setShowCeSoir(true)}
             onCompte={() => setShowCompte(true)}
             onAdd={() => setShowForm(true)}
+            onRecherche={() => setShowRecherche(true)}
             onClose={() => setShowMenu(false)}
+          />
+        )}
+        {showRecherche && (
+          <RechercheRapide
+            onClose={() => setShowRecherche(false)}
+            onOpenBibliotheque={(q) => goTo('vins', q)}
           />
         )}
         {showOnboarding && <OnboardingProfil onComplete={completeOnboarding} />}
