@@ -54,16 +54,18 @@ const GEMINI_MODELS = [
 ]
 
 // ── Mode « rayon » : identifier PLUSIEURS bouteilles sur une photo de rayon ──
-const RAYON_PROMPT = `Tu es un sommelier expert. On te montre la photo d'un RAYON de magasin (supermarché, caviste) avec plusieurs bouteilles de vin. Identifie chaque bouteille dont l'étiquette est lisible, de gauche à droite (12 maximum).
+const RAYON_PROMPT = `Tu es un sommelier expert capable d'identifier N'IMPORTE QUELLE bouteille de vin. On te montre la photo d'un RAYON de magasin (supermarché, caviste, cave) avec plusieurs bouteilles. Identifie CHAQUE bouteille dont l'étiquette est au moins partiellement lisible, de gauche à droite et de haut en bas (jusqu'à 15). Ne renonce jamais sous prétexte qu'un vin serait modeste, générique ou premier prix : liste-le dès que son nom est lisible.
 Réponds STRICTEMENT avec un objet JSON valide, sans aucun texte autour, sans balises markdown :
 {"vins":[{"nom": string, "appellation": string|null, "type": "red"|"white"|"rosé"|"sweet"|null, "millesime": number|null, "prixEtiquette": number|null, "confiance": "haute"|"moyenne"|"basse"}]}
 Règles :
-- "nom" : ce qui identifie le mieux la bouteille (marque, domaine ou appellation lisible).
-- "appellation" : l'appellation/IGP si lisible, sinon null. Ne devine pas.
+- "nom" : ce qui identifie le mieux la bouteille (marque, domaine, château ou appellation lisible). Ne mets JAMAIS "nom" à vide : mets le meilleur repère lisible.
+- "appellation" : l'appellation/AOC/IGP si lisible, sinon null. Ne devine pas une appellation absente.
+- "type" : déduis la couleur de l'étiquette, de la capsule ou de la teinte du verre si le mot n'est pas écrit.
 - "millesime" : l'année EXACTEMENT telle qu'imprimée, sinon null. N'invente jamais.
-- "prixEtiquette" : le prix affiché sur l'étiquette de rayon sous la bouteille, si lisible.
-- Ne liste jamais deux fois la même référence. Ignore les bouteilles trop floues.
-Si l'image n'est pas un rayon de vin ou est illisible : {"vins":[]}`
+- "prixEtiquette" : le prix affiché sur l'étagère/l'étiquette de rayon sous la bouteille, si lisible.
+- Ne liste jamais deux fois la même référence. Ignore uniquement les bouteilles totalement floues ou masquées.
+- Vaut mieux une bouteille identifiée avec confiance "basse" qu'une bouteille oubliée.
+Si l'image n'est pas un rayon de vin ou est totalement illisible : {"vins":[]}`
 
 // ── Mode « plat » : accords mets-vins à partir d'une photo d'assiette ────────
 const PLAT_PROMPT = `Tu es un sommelier expert en accords mets-vins. On te montre la photo d'un PLAT, d'une assiette ou d'une recette. Identifie le plat et propose les accords vins adaptés.
@@ -232,7 +234,7 @@ export default async function handler(req, res) {
   // ou 'plat' (accords mets-vins depuis une photo d'assiette).
   const mode = req.body?.mode
   const opts = mode === 'rayon'
-    ? { prompt: RAYON_PROMPT, maxTokens: 1600, consigne: 'Identifie chaque bouteille lisible de ce rayon et renvoie uniquement le JSON.' }
+    ? { prompt: RAYON_PROMPT, maxTokens: 2200, consigne: 'Identifie chaque bouteille lisible de ce rayon (même modeste) et renvoie uniquement le JSON.' }
     : mode === 'plat'
     ? { prompt: PLAT_PROMPT, maxTokens: 600, consigne: 'Identifie ce plat et propose les accords vins ; renvoie uniquement le JSON.' }
     : { prompt: SYSTEM_PROMPT, maxTokens: 700, consigne: "Lis cette étiquette de vin et renvoie uniquement le JSON." }

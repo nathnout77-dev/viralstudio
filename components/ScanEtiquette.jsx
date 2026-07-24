@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import { X, Camera, Image as ImageIcon, RefreshCw, Sparkles, Plus, Check, MapPin, BookOpen, Tag, Pencil, UtensilsCrossed, Heart, Globe, Library, Zap, ZapOff, ShoppingCart, Share2 } from 'lucide-react'
+import { X, Camera, Image as ImageIcon, RefreshCw, Sparkles, Plus, Check, MapPin, BookOpen, Tag, Pencil, UtensilsCrossed, Heart, Globe, Library, Zap, ZapOff, ShoppingCart, Share2, ChevronRight } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
 import { regionInfo } from '../data/regionsInfo'
 import { normaliser } from '../data/aromes'
@@ -9,7 +9,7 @@ import WineVisuel from './WineVisuel'
 import { FicheVin } from './BibliothequeView'
 import { toggleEnvie, useEnvies } from './Envies'
 import useModalBehavior from '../lib/useModal'
-import { loadDecouvertes, matchDecouverte, decouverteFromVision, addDecouverte, updateDecouverte } from '../lib/decouvertes'
+import { loadDecouvertes, matchDecouverte, decouverteFromVision, addDecouverte, updateDecouverte, decouverteToWine } from '../lib/decouvertes'
 import { askIA } from '../lib/askIA'
 import { cepagesOfficiels } from '../data/appellationsCepages'
 import { supabase } from '../lib/supabase'
@@ -531,6 +531,25 @@ function DecouverteBanner({ dejaConnu, enrichState, decouverte }) {
   return null
 }
 
+// Fusionne le résultat d'une recherche web dans un enregistrement « découverte »
+// (partagé par le scan d'une étiquette seule et le scan de rayon).
+function fusionnerWeb(record, web) {
+  return updateDecouverte(record.id, {
+    appellationLue: record.appellationLue || record.appellation,
+    appellation: web.correctionAppellation || record.appellation,
+    region: web.correctionRegion || record.region,
+    cepages: web.cepagesWeb.length ? web.cepagesWeb : record.cepages,
+    histoire: web.histoire || record.histoire,
+    description: web.styleWeb || record.description,
+    styleEtQualite: web.styleWeb || record.styleEtQualite,
+    accords: [...new Set([...(record.accords || []), ...web.accordsWeb])],
+    fourchettePrix: web.fourchettePrixWeb || record.fourchettePrix,
+    siteWeb: web.siteWeb || record.siteWeb,
+    sourceWeb: !!web.usedWeb || !!record.sourceWeb,
+    verifie: !!web.verifie,
+  })
+}
+
 export default function ScanEtiquette({ onClose, onAddWine }) {
   useModalBehavior(onClose)
   // step : 'idle' | 'preview' | 'prix' | 'loading' | 'result' | 'error'
@@ -550,6 +569,8 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
   const [partageCopie, setPartageCopie] = useState(false)
   const [modeRayon, setModeRayon] = useState(false) // photo d'un rayon entier (multi-bouteilles)
   const [rayonVins, setRayonVins] = useState(null)  // bouteilles identifiées sur le rayon
+  const [rayonEnrich, setRayonEnrich] = useState({}) // index → { state:'loading'|'done', wine, decouverte }
+  const enrichRef = useRef({})                       // promesses d'enrichissement en cours (anti-doublon)
   const [prixRayon, setPrixRayon] = useState('')  // prix saisi en rayon (string du champ)
   const [prixDraft, setPrixDraft] = useState('')  // brouillon pour l'édition post-résultat
   const [editingPrix, setEditingPrix] = useState(false)
@@ -566,6 +587,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
   const streamRef = useRef(null)
   const [torchDispo, setTorchDispo] = useState(false)
   const [torchOn, setTorchOn] = useState(false)
+  const [camStalled, setCamStalled] = useState(false) // flux caméra figé/noir après ouverture
 
   const fermerCamera = () => {
     const s = streamRef.current
@@ -635,10 +657,19 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
   // Rattache le flux à la vidéo dès que l'écran caméra est monté (évite la course
   // entre getUserMedia et le rendu React). Coupe la caméra au démontage du composant.
   useEffect(() => {
-    if (step === 'camera' && streamRef.current && videoRef.current && !videoRef.current.srcObject) {
+    if (step !== 'camera') return
+    setCamStalled(false)
+    if (streamRef.current && videoRef.current && !videoRef.current.srcObject) {
       videoRef.current.srcObject = streamRef.current
       videoRef.current.play().catch(() => {})
     }
+    // Filet de sécurité : certains appareils rattachent un flux « noir » (pas de
+    // frames) sans jamais rejeter getUserMedia. Si la vidéo n'a toujours aucune
+    // dimension après 4 s, on propose un repli galerie plutôt qu'un écran noir.
+    const t = setTimeout(() => {
+      if (!videoRef.current?.videoWidth) setCamStalled(true)
+    }, 4000)
+    return () => clearTimeout(t)
   }, [step])
 
   useEffect(() => () => fermerCamera(), []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -680,22 +711,9 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
     setEnrichState('loading')
     const web = await rechercheWeb(json)
     if (web) {
-      const merged = updateDecouverte(record.id, {
-        // garde la lecture d'origine pour reconnaître ce vin au prochain scan,
-        // même si l'appellation affichée a été corrigée par le web
-        appellationLue: record.appellationLue || record.appellation,
-        appellation: web.correctionAppellation || record.appellation,
-        region: web.correctionRegion || record.region,
-        cepages: web.cepagesWeb.length ? web.cepagesWeb : record.cepages,
-        histoire: web.histoire || record.histoire,
-        description: web.styleWeb || record.description,
-        styleEtQualite: web.styleWeb || record.styleEtQualite,
-        accords: [...new Set([...(record.accords || []), ...web.accordsWeb])],
-        fourchettePrix: web.fourchettePrixWeb || record.fourchettePrix,
-        siteWeb: web.siteWeb || record.siteWeb,
-        sourceWeb: !!web.usedWeb || !!record.sourceWeb,
-        verifie: !!web.verifie,
-      })
+      // garde la lecture d'origine pour reconnaître ce vin au prochain scan,
+      // même si l'appellation affichée a été corrigée par le web
+      const merged = fusionnerWeb(record, web)
       if (merged) setDecouverte(merged)
       if (web.verifie) {
         setParsed(prev => prev ? {
@@ -875,6 +893,64 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
     }
   }
 
+  // ── Rayon : rendre chaque bouteille inconnue « ouvrable » ─────────────────
+  // Une bouteille du rayon absente de la bibliothèque n'est plus un cul-de-sac :
+  // on la mémorise dans « Mes découvertes » et on la complète par une recherche
+  // web (histoire, cépages, accords, prix), exactement comme le scan d'une
+  // étiquette seule — puis on la présente comme une vraie fiche Œno. Anti-doublon
+  // via enrichRef : une même bouteille ne déclenche qu'une seule recherche.
+  const enrichirBouteille = (v, key) => {
+    if (enrichRef.current[key]) return enrichRef.current[key]
+    const p = (async () => {
+      setRayonEnrich(s => ({ ...s, [key]: { state: 'loading' } }))
+      const vision = {
+        appellation: v.appellation || v.nom || null,
+        domaine: v.appellation && v.nom && v.nom !== v.appellation ? v.nom : '',
+        region: null,
+        type: v.type || null,
+        millesime: Number(v.millesime) || null,
+        cepages: [],
+        styleEtQualite: '',
+      }
+      let record = matchDecouverte(loadDecouvertes(), vision) || addDecouverte(decouverteFromVision(vision))
+      if (record && !record.verifie) {
+        const web = await rechercheWeb(vision)
+        if (web) { const merged = fusionnerWeb(record, web); if (merged) record = merged }
+      }
+      const wine = record ? decouverteToWine(record) : null
+      setRayonEnrich(s => ({ ...s, [key]: { state: 'done', wine, decouverte: record } }))
+      return wine
+    })()
+    enrichRef.current[key] = p
+    return p
+  }
+
+  // Tap sur une bouteille du rayon → sa fiche complète (connue = fiche direct,
+  // inconnue = enrichissement web puis fiche).
+  const ouvrirBouteille = async (v, key) => {
+    if (v.matched) { setFicheWine(v.matched); return }
+    const cur = rayonEnrich[key]
+    if (cur?.state === 'done' && cur.wine) { setFicheWine(cur.wine); return }
+    const wine = await enrichirBouteille(v, key)
+    if (wine) setFicheWine(wine)
+  }
+
+  // Enrichissement web automatique, en tâche de fond, des bouteilles inconnues
+  // du rayon (séquentiel + plafonné pour ménager le quota ; le reste s'enrichit
+  // au tap). Se relance à chaque nouveau rayon analysé.
+  useEffect(() => {
+    if (step !== 'rayon' || !rayonVins) return
+    let annule = false
+    const inconnues = rayonVins.map((v, i) => ({ v, i })).filter(x => !x.v.matched)
+    ;(async () => {
+      for (const { v, i } of inconnues.slice(0, 6)) {
+        if (annule) break
+        await enrichirBouteille(v, i)
+      }
+    })()
+    return () => { annule = true }
+  }, [step, rayonVins]) // eslint-disable-line react-hooks/exhaustive-deps
+
   // Mode secours : identifier le vin par son nom quand la lecture IA échoue.
   // Réutilise matchWine → même écran résultat que le scan (fiche, prix, cave).
   const chercherManuel = () => {
@@ -906,6 +982,9 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
     setAchat(null)
     setModeRayon(false)
     setRayonVins(null)
+    setRayonEnrich({})
+    enrichRef.current = {}
+    setCamStalled(false)
     setPrixRayon('')
     setPrixDraft('')
     setEditingPrix(false)
@@ -1090,6 +1169,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                   playsInline
                   muted
                   autoPlay
+                  onLoadedMetadata={() => { setCamStalled(false); videoRef.current?.play().catch(() => {}) }}
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 {/* Cadre de visée */}
@@ -1110,6 +1190,30 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                   >
                     {torchOn ? <Zap size={18} className="text-gold-400" /> : <ZapOff size={18} />}
                   </button>
+                )}
+                {/* Caméra figée / noire : repli galerie plutôt qu'un écran noir */}
+                {camStalled && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center px-6 bg-black/80 backdrop-blur-sm animate-fade-in">
+                    <Camera size={30} className="text-gold-400/80" strokeWidth={1.5} />
+                    <p className="text-cream/90 text-sm leading-relaxed max-w-[16rem]">
+                      La caméra tarde à démarrer. Vérifiez l'autorisation caméra, ou choisissez une photo depuis la galerie.
+                    </p>
+                    <div className="flex flex-col gap-2 w-full max-w-[15rem]">
+                      <button
+                        onClick={() => { fermerCamera(); galleryRef.current?.click() }}
+                        className="min-h-[46px] flex items-center justify-center gap-2 rounded-full text-sm font-semibold text-cream cursor-pointer active:scale-[0.98]"
+                        style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
+                      >
+                        <ImageIcon size={15} className="text-gold-400" /> Choisir dans la galerie
+                      </button>
+                      <button
+                        onClick={() => { fermerCamera(); ouvrirCamera() }}
+                        className="min-h-[44px] flex items-center justify-center gap-2 rounded-full text-sm font-medium text-cream/80 border border-white/25 hover:bg-white/10 cursor-pointer active:scale-[0.98]"
+                      >
+                        <RefreshCw size={14} /> Réessayer la caméra
+                      </button>
+                    </div>
+                  </div>
                 )}
               </div>
 
@@ -1303,26 +1407,32 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                   Les plus intéressantes d'abord — touchez un vin pour sa fiche complète.
                 </p>
               </div>
-              {rayonVins.map((v, i) => (
+              {rayonVins.map((v, i) => {
+                const enr = rayonEnrich[i]
+                const wine = v.matched || (enr?.state === 'done' ? enr.wine : null)
+                const enCours = enr?.state === 'loading'
+                return (
                 <div
                   key={`${v.nom}-${i}`}
-                  onClick={() => v.matched && setFicheWine(v.matched)}
-                  role={v.matched ? 'button' : undefined}
-                  className={`rounded-2xl border p-3.5 transition-all ${
+                  onClick={() => ouvrirBouteille(v, i)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); ouvrirBouteille(v, i) } }}
+                  className={`rounded-2xl border p-3.5 transition-all cursor-pointer active:scale-[0.99] ${
                     v.interessant
-                      ? 'border-gold-500/50 shadow-card cursor-pointer hover:-translate-y-0.5'
+                      ? 'border-gold-500/50 shadow-card hover:-translate-y-0.5'
                       : v.matched
-                        ? 'border-anthracite-900/[0.08] bg-white cursor-pointer hover:border-anthracite-900/25'
-                        : 'border-anthracite-900/[0.06] bg-anthracite-50/60'
+                        ? 'border-anthracite-900/[0.08] bg-white hover:border-anthracite-900/25'
+                        : 'border-anthracite-900/[0.06] bg-white hover:border-gold-500/40'
                   }`}
                   style={v.interessant ? { background: 'rgba(199,161,90,0.08)' } : {}}
                 >
                   <div className="flex items-start gap-3">
-                    <WineVisuel type={v.matched?.type || v.type || 'red'} size={20} className="mt-0.5 flex-shrink-0" />
+                    <WineVisuel type={wine?.type || v.type || 'red'} size={20} className="mt-0.5 flex-shrink-0" />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-wine-name text-xl text-anthracite-900 leading-tight">
-                          {v.matched?.appellation || v.nom}
+                          {wine?.appellation || v.nom}
                         </span>
                         {v.interessant && (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-gold-500/20 text-gold-700">
@@ -1333,7 +1443,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                       </div>
                       <div className="text-[11px] text-anthracite-400 mt-0.5">
                         {[
-                          v.matched?.region,
+                          wine?.region,
                           v.millesime,
                           v.prixEtiquette ? `${v.prixEtiquette} € en rayon` : (v.matched ? `~${v.matched.prixMoyen} € habituellement` : null),
                         ].filter(Boolean).join(' · ')}
@@ -1344,14 +1454,26 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                         </p>
                       )}
                       {!v.matched && (
-                        <p className="text-[11px] text-anthracite-400 italic mt-1">
-                          Hors bibliothèque — scannez son étiquette seule pour l'analyser en détail.
-                        </p>
+                        enCours ? (
+                          <p className="flex items-center gap-1.5 text-[11px] text-anthracite-400 mt-1" aria-live="polite">
+                            <span className="w-3 h-3 rounded-full border border-gold-500/40 border-t-gold-600 animate-spin flex-shrink-0" />
+                            Recherche en ligne…
+                          </p>
+                        ) : enr?.state === 'done' && enr.wine ? (
+                          <p className="flex items-center gap-1.5 text-[11px] font-medium text-gold-700 mt-1">
+                            <Globe size={10} className="flex-shrink-0" /> Fiche prête — touchez pour l'ouvrir
+                          </p>
+                        ) : (
+                          <p className="flex items-center gap-1.5 text-[11px] text-anthracite-400 mt-1">
+                            <Globe size={10} className="flex-shrink-0 opacity-60" /> Touchez pour l'analyser en ligne
+                          </p>
+                        )
                       )}
                     </div>
+                    <ChevronRight size={16} className="text-anthracite-300 flex-shrink-0 mt-1" />
                   </div>
                 </div>
-              ))}
+              )})}
               <button
                 onClick={recommencer}
                 className="w-full min-h-[44px] flex items-center justify-center gap-2 rounded-full text-xs font-medium text-anthracite-500 hover:text-anthracite-800 transition-colors duration-300 cursor-pointer"
