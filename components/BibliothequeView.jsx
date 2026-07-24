@@ -772,7 +772,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
           {/* Grille */}
           {filtered.length === 0 ? (
             <div className="text-center py-16">
-              <div className="text-4xl mb-3">🔍</div>
+              <Search size={30} className="text-anthracite-200 mx-auto mb-3" />
               <p className="text-anthracite-500 text-sm">Aucun vin ne correspond — élargissez vos filtres.</p>
             </div>
           ) : (

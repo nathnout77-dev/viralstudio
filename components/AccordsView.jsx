@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { UtensilsCrossed, Wine } from 'lucide-react'
 import { WINE_DB } from '../data/wineDatabase'
 import { FicheVin } from './BibliothequeView'
+import Icone from './Icone'
 
 function findWine(appellation) {
   if (!appellation) return null
@@ -14,16 +15,16 @@ function findWine(appellation) {
 }
 
 const PLATS = [
-  { id: 'viande_rouge',   label: 'Viande rouge',    emoji: '🥩', types: ['red'],          desc: 'Bœuf, agneau, gibier, canard' },
-  { id: 'viande_blanche', label: 'Viande blanche',  emoji: '🍗', types: ['red','white'],   desc: 'Poulet, veau, porc, lapin' },
-  { id: 'poisson',        label: 'Poisson',          emoji: '🐟', types: ['white','rosé'],  desc: 'Sole, bar, saumon, thon' },
-  { id: 'fruits_mer',     label: 'Fruits de mer',   emoji: '🦞', types: ['white'], desc: 'Huîtres, langoustines, crevettes' },
-  { id: 'fromage',        label: 'Fromage',          emoji: '🧀', types: ['red','white','sweet'], desc: 'Plateau de fromages variés' },
-  { id: 'dessert',        label: 'Dessert',          emoji: '🍮', types: ['sweet'], desc: 'Chocolat, fruits, pâtisseries' },
-  { id: 'vegetarien',     label: 'Végétarien',       emoji: '🥗', types: ['white','rosé'],  desc: 'Légumes, pâtes, risotto, quiche' },
-  { id: 'charcuterie',    label: 'Charcuterie',      emoji: '🥓', types: ['red','rosé'],    desc: 'Jambon, saucisson, pâté' },
-  { id: 'champignons',    label: 'Champignons',      emoji: '🍄', types: ['red','white'],   desc: 'Risotto, velouté, poêlée' },
-  { id: 'foie_gras',      label: 'Foie gras',        emoji: '⭐', types: ['sweet','white'], desc: 'Terrine, poêlé, en conserve' },
+  { id: 'viande_rouge',   label: 'Viande rouge',    types: ['red'],          desc: 'Bœuf, agneau, gibier, canard' },
+  { id: 'viande_blanche', label: 'Viande blanche',  types: ['red','white'],   desc: 'Poulet, veau, porc, lapin' },
+  { id: 'poisson',        label: 'Poisson',          types: ['white','rosé'],  desc: 'Sole, bar, saumon, thon' },
+  { id: 'fruits_mer',     label: 'Fruits de mer',   types: ['white'], desc: 'Huîtres, langoustines, crevettes' },
+  { id: 'fromage',        label: 'Fromage',          types: ['red','white','sweet'], desc: 'Plateau de fromages variés' },
+  { id: 'dessert',        label: 'Dessert',          types: ['sweet'], desc: 'Chocolat, fruits, pâtisseries' },
+  { id: 'vegetarien',     label: 'Végétarien',       types: ['white','rosé'],  desc: 'Légumes, pâtes, risotto, quiche' },
+  { id: 'charcuterie',    label: 'Charcuterie',      types: ['red','rosé'],    desc: 'Jambon, saucisson, pâté' },
+  { id: 'champignons',    label: 'Champignons',      types: ['red','white'],   desc: 'Risotto, velouté, poêlée' },
+  { id: 'foie_gras',      label: 'Foie gras',        types: ['sweet','white'], desc: 'Terrine, poêlé, en conserve' },
 ]
 
 const ACCORDS = {
@@ -111,7 +112,7 @@ export default function AccordsView() {
             }`}
             aria-pressed={selected === p.id}
           >
-            <div className="text-2xl mb-2 leading-none">{p.emoji}</div>
+            <Icone nom={p.id} size={22} className={`mb-2 ${selected === p.id ? 'text-gold-400' : 'text-wine-700'}`} />
             <div className={`text-xs font-semibold mb-0.5 ${selected === p.id ? 'text-cream' : 'text-anthracite-800'}`}>{p.label}</div>
             <div className={`text-[10px] leading-tight ${selected === p.id ? 'text-cream/60' : 'text-anthracite-400'}`}>{p.desc}</div>
           </button>

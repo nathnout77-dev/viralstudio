@@ -1315,7 +1315,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
               <div className="relative w-16 h-16 mb-6">
                 <span className="absolute inset-0 rounded-full border-2 border-gold-500/20" />
                 <span className="absolute inset-0 rounded-full border-2 border-transparent border-t-gold-500 animate-spin" />
-                <span className="absolute inset-0 flex items-center justify-center text-2xl" aria-hidden="true">🍷</span>
+                <span className="absolute inset-0 flex items-center justify-center"><WineVisuel type="red" size={22} /></span>
               </div>
               <div className="font-serif text-lg text-anthracite-900">
                 {modeRayon ? 'Lecture du rayon…' : "Lecture de l'étiquette…"}
@@ -1521,7 +1521,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                 <div className="p-5 space-y-4 bg-white">
                   {confiance && (
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-gold-500/15 text-gold-700">
-                      ⚠️ {confiance}
+                      {confiance}
                     </span>
                   )}
 
@@ -1552,7 +1552,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                   {matched.region && (
                     <div className="rounded-xl p-3.5" style={{ background: '#f0e9dd' }}>
                       <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-1">
-                        {regionInfo(matched.region).emoji} {matched.region}
+                        <Icone nom={regionInfo(matched.region).ic} size={12} className="inline-block text-gold-700 mr-1 -mt-0.5" /> {matched.region}
                       </div>
                       <p className="text-xs text-anthracite-600 leading-relaxed">{regionInfo(matched.region).blurb}</p>
                     </div>
@@ -1626,7 +1626,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
               <div className="rounded-2xl overflow-hidden border border-anthracite-900/[0.07] shadow-card">
                 <div className="p-5 relative overflow-hidden text-cream"
                      style={{ background: 'linear-gradient(150deg, #1C1917 0%, #3a0616 80%, #5c0d22 140%)' }}>
-                  <div className="absolute -top-6 -right-6 text-[90px] opacity-10 select-none leading-none" aria-hidden="true">🍷</div>
+                  <div className="absolute -top-4 -right-4 opacity-10 select-none pointer-events-none" aria-hidden="true"><WineVisuel type="red" size={90} /></div>
                   <div className="relative">
                     {parsed.domaine && <div className="font-wine-name text-4xl text-cream">{parsed.domaine}</div>}
                     <div className={parsed.domaine ? 'text-cream/80 text-sm mt-1' : 'font-wine-name text-4xl text-cream'}>
@@ -1643,7 +1643,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                 <div className="p-5 space-y-4 bg-white">
                   {confiance && (
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-gold-500/15 text-gold-700">
-                      ⚠️ {confiance}
+                      {confiance}
                     </span>
                   )}
 
@@ -1669,7 +1669,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                   {region && parsed.region && (
                     <div className="rounded-xl p-3.5" style={{ background: '#f0e9dd' }}>
                       <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-1">
-                        {region.emoji} {parsed.region}
+                        <Icone nom={region.ic} size={12} className="inline-block text-gold-700 mr-1 -mt-0.5" /> {parsed.region}
                       </div>
                       <p className="text-xs text-anthracite-600 leading-relaxed">{region.blurb}</p>
                     </div>

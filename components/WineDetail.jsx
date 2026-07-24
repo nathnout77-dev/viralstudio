@@ -7,7 +7,6 @@ import useModalBehavior from '../lib/useModal'
 
 const DegustationSimulateur = dynamic(() => import('./DegustationSimulateur'), { ssr: false })
 
-const ACCORD_ICONS = { '🥩':'🥩','🐟':'🐟','🧀':'🧀','🍮':'🍮','🍄':'🍄','🦞':'🦞','🍗':'🍗' }
 
 function Row({ icon: Icon, label, value }) {
   if (!value) return null

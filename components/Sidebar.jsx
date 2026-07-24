@@ -1,4 +1,4 @@
-import { Wine, Library, Map, Sparkles, Plus, Utensils, ScanLine, UserCircle2, MessageCircleHeart, Sprout, GraduationCap, Home, Search, LayoutGrid } from 'lucide-react'
+import { Wine, Library, Map, Sparkles, Plus, Utensils, ScanLine, UserCircle2, MessageCircleHeart, Sprout, GraduationCap, Home, Search, LayoutGrid , Layers} from 'lucide-react'
 import RollingNumber from './RollingNumber'
 import LogoOeno from './LogoOeno'
 
@@ -11,6 +11,7 @@ import LogoOeno from './LogoOeno'
 
 const PARCOURS = [
   { id: 'hub',       label: 'Accueil',      Icon: Home },
+  { id: 'decouvrir', label: 'Découvrir',    Icon: Layers },
   { id: 'trouver',   label: 'Trouver un vin', Icon: Search },
   { id: 'cave',      label: 'Ma Cave',      Icon: Wine },
   { id: 'vins',      label: 'Bibliothèque', Icon: Library },

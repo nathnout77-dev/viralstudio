@@ -12,6 +12,7 @@ const GRAND_PUBLIC_IDS = new Set(WINE_DB_GRAND_PUBLIC.map(w => w.id))
 import { regionInfo } from '../data/regionsInfo'
 import PetitsPrix from './PetitsPrix'
 import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
+import Icone from './Icone'
 
 const DegustationSimulateur = dynamic(() => import('./DegustationSimulateur'), { ssr: false })
 
@@ -437,7 +438,7 @@ export default function InteractiveMap({ onAddWine, onNoter }) {
       {activeRegion !== 'Toutes' && (
         <div className="card p-4 mb-4 animate-fade-in-up" style={{ animationFillMode: 'both' }}>
           <div className="flex items-start gap-3">
-            <span className="text-2xl flex-shrink-0">{regionInfo(activeRegion).emoji}</span>
+            <Icone nom={regionInfo(activeRegion).ic} size={24} className="text-wine-700 flex-shrink-0" />
             <div className="min-w-0">
               <div className="font-serif text-base font-bold text-anthracite-900 mb-1">{activeRegion}</div>
               <p className="text-sm text-anthracite-600 leading-relaxed">{regionInfo(activeRegion).blurb}</p>

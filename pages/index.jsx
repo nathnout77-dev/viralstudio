@@ -26,7 +26,7 @@ import useSwipeNav from '../lib/useSwipeNav'
 
 // Ordre des onglets pour la navigation par glissement (mobile) — reprend les
 // parcours guidés de la nav.
-const SWIPE_ORDER = ['hub', 'trouver', 'cave', 'vins', 'explorer', 'apprendre']
+const SWIPE_ORDER = ['hub', 'decouvrir', 'trouver', 'cave', 'vins', 'explorer', 'apprendre']
 import { Sparkles, NotebookPen, Wine as WineIcon, X } from 'lucide-react'
 
 const InteractiveMap = dynamic(() => import('../components/InteractiveMap'), { ssr: false })
@@ -38,12 +38,14 @@ const CompteSync     = dynamic(() => import('../components/CompteSync'), { ssr: 
 const CaveAmieViewer = dynamic(() => import('../components/CaveAmis').then(m => m.CaveAmieViewer), { ssr: false })
 const RechercheRapide = dynamic(() => import('../components/RechercheRapide'), { ssr: false })
 const TourGuide       = dynamic(() => import('../components/TourGuide'), { ssr: false })
+const DecouvrirSwipe  = dynamic(() => import('../components/DecouvrirSwipe'), { ssr: false })
+const FicheVin        = dynamic(() => import('../components/BibliothequeView').then(m => m.FicheVin), { ssr: false })
 
 // Étapes de la visite guidée (premier lancement mobile) : chaque étape éclaire
 // un vrai bouton de l'écran et explique sa fonction.
 const TOUR_KEY = 'oeno-tour-v1'
 const TOUR_STEPS = [
-  { title: 'Bienvenue dans Œno 🍷', text: "Voici votre cave. En quelques secondes, on vous montre l'essentiel — vous pourrez passer quand vous voulez." },
+  { title: 'Bienvenue dans Œno', text: "Voici votre cave. En quelques secondes, on vous montre l'essentiel — vous pourrez passer quand vous voulez." },
   { selector: '[data-tour="cave"]',      placement: 'top',    title: 'Ma cave',              text: 'Vos bouteilles, vos dégustations et vos envies vivent ici. C’est votre point de départ.' },
   { selector: '[data-tour="ajouter"]',   placement: 'bottom', title: 'Ajouter un vin',       text: 'Cherchez un vin ou scannez-le : sa fiche complète se remplit toute seule.' },
   { selector: '[data-tour="scan"]',      placement: 'top',    title: 'Scanner une étiquette', text: 'En rayon ? Photographiez l’étiquette : Œno décode le vin, même inconnu, et le garde pour vous.' },
@@ -103,6 +105,7 @@ const DEMO_WINES = [
 
 // Intitulés du fil d'Ariane pour chaque parcours (le hub n'en a pas)
 const VUES = {
+  decouvrir: { titre: 'Découvrir',              sousTitre: 'Glissez, gardez ce qui vous plaît' },
   trouver:   { titre: 'Trouver un vin',        sousTitre: 'On vous guide en 2 questions' },
   cave:      { titre: 'Ma cave',                sousTitre: 'Bouteilles, dégustations, envies' },
   vins:      { titre: 'La bibliothèque',        sousTitre: `${WINE_DB_TERROIR.length} vins décodés` },
@@ -135,6 +138,7 @@ export default function App() {
   const [friendCode, setFriendCode]   = useState(null) // ?cave=CODE → cave d'un ami
   const [nextStep, setNextStep]       = useState(null) // guidage : prochaine étape après un ajout
   const [showTour, setShowTour]       = useState(false) // visite guidée premier lancement mobile
+  const [ficheVin, setFicheVin]       = useState(null)  // fiche ouverte depuis l'écran Découvrir
 
   useEffect(() => {
     // Lecture robuste : un localStorage corrompu ne doit jamais bloquer l'app
@@ -303,7 +307,7 @@ export default function App() {
     )
     if (!match) return
     setWines(prev => prev.map(w => w.id === match.id ? { ...w, favori: true } : w))
-    toast('Ajouté à vos préférés ★')
+    toast('Ajouté à vos préférés')
   }, [wines])
 
   const total = wines.reduce((s, w) => s + w.quantity, 0)
@@ -314,8 +318,15 @@ export default function App() {
   // vue principale.
   const overlayOuvert = showLanding || showCeSoir || showScan || showAssistant ||
     showMenu || showRecherche || showCompte || showForm || showOnboarding ||
-    !!detailWine || !!editWine || !!enviePrefill || !!friendCode
-  useSwipeNav({ order: SWIPE_ORDER, current: view, onNavigate: goTo, enabled: !overlayOuvert })
+    !!detailWine || !!editWine || !!enviePrefill || !!friendCode || !!ficheVin
+  // Sur « Découvrir », le glissement horizontal appartient aux cartes : la
+  // navigation entre onglets par swipe se met en retrait pour ne pas voler le geste.
+  useSwipeNav({
+    order: SWIPE_ORDER,
+    current: view,
+    onNavigate: goTo,
+    enabled: !overlayOuvert && view !== 'decouvrir',
+  })
 
   // Indice unique (tactile) : faire découvrir le glissement entre onglets.
   useEffect(() => {
@@ -422,7 +433,7 @@ export default function App() {
               voile bordeaux qui se dissout. */}
           <div key={view} className="view-transition">
           {/* Fil d'Ariane — présent sur tous les parcours, jamais sur le hub */}
-          {view !== 'hub' && ariane && (
+          {view !== 'hub' && view !== 'decouvrir' && ariane && (
             <FilAriane titre={ariane.titre} sousTitre={ariane.sousTitre} onAccueil={() => goTo('hub')} />
           )}
 
@@ -435,6 +446,9 @@ export default function App() {
               onAssistant={() => setShowAssistant(true)}
               onRecherche={() => setShowRecherche(true)}
             />
+          )}
+          {view === 'decouvrir' && (
+            <DecouvrirSwipe onFiche={setFicheVin} onAddWine={saveWine} />
           )}
           {view === 'trouver' && (
             <ParcoursVin mode={mode} onOpenBibliotheque={() => goTo('vins')} />
@@ -492,6 +506,24 @@ export default function App() {
           <ScanEtiquette
             onClose={() => setShowScan(false)}
             onAddWine={saveWine}
+          />
+        )}
+        {/* Fiche complète depuis Découvrir : le vin en 1 geste, tout en 2 */}
+        {ficheVin && (
+          <FicheVin
+            wine={ficheVin}
+            onClose={() => setFicheVin(null)}
+            onAddToCave={(w, m) => {
+              saveWine({
+                id: `${w.id}-${m}-${Date.now()}`,
+                name: w.appellation, domain: '', appellation: w.appellation,
+                region: w.region, type: w.type, cepages: w.cepages, vintage: m,
+                quantity: 1, drinkFrom: w.drinkFrom, drinkUntil: w.drinkUntil,
+                serviceTemp: w.serviceTemp, carafage: w.carafage,
+                estimatedValue: w.prixMoyen, foodPairings: w.accords, notes: w.enUneMot,
+              })
+            }}
+            onNoter={noterDegustation}
           />
         )}
         {friendCode && <CaveAmieViewer code={friendCode} onClose={closeFriendCave} />}

@@ -6,6 +6,7 @@ import { diversifyByRegion, getRegionsPref } from '../lib/suggestions'
 import RegionsPrefFilter from './RegionsPrefFilter'
 import useModalBehavior from '../lib/useModal'
 import { FicheVin } from './BibliothequeView'
+import Icone from './Icone'
 import WineTile from './WineTile'
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -17,44 +18,44 @@ const QUESTIONS = [
     id: 'plat',
     q: 'Vous mangez quoi ce soir ?',
     options: [
-      { emoji: '🥩', label: 'Viande rouge',        v: 'viande_rouge' },
-      { emoji: '🍗', label: 'Viandes blanches',    v: 'viande_blanche' },
-      { emoji: '🐟', label: 'Poisson / fruits de mer', v: 'poisson' },
-      { emoji: '🍝', label: 'Pâtes / pizza',       v: 'pates' },
-      { emoji: '🧀', label: 'Fromage / raclette',  v: 'fromage' },
-      { emoji: '🥗', label: 'Végétarien / léger',  v: 'vege' },
-      { emoji: '🔥', label: 'Grillades / barbecue', v: 'grillades' },
-      { emoji: '🥜', label: 'Juste l\'apéro',      v: 'apero' },
+      { ic: 'viande_rouge', label: 'Viande rouge',        v: 'viande_rouge' },
+      { ic: 'viande_blanche', label: 'Viandes blanches',    v: 'viande_blanche' },
+      { ic: 'poisson', label: 'Poisson / fruits de mer', v: 'poisson' },
+      { ic: 'pates', label: 'Pâtes / pizza',       v: 'pates' },
+      { ic: 'fromage', label: 'Fromage / raclette',  v: 'fromage' },
+      { ic: 'vege', label: 'Végétarien / léger',  v: 'vege' },
+      { ic: 'grillades', label: 'Grillades / barbecue', v: 'grillades' },
+      { ic: 'apero', label: 'Juste l\'apéro',      v: 'apero' },
     ],
   },
   {
     id: 'couleur',
     q: 'Une envie de couleur ?',
     options: [
-      { emoji: '🍷', label: 'Rouge',       v: 'red' },
-      { emoji: '🥂', label: 'Blanc',       v: 'white' },
-      { emoji: '🌸', label: 'Rosé',        v: 'rosé' },
-      { emoji: '🎲', label: 'Peu importe, surprenez-moi', v: 'any' },
+      { ic: 'rouge', label: 'Rouge',       v: 'red' },
+      { ic: 'blanc', label: 'Blanc',       v: 'white' },
+      { ic: 'rose', label: 'Rosé',        v: 'rosé' },
+      { ic: 'hasard', label: 'Peu importe, surprenez-moi', v: 'any' },
     ],
   },
   {
     id: 'style',
     q: 'Et niveau goût, ce soir vous êtes plutôt…',
     options: [
-      { emoji: '🪶', label: 'Léger et frais',      v: 'leger' },
-      { emoji: '⚖️', label: 'Équilibré',            v: 'equilibre' },
-      { emoji: '💪', label: 'Puissant, du caractère', v: 'puissant' },
-      { emoji: '🍯', label: 'Doux et gourmand',    v: 'doux' },
+      { ic: 'leger', label: 'Léger et frais',      v: 'leger' },
+      { ic: 'equilibre', label: 'Équilibré',            v: 'equilibre' },
+      { ic: 'puissant', label: 'Puissant, du caractère', v: 'puissant' },
+      { ic: 'doux', label: 'Doux et gourmand',    v: 'doux' },
     ],
   },
   {
     id: 'budget',
     q: 'Votre budget pour cette bouteille ?',
     options: [
-      { emoji: '🪙', label: '3 à 10 €',       v: 10 },
-      { emoji: '💶', label: '10 à 20 €',      v: 20 },
-      { emoji: '💰', label: '20 à 50 €',      v: 50 },
-      { emoji: '👑', label: 'Pas de limite',  v: 9999 },
+      { ic: 'petit_prix', label: '3 à 10 €',       v: 10 },
+      { ic: 'budget', label: '10 à 20 €',      v: 20 },
+      { ic: 'prestige', label: '20 à 50 €',      v: 50 },
+      { ic: 'illimite', label: 'Pas de limite',  v: 9999 },
     ],
   },
   // La question « occasion » a été retirée : retour utilisateur — le bon vin
@@ -78,22 +79,22 @@ const VIANDE_QUESTION = {
     id: 'viande',
     q: 'Laquelle, précisément ?',
     options: [
-      { emoji: '🐂', label: 'Bœuf',            v: 'boeuf' },
-      { emoji: '🐑', label: 'Agneau',          v: 'agneau' },
-      { emoji: '🦌', label: 'Gibier',          v: 'gibier' },
-      { emoji: '🦆', label: 'Canard / magret', v: 'canard' },
-      { emoji: '🍖', label: 'Un peu de tout',  v: 'tout' },
+      { ic: 'boeuf', label: 'Bœuf',            v: 'boeuf' },
+      { ic: 'agneau', label: 'Agneau',          v: 'agneau' },
+      { ic: 'gibier', label: 'Gibier',          v: 'gibier' },
+      { ic: 'canard', label: 'Canard / magret', v: 'canard' },
+      { ic: 'viande_tout', label: 'Un peu de tout',  v: 'tout' },
     ],
   },
   viande_blanche: {
     id: 'viande',
     q: 'Laquelle, précisément ?',
     options: [
-      { emoji: '🐔', label: 'Poulet / volaille', v: 'poulet' },
-      { emoji: '🐄', label: 'Veau',             v: 'veau' },
-      { emoji: '🐖', label: 'Porc',             v: 'porc' },
-      { emoji: '🐇', label: 'Lapin',            v: 'lapin' },
-      { emoji: '🍖', label: 'Un peu de tout',   v: 'tout' },
+      { ic: 'poulet', label: 'Poulet / volaille', v: 'poulet' },
+      { ic: 'veau', label: 'Veau',             v: 'veau' },
+      { ic: 'porc', label: 'Porc',             v: 'porc' },
+      { ic: 'lapin', label: 'Lapin',            v: 'lapin' },
+      { ic: 'viande_tout', label: 'Un peu de tout',   v: 'tout' },
     ],
   },
 }
@@ -240,7 +241,9 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
         {/* Header */}
         <div className="p-6 pb-5 flex-shrink-0 text-cream relative overflow-hidden"
              style={{ background: 'linear-gradient(135deg, #0C0A09 0%, #3a0616 60%, #5c0d22 100%)' }}>
-          <div className="absolute -top-6 -right-4 text-[100px] opacity-10 select-none leading-none">🍽️</div>
+          <div className="absolute -top-4 -right-3 opacity-10 select-none pointer-events-none" aria-hidden="true">
+            <Icone nom="viande_tout" size={100} strokeWidth={1} />
+          </div>
           <div className="relative flex items-start justify-between">
             <div>
               <span className="eyebrow-dark mb-2">Sommelier express</span>
@@ -283,7 +286,7 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
                       }`}
                       style={{ animationDelay: `${i * 50}ms`, animationFillMode: 'both' }}
                     >
-                      <div className="text-2xl mb-1.5">{o.emoji}</div>
+                      <Icone nom={o.ic} size={21} className={`mx-auto mb-1.5 ${answers[current.id] === o.v ? 'text-gold-400' : 'text-wine-700'}`} />
                       <div className="text-xs font-semibold leading-snug">{o.label}</div>
                     </button>
                   ))}

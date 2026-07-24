@@ -5,6 +5,7 @@ import WineVisuel from './WineVisuel'
 import { diversifyByRegion, buildRaison, getRegionsPref } from '../lib/suggestions'
 import RegionsPrefFilter from './RegionsPrefFilter'
 import useModalBehavior from '../lib/useModal'
+import Icone from './Icone'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Profilage à l'arrivée (≤ 5 questions) → active le Mode Débutant ou Expert
@@ -21,9 +22,9 @@ export function loadProfil() {
 }
 
 const NIVEAUX = [
-  { id: 'debutant', emoji: '🌱', label: 'Je débute',            hint: 'Langage simple, vins « faciles à aimer », chaque terme expliqué' },
-  { id: 'amateur',  emoji: '🍷', label: 'J\'ai quelques repères', hint: 'J\'aime le vin, je veux approfondir et explorer' },
-  { id: 'expert',   emoji: '🎓', label: 'Je m\'y connais bien',  hint: 'Recommandations ciblées et techniques, sans vulgarisation' },
+  { id: 'debutant', ic: 'debutant', label: 'Je débute',            hint: 'Langage simple, vins « faciles à aimer », chaque terme expliqué' },
+  { id: 'amateur',  ic: 'amateur', label: 'J\'ai quelques repères', hint: 'J\'aime le vin, je veux approfondir et explorer' },
+  { id: 'expert',   ic: 'expert', label: 'Je m\'y connais bien',  hint: 'Recommandations ciblées et techniques, sans vulgarisation' },
 ]
 
 const QUESTIONS = {
@@ -32,37 +33,37 @@ const QUESTIONS = {
       id: 'sucre',
       q: 'Vous aimez quand c\'est plutôt sucré ou sec ?',
       options: [
-        { emoji: '🍯', label: 'Doux, comme un jus de fruit' },
-        { emoji: '🍋', label: 'Sec et frais' },
-        { emoji: '🤷', label: 'Aucune idée, je découvre !' },
+        { ic: 'doux', label: 'Doux, comme un jus de fruit' },
+        { ic: 'agrumes', label: 'Sec et frais' },
+        { ic: 'incertain', label: 'Aucune idée, je découvre !' },
       ],
     },
     {
       id: 'fruits',
       q: 'Quels types de fruits préférez-vous ?',
       options: [
-        { emoji: '🍓', label: 'Fruits rouges (fraise, cerise)' },
-        { emoji: '🍑', label: 'Fruits jaunes (pêche, abricot)' },
-        { emoji: '🍋', label: 'Agrumes (citron, pamplemousse)' },
-        { emoji: '🫐', label: 'Fruits noirs (mûre, cassis)' },
+        { ic: 'fruits_rouges', label: 'Fruits rouges (fraise, cerise)' },
+        { ic: 'fruits_jaunes', label: 'Fruits jaunes (pêche, abricot)' },
+        { ic: 'agrumes', label: 'Agrumes (citron, pamplemousse)' },
+        { ic: 'fruits_noirs', label: 'Fruits noirs (mûre, cassis)' },
       ],
     },
     {
       id: 'intensite',
       q: 'En bouche, vous préférez…',
       options: [
-        { emoji: '🪶', label: 'Léger et facile à boire' },
-        { emoji: '⚖️', label: 'Équilibré' },
-        { emoji: '💪', label: 'Costaud, qui a du corps' },
+        { ic: 'leger', label: 'Léger et facile à boire' },
+        { ic: 'equilibre', label: 'Équilibré' },
+        { ic: 'puissant', label: 'Costaud, qui a du corps' },
       ],
     },
     {
       id: 'budget',
       q: 'Votre budget habituel pour une bouteille ?',
       options: [
-        { emoji: '🪙', label: 'Moins de 10 €' },
-        { emoji: '💶', label: '10 à 20 €' },
-        { emoji: '💰', label: 'Plus de 20 €' },
+        { ic: 'petit_prix', label: 'Moins de 10 €' },
+        { ic: 'budget', label: '10 à 20 €' },
+        { ic: 'prestige', label: 'Plus de 20 €' },
       ],
     },
   ],
@@ -71,40 +72,40 @@ const QUESTIONS = {
       id: 'bouche',
       q: 'Qu\'aimez-vous en bouche : puissant, corsé, léger, âpre ?',
       options: [
-        { emoji: '🔥', label: 'Puissant et corsé' },
-        { emoji: '🩰', label: 'Léger et élégant' },
-        { emoji: '🌵', label: 'Tannique, avec de la mâche' },
-        { emoji: '💎', label: 'Minéral et tendu' },
+        { ic: 'puissant', label: 'Puissant et corsé' },
+        { ic: 'leger', label: 'Léger et élégant' },
+        { ic: 'tannique', label: 'Tannique, avec de la mâche' },
+        { ic: 'mineral', label: 'Minéral et tendu' },
       ],
     },
     {
       id: 'frequence',
       q: 'Quelle est votre fréquence de consommation de vin ?',
       options: [
-        { emoji: '🍷', label: 'Occasionnelle (fêtes, dîners)' },
-        { emoji: '📅', label: 'Hebdomadaire' },
-        { emoji: '🍇', label: 'Passionné, plusieurs fois par semaine' },
+        { ic: 'amateur', label: 'Occasionnelle (fêtes, dîners)' },
+        { ic: 'millesime', label: 'Hebdomadaire' },
+        { ic: 'vigne', label: 'Passionné, plusieurs fois par semaine' },
       ],
     },
     {
       id: 'regions',
       q: 'Vos régions de prédilection ?',
       options: [
-        { emoji: '🍷', label: 'Bordeaux & Sud-Ouest' },
-        { emoji: '🍒', label: 'Bourgogne & Beaujolais' },
-        { emoji: '☀️', label: 'Rhône & Sud' },
-        { emoji: '🏰', label: 'Loire' },
-        { emoji: '🥨', label: 'Grand Est (Alsace, Champagne, Jura)' },
-        { emoji: '🌍', label: 'Éclectique, tout m\'intéresse' },
+        { ic: 'amateur', label: 'Bordeaux & Sud-Ouest' },
+        { ic: 'fruits_rouges', label: 'Bourgogne & Beaujolais' },
+        { ic: 'soleil', label: 'Rhône & Sud' },
+        { ic: 'chateau', label: 'Loire' },
+        { ic: 'apero', label: 'Grand Est (Alsace, Champagne, Jura)' },
+        { ic: 'decouverte', label: 'Éclectique, tout m\'intéresse' },
       ],
     },
     {
       id: 'budget',
       q: 'Budget par bouteille, en général ?',
       options: [
-        { emoji: '💶', label: '10 à 20 €' },
-        { emoji: '💰', label: '20 à 50 €' },
-        { emoji: '👑', label: '50 € et plus' },
+        { ic: 'budget', label: '10 à 20 €' },
+        { ic: 'prestige', label: '20 à 50 €' },
+        { ic: 'prestige', label: '50 € et plus' },
       ],
     },
   ],
@@ -269,7 +270,7 @@ export default function OnboardingProfil({ onComplete }) {
           {results ? (
             <div className="animate-fade-in-up">
               <h4 className="font-serif text-base font-bold text-anthracite-900 text-center mb-1">
-                🎉 {results.length} vins pour démarrer
+                {results.length} vins pour démarrer
               </h4>
               <p className="text-xs text-anthracite-400 text-center mb-5">
                 Sélectionnés selon vos réponses — vous les retrouverez dans la Bibliothèque
@@ -317,7 +318,7 @@ export default function OnboardingProfil({ onComplete }) {
                     className="w-full choice-btn p-4 flex items-center gap-4 animate-scale-in"
                     style={{ animationDelay: `${i * 80}ms`, animationFillMode: 'both' }}
                   >
-                    <span className="text-2xl">{o.emoji}</span>
+                    <Icone nom={o.ic} size={22} className="text-wine-700 flex-shrink-0" />
                     <span>
                       <span className="block text-sm font-bold text-anthracite-900">{o.label}</span>
                       <span className="block text-xs text-anthracite-400 leading-snug mt-0.5">{o.hint}</span>
@@ -350,7 +351,7 @@ export default function OnboardingProfil({ onComplete }) {
                     className="w-full choice-btn p-4 flex items-center gap-3 animate-scale-in"
                     style={{ animationDelay: `${i * 60}ms`, animationFillMode: 'both' }}
                   >
-                    <span className="text-xl">{o.emoji}</span>
+                    <Icone nom={o.ic} size={19} className="text-wine-700 flex-shrink-0" />
                     <span className="text-sm font-semibold text-anthracite-800">{o.label}</span>
                   </button>
                 ))}

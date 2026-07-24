@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { X, Send, Sparkles, RefreshCw, Wine, Camera } from 'lucide-react'
 import { WINE_DB, WINE_DB_TERROIR, WINE_DB_GRAND_PUBLIC, MILLESIMES_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
+import Icone from './Icone'
 import { profilApprisPourAssistant } from '../data/goutsAppris'
 import { resumeAchats } from '../lib/achats'
 import { normaliser } from '../data/aromes'
@@ -22,28 +23,28 @@ const PROFILING = {
       id: 'sucre',
       q: 'Vous aimez quand c\'est plutôt…',
       options: [
-        { emoji: '🍯', label: 'Doux, comme un jus de fruit' },
-        { emoji: '🍋', label: 'Sec et frais' },
-        { emoji: '🤷', label: 'Aucune idée, je découvre !' },
+        { ic: 'doux', label: 'Doux, comme un jus de fruit' },
+        { ic: 'agrumes', label: 'Sec et frais' },
+        { ic: 'incertain', label: 'Aucune idée, je découvre !' },
       ],
     },
     {
       id: 'fruits',
       q: 'Quels fruits vous font envie ?',
       options: [
-        { emoji: '🍓', label: 'Fruits rouges (fraise, cerise)' },
-        { emoji: '🍑', label: 'Fruits jaunes (pêche, abricot)' },
-        { emoji: '🍋', label: 'Agrumes (citron, pamplemousse)' },
-        { emoji: '🫐', label: 'Fruits noirs (mûre, cassis)' },
+        { ic: 'fruits_rouges', label: 'Fruits rouges (fraise, cerise)' },
+        { ic: 'fruits_jaunes', label: 'Fruits jaunes (pêche, abricot)' },
+        { ic: 'agrumes', label: 'Agrumes (citron, pamplemousse)' },
+        { ic: 'fruits_noirs', label: 'Fruits noirs (mûre, cassis)' },
       ],
     },
     {
       id: 'intensite',
       q: 'En bouche, vous préférez…',
       options: [
-        { emoji: '🪶', label: 'Léger et facile à boire' },
-        { emoji: '⚖️', label: 'Équilibré' },
-        { emoji: '💪', label: 'Costaud, qui a du corps' },
+        { ic: 'leger', label: 'Léger et facile à boire' },
+        { ic: 'equilibre', label: 'Équilibré' },
+        { ic: 'puissant', label: 'Costaud, qui a du corps' },
       ],
     },
   ],
@@ -52,44 +53,44 @@ const PROFILING = {
       id: 'bouche',
       q: 'Qu\'aimez-vous en bouche ?',
       options: [
-        { emoji: '🔥', label: 'Puissant et corsé' },
-        { emoji: '🩰', label: 'Léger et élégant' },
-        { emoji: '🌵', label: 'Tannique, avec de la mâche' },
-        { emoji: '💎', label: 'Minéral et tendu' },
+        { ic: 'puissant', label: 'Puissant et corsé' },
+        { ic: 'leger', label: 'Léger et élégant' },
+        { ic: 'tannique', label: 'Tannique, avec de la mâche' },
+        { ic: 'mineral', label: 'Minéral et tendu' },
       ],
     },
     {
       id: 'frequence',
       q: 'Votre fréquence de dégustation ?',
       options: [
-        { emoji: '🍷', label: 'Occasionnelle (fêtes, dîners)' },
-        { emoji: '📅', label: 'Hebdomadaire' },
-        { emoji: '🍇', label: 'Passionné, plusieurs fois par semaine' },
+        { ic: 'amateur', label: 'Occasionnelle (fêtes, dîners)' },
+        { ic: 'millesime', label: 'Hebdomadaire' },
+        { ic: 'vigne', label: 'Passionné, plusieurs fois par semaine' },
       ],
     },
     {
       id: 'regions',
       q: 'Vos régions de prédilection ?',
       options: [
-        { emoji: '🍷', label: 'Bordeaux & Sud-Ouest' },
-        { emoji: '🍒', label: 'Bourgogne & Beaujolais' },
-        { emoji: '☀️', label: 'Rhône & Sud' },
-        { emoji: '🏰', label: 'Loire' },
-        { emoji: '🥨', label: 'Grand Est (Alsace, Champagne, Jura)' },
-        { emoji: '🌍', label: 'Éclectique, tout m\'intéresse' },
+        { ic: 'amateur', label: 'Bordeaux & Sud-Ouest' },
+        { ic: 'fruits_rouges', label: 'Bourgogne & Beaujolais' },
+        { ic: 'soleil', label: 'Rhône & Sud' },
+        { ic: 'chateau', label: 'Loire' },
+        { ic: 'apero', label: 'Grand Est (Alsace, Champagne, Jura)' },
+        { ic: 'decouverte', label: 'Éclectique, tout m\'intéresse' },
       ],
     },
   ],
 }
 
 const MENU = [
-  { id: 'decouverte', emoji: '🍇', label: 'Découverte',
+  { id: 'decouverte', ic: 'vigne', label: 'Découverte',
     prompt: 'Propose-moi des vins à découvrir adaptés à mon profil, avec pour chacun : pourquoi il me plaira, le prix moyen, et un domaine recommandé.' },
-  { id: 'actualite', emoji: '📰', label: 'Actualité du Vin',
+  { id: 'actualite', ic: 'actualite', label: 'Actualité du Vin',
     prompt: 'Donne-moi l\'actualité récente du vin : derniers grands concours et leurs médaillés, sorties de millésimes marquantes, estimation des dates de vendanges à venir, et événements/salons à ne pas manquer. Utilise la recherche web pour des infos fraîches.' },
-  { id: 'calendrier', emoji: '🗓️', label: 'Calendrier des Saisons',
+  { id: 'calendrier', ic: 'millesime', label: 'Calendrier des Saisons',
     prompt: 'Explique-moi le cycle de la vigne et où on en est en ce moment. Précise comment la période de récolte varie selon les cépages (précoces vs tardifs) et l\'influence du millésime.' },
-  { id: 'moment', emoji: '☀️', label: 'Vins du Moment',
+  { id: 'moment', ic: 'soleil', label: 'Vins du Moment',
     prompt: 'Quels vins boire en ce moment ? Donne-moi : les millésimes qui entrent dans leur fenêtre de maturité idéale maintenant, des vins adaptés à la saison et à la météo actuelle, et des idées d\'accords avec des plats de saison.' },
 ]
 
@@ -207,7 +208,7 @@ function chargerCave() {
 // pour que findMentionedWines rende automatiquement leurs cartes.
 function messageAccord(json) {
   if (!json || !json.plat) {
-    return "Je ne reconnais pas de plat sur cette photo 🤔 Réessayez avec une assiette bien cadrée, ou décrivez-moi simplement ce que vous mangez — je trouverai l'accord."
+    return "Je ne reconnais pas de plat sur cette photo. Réessayez avec une assiette bien cadrée, ou décrivez-moi simplement ce que vous mangez — je trouverai l'accord."
   }
   const types = Array.isArray(json.typesConseilles) && json.typesConseilles.length ? json.typesConseilles : null
   const prof = json.profilConseille
@@ -242,7 +243,7 @@ function messageAccord(json) {
 
   const enCave = choix.find(c => c.enCave)
   const noms = choix.map(c => `**${c.w.appellation}**`)
-  let msg = `🍽️ **${json.plat}**${json.description ? ` — ${json.description}` : ''}\n\n`
+  let msg = `**${json.plat}**${json.description ? ` — ${json.description}` : ''}\n\n`
   if (json.explication) msg += `${json.explication}\n\n`
   msg += `Mes accords : ${noms.join(', ')}.`
   if (enCave) msg += `\n\n✓ Vous avez déjà **${enCave.w.appellation}** en cave — parfait pour ce soir.`
@@ -325,7 +326,7 @@ export default function AssistantView({ onClose }) {
         setProfilStep(999)
         setMessages([{
           role: 'assistant',
-          content: `Re-bonjour ! 🍷 Ravi de vous revoir. Que puis-je faire pour vous aujourd'hui ? Choisissez un raccourci ci-dessous ou posez-moi n'importe quelle question sur le vin.`,
+          content: `Re-bonjour ! Ravi de vous revoir. Que puis-je faire pour vous aujourd'hui ? Choisissez un raccourci ci-dessous ou posez-moi n'importe quelle question sur le vin.`,
         }])
       }
     } catch {}
@@ -355,8 +356,8 @@ export default function AssistantView({ onClose }) {
       setMessages([{
         role: 'assistant',
         content: complete.niveau === 'debutant'
-          ? `Parfait, j'ai tout ce qu'il me faut ! 🌱 Je vous parlerai simplement, sans jargon — et quand un mot technique se glisse, je l'explique aussitôt. Par où on commence ? Les raccourcis ci-dessous sont un bon début.`
-          : `Excellent, profil enregistré ! 🎓 Je peux maintenant cibler précisément mes recommandations. Millésimes en fenêtre, pépites méconnues, actualité des concours… demandez-moi ce que vous voulez.`,
+          ? `Parfait, j'ai tout ce qu'il me faut ! Je vous parlerai simplement, sans jargon — et quand un mot technique se glisse, je l'explique aussitôt. Par où on commence ? Les raccourcis ci-dessous sont un bon début.`
+          : `Excellent, profil enregistré ! Je peux maintenant cibler précisément mes recommandations. Millésimes en fenêtre, pépites méconnues, actualité des concours… demandez-moi ce que vous voulez.`,
       }])
     }
   }
@@ -425,7 +426,7 @@ export default function AssistantView({ onClose }) {
   // ── Accords à partir d'une photo de plat ──────────────────────────────────
   const analyserPlat = useCallback(async (file) => {
     if (!file || loading) return
-    setMessages(prev => [...prev, { role: 'user', content: '🍽️ (photo d’un plat)' }])
+    setMessages(prev => [...prev, { role: 'user', content: '(photo d’un plat)' }])
     setLoading(true)
     try {
       const dataUrl = await new Promise((resolve, reject) => {
@@ -505,7 +506,7 @@ export default function AssistantView({ onClose }) {
           {profilStep === -1 && (
             <div className="animate-fade-in-up">
               <div className="text-center mb-6 mt-4">
-                <div className="text-4xl mb-3">👋</div>
+                <Sparkles size={30} className="text-gold-500 mx-auto mb-3" />
                 <h3 className="font-serif text-xl font-bold text-anthracite-900">Bienvenue sur Œno !</h3>
                 <p className="text-sm text-anthracite-500 mt-2 max-w-sm mx-auto">
                   Pour bien vous conseiller, dites-moi d'abord : le vin et vous, c'est… ?
@@ -513,9 +514,9 @@ export default function AssistantView({ onClose }) {
               </div>
               <div className="space-y-3 max-w-sm mx-auto">
                 {[
-                  { id: 'debutant', emoji: '🌱', label: 'Je débute', hint: 'Je découvre, parlez-moi simplement' },
-                  { id: 'amateur',  emoji: '🍷', label: 'J\'ai quelques repères', hint: 'J\'aime le vin, je veux approfondir' },
-                  { id: 'expert',   emoji: '🎓', label: 'Je m\'y connais bien', hint: 'Soyez technique, je suis' },
+                  { id: 'debutant', ic: 'debutant', label: 'Je débute', hint: 'Je découvre, parlez-moi simplement' },
+                  { id: 'amateur',  ic: 'amateur', label: 'J\'ai quelques repères', hint: 'J\'aime le vin, je veux approfondir' },
+                  { id: 'expert',   ic: 'expert', label: 'Je m\'y connais bien', hint: 'Soyez technique, je suis' },
                 ].map((o, i) => (
                   <button
                     key={o.id}
@@ -523,7 +524,7 @@ export default function AssistantView({ onClose }) {
                     className="w-full card p-4 flex items-center gap-4 text-left hover:-translate-y-0.5 hover:border-wine-300 transition-all cursor-pointer animate-scale-in"
                     style={{ animationDelay: `${i * 80}ms`, animationFillMode: 'both' }}
                   >
-                    <span className="text-2xl">{o.emoji}</span>
+                    <Icone nom={o.ic} size={22} className="text-wine-700 flex-shrink-0" />
                     <span>
                       <span className="block text-sm font-bold text-anthracite-900">{o.label}</span>
                       <span className="block text-xs text-anthracite-400">{o.hint}</span>
@@ -552,7 +553,7 @@ export default function AssistantView({ onClose }) {
                     className="w-full card p-3.5 flex items-center gap-3 text-left hover:-translate-y-0.5 hover:border-wine-300 transition-all cursor-pointer animate-scale-in"
                     style={{ animationDelay: `${i * 60}ms`, animationFillMode: 'both' }}
                   >
-                    <span className="text-xl">{o.emoji}</span>
+                    <Icone nom={o.ic} size={19} className="text-wine-700 flex-shrink-0" />
                     <span className="text-sm font-semibold text-anthracite-800">{o.label}</span>
                   </button>
                 ))}
@@ -612,7 +613,7 @@ export default function AssistantView({ onClose }) {
                   disabled={loading}
                   className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold bg-white border border-anthracite-200 text-anthracite-700 hover:border-wine-400 hover:text-wine-800 transition-all cursor-pointer disabled:opacity-50"
                 >
-                  <span>{item.emoji}</span>
+                  <Icone nom={item.ic} size={16} className="text-wine-700 flex-shrink-0" />
                   {item.label}
                 </button>
               ))}

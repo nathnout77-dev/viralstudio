@@ -502,7 +502,7 @@ export default function DegustationSimulateur({ vin, onClose }) {
                 <p className="text-sm text-anthracite-700 leading-relaxed">{prediction.objectif}</p>
                 {note > 0 && (
                   <p className="text-xs text-anthracite-600 mt-2.5 font-medium">
-                    {note >= 4 ? '🎉 Vu votre note, mission accomplie.' : note === 3 ? 'Verdict mitigé — peut-être un autre millésime, ou un autre jour.' : 'Pas convaincu·e cette fois — c\'est noté, et ça compte autant qu\'un coup de cœur.'}
+                    {note >= 4 ? 'Vu votre note, mission accomplie.' : note === 3 ? 'Verdict mitigé — peut-être un autre millésime, ou un autre jour.' : 'Pas convaincu·e cette fois — c\'est noté, et ça compte autant qu\'un coup de cœur.'}
                   </p>
                 )}
               </div>
@@ -565,13 +565,13 @@ export default function DegustationSimulateur({ vin, onClose }) {
                     {avisOeno.surprises.length > 0 && (
                       <div className="mt-2 space-y-1">
                         {avisOeno.surprises.map((s, i) => (
-                          <p key={i} className="text-xs text-gold-700 flex items-start gap-1.5"><span className="flex-shrink-0">✧</span> {s}</p>
+                          <p key={i} className="text-xs text-gold-700 flex items-start gap-1.5"><Sparkles size={11} className="flex-shrink-0 mt-0.5" /> {s}</p>
                         ))}
                       </div>
                     )}
                     {avisOeno.conseil && (
                       <p className="text-xs text-anthracite-600 italic mt-3 pt-3 border-t border-anthracite-100">
-                        💡 {avisOeno.conseil}
+                        {avisOeno.conseil}
                       </p>
                     )}
                   </div>

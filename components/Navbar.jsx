@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { Wine, Sparkles, Plus, Utensils, ScanLine, UserCircle2, Sprout, GraduationCap, Home, Search, LayoutGrid, Library, Map } from 'lucide-react'
+import { Wine, Sparkles, Plus, Utensils, ScanLine, UserCircle2, Sprout, GraduationCap, Home, Search, LayoutGrid, Library, Map, Layers } from 'lucide-react'
 import LogoOeno from './LogoOeno'
 import useCtaBreathe from '../lib/useCtaBreathe'
 
@@ -12,6 +12,7 @@ import useCtaBreathe from '../lib/useCtaBreathe'
 // Nav condensée pour tablettes (le header est masqué ≥ lg, la sidebar prend le relais)
 const TABLET_NAV = [
   { id: 'hub',       label: 'Accueil',   Icon: Home },
+  { id: 'decouvrir', label: 'Découvrir', Icon: Layers },
   { id: 'trouver',   label: 'Trouver',   Icon: Search },
   { id: 'cave',      label: 'Cave',      Icon: Wine },
   { id: 'vins',      label: 'Vins',      Icon: Library },
@@ -20,9 +21,9 @@ const TABLET_NAV = [
 ]
 
 const BOTTOM_NAV = [
-  { id: 'hub',     label: 'Accueil', Icon: Home },
-  { id: 'trouver', label: 'Trouver', Icon: Search },
-  { id: 'cave',    label: 'Ma cave', Icon: Wine },
+  { id: 'decouvrir', label: 'Découvrir', Icon: Layers },
+  { id: 'trouver',   label: 'Trouver',   Icon: Search },
+  { id: 'cave',      label: 'Ma cave',   Icon: Wine },
 ]
 
 const MODE_BADGE = {
