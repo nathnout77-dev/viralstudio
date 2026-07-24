@@ -21,9 +21,9 @@ const TABLET_NAV = [
 ]
 
 const BOTTOM_NAV = [
-  { id: 'decouvrir', label: 'Découvrir', Icon: Layers },
-  { id: 'trouver',   label: 'Trouver',   Icon: Search },
-  { id: 'cave',      label: 'Ma cave',   Icon: Wine },
+  { id: 'decouvrir', label: 'Découvrir', emoji: '🍷' },
+  { id: 'trouver',   label: 'Trouver',   emoji: '🔍' },
+  { id: 'cave',      label: 'Ma cave',   emoji: '🍾' },
 ]
 
 const MODE_BADGE = {
@@ -149,7 +149,7 @@ export default function Navbar({ view, setView, total, mode, onProfil, onAdd, on
         role="navigation"
       >
         <div className="flex h-[64px]">
-          {BOTTOM_NAV.map(({ id, label, Icon }, i) => (
+          {BOTTOM_NAV.map(({ id, label, emoji }, i) => (
             <Fragment key={id}>
               <button
                 onClick={() => setView(id)}
@@ -158,11 +158,14 @@ export default function Navbar({ view, setView, total, mode, onProfil, onAdd, on
                 aria-label={label}
                 aria-current={view === id ? 'page' : undefined}
               >
-                <Icon
-                  size={19}
-                  strokeWidth={view === id ? 2 : 1.5}
-                  className={`transition-all duration-300 ${view === id ? 'text-anthracite-950' : 'text-anthracite-400'}`}
-                />
+                <span
+                  role="img" aria-hidden="true"
+                  className={`text-[21px] leading-none transition-all duration-300 ${
+                    view === id ? 'scale-110' : 'opacity-55 grayscale-[0.35]'
+                  }`}
+                >
+                  {emoji}
+                </span>
                 <span className={`text-[10px] uppercase tracking-[0.1em] font-medium ${view === id ? 'text-anthracite-950' : 'text-anthracite-400'}`}>
                   {label}
                 </span>
@@ -182,7 +185,7 @@ export default function Navbar({ view, setView, total, mode, onProfil, onAdd, on
                     className="w-12 h-12 rounded-full flex items-center justify-center text-cream shadow-wine ring-4 ring-cream active:scale-95 transition-transform duration-300"
                     style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
                   >
-                    <ScanLine size={20} className="text-gold-400" />
+                    <span className="text-[21px] leading-none" role="img" aria-hidden="true">📷</span>
                   </span>
                   <span className="text-[10px] uppercase tracking-[0.1em] font-semibold text-wine-800 mt-1">
                     Scan
@@ -199,7 +202,7 @@ export default function Navbar({ view, setView, total, mode, onProfil, onAdd, on
             className="flex-1 flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all duration-300 relative"
             aria-label="Ouvrir le menu Tout Œno"
           >
-            <LayoutGrid size={19} strokeWidth={1.5} className="text-gold-600" />
+            <span className="text-[21px] leading-none" role="img" aria-hidden="true">🧭</span>
             <span className="text-[10px] uppercase tracking-[0.1em] font-medium text-gold-600">
               Menu
             </span>

@@ -94,12 +94,12 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
       {/* Sous-onglets : Ma Cave / Mémoires de Vin */}
       <div className="flex gap-2 mb-6 overflow-x-auto hide-scrollbar">
         {[
-          { id: 'cave',     label: 'Ma Cave',         Icon: Wine },
-          { id: 'gout',     label: 'Mon goût',        Icon: Sparkles },
-          { id: 'journal',  label: 'Mémoires de Vin', Icon: BookHeart },
-          { id: 'panorama', label: 'Panorama',        Icon: BarChart3 },
-          { id: 'envies',   label: 'Envies',          Icon: Heart, badge: envies.length },
-        ].map(({ id, label, Icon, badge }) => (
+          { id: 'cave',     label: 'Ma Cave',         emoji: '🍾' },
+          { id: 'gout',     label: 'Mon goût',        emoji: '👅' },
+          { id: 'journal',  label: 'Mémoires de Vin', emoji: '📖' },
+          { id: 'panorama', label: 'Panorama',        emoji: '📊' },
+          { id: 'envies',   label: 'Envies',          emoji: '❤️', badge: envies.length },
+        ].map(({ id, label, emoji, badge }) => (
           <button
             key={id}
             onClick={() => setSub(id)}
@@ -109,7 +109,7 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
                 : 'bg-white text-anthracite-600 border border-anthracite-200 hover:border-wine-300'
             }`}
           >
-            <Icon size={13} />
+            <span className="text-base leading-none" role="img" aria-hidden="true">{emoji}</span>
             {label}
             {badge > 0 && (
               <span className={`min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full text-[9px] font-bold ${

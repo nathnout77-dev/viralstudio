@@ -50,10 +50,18 @@ function Carte({ wine, style, dragging, onPointerDown, refCarte, decision }) {
         className="absolute inset-0"
         style={{ background: `linear-gradient(160deg, ${wine.color} 0%, ${wine.color}dd 45%, #17130f 130%)` }}
       />
-      {/* Le vin lui-même occupe la carte : la robe et le verre disent tout */}
+      {/* Le vin lui-même occupe la carte : robe, verre, et son emoji-repère */}
       <div className="absolute inset-x-0 top-0 h-[58%] flex items-center justify-center pointer-events-none" aria-hidden="true">
-        <WineVisuel type={wine.type} size={132} className="drop-shadow-2xl opacity-95" />
+        <WineVisuel type={wine.type} size={128} className="drop-shadow-2xl opacity-95" />
       </div>
+      {wine.emoji && (
+        <span
+          className="absolute top-5 left-1/2 -translate-x-1/2 w-14 h-14 rounded-2xl flex items-center justify-center text-3xl bg-black/25 backdrop-blur-sm border border-white/20 pointer-events-none"
+          role="img" aria-hidden="true"
+        >
+          {wine.emoji}
+        </span>
+      )}
       <div
         className="absolute inset-x-0 bottom-0 h-[52%] pointer-events-none"
         style={{ background: 'linear-gradient(to top, rgba(15,12,10,0.82) 22%, rgba(15,12,10,0.25) 62%, transparent 100%)' }}

@@ -208,7 +208,7 @@ function chargerCave() {
 // pour que findMentionedWines rende automatiquement leurs cartes.
 function messageAccord(json) {
   if (!json || !json.plat) {
-    return "Je ne reconnais pas de plat sur cette photo. Réessayez avec une assiette bien cadrée, ou décrivez-moi simplement ce que vous mangez — je trouverai l'accord."
+    return "Je ne reconnais pas de plat sur cette photo 🤔 Réessayez avec une assiette bien cadrée, ou décrivez-moi simplement ce que vous mangez — je trouverai l'accord."
   }
   const types = Array.isArray(json.typesConseilles) && json.typesConseilles.length ? json.typesConseilles : null
   const prof = json.profilConseille
@@ -243,7 +243,7 @@ function messageAccord(json) {
 
   const enCave = choix.find(c => c.enCave)
   const noms = choix.map(c => `**${c.w.appellation}**`)
-  let msg = `**${json.plat}**${json.description ? ` — ${json.description}` : ''}\n\n`
+  let msg = `🍽️ **${json.plat}**${json.description ? ` — ${json.description}` : ''}\n\n`
   if (json.explication) msg += `${json.explication}\n\n`
   msg += `Mes accords : ${noms.join(', ')}.`
   if (enCave) msg += `\n\n✓ Vous avez déjà **${enCave.w.appellation}** en cave — parfait pour ce soir.`
@@ -326,7 +326,7 @@ export default function AssistantView({ onClose }) {
         setProfilStep(999)
         setMessages([{
           role: 'assistant',
-          content: `Re-bonjour ! Ravi de vous revoir. Que puis-je faire pour vous aujourd'hui ? Choisissez un raccourci ci-dessous ou posez-moi n'importe quelle question sur le vin.`,
+          content: `Re-bonjour ! 🍷 Ravi de vous revoir. Que puis-je faire pour vous aujourd'hui ? Choisissez un raccourci ci-dessous ou posez-moi n'importe quelle question sur le vin.`,
         }])
       }
     } catch {}
@@ -356,8 +356,8 @@ export default function AssistantView({ onClose }) {
       setMessages([{
         role: 'assistant',
         content: complete.niveau === 'debutant'
-          ? `Parfait, j'ai tout ce qu'il me faut ! Je vous parlerai simplement, sans jargon — et quand un mot technique se glisse, je l'explique aussitôt. Par où on commence ? Les raccourcis ci-dessous sont un bon début.`
-          : `Excellent, profil enregistré ! Je peux maintenant cibler précisément mes recommandations. Millésimes en fenêtre, pépites méconnues, actualité des concours… demandez-moi ce que vous voulez.`,
+          ? `Parfait, j'ai tout ce qu'il me faut ! 🌱 Je vous parlerai simplement, sans jargon — et quand un mot technique se glisse, je l'explique aussitôt. Par où on commence ? Les raccourcis ci-dessous sont un bon début.`
+          : `Excellent, profil enregistré ! 🎓 Je peux maintenant cibler précisément mes recommandations. Millésimes en fenêtre, pépites méconnues, actualité des concours… demandez-moi ce que vous voulez.`,
       }])
     }
   }
@@ -426,7 +426,7 @@ export default function AssistantView({ onClose }) {
   // ── Accords à partir d'une photo de plat ──────────────────────────────────
   const analyserPlat = useCallback(async (file) => {
     if (!file || loading) return
-    setMessages(prev => [...prev, { role: 'user', content: '(photo d’un plat)' }])
+    setMessages(prev => [...prev, { role: 'user', content: '🍽️ (photo d’un plat)' }])
     setLoading(true)
     try {
       const dataUrl = await new Promise((resolve, reject) => {
@@ -506,7 +506,7 @@ export default function AssistantView({ onClose }) {
           {profilStep === -1 && (
             <div className="animate-fade-in-up">
               <div className="text-center mb-6 mt-4">
-                <Sparkles size={30} className="text-gold-500 mx-auto mb-3" />
+                <div className="text-4xl mb-3" role="img" aria-hidden="true">👋</div>
                 <h3 className="font-serif text-xl font-bold text-anthracite-900">Bienvenue sur Œno !</h3>
                 <p className="text-sm text-anthracite-500 mt-2 max-w-sm mx-auto">
                   Pour bien vous conseiller, dites-moi d'abord : le vin et vous, c'est… ?

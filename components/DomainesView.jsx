@@ -171,7 +171,7 @@ export default function DomainesView({ onAddWine }) {
       {/* Grille */}
       {filtered.length === 0 ? (
         <div className="text-center py-16">
-          <Search size={30} className="text-anthracite-200 mx-auto mb-3" />
+          <div className="text-4xl mb-3" role="img" aria-hidden="true">🔍</div>
           <p className="text-anthracite-500 text-sm">Aucun domaine ne correspond — élargissez vos filtres.</p>
         </div>
       ) : (

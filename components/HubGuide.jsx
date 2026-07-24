@@ -15,16 +15,16 @@ import { WINE_DB_TERROIR } from '../data/wineDatabase'
 
 // Un mot par intention, pas une phrase : l'icône et le titre suffisent.
 const INTENTIONS = [
-  { id: 'decouvrir', titre: 'Découvrir',   texte: 'Au geste',                       Icon: Layers, hero: true },
-  { id: 'trouver',   titre: 'Trouver',     texte: '2 questions',                    Icon: Search, hero: true },
-  { id: 'cave',      titre: 'Ma cave',     texte: 'Mes bouteilles',                 Icon: Wine },
-  { id: 'vins',      titre: 'Bibliothèque', texte: `${WINE_DB_TERROIR.length} vins`, Icon: Library },
-  { id: 'explorer',  titre: 'Régions',     texte: 'Carte & routes',                 Icon: Map },
-  { id: 'apprendre', titre: 'Apprendre',   texte: 'À mon rythme',                   Icon: GraduationCap },
+  { id: 'decouvrir', titre: 'Découvrir',    texte: 'Au geste',                       emoji: '🍷', hero: true },
+  { id: 'trouver',   titre: 'Trouver',      texte: '2 questions',                    emoji: '🔍', hero: true },
+  { id: 'cave',      titre: 'Ma cave',      texte: 'Mes bouteilles',                 emoji: '🍾' },
+  { id: 'vins',      titre: 'Bibliothèque', texte: `${WINE_DB_TERROIR.length} vins`, emoji: '📚' },
+  { id: 'explorer',  titre: 'Régions',      texte: 'Carte & routes',                 emoji: '🗺️' },
+  { id: 'apprendre', titre: 'Apprendre',    texte: 'À mon rythme',                   emoji: '🎓' },
 ]
 
 function CarteIntention({ intention, onClick, index }) {
-  const { titre, texte, Icon, hero } = intention
+  const { titre, texte, emoji, hero } = intention
   return (
     <button
       onClick={onClick}
@@ -36,7 +36,7 @@ function CarteIntention({ intention, onClick, index }) {
       <div className={`w-11 h-11 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-105 ${
         hero ? 'bg-white/10' : 'bg-wine-50'
       }`}>
-        <Icon size={20} className={hero ? 'text-gold-400' : 'text-wine-700'} strokeWidth={1.7} />
+        <span className="text-2xl leading-none" role="img" aria-hidden="true">{emoji}</span>
       </div>
       <div className={`font-serif text-lg font-bold mt-3.5 ${hero ? 'text-cream' : 'text-anthracite-900'}`}>
         {titre}
@@ -72,7 +72,7 @@ export default function HubGuide({ wines, onParcours, onScan, onAssistant, onRec
         className="w-full flex items-center gap-3 px-4 py-3 mb-6 rounded-full bg-white border border-anthracite-200 hover:border-gold-500/50 active:scale-[0.99] transition-all cursor-pointer text-left"
         aria-label="Recherche rapide — appellation, cépage, millésimes"
       >
-        <Search size={15} className="text-gold-600 flex-shrink-0" />
+        <span className="text-base leading-none flex-shrink-0" role="img" aria-hidden="true">🔍</span>
         <span className="text-[13px] text-anthracite-400 truncate">Chercher un vin, un cépage…</span>
       </button>
 
@@ -84,7 +84,7 @@ export default function HubGuide({ wines, onParcours, onScan, onAssistant, onRec
         >
           <div className="flex items-start gap-4">
             <div className="w-11 h-11 rounded-2xl bg-gold-500/15 flex items-center justify-center flex-shrink-0">
-              <Lightbulb size={19} className="text-gold-700" strokeWidth={1.7} />
+              <span className="text-xl leading-none" role="img" aria-hidden="true">💡</span>
             </div>
             <div className="min-w-0 flex-1">
               <div className="text-[10px] uppercase tracking-[0.18em] font-bold text-gold-700">{suggestion.eyebrow}</div>
@@ -110,7 +110,7 @@ export default function HubGuide({ wines, onParcours, onScan, onAssistant, onRec
             className="card p-5 text-left group hover:-translate-y-0.5 hover:border-gold-500/40 transition-all duration-300 cursor-pointer flex items-center gap-3.5"
           >
             <div className="w-10 h-10 rounded-2xl bg-gold-500/12 flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(201,168,76,0.13)' }}>
-              <ScanLine size={17} className="text-gold-700" strokeWidth={1.7} />
+              <span className="text-xl leading-none" role="img" aria-hidden="true">📷</span>
             </div>
             <div>
               <div className="text-sm font-bold text-anthracite-900">Scanner</div>
@@ -122,7 +122,7 @@ export default function HubGuide({ wines, onParcours, onScan, onAssistant, onRec
             className="card p-5 text-left group hover:-translate-y-0.5 hover:border-gold-500/40 transition-all duration-300 cursor-pointer flex items-center gap-3.5"
           >
             <div className="w-10 h-10 rounded-2xl bg-wine-50 flex items-center justify-center flex-shrink-0">
-              <Sparkles size={17} className="text-wine-700" strokeWidth={1.7} />
+              <span className="text-xl leading-none" role="img" aria-hidden="true">💬</span>
             </div>
             <div>
               <div className="text-sm font-bold text-anthracite-900">Demander</div>

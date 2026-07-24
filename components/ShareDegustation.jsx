@@ -234,7 +234,7 @@ export default function ShareDegustation({ entry, onClose }) {
         await navigator.share({
           files: [file],
           title: `Dégustation — ${entry.name}`,
-          text: `Ma dégustation de ${entry.name}, racontée avec Œno`,
+          text: `Ma dégustation de ${entry.name}, racontée avec Œno 🍷`,
         })
       } else {
         await download()

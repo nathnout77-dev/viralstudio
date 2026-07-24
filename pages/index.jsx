@@ -45,13 +45,13 @@ const FicheVin        = dynamic(() => import('../components/BibliothequeView').t
 // un vrai bouton de l'écran et explique sa fonction.
 const TOUR_KEY = 'oeno-tour-v1'
 const TOUR_STEPS = [
-  { title: 'Bienvenue dans Œno', text: "Voici votre cave. En quelques secondes, on vous montre l'essentiel — vous pourrez passer quand vous voulez." },
-  { selector: '[data-tour="cave"]',      placement: 'top',    title: 'Ma cave',              text: 'Vos bouteilles, vos dégustations et vos envies vivent ici. C’est votre point de départ.' },
-  { selector: '[data-tour="ajouter"]',   placement: 'bottom', title: 'Ajouter un vin',       text: 'Cherchez un vin ou scannez-le : sa fiche complète se remplit toute seule.' },
-  { selector: '[data-tour="scan"]',      placement: 'top',    title: 'Scanner une étiquette', text: 'En rayon ? Photographiez l’étiquette : Œno décode le vin, même inconnu, et le garde pour vous.' },
-  { selector: '[data-tour="trouver"]',   placement: 'top',    title: 'Trouver un vin',       text: 'Quoi boire ce soir, pour un plat, un budget… deux questions et Œno vous guide.' },
-  { selector: '[data-tour="menu"]',      placement: 'top',    title: 'Tout Œno',             text: 'Bibliothèque, carte des vignobles, école du vin… tout le reste est dans ce menu.' },
-  { selector: '[data-tour="assistant"]', placement: 'top',    title: 'Votre sommelier Œno',  text: 'Une question sur le vin ? Œno répond à tout moment, en langage simple.' },
+  { title: 'Bienvenue dans Œno 🍷', text: "Voici votre cave. En quelques secondes, on vous montre l'essentiel — vous pourrez passer quand vous voulez." },
+  { selector: '[data-tour="cave"]',      placement: 'top',    title: '🍾 Ma cave',              text: 'Vos bouteilles, vos dégustations et vos envies vivent ici. C’est votre point de départ.' },
+  { selector: '[data-tour="ajouter"]',   placement: 'bottom', title: '➕ Ajouter un vin',       text: 'Cherchez un vin ou scannez-le : sa fiche complète se remplit toute seule.' },
+  { selector: '[data-tour="scan"]',      placement: 'top',    title: '📷 Scanner une étiquette', text: 'En rayon ? Photographiez l’étiquette : Œno décode le vin, même inconnu, et le garde pour vous.' },
+  { selector: '[data-tour="trouver"]',   placement: 'top',    title: '🔍 Trouver un vin',       text: 'Quoi boire ce soir, pour un plat, un budget… deux questions et Œno vous guide.' },
+  { selector: '[data-tour="menu"]',      placement: 'top',    title: '🧭 Tout Œno',             text: 'Bibliothèque, carte des vignobles, école du vin… tout le reste est dans ce menu.' },
+  { selector: '[data-tour="assistant"]', placement: 'top',    title: '✨ Votre sommelier Œno',  text: 'Une question sur le vin ? Œno répond à tout moment, en langage simple.' },
 ]
 
 // ─── Vins de démonstration ────────────────────────────────────────────────────
@@ -105,15 +105,15 @@ const DEMO_WINES = [
 
 // Intitulés du fil d'Ariane pour chaque parcours (le hub n'en a pas)
 const VUES = {
-  decouvrir: { titre: 'Découvrir',              sousTitre: 'Glissez, gardez ce qui vous plaît' },
-  trouver:   { titre: 'Trouver un vin',        sousTitre: 'On vous guide en 2 questions' },
-  cave:      { titre: 'Ma cave',                sousTitre: 'Bouteilles, dégustations, envies' },
-  vins:      { titre: 'La bibliothèque',        sousTitre: `${WINE_DB_TERROIR.length} vins décodés` },
-  explorer:  { titre: 'Explorer les régions',   sousTitre: 'Carte, routes des vins, domaines' },
-  apprendre: { titre: 'Apprendre',              sousTitre: 'Votre parcours du vin' },
-  carte:     { titre: 'Carte des vignobles',    sousTitre: 'Accès direct' },
-  sommelier: { titre: 'Sommelier',              sousTitre: 'Goût-o-mètre · Budget · Dîner' },
-  guide:     { titre: 'Guide complet',          sousTitre: 'Accords, millésimes, actualité…' },
+  decouvrir: { titre: '🍷 Découvrir',              sousTitre: 'Glissez, gardez ce qui vous plaît' },
+  trouver:   { titre: '🔍 Trouver un vin',        sousTitre: 'On vous guide en 2 questions' },
+  cave:      { titre: '🍾 Ma cave',                sousTitre: 'Bouteilles, dégustations, envies' },
+  vins:      { titre: '📚 La bibliothèque',        sousTitre: `${WINE_DB_TERROIR.length} vins décodés` },
+  explorer:  { titre: '🗺️ Explorer les régions',   sousTitre: 'Carte, routes des vins, domaines' },
+  apprendre: { titre: '🎓 Apprendre',              sousTitre: 'Votre parcours du vin' },
+  carte:     { titre: '🗺️ Carte des vignobles',    sousTitre: 'Accès direct' },
+  sommelier: { titre: '🍷 Sommelier',              sousTitre: 'Goût-o-mètre · Budget · Dîner' },
+  guide:     { titre: '📖 Guide complet',          sousTitre: 'Accords, millésimes, actualité…' },
 }
 
 export default function App() {
@@ -307,7 +307,7 @@ export default function App() {
     )
     if (!match) return
     setWines(prev => prev.map(w => w.id === match.id ? { ...w, favori: true } : w))
-    toast('Ajouté à vos préférés')
+    toast('Ajouté à vos préférés ⭐')
   }, [wines])
 
   const total = wines.reduce((s, w) => s + w.quantity, 0)

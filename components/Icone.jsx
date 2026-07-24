@@ -1,129 +1,141 @@
-import {
-  Beef, Drumstick, Fish, Shell, Salad, Cake, Ham, Soup, Pizza, Flame, Nut,
-  Wheat, Grape, Citrus, Cherry, Apple, Leaf, Sprout, GraduationCap, Wine,
-  Snowflake, Sun, Mountain, Castle, Waves, TreePine, Landmark, Anchor,
-  Crown, Gem, Coins, Banknote, Feather, Dumbbell, Scale, Flower2, Calendar,
-  HelpCircle, Sparkles, Globe, Bird, Rabbit, Beer, Croissant, Candy,
-  ThermometerSun, CloudRain, Hand, Milk, Egg, Carrot, Star, Lightbulb,
-  PartyPopper, Newspaper, TrendingUp, Layers, Droplets,
-} from 'lucide-react'
-
 // ═══════════════════════════════════════════════════════════════════════════
-// Icone — registre sémantique unique de l'app. Œno n'affiche plus AUCUN emoji :
-// chaque repère visuel passe par une icône vectorielle, nette à toute taille,
-// cohérente en épaisseur de trait et colorable par le thème.
+// Icone — le registre d'emojis d'Œno, source unique de tous les repères
+// visuels de l'app. Un emoji se reconnaît instantanément, sans lire : c'est
+// le guide le plus rapide pour l'utilisateur.
 //
-//   <Icone nom="viande_rouge" size={20} className="text-wine-700" />
+//   <Icone nom="viande_rouge" size={22} />   → 🥩
 //
-// `nom` est une clé sémantique (plat, arôme, région, style…). Une clé inconnue
-// retombe silencieusement sur une icône neutre : jamais de trou dans l'UI.
+// `nom` est une clé sémantique (plat, arôme, région, style, budget…). Une clé
+// inconnue retombe sur 🍷 : jamais de trou dans l'interface.
 // ═══════════════════════════════════════════════════════════════════════════
 
 const REGISTRE = {
   // ── Plats & accords ──────────────────────────────────────────────────────
-  viande_rouge: Beef,
-  viande_blanche: Drumstick,
-  poisson: Fish,
-  fruits_mer: Shell,
-  fromage: Milk,
-  dessert: Cake,
-  vegetarien: Salad,
-  charcuterie: Ham,
-  pates: Pizza,
-  pizza: Pizza,
-  grillades: Flame,
-  apero: Nut,
-  epice: Flame,
-  champignon: Soup,
-  champignons: Soup,
-  foie_gras: Crown,
-  vege: Salad,
-  volaille: Bird,
-  gibier: Rabbit,
-  oeuf: Egg,
-  legume: Carrot,
-  boeuf: Beef,
-  agneau: Beef,
-  canard: Bird,
-  poulet: Bird,
-  veau: Milk,
-  porc: Ham,
-  lapin: Rabbit,
-  viande_tout: Beef,
+  viande_rouge: '🥩',
+  viande_blanche: '🍗',
+  poisson: '🐟',
+  fruits_mer: '🦞',
+  fromage: '🧀',
+  dessert: '🍮',
+  vegetarien: '🥗',
+  vege: '🥗',
+  charcuterie: '🥓',
+  pates: '🍝',
+  pizza: '🍕',
+  grillades: '🔥',
+  apero: '🥜',
+  aperitif: '🥂',
+  champignon: '🍄',
+  champignons: '🍄',
+  foie_gras: '⭐',
+  volaille: '🐔',
+  gibier: '🦌',
+  oeuf: '🥚',
+  legume: '🥕',
+  boeuf: '🐂',
+  agneau: '🐑',
+  canard: '🦆',
+  poulet: '🐔',
+  veau: '🐄',
+  porc: '🐖',
+  lapin: '🐇',
+  viande_tout: '🍖',
 
   // ── Arômes & profils de goût ─────────────────────────────────────────────
-  fruits_rouges: Cherry,
-  fruits_noirs: Grape,
-  fruits_jaunes: Apple,
-  agrumes: Citrus,
-  floral: Flower2,
-  boise: TreePine,
-  epices: Flame,
-  mineral: Mountain,
-  miel: Candy,
-  brioche: Croissant,
-  doux: Candy,
-  sec: Citrus,
-  leger: Feather,
-  puissant: Dumbbell,
-  equilibre: Scale,
-  souple: Feather,
-  tannique: Layers,
-  frais: Snowflake,
-  vif: Snowflake,
+  fruits_rouges: '🍓',
+  fruits_noirs: '🫐',
+  fruits_jaunes: '🍑',
+  agrumes: '🍋',
+  floral: '🌸',
+  boise: '🌲',
+  epice: '🌶️',
+  epices: '🌶️',
+  mineral: '💎',
+  miel: '🍯',
+  brioche: '🥐',
+  doux: '🍯',
+  sec: '🍋',
+  leger: '🪶',
+  puissant: '💪',
+  equilibre: '⚖️',
+  souple: '🪶',
+  tannique: '🌵',
+  frais: '❄️',
+  vif: '❄️',
 
   // ── Couleurs de vin ──────────────────────────────────────────────────────
-  rouge: Wine,
-  blanc: Wine,
-  rose: Wine,
-  effervescent: Sparkles,
-  liquoreux: Droplets,
-  hasard: Sparkles,
-  illimite: Crown,
+  rouge: '🍷',
+  blanc: '🥂',
+  rose: '🌸',
+  effervescent: '🍾',
+  liquoreux: '🍯',
+  hasard: '🎲',
 
   // ── Régions & terroirs ───────────────────────────────────────────────────
-  chateau: Castle,
-  vigne: Grape,
-  soleil: Sun,
-  montagne: Mountain,
-  mer: Waves,
-  foret: TreePine,
-  monument: Landmark,
-  port: Anchor,
-  ble: Wheat,
-  pluie: CloudRain,
-  chaleur: ThermometerSun,
+  chateau: '🏰',
+  vigne: '🍇',
+  soleil: '☀️',
+  montagne: '⛰️',
+  mer: '🌊',
+  foret: '🌲',
+  monument: '🏯',
+  port: '⚓',
+  ble: '🌾',
+  pluie: '🌧️',
+  chaleur: '🌡️',
+  nature: '🌿',
 
   // ── Niveaux & profils utilisateur ────────────────────────────────────────
-  debutant: Sprout,
-  amateur: Wine,
-  expert: GraduationCap,
-  incertain: HelpCircle,
+  debutant: '🌱',
+  amateur: '🍷',
+  expert: '🎓',
+  incertain: '🤷',
 
   // ── Prix, prestige, occasions ────────────────────────────────────────────
-  petit_prix: Coins,
-  budget: Banknote,
-  prestige: Crown,
-  rare: Gem,
-  fete: PartyPopper,
-  millesime: Calendar,
-  actualite: Newspaper,
-  tendance: TrendingUp,
-  conseil: Lightbulb,
-  favori: Star,
-  decouverte: Globe,
-  aperitif: Beer,
-  main: Hand,
-  nature: Leaf,
+  petit_prix: '🪙',
+  budget: '💶',
+  prestige: '💰',
+  illimite: '👑',
+  rare: '💎',
+  fete: '🎉',
+  millesime: '📅',
+  actualite: '📰',
+  tendance: '📈',
+  conseil: '💡',
+  favori: '⭐',
+  decouverte: '🌍',
+  main: '👋',
+  scan: '📷',
+  cave: '🍾',
+  carte: '🗺️',
+  livre: '📚',
+  recherche: '🔍',
+  assistant: '✨',
+  panier: '🛒',
+  coeur: '❤️',
+  temps: '⏳',
+  temperature: '🌡️',
+  carafe: '🍶',
 }
 
-const NEUTRE = Wine
+const NEUTRE = '🍷'
 
-export function iconeDe(nom) {
+export function emojiDe(nom) {
   return REGISTRE[nom] || NEUTRE
 }
 
-export default function Icone({ nom, size = 18, className = '', strokeWidth = 1.7, ...rest }) {
-  const Composant = iconeDe(nom)
-  return <Composant size={size} strokeWidth={strokeWidth} className={className} aria-hidden="true" {...rest} />
+// `strokeWidth` est absorbé : hérité des anciens appels d'icônes vectorielles,
+// il n'a aucun sens sur un emoji et polluerait le DOM.
+export default function Icone({ nom, size = 18, className = '', style, strokeWidth, ...rest }) {
+  return (
+    <span
+      role="img"
+      aria-hidden="true"
+      className={`inline-block leading-none select-none ${className}`}
+      style={{ fontSize: size, lineHeight: 1, ...style }}
+      {...rest}
+    >
+      {emojiDe(nom)}
+    </span>
+  )
 }

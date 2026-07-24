@@ -286,7 +286,10 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
                   </span>
                 )}
               </div>
-              <h3 className="font-wine-name text-5xl lg:text-[2.6rem] text-cream lg:leading-none">{wine.appellation}</h3>
+              <h3 className="font-wine-name text-5xl lg:text-[2.6rem] text-cream lg:leading-none">
+                {wine.emoji && <span className="mr-2" role="img" aria-hidden="true">{wine.emoji}</span>}
+                {wine.appellation}
+              </h3>
               <p className="text-cream/70 text-sm lg:text-[13px] mt-1.5 lg:mt-1 flex items-center gap-1.5 flex-wrap">
                 <MapPin size={11} /> {wine.region}
                 <span className="w-2.5 h-2.5 rounded-full ml-1 ring-1 ring-white/40" style={pastilleStyle(wine.type)} aria-hidden="true" />
@@ -772,7 +775,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
           {/* Grille */}
           {filtered.length === 0 ? (
             <div className="text-center py-16">
-              <Search size={30} className="text-anthracite-200 mx-auto mb-3" />
+              <div className="text-4xl mb-3" role="img" aria-hidden="true">🔍</div>
               <p className="text-anthracite-500 text-sm">Aucun vin ne correspond — élargissez vos filtres.</p>
             </div>
           ) : (

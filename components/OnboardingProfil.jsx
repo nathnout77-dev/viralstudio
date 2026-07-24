@@ -262,7 +262,7 @@ export default function OnboardingProfil({ onComplete }) {
           </div>
           <h3 className="font-serif text-xl font-medium">Bienvenue sur Œno !</h3>
           <p className="text-cream/70 text-xs mt-1">
-            {results ? `Voici ${results.length} vins pour démarrer, choisis pour vous` : niveau ? `Encore ${questions.length - step} petite${questions.length - step > 1 ? 's' : ''} question${questions.length - step > 1 ? 's' : ''}…` : '5 questions max pour tout personnaliser pour vous.'}
+            {results ? `Voici $🎉 {results.length} vins pour démarrer, choisis pour vous` : niveau ? `Encore ${questions.length - step} petite${questions.length - step > 1 ? 's' : ''} question${questions.length - step > 1 ? 's' : ''}…` : '5 questions max pour tout personnaliser pour vous.'}
           </p>
         </div>
 

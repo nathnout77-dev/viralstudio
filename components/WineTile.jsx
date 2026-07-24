@@ -85,6 +85,7 @@ export default function WineTile({
         </div>
 
         <div className="text-center mb-2 min-w-0">
+          {wine.emoji && <div className="text-2xl leading-none mb-1" role="img" aria-hidden="true">{wine.emoji}</div>}
           <div className="font-wine-name text-2xl text-anthracite-900 leading-tight line-clamp-2 whitespace-normal">
             {appellation}
           </div>
@@ -151,7 +152,10 @@ export default function WineTile({
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
-              <div className={nameClass}>{appellation}</div>
+              <div className={nameClass}>
+                {wine.emoji && <span className="mr-1.5" role="img" aria-hidden="true">{wine.emoji}</span>}
+                {appellation}
+              </div>
               <div className="text-[11px] text-anthracite-400 mt-0.5">
                 {[region, typeLabel, prixMoyen != null ? `~${prixMoyen} €` : null].filter(Boolean).join(' · ')}
               </div>

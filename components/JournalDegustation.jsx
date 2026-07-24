@@ -417,7 +417,7 @@ function CarnetPage({ entry, onClose, onEdit, onDelete }) {
                   </div>
                   <p className="text-sm text-anthracite-700 leading-relaxed">{entry.simulation.avisOeno.avis}</p>
                   {entry.simulation.avisOeno.conseil && (
-                    <p className="text-xs text-anthracite-500 italic mt-2">{entry.simulation.avisOeno.conseil}</p>
+                    <p className="text-xs text-anthracite-500 italic mt-2">💡 {entry.simulation.avisOeno.conseil}</p>
                   )}
                 </div>
               )}

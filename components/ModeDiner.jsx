@@ -226,9 +226,9 @@ function ShareMenu({ menu, convives, onClose }) {
 
   const texteMenu = useCallback(() => {
     const lignes = menu.services.map((s, i) =>
-      `${i + 1}. ${s.label} — ${s.dish}\n   ${s.wine.appellation} ${millesimeConseille(s.wine)} (${s.wine.typeLabel}, ${s.wine.temperature || 'à bonne température'}${s.wine.carafage ? `, carafage ${s.wine.carafage}` : ''})`
+      `${i + 1}. ${s.label} — ${s.dish}\n   🍷 ${s.wine.appellation} ${millesimeConseille(s.wine)} (${s.wine.typeLabel}, ${s.wine.temperature || 'à bonne température'}${s.wine.carafage ? `, carafage ${s.wine.carafage}` : ''})`
     )
-    return `Le menu des vins de notre dîner\n\n${lignes.join('\n')}\n\n${menu.bouteillesParService} bouteille(s) par service pour ${convives} convives.\n— composé avec Œno, le vin enfin simple`
+    return `Le menu des vins de notre dîner 🍽️\n\n${lignes.join('\n')}\n\n${menu.bouteillesParService} bouteille(s) par service pour ${convives} convives.\n— composé avec Œno, le vin enfin simple`
   }, [menu, convives])
 
   const download = useCallback(async () => {

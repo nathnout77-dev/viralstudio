@@ -502,7 +502,7 @@ export default function DegustationSimulateur({ vin, onClose }) {
                 <p className="text-sm text-anthracite-700 leading-relaxed">{prediction.objectif}</p>
                 {note > 0 && (
                   <p className="text-xs text-anthracite-600 mt-2.5 font-medium">
-                    {note >= 4 ? 'Vu votre note, mission accomplie.' : note === 3 ? 'Verdict mitigé — peut-être un autre millésime, ou un autre jour.' : 'Pas convaincu·e cette fois — c\'est noté, et ça compte autant qu\'un coup de cœur.'}
+                    {note >= 4 ? '🎉 Vu votre note, mission accomplie.' : note === 3 ? 'Verdict mitigé — peut-être un autre millésime, ou un autre jour.' : 'Pas convaincu·e cette fois — c\'est noté, et ça compte autant qu\'un coup de cœur.'}
                   </p>
                 )}
               </div>

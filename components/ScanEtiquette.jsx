@@ -1521,7 +1521,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                 <div className="p-5 space-y-4 bg-white">
                   {confiance && (
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-gold-500/15 text-gold-700">
-                      {confiance}
+                      ⚠️ {confiance}
                     </span>
                   )}
 
@@ -1643,7 +1643,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                 <div className="p-5 space-y-4 bg-white">
                   {confiance && (
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-gold-500/15 text-gold-700">
-                      {confiance}
+                      ⚠️ {confiance}
                     </span>
                   )}
 

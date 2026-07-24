@@ -132,7 +132,7 @@ export default function EnviesView({ onBuy }) {
     const lines = enriched.map(({ appellation, wine }) =>
       `– ${appellation}${wine ? ` (${wine.region}, ~${wine.prixMoyen} €)` : ''}`
     )
-    const text = `Ma liste d'envies vin\n${lines.join('\n')}\n\n— composée avec Œno, le vin enfin simple`
+    const text = `Ma liste d'envies vin 🍷\n${lines.join('\n')}\n\n— composée avec Œno, le vin enfin simple`
     try {
       if (navigator.share) {
         await navigator.share({ title: 'Ma liste d\'envies vin', text })
