@@ -1071,11 +1071,11 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
   const nomEnvie = matched?.appellation || parsed?.appellation || parsed?.domaine || null
 
   const sousTitre = {
-    idle: "Une bouteille vous intrigue ? Photographiez son étiquette.",
-    preview: 'Votre photo est prête à être lue.',
-    prix: 'Une info en plus, si vous l\'avez sous les yeux.',
-    loading: 'Un instant, notre sommelier lit votre étiquette…',
-    result: matched ? 'Bonne nouvelle : on connaît ce vin.' : "Voici ce qu'on peut vous en dire.",
+    idle: "Photographiez l'étiquette.",
+    preview: 'Photo prête.',
+    prix: 'Optionnel.',
+    loading: 'Lecture en cours…',
+    result: matched ? 'On connaît ce vin.' : "Voici ce qu'on en sait.",
     error: 'Petit contretemps…',
   }[step]
 

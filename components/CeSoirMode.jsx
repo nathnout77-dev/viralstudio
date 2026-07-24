@@ -249,7 +249,7 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
               <span className="eyebrow-dark mb-2">Sommelier express</span>
               <h3 className="font-serif text-2xl font-medium">Ce soir, je bois quoi ?</h3>
               <p className="text-cream/70 text-sm mt-1">
-                {results ? `Vos ${results.length} vins, choisis pour vous.` : 'Quelques questions → le vin parfait pour votre soirée.'}
+                {results ? `Vos ${results.length} vins, choisis pour vous.` : '4 questions, 5 vins.'}
               </p>
             </div>
             <button onClick={onClose}
