@@ -24,9 +24,11 @@ import { normaliser } from '../data/aromes'
 import { WINE_DB_TERROIR } from '../data/wineDatabase'
 import useSwipeNav from '../lib/useSwipeNav'
 
-// Ordre des onglets pour la navigation par glissement (mobile) — reprend les
-// parcours guidés de la nav.
-const SWIPE_ORDER = ['hub', 'decouvrir', 'trouver', 'cave', 'vins', 'explorer', 'apprendre']
+// Ordre des onglets pour la navigation par glissement (mobile). Il reprend
+// EXACTEMENT l'ordre visible dans la barre du bas (Découvrir · Trouver · Scan ·
+// Ma cave), Scan étant une fenêtre et non une vue : glisser vers la gauche mène
+// à l'onglet de gauche, ce que l'utilisateur voit à l'écran.
+const SWIPE_ORDER = ['decouvrir', 'trouver', 'cave']
 import { Sparkles, NotebookPen, Wine as WineIcon, X } from 'lucide-react'
 
 const InteractiveMap = dynamic(() => import('../components/InteractiveMap'), { ssr: false })
@@ -335,7 +337,7 @@ export default function App() {
     try {
       if (localStorage.getItem('oeno-swipe-hint')) return
       localStorage.setItem('oeno-swipe-hint', '1')
-      const t = setTimeout(() => toast('Astuce : glissez ← → pour changer d’onglet'), 1200)
+      const t = setTimeout(() => toast('👆 Astuce : glissez vers l’onglet voulu — ← ou →'), 1200)
       return () => clearTimeout(t)
     } catch { /* stockage indisponible */ }
   }, [ready, overlayOuvert])
