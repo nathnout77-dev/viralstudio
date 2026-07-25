@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
-import { Search, X, Star, Grape, ArrowRight, Library, Camera } from 'lucide-react'
+import { Search, X, Star, Grape, ArrowRight, Library, Camera, MapPin, Landmark } from 'lucide-react'
 import { WINE_DB } from '../data/wineDatabase'
 import { millesimesAPrivilegier } from '../lib/millesimes'
 import { normaliser } from '../data/aromes'
@@ -8,6 +8,8 @@ import WineVisuel from './WineVisuel'
 import BadgeGrandPublic from './BadgeGrandPublic'
 import PastilleQualitePrix from './PastilleQualitePrix'
 import { FicheVin } from './BibliothequeView'
+import { chercherReferentiel, COUVERTURE } from '../lib/referentiel'
+import FicheReferentiel from './FicheReferentiel'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // RechercheRapide — recherche globale instantanée (retour utilisateur n°4).
@@ -98,9 +100,46 @@ function LigneResultat({ w, via, onOpen }) {
   )
 }
 
+// Résultat issu de la base viticole nationale (appellation, cépage, domaine)
+const META_REF = {
+  appellation: { Icon: MapPin,   label: 'Appellation', couleur: 'text-gold-700',  fond: 'rgba(199,161,90,0.13)' },
+  cepage:      { Icon: Grape,    label: 'Cépage',      couleur: 'text-wine-700',  fond: 'rgba(140,47,57,0.10)' },
+  domaine:     { Icon: Landmark, label: 'Domaine',     couleur: 'text-anthracite-600', fond: 'rgba(28,25,23,0.06)' },
+}
+
+function LigneReferentiel({ kind, item, onOpen }) {
+  const meta = META_REF[kind]
+  const sous = kind === 'appellation'
+    ? [item.region, item.sousRegion, item.type === 'IGP' ? 'IGP' : null].filter(Boolean).join(' · ')
+    : kind === 'cepage'
+      ? [item.couleur, item.origine].filter(Boolean).join(' · ')
+      : [item.appellation, item.region].filter(Boolean).join(' · ')
+  return (
+    <button
+      onClick={onOpen}
+      className="w-full flex items-center gap-3 p-3 rounded-2xl bg-white border border-anthracite-200 hover:border-gold-500/60 active:scale-[0.99] transition-all cursor-pointer text-left"
+    >
+      <span className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: meta.fond }}>
+        <meta.Icon size={15} className={meta.couleur} />
+      </span>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-[13px] font-bold text-anthracite-900 truncate">{item.nom}</span>
+          <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-anthracite-100 text-anthracite-500">
+            {meta.label}
+          </span>
+        </div>
+        <div className="text-[11px] text-anthracite-400 mt-0.5 truncate">{sous}</div>
+      </div>
+      <ArrowRight size={14} className="text-anthracite-300 flex-shrink-0" />
+    </button>
+  )
+}
+
 export default function RechercheRapide({ onClose, onOpenBibliotheque }) {
   const [query, setQuery] = useState('')
   const [fiche, setFiche] = useState(null)
+  const [ficheRef, setFicheRef] = useState(null)
   const [decouvertes, setDecouvertes] = useState([])
   const inputRef = useRef(null)
 
@@ -109,14 +148,28 @@ export default function RechercheRapide({ onClose, onOpenBibliotheque }) {
 
   useEffect(() => {
     // Échap : ferme la fiche ouverte d'abord, l'overlay ensuite
-    const esc = e => { if (e.key === 'Escape') setFiche(f => { if (f) return null; onClose(); return f }) }
+    const esc = e => {
+      if (e.key !== 'Escape') return
+      // Ferme d'abord la fiche ouverte, l'overlay ensuite
+      if (ficheRef) { setFicheRef(null); return }
+      setFiche(f => { if (f) return null; onClose(); return f })
+    }
     window.addEventListener('keydown', esc)
     document.body.style.overflow = 'hidden'
     inputRef.current?.focus()
     return () => { window.removeEventListener('keydown', esc); document.body.style.overflow = '' }
-  }, [onClose])
+  }, [onClose, ficheRef])
 
   const resultats = useMemo(() => chercher(query, decouvertes), [query, decouvertes])
+
+  // Base nationale : tout ce qu'Œno connaît au-delà de ses vins modélisés.
+  // On masque les appellations déjà couvertes par un vin affiché ci-dessus.
+  const refResultats = useMemo(() => {
+    const dejaVues = new Set(resultats.map(r => normaliser(r.w.appellation)))
+    return chercherReferentiel(query, 20)
+      .filter(r => !(r.kind === 'appellation' && dejaVues.has(normaliser(r.item.nom))))
+      .slice(0, 10)
+  }, [query, resultats])
   const enRecherche = normaliser(query.trim()).length >= 2
 
   return (
@@ -171,12 +224,12 @@ export default function RechercheRapide({ onClose, onOpenBibliotheque }) {
                 ))}
               </div>
               <p className="text-[11px] text-anthracite-400 leading-relaxed">
-                Tapez une appellation, un cépage ou un domaine : les <span className="font-semibold text-anthracite-600">millésimes à privilégier</span> s'affichent directement — pratique devant le rayon.
+                Tapez une appellation, un cépage ou un domaine : les <span className="font-semibold text-anthracite-600">millésimes à privilégier</span> s'affichent directement — pratique devant le rayon. Toute la France est couverte : {COUVERTURE.appellations} appellations, {COUVERTURE.cepages} cépages, {COUVERTURE.domaines} domaines.
               </p>
             </div>
           )}
 
-          {enRecherche && resultats.length === 0 && (
+          {enRecherche && resultats.length === 0 && refResultats.length === 0 && (
             <div className="text-center py-10 animate-fade-in">
               <div className="text-sm font-semibold text-anthracite-700 mb-1.5">Aucun vin trouvé pour « {query} »</div>
               <p className="text-xs text-anthracite-400 max-w-xs mx-auto">Essayez une appellation (« Chablis »), un cépage (« Chardonnay ») ou une région (« Loire »).</p>
@@ -190,6 +243,24 @@ export default function RechercheRapide({ onClose, onOpenBibliotheque }) {
               </div>
               {resultats.map(({ w, via }) => (
                 <LigneResultat key={w.id} w={w} via={via} onOpen={() => setFiche(w)} />
+              ))}
+            </div>
+          )}
+
+          {/* Base viticole nationale : appellations, cépages et domaines
+              qu'Œno documente au-delà de ses vins entièrement modélisés. */}
+          {enRecherche && refResultats.length > 0 && (
+            <div className="space-y-2 animate-fade-in mt-5">
+              <div className="text-[10px] uppercase tracking-[0.15em] font-bold text-anthracite-400 mb-1">
+                Base viticole de France · {COUVERTURE.appellations} appellations, {COUVERTURE.cepages} cépages
+              </div>
+              {refResultats.map(r => (
+                <LigneReferentiel
+                  key={`${r.kind}-${r.item.id}`}
+                  kind={r.kind}
+                  item={r.item}
+                  onOpen={() => setFicheRef(r)}
+                />
               ))}
             </div>
           )}
@@ -210,6 +281,13 @@ export default function RechercheRapide({ onClose, onOpenBibliotheque }) {
       </div>
 
       {fiche && <FicheVin wine={fiche} onClose={() => setFiche(null)} />}
+      {ficheRef && (
+        <FicheReferentiel
+          entree={ficheRef}
+          onClose={() => setFicheRef(null)}
+          onOuvrirVin={w => { setFicheRef(null); setFiche(w) }}
+        />
+      )}
     </div>
   )
 }

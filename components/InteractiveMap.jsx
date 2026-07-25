@@ -13,6 +13,7 @@ import { regionInfo } from '../data/regionsInfo'
 import PetitsPrix from './PetitsPrix'
 import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
 import Icone from './Icone'
+import useReferentiel from '../lib/useReferentiel'
 
 const DegustationSimulateur = dynamic(() => import('./DegustationSimulateur'), { ssr: false })
 
@@ -292,6 +293,62 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
 }
 
 // ── Map component ─────────────────────────────────────────────────────────────
+// Chiffres officiels d'une région : nombre d'AOC et d'IGP, grands crus.
+// Alimenté par la base viticole nationale, chargée à la volée.
+function PanoramaRegion({ region }) {
+  const R = useReferentiel()
+  const stats = R ? R.statsRegion(region) : null
+  const crus = R ? R.crusRegion(region) : []
+  const [tout, setTout] = useState(false)
+  if (!stats) return null
+  const appellations = R.appellationsRegion(region)
+  const visibles = tout ? appellations : appellations.slice(0, 14)
+  return (
+    <div className="mt-3 pt-3 border-t border-anthracite-100 animate-fade-in">
+      <div className="flex flex-wrap gap-1.5 mb-2.5">
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-wine-50 text-wine-800 border border-wine-100">
+          {stats.aoc} AOC
+        </span>
+        {stats.igp > 0 && (
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-anthracite-100 text-anthracite-600">
+            {stats.igp} IGP
+          </span>
+        )}
+        {crus.length > 0 && (
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-gold-500/15 text-gold-800 border border-gold-500/30">
+            {crus.length} grands crus
+          </span>
+        )}
+      </div>
+      <div className="text-[10px] uppercase tracking-wider font-semibold text-anthracite-400 mb-1.5">
+        Toutes les appellations de la région
+      </div>
+      <div className="flex flex-wrap gap-1.5">
+        {visibles.map(a => (
+          <span
+            key={a.id}
+            className={`px-2 py-0.5 rounded-full text-[10px] border ${
+              a.type === 'IGP'
+                ? 'bg-white border-anthracite-200 text-anthracite-500'
+                : 'bg-cream border-anthracite-900/10 text-anthracite-700'
+            }`}
+          >
+            {a.nom}
+          </span>
+        ))}
+        {appellations.length > visibles.length && (
+          <button
+            onClick={() => setTout(true)}
+            className="px-2 py-0.5 rounded-full text-[10px] font-bold text-wine-700 bg-wine-50 border border-wine-200 hover:border-wine-300 cursor-pointer"
+          >
+            +{appellations.length - visibles.length} autres
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function InteractiveMap({ onAddWine, onNoter }) {
   const [view, setView] = useState('vignobles') // vignobles | routes
   const [selected, setSelected] = useState(null)
@@ -444,6 +501,9 @@ export default function InteractiveMap({ onAddWine, onNoter }) {
               <p className="text-sm text-anthracite-600 leading-relaxed">{regionInfo(activeRegion).blurb}</p>
             </div>
           </div>
+
+          {/* Ce que la région pèse officiellement : appellations, crus classés */}
+          <PanoramaRegion region={activeRegion} />
           {regionDomaines.length > 0 && (
             <div className="mt-3 pt-3 border-t border-anthracite-100">
               <div className="text-[10px] uppercase tracking-wider font-semibold text-anthracite-400 mb-2">

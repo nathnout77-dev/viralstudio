@@ -16,6 +16,7 @@ import BadgeGrandPublic from './BadgeGrandPublic'
 import PastilleQualitePrix from './PastilleQualitePrix'
 import { loadDecouvertes, removeDecouverte, decouverteNumero } from '../lib/decouvertes'
 import { partagerVin } from '../lib/partage'
+import { useAppellationRef } from '../lib/useReferentiel'
 
 // Chargé dynamiquement : Comparateur importe FicheVin de ce fichier — le
 // dynamic() évite le cycle d'imports au chargement du module.
@@ -221,6 +222,72 @@ const DIFF_FILTERS = [
 ]
 
 // ── Fiche détaillée ────────────────────────────────────────────────────────────
+// Terroir officiel : sol, garde, hiérarchie, crus classés et millésimes notés
+// de la région. Vient de la base viticole nationale, chargée seulement quand
+// une fiche s'ouvre — jamais au démarrage de l'app.
+function BlocTerroir({ appellation, region }) {
+  const ref = useAppellationRef(appellation, region)
+  if (!ref) return null
+  const { detail, crus, millesimes } = ref
+  if (!detail && !crus.length && !millesimes.length) return null
+  return (
+    <div className="rounded-2xl border border-gold-500/25 p-4 animate-fade-in" style={{ background: 'rgba(199,161,90,0.06)' }}>
+      <div className="text-[10px] uppercase tracking-wider font-bold text-gold-700 mb-2.5">
+        🗺️ Le terroir, officiellement
+      </div>
+
+      {detail && (
+        <div className="space-y-1.5 text-xs text-anthracite-700">
+          {detail.sol && <p><span className="font-semibold">Sol :</span> {detail.sol}</p>}
+          {detail.garde && <p><span className="font-semibold">Garde :</span> {detail.garde}</p>}
+          {detail.hierarchie && <p><span className="font-semibold">Rang :</span> {detail.hierarchie}</p>}
+          {detail.cepages?.length > 0 && (
+            <p><span className="font-semibold">Cépages du cahier des charges :</span> {detail.cepages.join(', ')}</p>
+          )}
+        </div>
+      )}
+
+      {crus.length > 0 && (
+        <div className="mt-3">
+          <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-1.5">
+            {crus.length} cru{crus.length > 1 ? 's' : ''} classé{crus.length > 1 ? 's' : ''}
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {crus.slice(0, 8).map(c => (
+              <span key={c.id} className="text-[10px] bg-white border border-anthracite-200 text-anthracite-600 px-2 py-0.5 rounded-full">
+                {c.chateau}
+              </span>
+            ))}
+            {crus.length > 8 && (
+              <span className="text-[10px] text-anthracite-400 px-1 py-0.5">+{crus.length - 8}</span>
+            )}
+          </div>
+        </div>
+      )}
+
+      {millesimes.length > 0 && (
+        <div className="mt-3">
+          <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-1.5">
+            Millésimes notés — {millesimes[0].region}
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {millesimes.map(m => (
+              <span
+                key={m.id}
+                className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-white border border-gold-500/30 text-anthracite-700"
+                title={m.commentaire || m.style || ''}
+              >
+                {m.annee}
+                <span className="text-gold-700">{m.note}/20</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter }) {
   useModalBehavior(onClose)
   // Le vin affiché est un état : les chips « Existe aussi en… » permettent de
@@ -287,7 +354,7 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
                 )}
               </div>
               <h3 className="font-wine-name text-5xl lg:text-[2.6rem] text-cream lg:leading-none">
-                {wine.emoji && <span className="mr-2" role="img" aria-hidden="true">{wine.emoji}</span>}
+                {wine.emoji && <span className="mr-2 text-2xl align-middle" role="img" aria-hidden="true">{wine.emoji}</span>}
                 {wine.appellation}
               </h3>
               <p className="text-cream/70 text-sm lg:text-[13px] mt-1.5 lg:mt-1 flex items-center gap-1.5 flex-wrap">
@@ -424,6 +491,9 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
               <div className="text-[9px] text-anthracite-400 uppercase mt-0.5"><Terme id="garde">Garde</Terme></div>
             </div>
           </div>
+
+          {/* Le terroir, d'après la base viticole nationale (chargée à la volée) */}
+          <BlocTerroir appellation={wine.appellation} region={wine.region} />
 
           {/* À table */}
           <div>

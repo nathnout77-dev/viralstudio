@@ -1,11 +1,16 @@
 import { useState, useEffect } from 'react'
-import { School, Flower2, GraduationCap, CheckCircle2 } from 'lucide-react'
+import dynamic from 'next/dynamic'
+import { School, Flower2, GraduationCap, CheckCircle2, Trophy } from 'lucide-react'
 import EcoleDuVin from './EcoleDuVin'
 import CapsulesRow from './Capsules'
 import RoueAromes from './RoueAromes'
 import { LexiqueView } from './GuideView'
 import { LECONS } from '../data/lecons'
 import { CAPSULES } from '../data/capsules'
+
+// Le quiz pioche dans la base viticole nationale (~230 Ko) : chargé seulement
+// quand on ouvre l'étape, jamais au démarrage de l'app.
+const QuizFrance = dynamic(() => import('./QuizFrance'), { ssr: false })
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ParcoursApprendre — le chemin de progression unifié. École, capsules,
@@ -18,6 +23,7 @@ const ETAPES = [
   { id: 'ecole',   num: 1, label: 'Les bases',         Icon: School,        texte: 'Leçons courtes et capsules vidéo' },
   { id: 'aromes',  num: 2, label: 'La roue des arômes', Icon: Flower2,       texte: 'Entraînez votre nez' },
   { id: 'lexique', num: 3, label: 'Le lexique',          Icon: GraduationCap, texte: 'Tous les mots, décodés' },
+  { id: 'quiz',    num: 4, label: 'Quiz de France',      Icon: Trophy,        texte: 'Toute la France, une partie différente à chaque fois' },
 ]
 
 const lireJSON = (key) => {
@@ -93,17 +99,18 @@ export default function ParcoursApprendre() {
       {etape === 'ecole'   && <><CapsulesRow /><EcoleDuVin /></>}
       {etape === 'aromes'  && <RoueAromes />}
       {etape === 'lexique' && <LexiqueView />}
+      {etape === 'quiz'    && <QuizFrance />}
 
       {/* Prochaine étape guidée */}
-      {etape !== 'lexique' && (
+      {etape !== 'quiz' && (
         <div className="mt-10 text-center">
           <button
-            onClick={() => setEtape(etape === 'ecole' ? 'aromes' : 'lexique')}
+            onClick={() => setEtape(etape === 'ecole' ? 'aromes' : etape === 'aromes' ? 'lexique' : 'quiz')}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-cream cursor-pointer transition-all duration-300 hover:brightness-110 active:scale-[0.98]"
             style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
           >
             <CheckCircle2 size={15} />
-            Étape suivante : {etape === 'ecole' ? 'la roue des arômes' : 'le lexique'}
+            Étape suivante : {etape === 'ecole' ? 'la roue des arômes' : etape === 'aromes' ? 'le lexique' : 'le quiz de France'}
           </button>
         </div>
       )}

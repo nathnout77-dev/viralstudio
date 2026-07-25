@@ -3,6 +3,7 @@ import { BookOpen, ChevronDown, Star, TrendingUp, Award, Filter, Search, X } fro
 import { MILLESIMES_DB, WINE_DB, gardeForMillesime } from '../data/wineDatabase'
 import { millesimesAPrivilegier, meilleurMillesime } from '../lib/millesimes'
 import { normaliser } from '../data/aromes'
+import useReferentiel from '../lib/useReferentiel'
 import PetitsPrix from './PetitsPrix'
 import WineVisuel from './WineVisuel'
 import { FicheVin } from './BibliothequeView'
@@ -100,6 +101,50 @@ function HighlightCard({ year, label, region, color }) {
 }
 
 // ── Main ─────────────────────────────────────────────────────────────────────
+// Notes de millésimes /20 par région, issues de la base viticole nationale.
+// Complète le guide interne : ici, la note critique et l'apogée conseillée.
+function NotesMillesimesRef({ region, annee }) {
+  const R = useReferentiel()
+  const notes = useMemo(() => {
+    if (!R) return []
+    const base = region && region !== 'Toutes'
+      ? R.millesimesRegion(region)
+      : [...R.MILLESIMES_FR].sort((a, b) => b.annee - a.annee)
+    const filtrees = annee ? base.filter(m => m.annee === Number(annee)) : base
+    return filtrees.slice(0, 12)
+  }, [R, region, annee])
+
+  if (!notes.length) return null
+  return (
+    <div className="card p-4 mb-4 animate-fade-in">
+      <div className="text-[10px] uppercase tracking-[0.16em] font-bold text-gold-700 mb-2.5">
+        📅 Notes de millésimes {region !== 'Toutes' ? `— ${region}` : '— toutes régions'}
+      </div>
+      <div className="space-y-1.5">
+        {notes.map(m => (
+          <div key={m.id} className="flex items-baseline gap-2.5 text-xs">
+            <span className="font-bold text-anthracite-900 w-11 flex-shrink-0">{m.annee}</span>
+            <span
+              className="px-1.5 py-0.5 rounded-full text-[10px] font-bold flex-shrink-0"
+              style={{
+                background: m.note >= 18 ? 'rgba(74,124,89,0.15)' : m.note >= 16 ? 'rgba(199,161,90,0.18)' : 'rgba(28,25,23,0.07)',
+                color: m.note >= 18 ? '#3f6b4c' : m.note >= 16 ? '#8a6a1f' : '#57534e',
+              }}
+            >
+              {m.note}/20
+            </span>
+            {region === 'Toutes' && (
+              <span className="text-[10px] text-anthracite-400 w-24 flex-shrink-0 truncate">{m.region}</span>
+            )}
+            <span className="text-anthracite-600 truncate">{m.style}</span>
+            {m.apogee && <span className="text-[10px] text-anthracite-400 flex-shrink-0 ml-auto">{m.apogee}</span>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function MillesimesView() {
   const [region, setRegion] = useState('Toutes')
   const [type,   setType]   = useState('Tous')
@@ -301,6 +346,9 @@ export default function MillesimesView() {
           )
         })()}
       </div>
+
+      {/* Notes officielles par région — base viticole nationale */}
+      <NotesMillesimesRef region={region} annee={year} />
 
       {/* Filter bar */}
       <div className="card p-4 mb-5">

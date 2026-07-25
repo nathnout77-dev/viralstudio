@@ -370,6 +370,66 @@ export default function AssistantView({ onClose }) {
     setMessages([])
   }
 
+  // Base viticole nationale : plutôt que de gonfler le prompt avec 1200
+  // fiches (impossible sous le quota Groq), on n'injecte QUE les entrées
+  // citées dans la question. Chargement à la volée, sans coût au démarrage.
+  const contexteReferentiel = useCallback(async (question) => {
+    try {
+      const R = await import('../lib/referentiel')
+      const mots = question.split(/[^A-Za-zÀ-ÿ'’-]+/).filter(m => m.length >= 4)
+      const vus = new Set()
+      const lignes = []
+
+      const ajouter = (r) => {
+        const cle = `${r.kind}:${r.item.id}`
+        if (vus.has(cle) || lignes.length >= 6) return
+        vus.add(cle)
+        const it = r.item
+        if (r.kind === 'appellation') {
+          const d = R.detailAppellation(it.nom)
+          const crus = R.classementsAppellation(it.nom)
+          lignes.push([
+            `APPELLATION ${it.nom} (${it.type}) — ${it.region}${it.sousRegion ? `, ${it.sousRegion}` : ''}`,
+            d?.cepages?.length ? `cépages: ${d.cepages.join(', ')}` : null,
+            d?.sol ? `sol: ${d.sol}` : null,
+            d?.garde ? `garde: ${d.garde}` : null,
+            d?.hierarchie ? `rang: ${d.hierarchie}` : null,
+            crus.length ? `crus classés: ${crus.length}` : null,
+          ].filter(Boolean).join(' | '))
+        } else if (r.kind === 'cepage') {
+          lignes.push([
+            `CÉPAGE ${it.nom} (${it.couleur}, ${it.origine})`,
+            it.aromes?.length ? `arômes: ${it.aromes.join(', ')}` : null,
+            it.tanins ? `tanins ${it.tanins}` : null,
+            it.acidite ? `acidité ${it.acidite}` : null,
+            it.corps ? `corps ${it.corps}` : null,
+            it.garde ? `garde ${it.garde}` : null,
+            it.tempService ? `service ${it.tempService}` : null,
+            it.accords?.length ? `accords: ${it.accords.join(', ')}` : null,
+          ].filter(Boolean).join(' | '))
+        } else {
+          lignes.push([
+            `DOMAINE ${it.nom} — ${it.appellation}, ${it.region}`,
+            it.statut ? `statut: ${it.statut}` : null,
+            it.style ? `style: ${it.style}` : null,
+            it.cuvees?.length ? `cuvées: ${it.cuvees.join(', ')}` : null,
+          ].filter(Boolean).join(' | '))
+        }
+      }
+
+      // Requête entière d'abord (expressions à plusieurs mots), puis mot à mot
+      for (const r of R.chercherReferentiel(question, 4)) ajouter(r)
+      for (const mot of mots) {
+        if (lignes.length >= 6) break
+        for (const r of R.chercherReferentiel(mot, 2)) ajouter(r)
+      }
+      if (!lignes.length) return ''
+      return `\n\n# Fiches officielles (base viticole France) — utilise ces données exactes, ne les contredis pas\n${lignes.join('\n')}`
+    } catch {
+      return '' // le référentiel est un bonus : jamais bloquant
+    }
+  }, [])
+
   const sendMessage = useCallback(async (text, menuId = null) => {
     if (!text.trim() || loading) return
     const userMsg = { role: 'user', content: text.trim() }
@@ -384,7 +444,7 @@ export default function AssistantView({ onClose }) {
         // 900 suffit largement pour des réponses courtes (règle n°2) et
         // réduit le coût par requête sur le budget/minute Groq.
         max_tokens: 900,
-        system: buildSystemPrompt(profil),
+        system: buildSystemPrompt(profil) + (await contexteReferentiel(text)),
         messages: history.slice(-8).map(m => ({ role: m.role, content: m.content })),
       }
       // Recherche web : actualité, ET vins de supermarché/enseignes (infos réelles
