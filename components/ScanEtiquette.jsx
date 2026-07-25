@@ -16,6 +16,7 @@ import { supabase } from '../lib/supabase'
 import { logAchat } from '../lib/achats'
 import { partagerVin } from '../lib/partage'
 import BadgeGrandPublic from './BadgeGrandPublic'
+import Icone from './Icone'
 
 const DegustationSimulateur = dynamic(() => import('./DegustationSimulateur'), { ssr: false })
 

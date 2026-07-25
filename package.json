@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && node scripts/generate-sw-precache.js",
+    "verifier": "node scripts/verifier-imports.mjs",
+    "build": "node scripts/verifier-imports.mjs && next build && node scripts/generate-sw-precache.js",
     "start": "next start"
   },
   "dependencies": {
