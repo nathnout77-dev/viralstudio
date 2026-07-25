@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useMemo, useEffect } from 'react'
 import { Heart, X, RotateCcw, Info, Plus, MapPin } from 'lucide-react'
-import { WINE_DB_TERROIR, DIFFICULTE_CONFIG, rapportQualitePrix } from '../data/wineDatabase'
+import { DIFFICULTE_CONFIG, rapportQualitePrix } from '../data/wineDatabase'
+import { CATALOGUE } from '../lib/vinsReferentiel'
 import { diversifyByRegion } from '../lib/suggestions'
 import { toggleEnvie, loadEnvies } from './Envies'
 import WineVisuel from './WineVisuel'
@@ -116,7 +117,7 @@ function Carte({ wine, style, dragging, onPointerDown, refCarte, decision }) {
 export default function DecouvrirSwipe({ onFiche, onAddWine }) {
   // Pile diversifiée par région : deux Bordeaux d'affilée, jamais.
   const pile = useMemo(() => {
-    const base = WINE_DB_TERROIR.filter(w => w.prixMoyen)
+    const base = CATALOGUE.filter(w => w.prixMoyen && !w.grandPublic)
     const melange = [...base].sort(() => Math.random() - 0.5)
     return diversifyByRegion(melange, 60)
   }, [])

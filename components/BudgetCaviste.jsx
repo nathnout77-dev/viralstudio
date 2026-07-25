@@ -2,7 +2,8 @@ import { useState, useCallback } from 'react'
 import {
   Coins, RefreshCw, ExternalLink, Wine, Sparkles, Gift, Home, PartyPopper, Users, ChevronDown,
 } from 'lucide-react'
-import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
+import { DIFFICULTE_CONFIG } from '../data/wineDatabase'
+import { CATALOGUE } from '../lib/vinsReferentiel'
 import { millesimesAPrivilegier } from '../lib/millesimes'
 import { EnvieButton } from './Envies'
 import WineVisuel from './WineVisuel'
@@ -60,10 +61,10 @@ export function composeSelection(budget, occasion, couleur) {
     couleur === 'mixte' ||
     (couleur === 'red' ? w.type === 'red' : ['white', 'sparkling', 'sweet'].includes(w.type))
 
-  const affordable = WINE_DB.filter(w => matchCouleur(w) && w.prixMoyen <= hi)
+  const affordable = CATALOGUE.filter(w => matchCouleur(w) && w.prixMoyen <= hi)
   if (affordable.length === 0) {
     // Vraiment aucun vin dans l'enveloppe : on indique le ticket d'entrée.
-    const pool = WINE_DB.filter(matchCouleur)
+    const pool = CATALOGUE.filter(matchCouleur)
     const minPrix = pool.length ? Math.min(...pool.map(w => w.prixMoyen)) : null
     return { wines: null, minPrix }
   }

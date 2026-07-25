@@ -5,7 +5,8 @@ import {
   CakeSlice, IceCream2, Apple, Beef, Soup, Milk, Sandwich,
   Sofa, Compass, Rocket, Banknote, PiggyBank, Crown,
 } from 'lucide-react'
-import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
+import { DIFFICULTE_CONFIG } from '../data/wineDatabase'
+import { CATALOGUE } from '../lib/vinsReferentiel'
 import { millesimesAPrivilegier } from '../lib/millesimes'
 import { computeProfilAppris, bonusProfilAppris } from '../data/goutsAppris'
 import { diversifyByRegion, buildRaison, getRegionsPref } from '../lib/suggestions'
@@ -181,7 +182,7 @@ export default function SommelierForm({ onOpenBibliotheque }) {
   const results = useMemo(() => {
     if (!profile) return null
     const activeRegions = isConnaisseur ? regionsPref : []
-    const pool = activeRegions.length ? WINE_DB.filter(w => activeRegions.includes(w.region)) : WINE_DB
+    const pool = activeRegions.length ? CATALOGUE.filter(w => activeRegions.includes(w.region)) : CATALOGUE
     const scored = pool
       .map(w => ({ wine: w, score: scoreWine(w, profile) + bonusProfilAppris(w, profilAppris, 0.6) }))
       .sort((a, b) => b.score - a.score)

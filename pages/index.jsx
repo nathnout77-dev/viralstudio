@@ -7,8 +7,6 @@ import Sidebar          from '../components/Sidebar'
 import WineDetail       from '../components/WineDetail'
 import WineForm         from '../components/WineForm'
 import CaveView         from '../components/CaveView'
-import SommelierForm    from '../components/SommelierForm'
-import GuideView        from '../components/GuideView'
 import BibliothequeView from '../components/BibliothequeView'
 import LandingPage      from '../components/LandingPage'
 import HubGuide         from '../components/HubGuide'
@@ -41,6 +39,8 @@ const CaveAmieViewer = dynamic(() => import('../components/CaveAmis').then(m => 
 const RechercheRapide = dynamic(() => import('../components/RechercheRapide'), { ssr: false })
 const TourGuide       = dynamic(() => import('../components/TourGuide'), { ssr: false })
 const DecouvrirSwipe  = dynamic(() => import('../components/DecouvrirSwipe'), { ssr: false })
+const SommelierForm   = dynamic(() => import('../components/SommelierForm'), { ssr: false })
+const GuideView       = dynamic(() => import('../components/GuideView'), { ssr: false })
 const FicheVin        = dynamic(() => import('../components/BibliothequeView').then(m => m.FicheVin), { ssr: false })
 
 // Étapes de la visite guidée (premier lancement mobile) : chaque étape éclaire

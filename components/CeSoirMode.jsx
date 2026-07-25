@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { X, RefreshCw, Sparkles, ChevronLeft, GraduationCap } from 'lucide-react'
-import { WINE_DB } from '../data/wineDatabase'
+import { CATALOGUE } from '../lib/vinsReferentiel'
 import { computeProfilAppris, bonusProfilAppris } from '../data/goutsAppris'
 import { diversifyByRegion, getRegionsPref } from '../lib/suggestions'
 import RegionsPrefFilter from './RegionsPrefFilter'
@@ -186,7 +186,7 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
   const results = useMemo(() => {
     if (!done) return null
     const activeRegions = isConnaisseur ? regionsPref : []
-    let pool = activeRegions.length ? WINE_DB.filter(w => activeRegions.includes(w.region)) : WINE_DB
+    let pool = activeRegions.length ? CATALOGUE.filter(w => activeRegions.includes(w.region)) : CATALOGUE
     // Couleur demandée = couleur servie, sans exception : filtre DUR avant
     // scoring. Aucun repli ne peut réintroduire une autre couleur — s'il y a
     // moins de 5 vins de cette couleur, on en montre moins de 5.
@@ -194,7 +194,7 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
       pool = pool.filter(w => w.type === answers.couleur)
       // Filtre régions trop strict pour cette couleur → on relâche les
       // régions plutôt que la couleur.
-      if (!pool.length) pool = WINE_DB.filter(w => w.type === answers.couleur)
+      if (!pool.length) pool = CATALOGUE.filter(w => w.type === answers.couleur)
     }
     const scored = pool
       .map(w => ({ w, s: score(w, answers, mode) + bonusProfilAppris(w, profilAppris, 0.5) }))

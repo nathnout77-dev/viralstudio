@@ -492,6 +492,21 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
             </div>
           </div>
 
+          {/* Honnêteté : cette fiche est dérivée de la base nationale, pas
+              rédigée à la main. Le prix est relevé ou modélisé — on le dit. */}
+          {wine.referentiel && (
+            <div className="rounded-2xl border border-anthracite-900/[0.08] bg-white p-3.5 flex items-start gap-2.5">
+              <span className="text-base leading-none flex-shrink-0" role="img" aria-hidden="true">📊</span>
+              <p className="text-[11px] text-anthracite-500 leading-relaxed">
+                Fiche établie depuis la base viticole nationale
+                {wine.fiabilitePrix ? ` — prix : ${wine.fiabilitePrix.toLowerCase()}` : ''}
+                {wine.prixEntree && wine.prixHaut
+                  ? `, de ${wine.prixEntree} € à ${wine.prixHaut} € selon le producteur.`
+                  : '.'}
+              </p>
+            </div>
+          )}
+
           {/* Le terroir, d'après la base viticole nationale (chargée à la volée) */}
           <BlocTerroir appellation={wine.appellation} region={wine.region} />
 

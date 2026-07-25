@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { Utensils, UtensilsCrossed, Coins, Sparkles, ArrowRight, ChevronLeft } from 'lucide-react'
 import dynamic from 'next/dynamic'
-import SommelierForm from './SommelierForm'
 
-const CeSoirMode = dynamic(() => import('./CeSoirMode'), { ssr: false })
+// Vues lourdes : elles embarquent le catalogue national (~45 Ko une fois
+// compressé). Chargées à l'ouverture de l'outil, jamais au démarrage.
+const SommelierForm = dynamic(() => import('./SommelierForm'), { ssr: false })
+const CeSoirMode    = dynamic(() => import('./CeSoirMode'), { ssr: false })
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ParcoursVin — l'entonnoir unique « Je cherche un vin ». Une seule porte

@@ -2,13 +2,12 @@
 // referentielFrance — base viticole nationale d'Œno.
 //
 // FICHIER GÉNÉRÉ — ne pas éditer à la main.
-// Source : base markdown « Base viticole France - Oeno » (v3, 25/07/2026).
-// Régénérer : node scripts/genererReferentiel.mjs <chemin-du-md>
+// Source : classeur « Base viticole France - Oeno ».
+// Régénérer : python3 scripts/generer_referentiel.py <chemin-du-xlsx>
 //
-// Ce référentiel complète WINE_DB (vins entièrement modélisés : goût, prix,
-// accords). Ici, on couvre TOUTE la France de façon factuelle : chaque
-// appellation, cépage, domaine, cru et classement, sans inventer de notes de
-// dégustation là où la source n'en donne pas.
+// PROFILS_GOUT donne à CHAQUE appellation ses jauges, ses arômes, ses accords
+// et sa fourchette de prix : c'est ce qui permet de la recommander, et pas
+// seulement de la documenter.
 // ═══════════════════════════════════════════════════════════════════════════
 
 // 580 appellations : AOC/AOP et IGP, toutes régions.
@@ -16,7 +15,7 @@ export const APPELLATIONS_FR = [
  {
   "id": "APP001",
   "nom": "Ajaccio",
-  "region": "Corsé",
+  "region": "Corse",
   "sousRegion": null,
   "type": "AOC"
  },
@@ -848,43 +847,43 @@ export const APPELLATIONS_FR = [
  },
  {
   "id": "APP120",
-  "nom": "Corsé (ou Vin de Corsé)",
-  "region": "Corsé",
+  "nom": "Corse (ou Vin de Corse)",
+  "region": "Corse",
   "sousRegion": null,
   "type": "AOC"
  },
  {
   "id": "APP121",
-  "nom": "Corsé Calvi",
-  "region": "Corsé",
+  "nom": "Corse Calvi",
+  "region": "Corse",
   "sousRegion": null,
   "type": "AOC"
  },
  {
   "id": "APP122",
-  "nom": "Corsé Coteaux du Cap Corsé",
-  "region": "Corsé",
+  "nom": "Corse Coteaux du Cap Corse",
+  "region": "Corse",
   "sousRegion": null,
   "type": "AOC"
  },
  {
   "id": "APP123",
-  "nom": "Corsé Figari",
-  "region": "Corsé",
+  "nom": "Corse Figari",
+  "region": "Corse",
   "sousRegion": null,
   "type": "AOC"
  },
  {
   "id": "APP124",
-  "nom": "Corsé Porto-Vecchio",
-  "region": "Corsé",
+  "nom": "Corse Porto-Vecchio",
+  "region": "Corse",
   "sousRegion": null,
   "type": "AOC"
  },
  {
   "id": "APP125",
-  "nom": "Corsé Sartène",
-  "region": "Corsé",
+  "nom": "Corse Sartène",
+  "region": "Corse",
   "sousRegion": null,
   "type": "AOC"
  },
@@ -1571,7 +1570,7 @@ export const APPELLATIONS_FR = [
   "id": "APP223",
   "nom": "Fiefs Vendéens",
   "region": "Vallée de la Loire",
-  "sousRegion": "Vendee",
+  "sousRegion": "Vendée",
   "type": "AOC"
  },
  {
@@ -2199,8 +2198,8 @@ export const APPELLATIONS_FR = [
  },
  {
   "id": "APP313",
-  "nom": "Muscat du Cap Corsé",
-  "region": "Corsé",
+  "nom": "Muscat du Cap Corse",
+  "region": "Corse",
   "sousRegion": "VDN",
   "type": "AOC"
  },
@@ -2256,7 +2255,7 @@ export const APPELLATIONS_FR = [
  {
   "id": "APP321",
   "nom": "Patrimonio",
-  "region": "Corsé",
+  "region": "Corse",
   "sousRegion": null,
   "type": "AOC"
  },
@@ -3691,8 +3690,8 @@ export const APPELLATIONS_FR = [
  {
   "id": "IGP103",
   "nom": "Île de Beaute",
-  "region": "Corsé",
-  "sousRegion": "Corsé",
+  "region": "Corse",
+  "sousRegion": "Corse",
   "type": "IGP"
  },
  {
@@ -3720,7 +3719,7 @@ export const APPELLATIONS_FR = [
   "id": "IGP107",
   "nom": "Jardin de la France (Val de Loire)",
   "region": "Vallée de la Loire",
-  "sousRegion": "13 departements ligeriens",
+  "sousRegion": "13 départements ligeriens",
   "type": "IGP"
  },
  {
@@ -4033,9 +4032,9 @@ export const APPELLATIONS_FR = [
  },
  {
   "id": "IGP152",
-  "nom": "Vendee",
+  "nom": "Vendée",
   "region": "Vallée de la Loire",
-  "sousRegion": "Vendee",
+  "sousRegion": "Vendée",
   "type": "IGP"
  },
  {
@@ -4070,7 +4069,7 @@ export const APPELLATIONS_FR = [
   "id": "IGP157",
   "nom": "Terres du Midi",
   "region": "Languedoc",
-  "sousRegion": "IGP creee en 2023",
+  "sousRegion": "IGP créée en 2023",
   "type": "IGP"
  }
 ]
@@ -4176,7 +4175,7 @@ export const APPELLATIONS_DETAIL = [
   ],
   "sol": "Calcaire, argile, sable",
   "garde": "10-40 ans",
-  "hierarchie": "Classement revise ~10 ans"
+  "hierarchie": "Classement révisé ~10 ans"
  },
  {
   "id": "AOC007",
@@ -4695,7 +4694,7 @@ export const APPELLATIONS_DETAIL = [
   "cepages": [
    "Viognier"
   ],
-  "sol": "Arzelle (granit decompose)",
+  "sol": "Arzelle (granit décomposé)",
   "garde": "3-12 ans",
   "hierarchie": "AOC"
  },
@@ -5133,7 +5132,7 @@ export const APPELLATIONS_DETAIL = [
   ],
   "sol": "Schistes, rhyolite",
   "garde": "10-40 ans",
-  "hierarchie": "AOC + Coulee de Serrant"
+  "hierarchie": "AOC + Coulée de Serrant"
  },
  {
   "id": "AOC067",
@@ -5345,7 +5344,7 @@ export const APPELLATIONS_DETAIL = [
   ],
   "sol": "Calcaire, schistes",
   "garde": "2-10 ans",
-  "hierarchie": "AOC + denominations"
+  "hierarchie": "AOC + dénominations"
  },
  {
   "id": "AOC080",
@@ -5581,7 +5580,7 @@ export const APPELLATIONS_DETAIL = [
   ],
   "sol": "Schistes, granit",
   "garde": "5-20 ans",
-  "hierarchie": "AOC + 4 denominations"
+  "hierarchie": "AOC + 4 dénominations"
  },
  {
   "id": "AOC093",
@@ -5899,7 +5898,7 @@ export const APPELLATIONS_DETAIL = [
    "Rouge"
   ],
   "cepages": [
-   "Jacquere",
+   "Jacquère",
    "Altesse",
    "Mondeuse"
   ],
@@ -5942,8 +5941,8 @@ export const APPELLATIONS_DETAIL = [
  {
   "id": "AOC114",
   "nom": "Patrimonio",
-  "region": "Corsé",
-  "sousRegion": "Corsé",
+  "region": "Corse",
+  "sousRegion": "Corse",
   "couleurs": [
    "Rouge",
    "Blanc",
@@ -5960,8 +5959,8 @@ export const APPELLATIONS_DETAIL = [
  {
   "id": "AOC115",
   "nom": "Ajaccio",
-  "region": "Corsé",
-  "sousRegion": "Corsé",
+  "region": "Corse",
+  "sousRegion": "Corse",
   "couleurs": [
    "Rouge",
    "Blanc",
@@ -5977,9 +5976,9 @@ export const APPELLATIONS_DETAIL = [
  },
  {
   "id": "AOC116",
-  "nom": "Muscat du Cap Corsé",
-  "region": "Corsé",
-  "sousRegion": "Corsé",
+  "nom": "Muscat du Cap Corse",
+  "region": "Corse",
+  "sousRegion": "Corse",
   "couleurs": [
    "VDN"
   ],
@@ -6058,6 +6057,17786 @@ export const APPELLATIONS_DETAIL = [
   "sol": "Marnes",
   "garde": "2-10 ans",
   "hierarchie": "AOC"
+ }
+]
+
+// 580 profils : jauges /5, arômes, accords, prix, fiabilité du prix.
+export const PROFILS_GOUT = [
+ {
+  "id": "PRF001",
+  "appellation": "Ajaccio",
+  "type": "AOC",
+  "region": "Corse",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Cerise",
+   "maquis",
+   "immortelle",
+   "cuir"
+  ],
+  "accords": [
+   "Charcuterie corse",
+   "cabri",
+   "brocciu",
+   "agneau"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 24,
+  "prixHaut": 50,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF002",
+  "appellation": "Aloxe-Corton",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 30,
+  "prixCoeur": 48,
+  "prixHaut": 120,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF003",
+  "appellation": "Alsace (ou Vins d'Alsace)",
+  "type": "AOC",
+  "region": "Alsace",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 2,
+  "intensite": 5,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrume",
+   "fleur blanche",
+   "litchi",
+   "pétrole",
+   "épices"
+  ],
+  "accords": [
+   "Choucroute",
+   "munster",
+   "cuisine asiatique",
+   "poissons fumes"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF004",
+  "appellation": "Alsace Klevener de Heiligenstein",
+  "type": "AOC",
+  "region": "Alsace",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 2,
+  "intensite": 5,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrume",
+   "fleur blanche",
+   "litchi",
+   "pétrole",
+   "épices"
+  ],
+  "accords": [
+   "Choucroute",
+   "munster",
+   "cuisine asiatique",
+   "poissons fumes"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF005",
+  "appellation": "Alsace Edelzwicker",
+  "type": "AOC",
+  "region": "Alsace",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 2,
+  "intensite": 5,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrume",
+   "fleur blanche",
+   "litchi",
+   "pétrole",
+   "épices"
+  ],
+  "accords": [
+   "Choucroute",
+   "munster",
+   "cuisine asiatique",
+   "poissons fumes"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF006",
+  "appellation": "Alsace Gentil",
+  "type": "AOC",
+  "region": "Alsace",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 2,
+  "intensite": 5,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrume",
+   "fleur blanche",
+   "litchi",
+   "pétrole",
+   "épices"
+  ],
+  "accords": [
+   "Choucroute",
+   "munster",
+   "cuisine asiatique",
+   "poissons fumes"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF007",
+  "appellation": "Alsace Chasselas",
+  "type": "AOC",
+  "region": "Alsace",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 2,
+  "intensite": 5,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrume",
+   "fleur blanche",
+   "litchi",
+   "pétrole",
+   "épices"
+  ],
+  "accords": [
+   "Choucroute",
+   "munster",
+   "cuisine asiatique",
+   "poissons fumes"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF008",
+  "appellation": "Alsace Gewurztraminer",
+  "type": "AOC",
+  "region": "Alsace",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 2,
+  "intensite": 5,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrume",
+   "fleur blanche",
+   "litchi",
+   "pétrole",
+   "épices"
+  ],
+  "accords": [
+   "Choucroute",
+   "munster",
+   "cuisine asiatique",
+   "poissons fumes"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 20,
+  "prixHaut": 50,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF009",
+  "appellation": "Alsace Muscat",
+  "type": "AOC",
+  "region": "Alsace",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 2,
+  "intensite": 5,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrume",
+   "fleur blanche",
+   "litchi",
+   "pétrole",
+   "épices"
+  ],
+  "accords": [
+   "Choucroute",
+   "munster",
+   "cuisine asiatique",
+   "poissons fumes"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF010",
+  "appellation": "Alsace Pinot / Pinot Blanc / Klevner",
+  "type": "AOC",
+  "region": "Alsace",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 2,
+  "intensite": 5,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrume",
+   "fleur blanche",
+   "litchi",
+   "pétrole",
+   "épices"
+  ],
+  "accords": [
+   "Choucroute",
+   "munster",
+   "cuisine asiatique",
+   "poissons fumes"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF011",
+  "appellation": "Alsace Pinot Gris",
+  "type": "AOC",
+  "region": "Alsace",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 2,
+  "intensite": 5,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrume",
+   "fleur blanche",
+   "litchi",
+   "pétrole",
+   "épices"
+  ],
+  "accords": [
+   "Choucroute",
+   "munster",
+   "cuisine asiatique",
+   "poissons fumes"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 20,
+  "prixHaut": 50,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF012",
+  "appellation": "Alsace Pinot Noir",
+  "type": "AOC",
+  "region": "Alsace",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 2,
+  "intensite": 5,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrume",
+   "fleur blanche",
+   "litchi",
+   "pétrole",
+   "épices"
+  ],
+  "accords": [
+   "Choucroute",
+   "munster",
+   "cuisine asiatique",
+   "poissons fumes"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF013",
+  "appellation": "Alsace Riesling",
+  "type": "AOC",
+  "region": "Alsace",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 2,
+  "intensite": 5,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrume",
+   "fleur blanche",
+   "litchi",
+   "pétrole",
+   "épices"
+  ],
+  "accords": [
+   "Choucroute",
+   "munster",
+   "cuisine asiatique",
+   "poissons fumes"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF014",
+  "appellation": "Alsace Sylvaner",
+  "type": "AOC",
+  "region": "Alsace",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 2,
+  "intensite": 5,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrume",
+   "fleur blanche",
+   "litchi",
+   "pétrole",
+   "épices"
+  ],
+  "accords": [
+   "Choucroute",
+   "munster",
+   "cuisine asiatique",
+   "poissons fumes"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF015",
+  "appellation": "Alsace Grand Cru",
+  "type": "AOC",
+  "region": "Alsace",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 2,
+  "intensite": 5,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrume",
+   "fleur blanche",
+   "litchi",
+   "pétrole",
+   "épices"
+  ],
+  "accords": [
+   "Choucroute",
+   "munster",
+   "cuisine asiatique",
+   "poissons fumes"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 38,
+  "prixHaut": 120,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF016",
+  "appellation": "Anjou (ou Anjou Val de Loire)",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF017",
+  "appellation": "Anjou-Coteaux de la Loire",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 17,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF018",
+  "appellation": "Anjou Gamay",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF019",
+  "appellation": "Anjou Mousseux",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF020",
+  "appellation": "Anjou-Villages",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 14,
+  "prixHaut": 34,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF021",
+  "appellation": "Anjou-Villages-Brissac",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 14,
+  "prixHaut": 34,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF022",
+  "appellation": "Arbois",
+  "type": "AOC",
+  "region": "Jura",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins souples. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits rouges pales",
+   "rosé fanée",
+   "terre",
+   "épices"
+  ],
+  "accords": [
+   "Coq au vin jaune",
+   "volaille",
+   "comte jeune"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 25,
+  "prixHaut": 60,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF023",
+  "appellation": "Arbois Pupillin",
+  "type": "AOC",
+  "region": "Jura",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins souples. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits rouges pales",
+   "rosé fanée",
+   "terre",
+   "épices"
+  ],
+  "accords": [
+   "Coq au vin jaune",
+   "volaille",
+   "comte jeune"
+  ],
+  "prixEntree": 14,
+  "prixCoeur": 24,
+  "prixHaut": 55,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF024",
+  "appellation": "Arbois Mousseux",
+  "type": "AOC",
+  "region": "Jura",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF025",
+  "appellation": "Auxey-Duresses",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 45,
+  "prixHaut": 150,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF026",
+  "appellation": "Bandol",
+  "type": "AOC",
+  "region": "Provence",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Mûre",
+   "cuir",
+   "gibier",
+   "thym",
+   "romarin"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 20,
+  "prixCoeur": 35,
+  "prixHaut": 90,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF027",
+  "appellation": "Banyuls",
+  "type": "AOC",
+  "region": "Roussillon",
+  "couleur": "VDN / Vin de liqueur",
+  "puissance": 5,
+  "acidite": 2,
+  "tanin": 2,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil très puissant, acidité équilibrée, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Fruits confits",
+   "cacao",
+   "rancio",
+   "noix",
+   "épices"
+  ],
+  "accords": [
+   "Chocolat noir",
+   "desserts",
+   "fromages bleus",
+   "aperitif"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 25,
+  "prixHaut": 70,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF028",
+  "appellation": "Banyuls Grand Cru",
+  "type": "AOC",
+  "region": "Roussillon",
+  "couleur": "VDN / Vin de liqueur",
+  "puissance": 5,
+  "acidite": 2,
+  "tanin": 2,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil très puissant, acidité équilibrée, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Fruits confits",
+   "cacao",
+   "rancio",
+   "noix",
+   "épices"
+  ],
+  "accords": [
+   "Chocolat noir",
+   "desserts",
+   "fromages bleus",
+   "aperitif"
+  ],
+  "prixEntree": 25,
+  "prixCoeur": 40,
+  "prixHaut": 110,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF029",
+  "appellation": "Barsac",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 20,
+  "prixCoeur": 45,
+  "prixHaut": 250,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF030",
+  "appellation": "Bâtard-Montrachet",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 400,
+  "prixCoeur": 650,
+  "prixHaut": 1500,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF031",
+  "appellation": "Béarn",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 15,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF032",
+  "appellation": "Beaujolais",
+  "type": "AOC",
+  "region": "Beaujolais",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive, tanins souples. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Fraise",
+   "banane",
+   "kirsch",
+   "granit",
+   "poivre"
+  ],
+  "accords": [
+   "Charcuterie",
+   "andouillette",
+   "quenelles",
+   "fromages frais"
+  ],
+  "prixEntree": 7,
+  "prixCoeur": 11,
+  "prixHaut": 22,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF033",
+  "appellation": "Beaujolais-Villages",
+  "type": "AOC",
+  "region": "Beaujolais",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive, tanins souples. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Fraise",
+   "banane",
+   "kirsch",
+   "granit",
+   "poivre"
+  ],
+  "accords": [
+   "Charcuterie",
+   "andouillette",
+   "quenelles",
+   "fromages frais"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 13,
+  "prixHaut": 26,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF034",
+  "appellation": "Beaumes de Venise",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 20,
+  "prixHaut": 55,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF035",
+  "appellation": "Beaune",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 28,
+  "prixCoeur": 45,
+  "prixHaut": 120,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF036",
+  "appellation": "Bellet (ou Vins de Bellet)",
+  "type": "AOC",
+  "region": "Provence",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Poire",
+   "fenouil",
+   "anis",
+   "iode"
+  ],
+  "accords": [
+   "Bouillabaisse",
+   "aioli",
+   "poissons grillés",
+   "anchoiade"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 20,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF037",
+  "appellation": "Bergerac",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 7,
+  "prixCoeur": 11,
+  "prixHaut": 25,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF038",
+  "appellation": "Bergerac Sec",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil ample, acidité vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits exotiques",
+   "agrume",
+   "miel",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 15,
+  "prixHaut": 35,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF039",
+  "appellation": "Bergerac Rosé",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rosé",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 1,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fraise",
+   "pêche",
+   "agrume",
+   "fleurs",
+   "épices douces"
+  ],
+  "accords": [
+   "Cuisine mediterraneenne",
+   "grillades",
+   "salades",
+   "tapas"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 15,
+  "prixHaut": 32,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF040",
+  "appellation": "Bienvenues-Bâtard-Montrachet",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 350,
+  "prixCoeur": 550,
+  "prixHaut": 1200,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF041",
+  "appellation": "Blagny",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 16,
+  "prixCoeur": 35,
+  "prixHaut": 120,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF042",
+  "appellation": "Blanquette de Limoux",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 13,
+  "prixHaut": 25,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF043",
+  "appellation": "Blanquette de Limoux methode ancestrale",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF044",
+  "appellation": "Blaye",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF045",
+  "appellation": "Blaye Côtes de Bordeaux",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 13,
+  "prixHaut": 28,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF046",
+  "appellation": "Bonnes-Mares",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 300,
+  "prixCoeur": 450,
+  "prixHaut": 900,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF047",
+  "appellation": "Bonnezeaux",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 38,
+  "prixHaut": 90,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF048",
+  "appellation": "Bordeaux",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 6,
+  "prixCoeur": 10,
+  "prixHaut": 20,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF049",
+  "appellation": "Bordeaux Clairet",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rosé",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 1,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fraise",
+   "pêche",
+   "agrume",
+   "fleurs",
+   "épices douces"
+  ],
+  "accords": [
+   "Cuisine mediterraneenne",
+   "grillades",
+   "salades",
+   "tapas"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 15,
+  "prixHaut": 32,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF050",
+  "appellation": "Bordeaux Côtes de Francs",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF051",
+  "appellation": "Bordeaux Rosé",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF052",
+  "appellation": "Bordeaux Sec",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Buis",
+   "pamplemousse",
+   "citron",
+   "cire"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 15,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF053",
+  "appellation": "Bordeaux Supérieur",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 13,
+  "prixHaut": 30,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF054",
+  "appellation": "Bourgogne",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 18,
+  "prixHaut": 35,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF055",
+  "appellation": "Bourgogne Aligoté",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 15,
+  "prixHaut": 28,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF056",
+  "appellation": "Bourgogne Aligoté Bouzeron",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 16,
+  "prixCoeur": 35,
+  "prixHaut": 120,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF057",
+  "appellation": "Bourgogne Côte Chalonnaise",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 45,
+  "prixHaut": 150,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF058",
+  "appellation": "Bourgogne Côte d'Auxerre",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 45,
+  "prixHaut": 150,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF059",
+  "appellation": "Bourgogne Grand Ordinaire",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 45,
+  "prixHaut": 150,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF060",
+  "appellation": "Bourgogne Hautes-Côtes de Beaune",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 45,
+  "prixHaut": 150,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF061",
+  "appellation": "Bourgogne Hautes-Côtes de Nuits",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 45,
+  "prixHaut": 150,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF062",
+  "appellation": "Bourgogne Mousseux",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF063",
+  "appellation": "Bourgogne Ordinaire",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 45,
+  "prixHaut": 150,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF064",
+  "appellation": "Bourgogne Passetoutgrain",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 45,
+  "prixHaut": 150,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF065",
+  "appellation": "Bourgogne Rosé / Clairet",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rosé",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 1,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fraise",
+   "pêche",
+   "agrume",
+   "fleurs",
+   "épices douces"
+  ],
+  "accords": [
+   "Cuisine mediterraneenne",
+   "grillades",
+   "salades",
+   "tapas"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 15,
+  "prixHaut": 32,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF066",
+  "appellation": "Bourgogne Tonnerre",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 45,
+  "prixHaut": 150,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF067",
+  "appellation": "Bourgogne Vézelay",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 45,
+  "prixHaut": 150,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF068",
+  "appellation": "Bourgueil",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 17,
+  "prixHaut": 45,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF069",
+  "appellation": "Bouzeron",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 14,
+  "prixCoeur": 20,
+  "prixHaut": 35,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF070",
+  "appellation": "Brouilly",
+  "type": "AOC",
+  "region": "Beaujolais",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive, tanins souples. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Fraise",
+   "banane",
+   "kirsch",
+   "granit",
+   "poivre"
+  ],
+  "accords": [
+   "Charcuterie",
+   "andouillette",
+   "quenelles",
+   "fromages frais"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 16,
+  "prixHaut": 32,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF071",
+  "appellation": "Bugey",
+  "type": "AOC",
+  "region": "Savoie",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil ample, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Poivre",
+   "violette",
+   "fruits noirs",
+   "altitude"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 14,
+  "prixHaut": 28,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF072",
+  "appellation": "Buzet",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 7,
+  "prixCoeur": 11,
+  "prixHaut": 22,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF073",
+  "appellation": "Cabardès",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil puissant, acidité équilibrée, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 14,
+  "prixHaut": 35,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF074",
+  "appellation": "Cabernet d'Anjou",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rosé",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 1,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fraise",
+   "pêche",
+   "agrume",
+   "fleurs",
+   "épices douces"
+  ],
+  "accords": [
+   "Cuisine mediterraneenne",
+   "grillades",
+   "salades",
+   "tapas"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 15,
+  "prixHaut": 32,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF075",
+  "appellation": "Cabernet de Saumur",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rosé",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 1,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fraise",
+   "pêche",
+   "agrume",
+   "fleurs",
+   "épices douces"
+  ],
+  "accords": [
+   "Cuisine mediterraneenne",
+   "grillades",
+   "salades",
+   "tapas"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 15,
+  "prixHaut": 32,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF076",
+  "appellation": "Cadillac",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 30,
+  "prixHaut": 90,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF077",
+  "appellation": "Cadillac Côtes de Bordeaux",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 30,
+  "prixHaut": 90,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF078",
+  "appellation": "Cahors",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 50,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF079",
+  "appellation": "Canon-Fronsac",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 14,
+  "prixCoeur": 24,
+  "prixHaut": 60,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF080",
+  "appellation": "Cassis",
+  "type": "AOC",
+  "region": "Provence",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Poire",
+   "fenouil",
+   "anis",
+   "iode"
+  ],
+  "accords": [
+   "Bouillabaisse",
+   "aioli",
+   "poissons grillés",
+   "anchoiade"
+  ],
+  "prixEntree": 18,
+  "prixCoeur": 28,
+  "prixHaut": 50,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF081",
+  "appellation": "Castillon Côtes de Bordeaux",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF082",
+  "appellation": "Cérons",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 30,
+  "prixHaut": 90,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF083",
+  "appellation": "Chablis",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 16,
+  "prixCoeur": 24,
+  "prixHaut": 45,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF084",
+  "appellation": "Chablis Grand Cru",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 55,
+  "prixCoeur": 90,
+  "prixHaut": 250,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF085",
+  "appellation": "Chablis Premier Cru",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 28,
+  "prixCoeur": 45,
+  "prixHaut": 110,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF086",
+  "appellation": "Chambertin",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 450,
+  "prixCoeur": 800,
+  "prixHaut": 1800,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF087",
+  "appellation": "Chambertin-Clos de Bèze",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 400,
+  "prixCoeur": 700,
+  "prixHaut": 1600,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF088",
+  "appellation": "Chambolle-Musigny",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 55,
+  "prixCoeur": 100,
+  "prixHaut": 350,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF089",
+  "appellation": "Champagne",
+  "type": "AOC",
+  "region": "Champagne",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 28,
+  "prixCoeur": 45,
+  "prixHaut": 200,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF090",
+  "appellation": "Champagne Grand Cru",
+  "type": "AOC",
+  "region": "Champagne",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 45,
+  "prixCoeur": 80,
+  "prixHaut": 500,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF091",
+  "appellation": "Champagne Premier Cru",
+  "type": "AOC",
+  "region": "Champagne",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 35,
+  "prixCoeur": 60,
+  "prixHaut": 300,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF092",
+  "appellation": "Chapelle-Chambertin",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 180,
+  "prixCoeur": 280,
+  "prixHaut": 550,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF093",
+  "appellation": "Charlemagne",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 140,
+  "prixCoeur": 230,
+  "prixHaut": 550,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF094",
+  "appellation": "Charmes-Chambertin",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 160,
+  "prixCoeur": 250,
+  "prixHaut": 500,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF095",
+  "appellation": "Chassagne-Montrachet",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 38,
+  "prixCoeur": 65,
+  "prixHaut": 200,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF096",
+  "appellation": "Château-Chalon",
+  "type": "AOC",
+  "region": "Jura",
+  "couleur": "Blanc",
+  "puissance": 4,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité très vive. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Noix",
+   "curry",
+   "pomme verte",
+   "oxydatif"
+  ],
+  "accords": [
+   "Comte affiné",
+   "poulet aux morilles",
+   "curry"
+  ],
+  "prixEntree": 45,
+  "prixCoeur": 70,
+  "prixHaut": 180,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF097",
+  "appellation": "Château-Grillet",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Blanc",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 5,
+  "garde": 3,
+  "profil": "Profil puissant, acidité équilibrée. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Abricot",
+   "pêche",
+   "violette",
+   "amande",
+   "miel"
+  ],
+  "accords": [
+   "Poissons riches",
+   "volaille crémée",
+   "cuisine épicée"
+  ],
+  "prixEntree": 150,
+  "prixCoeur": 190,
+  "prixHaut": 260,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF098",
+  "appellation": "Châteaumeillant",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF099",
+  "appellation": "Chateauneuf-du-Pape",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 28,
+  "prixCoeur": 55,
+  "prixHaut": 300,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF100",
+  "appellation": "Châtillon-en-Diois",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 20,
+  "prixHaut": 55,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF101",
+  "appellation": "Chénas",
+  "type": "AOC",
+  "region": "Beaujolais",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive, tanins souples. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Fraise",
+   "banane",
+   "kirsch",
+   "granit",
+   "poivre"
+  ],
+  "accords": [
+   "Charcuterie",
+   "andouillette",
+   "quenelles",
+   "fromages frais"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 18,
+  "prixHaut": 38,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF102",
+  "appellation": "Chevalier-Montrachet",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 500,
+  "prixCoeur": 850,
+  "prixHaut": 2000,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF103",
+  "appellation": "Cheverny",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF104",
+  "appellation": "Chinon",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 50,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF105",
+  "appellation": "Chiroubles",
+  "type": "AOC",
+  "region": "Beaujolais",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive, tanins souples. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Fraise",
+   "banane",
+   "kirsch",
+   "granit",
+   "poivre"
+  ],
+  "accords": [
+   "Charcuterie",
+   "andouillette",
+   "quenelles",
+   "fromages frais"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 16,
+  "prixHaut": 32,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF106",
+  "appellation": "Chorey-les-Beaune",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 45,
+  "prixHaut": 150,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF107",
+  "appellation": "Clairette de Bellegarde",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rosé",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 1,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fraise",
+   "pêche",
+   "agrume",
+   "fleurs",
+   "épices douces"
+  ],
+  "accords": [
+   "Cuisine mediterraneenne",
+   "grillades",
+   "salades",
+   "tapas"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 15,
+  "prixHaut": 32,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF108",
+  "appellation": "Clairette de Die",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF109",
+  "appellation": "Clairette du Languedoc",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "Rosé",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 1,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fraise",
+   "pêche",
+   "agrume",
+   "fleurs",
+   "épices douces"
+  ],
+  "accords": [
+   "Cuisine mediterraneenne",
+   "grillades",
+   "salades",
+   "tapas"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 15,
+  "prixHaut": 32,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF110",
+  "appellation": "Clos de la Roche",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 220,
+  "prixCoeur": 350,
+  "prixHaut": 700,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF111",
+  "appellation": "Clos de Tart",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 700,
+  "prixCoeur": 1100,
+  "prixHaut": 2200,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF112",
+  "appellation": "Clos de Vougeot",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 150,
+  "prixCoeur": 240,
+  "prixHaut": 550,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF113",
+  "appellation": "Clos des Lambrays",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 250,
+  "prixCoeur": 400,
+  "prixHaut": 800,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF114",
+  "appellation": "Clos Saint-Denis",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 220,
+  "prixCoeur": 350,
+  "prixHaut": 750,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF115",
+  "appellation": "Collioure",
+  "type": "AOC",
+  "region": "Roussillon",
+  "couleur": "Rouge",
+  "puissance": 5,
+  "acidite": 2,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil très puissant, acidité équilibrée, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs confits",
+   "schiste",
+   "cacao",
+   "épices"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 25,
+  "prixHaut": 55,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF116",
+  "appellation": "Condrieu",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Blanc",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 5,
+  "garde": 3,
+  "profil": "Profil puissant, acidité équilibrée. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Abricot",
+   "pêche",
+   "violette",
+   "amande",
+   "miel"
+  ],
+  "accords": [
+   "Poissons riches",
+   "volaille crémée",
+   "cuisine épicée"
+  ],
+  "prixEntree": 38,
+  "prixCoeur": 65,
+  "prixHaut": 200,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF117",
+  "appellation": "Corbières",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil puissant, acidité équilibrée, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 13,
+  "prixHaut": 35,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF118",
+  "appellation": "Corbières-Boutenac",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil puissant, acidité équilibrée, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 14,
+  "prixHaut": 35,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF119",
+  "appellation": "Cornas",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 35,
+  "prixCoeur": 70,
+  "prixHaut": 200,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF120",
+  "appellation": "Corse (ou Vin de Corse)",
+  "type": "AOC",
+  "region": "Corse",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Cerise",
+   "maquis",
+   "immortelle",
+   "cuir"
+  ],
+  "accords": [
+   "Charcuterie corse",
+   "cabri",
+   "brocciu",
+   "agneau"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 20,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF121",
+  "appellation": "Corse Calvi",
+  "type": "AOC",
+  "region": "Corse",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Cerise",
+   "maquis",
+   "immortelle",
+   "cuir"
+  ],
+  "accords": [
+   "Charcuterie corse",
+   "cabri",
+   "brocciu",
+   "agneau"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 20,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF122",
+  "appellation": "Corse Coteaux du Cap Corse",
+  "type": "AOC",
+  "region": "Corse",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Cerise",
+   "maquis",
+   "immortelle",
+   "cuir"
+  ],
+  "accords": [
+   "Charcuterie corse",
+   "cabri",
+   "brocciu",
+   "agneau"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 20,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF123",
+  "appellation": "Corse Figari",
+  "type": "AOC",
+  "region": "Corse",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Cerise",
+   "maquis",
+   "immortelle",
+   "cuir"
+  ],
+  "accords": [
+   "Charcuterie corse",
+   "cabri",
+   "brocciu",
+   "agneau"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 20,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF124",
+  "appellation": "Corse Porto-Vecchio",
+  "type": "AOC",
+  "region": "Corse",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Cerise",
+   "maquis",
+   "immortelle",
+   "cuir"
+  ],
+  "accords": [
+   "Charcuterie corse",
+   "cabri",
+   "brocciu",
+   "agneau"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 20,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF125",
+  "appellation": "Corse Sartène",
+  "type": "AOC",
+  "region": "Corse",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Cerise",
+   "maquis",
+   "immortelle",
+   "cuir"
+  ],
+  "accords": [
+   "Charcuterie corse",
+   "cabri",
+   "brocciu",
+   "agneau"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 20,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF126",
+  "appellation": "Corton",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 70,
+  "prixCoeur": 120,
+  "prixHaut": 300,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF127",
+  "appellation": "Corton-Charlemagne",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 150,
+  "prixCoeur": 250,
+  "prixHaut": 600,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF128",
+  "appellation": "Costières de Nîmes",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 13,
+  "prixHaut": 28,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF129",
+  "appellation": "Côte de Beaune",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 45,
+  "prixHaut": 150,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF130",
+  "appellation": "Côte de Brouilly",
+  "type": "AOC",
+  "region": "Beaujolais",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive, tanins souples. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Fraise",
+   "banane",
+   "kirsch",
+   "granit",
+   "poivre"
+  ],
+  "accords": [
+   "Charcuterie",
+   "andouillette",
+   "quenelles",
+   "fromages frais"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 18,
+  "prixHaut": 38,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF131",
+  "appellation": "Côte de Nuits-Villages",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 19,
+  "prixCoeur": 38,
+  "prixHaut": 128,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF132",
+  "appellation": "Côte Roannaise",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF133",
+  "appellation": "Côte-Rôtie",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 50,
+  "prixCoeur": 105,
+  "prixHaut": 600,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF134",
+  "appellation": "Coteaux Champenois",
+  "type": "AOC",
+  "region": "Champagne",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 30,
+  "prixCoeur": 50,
+  "prixHaut": 120,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF135",
+  "appellation": "Coteaux d'Aix-en-Provence",
+  "type": "AOC",
+  "region": "Provence",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Mûre",
+   "cuir",
+   "gibier",
+   "thym",
+   "romarin"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 15,
+  "prixHaut": 35,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF136",
+  "appellation": "Coteaux d'Ancenis",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF137",
+  "appellation": "Coteaux de Die",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 20,
+  "prixHaut": 55,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF138",
+  "appellation": "Coteaux de l'Aubance",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 30,
+  "prixHaut": 90,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF139",
+  "appellation": "Coteaux de Pierrevert",
+  "type": "AOC",
+  "region": "Provence",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Mûre",
+   "cuir",
+   "gibier",
+   "thym",
+   "romarin"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 22,
+  "prixHaut": 60,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF140",
+  "appellation": "Coteaux de Saumur",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 17,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF141",
+  "appellation": "Coteaux du Giennois",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF142",
+  "appellation": "Coteaux du Languedoc",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil puissant, acidité équilibrée, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 14,
+  "prixHaut": 35,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF143",
+  "appellation": "Coteaux du Layon",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 22,
+  "prixHaut": 60,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF144",
+  "appellation": "Coteaux du Layon Beaulieu-sur-Layon",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 30,
+  "prixHaut": 90,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF145",
+  "appellation": "Coteaux du Layon Chaume",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 30,
+  "prixHaut": 90,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF146",
+  "appellation": "Coteaux du Layon Chaume Premier Cru",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 30,
+  "prixCoeur": 60,
+  "prixHaut": 180,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF147",
+  "appellation": "Coteaux du Layon Faye-d'Anjou",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 30,
+  "prixHaut": 90,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF148",
+  "appellation": "Coteaux du Layon Rablay-sur-Layon",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 30,
+  "prixHaut": 90,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF149",
+  "appellation": "Coteaux du Layon Rochefort-sur-Loire",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 30,
+  "prixHaut": 90,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF150",
+  "appellation": "Coteaux du Layon Saint-Aubin-de-Luigné",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 30,
+  "prixHaut": 90,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF151",
+  "appellation": "Coteaux du Layon Saint-Lambert-du-Lattay",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 30,
+  "prixHaut": 90,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF152",
+  "appellation": "Coteaux du Loir",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF153",
+  "appellation": "Coteaux du Lyonnais",
+  "type": "AOC",
+  "region": "Beaujolais / Lyonnais",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits",
+   "fleurs",
+   "épices"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 38,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF154",
+  "appellation": "Coteaux du Quercy",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 15,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF155",
+  "appellation": "Coteaux du Tricastin",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 20,
+  "prixHaut": 55,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF156",
+  "appellation": "Coteaux du Vendômois",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF157",
+  "appellation": "Coteaux Varois en Provence",
+  "type": "AOC",
+  "region": "Provence",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Mûre",
+   "cuir",
+   "gibier",
+   "thym",
+   "romarin"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 13,
+  "prixHaut": 28,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF158",
+  "appellation": "Côtes d'Auvergne",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF159",
+  "appellation": "Côtes d'Auvergne Boudes",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF160",
+  "appellation": "Côtes d'Auvergne Chanturgue",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF161",
+  "appellation": "Côtes d'Auvergne Châteaugay",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF162",
+  "appellation": "Côtes d'Auvergne Corent",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF163",
+  "appellation": "Côtes d'Auvergne Madargues",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF164",
+  "appellation": "Côtes de Beaune-Villages",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 19,
+  "prixCoeur": 38,
+  "prixHaut": 128,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF165",
+  "appellation": "Côtes de Bergerac",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 15,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF166",
+  "appellation": "Côtes de Blaye",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF167",
+  "appellation": "Côtes de Bordeaux",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF168",
+  "appellation": "Côtes de Bordeaux Saint-Macaire",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF169",
+  "appellation": "Côtes de Bourg",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 14,
+  "prixHaut": 30,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF170",
+  "appellation": "Côtes de Castillon",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF171",
+  "appellation": "Côtes de Duras",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 7,
+  "prixCoeur": 11,
+  "prixHaut": 22,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF172",
+  "appellation": "Côtes de Millau",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 15,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF173",
+  "appellation": "Côtes de Montravel",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil ample, acidité vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits exotiques",
+   "agrume",
+   "miel",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 15,
+  "prixHaut": 35,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF174",
+  "appellation": "Côtes de Provence",
+  "type": "AOC",
+  "region": "Provence",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Mûre",
+   "cuir",
+   "gibier",
+   "thym",
+   "romarin"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 60,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF175",
+  "appellation": "Côtes de Provence Fréjus",
+  "type": "AOC",
+  "region": "Provence",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Mûre",
+   "cuir",
+   "gibier",
+   "thym",
+   "romarin"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 22,
+  "prixHaut": 60,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF176",
+  "appellation": "Côtes de Provence La Londe",
+  "type": "AOC",
+  "region": "Provence",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Mûre",
+   "cuir",
+   "gibier",
+   "thym",
+   "romarin"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 22,
+  "prixHaut": 60,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF177",
+  "appellation": "Côtes de Provence Sainte-Victoire",
+  "type": "AOC",
+  "region": "Provence",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Mûre",
+   "cuir",
+   "gibier",
+   "thym",
+   "romarin"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 22,
+  "prixHaut": 60,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF178",
+  "appellation": "Côtes de Saint-Mont",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 15,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF179",
+  "appellation": "Côtes de Toul",
+  "type": "AOC",
+  "region": "Lorraine / Est",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits",
+   "fleurs",
+   "épices"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 16,
+  "prixHaut": 28,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF180",
+  "appellation": "Côtes du Brulhois",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 15,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF181",
+  "appellation": "Côtes du Forez",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF182",
+  "appellation": "Côtes du Frontonnais (Fronton)",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 13,
+  "prixHaut": 28,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF183",
+  "appellation": "Côtes du Jura",
+  "type": "AOC",
+  "region": "Jura",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins souples. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits rouges pales",
+   "rosé fanée",
+   "terre",
+   "épices"
+  ],
+  "accords": [
+   "Coq au vin jaune",
+   "volaille",
+   "comte jeune"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 25,
+  "prixHaut": 60,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF184",
+  "appellation": "Côtes du Jura Mousseux",
+  "type": "AOC",
+  "region": "Jura",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF185",
+  "appellation": "Côtes du Marmandais",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 15,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF186",
+  "appellation": "Côtes du Rhône",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 7,
+  "prixCoeur": 11,
+  "prixHaut": 22,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF187",
+  "appellation": "Côtes du Rhône-Villages",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 15,
+  "prixHaut": 32,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF188",
+  "appellation": "Côtes du Rhône-Villages Beaumes-de-Venise",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 17,
+  "prixHaut": 47,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF189",
+  "appellation": "Côtes du Rhône-Villages Cairanne",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 17,
+  "prixHaut": 47,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF190",
+  "appellation": "Côtes du Rhône-Villages Chusclan",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 17,
+  "prixHaut": 47,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF191",
+  "appellation": "Côtes du Rhône-Villages Laudun",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 17,
+  "prixHaut": 47,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF192",
+  "appellation": "Côtes du Rhône-Villages Rasteau",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 17,
+  "prixHaut": 47,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF193",
+  "appellation": "Côtes du Rhône-Villages Roaix",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 17,
+  "prixHaut": 47,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF194",
+  "appellation": "Côtes du Rhône-Villages Rochegude",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 17,
+  "prixHaut": 47,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF195",
+  "appellation": "Côtes du Rhône-Villages Rousset-les-Vignes",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 17,
+  "prixHaut": 47,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF196",
+  "appellation": "Côtes du Rhône-Villages Sablet",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 17,
+  "prixHaut": 47,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF197",
+  "appellation": "Côtes du Rhône-Villages Saint-Gervais",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 17,
+  "prixHaut": 47,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF198",
+  "appellation": "Côtes du Rhône-Villages Saint-Maurice",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 17,
+  "prixHaut": 47,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF199",
+  "appellation": "Côtes du Rhône-Villages Saint-Pantaleon-les-Vignes",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 17,
+  "prixHaut": 47,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF200",
+  "appellation": "Côtes du Rhône-Villages Séguret",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 17,
+  "prixHaut": 47,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF201",
+  "appellation": "Côtes du Rhône-Villages Valréas",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 17,
+  "prixHaut": 47,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF202",
+  "appellation": "Côtes du Rhône-Villages Vinsobres",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 17,
+  "prixHaut": 47,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF203",
+  "appellation": "Côtes du Rhône-Villages Visan",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 17,
+  "prixHaut": 47,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF204",
+  "appellation": "Côtes du Roussillon",
+  "type": "AOC",
+  "region": "Roussillon",
+  "couleur": "Rouge",
+  "puissance": 5,
+  "acidite": 2,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil très puissant, acidité équilibrée, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs confits",
+   "schiste",
+   "cacao",
+   "épices"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 13,
+  "prixHaut": 30,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF205",
+  "appellation": "Côtes du Roussillon Les Aspres",
+  "type": "AOC",
+  "region": "Roussillon",
+  "couleur": "Rouge",
+  "puissance": 5,
+  "acidite": 2,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil très puissant, acidité équilibrée, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs confits",
+   "schiste",
+   "cacao",
+   "épices"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF206",
+  "appellation": "Côtes du Roussillon-Villages",
+  "type": "AOC",
+  "region": "Roussillon",
+  "couleur": "Rouge",
+  "puissance": 5,
+  "acidite": 2,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil très puissant, acidité équilibrée, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs confits",
+   "schiste",
+   "cacao",
+   "épices"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF207",
+  "appellation": "Côtes du Vivarais",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 20,
+  "prixHaut": 55,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF208",
+  "appellation": "Cour-Cheverny",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 18,
+  "prixHaut": 40,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF209",
+  "appellation": "Crémant d'Alsace",
+  "type": "AOC",
+  "region": "Alsace",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 16,
+  "prixHaut": 35,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF210",
+  "appellation": "Crémant de Bordeaux",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 14,
+  "prixHaut": 26,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF211",
+  "appellation": "Crémant de Bourgogne",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 17,
+  "prixHaut": 40,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF212",
+  "appellation": "Crémant de Die",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF213",
+  "appellation": "Crémant de Limoux",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 15,
+  "prixHaut": 30,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF214",
+  "appellation": "Crémant de Loire",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 15,
+  "prixHaut": 32,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF215",
+  "appellation": "Crémant du Jura",
+  "type": "AOC",
+  "region": "Jura",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 19,
+  "prixHaut": 38,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF216",
+  "appellation": "Crépy",
+  "type": "AOC",
+  "region": "Savoie",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Silex",
+   "pomme",
+   "fleurs alpines"
+  ],
+  "accords": [
+   "Fondue",
+   "raclette",
+   "poissons de lac",
+   "tartiflette"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 15,
+  "prixHaut": 30,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF217",
+  "appellation": "Criots-Bâtard-Montrachet",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 350,
+  "prixCoeur": 550,
+  "prixHaut": 1200,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF218",
+  "appellation": "Crozes-Hermitage",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 14,
+  "prixCoeur": 24,
+  "prixHaut": 60,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF219",
+  "appellation": "Échezeaux",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 220,
+  "prixCoeur": 350,
+  "prixHaut": 800,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF220",
+  "appellation": "Entre-Deux-Mers",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Buis",
+   "pamplemousse",
+   "citron",
+   "cire"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 7,
+  "prixCoeur": 11,
+  "prixHaut": 20,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF221",
+  "appellation": "Entre-Deux-Mers Haut-Benauge",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Buis",
+   "pamplemousse",
+   "citron",
+   "cire"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 15,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF222",
+  "appellation": "Faugères",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil puissant, acidité équilibrée, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF223",
+  "appellation": "Fiefs Vendéens",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF224",
+  "appellation": "Fitou",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil puissant, acidité équilibrée, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 13,
+  "prixHaut": 28,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF225",
+  "appellation": "Fixin",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 25,
+  "prixCoeur": 38,
+  "prixHaut": 80,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF226",
+  "appellation": "Fleurie",
+  "type": "AOC",
+  "region": "Beaujolais",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive, tanins souples. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Fraise",
+   "banane",
+   "kirsch",
+   "granit",
+   "poivre"
+  ],
+  "accords": [
+   "Charcuterie",
+   "andouillette",
+   "quenelles",
+   "fromages frais"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 19,
+  "prixHaut": 45,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF227",
+  "appellation": "Floc de Gascogne",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "VDN / Vin de liqueur",
+  "puissance": 5,
+  "acidite": 2,
+  "tanin": 2,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil très puissant, acidité équilibrée, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Fruits confits",
+   "cacao",
+   "rancio",
+   "noix",
+   "épices"
+  ],
+  "accords": [
+   "Chocolat noir",
+   "desserts",
+   "fromages bleus",
+   "aperitif"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 15,
+  "prixHaut": 25,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF228",
+  "appellation": "Francs Côtes de Bordeaux",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF229",
+  "appellation": "Fronsac",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 22,
+  "prixHaut": 55,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF230",
+  "appellation": "Gaillac",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 13,
+  "prixHaut": 30,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF231",
+  "appellation": "Gaillac Premières Côtes",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 15,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF232",
+  "appellation": "Gevrey-Chambertin",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 40,
+  "prixCoeur": 70,
+  "prixHaut": 220,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF233",
+  "appellation": "Gigondas",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 20,
+  "prixCoeur": 32,
+  "prixHaut": 90,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF234",
+  "appellation": "Givry",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 16,
+  "prixCoeur": 26,
+  "prixHaut": 55,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF235",
+  "appellation": "Grands-Échezeaux",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 400,
+  "prixCoeur": 650,
+  "prixHaut": 1400,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF236",
+  "appellation": "Graves",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 20,
+  "prixHaut": 55,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF237",
+  "appellation": "Graves de Vayres",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF238",
+  "appellation": "Graves Supérieures",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 16,
+  "prixCoeur": 33,
+  "prixHaut": 99,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF239",
+  "appellation": "Grignan-les-Adhémar",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 20,
+  "prixHaut": 55,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF240",
+  "appellation": "Griotte-Chambertin",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 300,
+  "prixCoeur": 450,
+  "prixHaut": 900,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF241",
+  "appellation": "Gros Plant du Pays Nantais",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 17,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF242",
+  "appellation": "Haut-Médoc",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 24,
+  "prixHaut": 80,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF243",
+  "appellation": "Haut-Montravel",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 30,
+  "prixHaut": 90,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF244",
+  "appellation": "Haut-Poitou",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF245",
+  "appellation": "Hermitage (ou Ermitage)",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 55,
+  "prixCoeur": 110,
+  "prixHaut": 500,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF246",
+  "appellation": "Irancy",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 22,
+  "prixHaut": 40,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF247",
+  "appellation": "Irouléguy",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 20,
+  "prixHaut": 45,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF248",
+  "appellation": "Jasnières",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 14,
+  "prixCoeur": 22,
+  "prixHaut": 45,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF249",
+  "appellation": "Juliénas",
+  "type": "AOC",
+  "region": "Beaujolais",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive, tanins souples. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Fraise",
+   "banane",
+   "kirsch",
+   "granit",
+   "poivre"
+  ],
+  "accords": [
+   "Charcuterie",
+   "andouillette",
+   "quenelles",
+   "fromages frais"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 17,
+  "prixHaut": 35,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF250",
+  "appellation": "Jurançon",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Blanc moelleux",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 4,
+  "intensite": 5,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Ananas",
+   "mangue",
+   "miel",
+   "agrume confit"
+  ],
+  "accords": [
+   "Foie gras",
+   "cuisine épicée",
+   "desserts fruites"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 22,
+  "prixHaut": 60,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF251",
+  "appellation": "Jurançon Sec",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil ample, acidité vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits exotiques",
+   "agrume",
+   "miel",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 17,
+  "prixHaut": 35,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF252",
+  "appellation": "La Grande Rue",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 600,
+  "prixCoeur": 900,
+  "prixHaut": 1600,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF253",
+  "appellation": "La Romanée",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 4500,
+  "prixCoeur": 6500,
+  "prixHaut": 12000,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF254",
+  "appellation": "La Tâche",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 4500,
+  "prixCoeur": 6500,
+  "prixHaut": 11000,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF255",
+  "appellation": "Ladoix",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 45,
+  "prixHaut": 150,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF256",
+  "appellation": "Lalande-de-Pomerol",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 16,
+  "prixCoeur": 26,
+  "prixHaut": 70,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF257",
+  "appellation": "Latricières-Chambertin",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 160,
+  "prixCoeur": 250,
+  "prixHaut": 500,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF258",
+  "appellation": "Lavilledieu",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 15,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF259",
+  "appellation": "Les Baux-de-Provence",
+  "type": "AOC",
+  "region": "Provence",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Mûre",
+   "cuir",
+   "gibier",
+   "thym",
+   "romarin"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 25,
+  "prixHaut": 60,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF260",
+  "appellation": "L'Étoile",
+  "type": "AOC",
+  "region": "Jura",
+  "couleur": "Blanc",
+  "puissance": 4,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité très vive. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Noix",
+   "curry",
+   "pomme verte",
+   "oxydatif"
+  ],
+  "accords": [
+   "Comte affiné",
+   "poulet aux morilles",
+   "curry"
+  ],
+  "prixEntree": 20,
+  "prixCoeur": 30,
+  "prixHaut": 60,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF261",
+  "appellation": "L'Étoile Mousseux",
+  "type": "AOC",
+  "region": "Jura",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF262",
+  "appellation": "Limoux",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Fenouil",
+   "agrume",
+   "fleurs blanches",
+   "iode"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 16,
+  "prixHaut": 35,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF263",
+  "appellation": "Lirac",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 20,
+  "prixHaut": 45,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF264",
+  "appellation": "Listrac-Médoc",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 14,
+  "prixCoeur": 22,
+  "prixHaut": 45,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF265",
+  "appellation": "Loupiac",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 30,
+  "prixHaut": 90,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF266",
+  "appellation": "Luberon",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 13,
+  "prixHaut": 28,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF267",
+  "appellation": "Lussac Saint-Émilion",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF268",
+  "appellation": "Mâcon",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 16,
+  "prixCoeur": 35,
+  "prixHaut": 120,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF269",
+  "appellation": "Mâcon-Supérieur",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 18,
+  "prixCoeur": 38,
+  "prixHaut": 132,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF270",
+  "appellation": "Mâcon-Villages",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 14,
+  "prixCoeur": 30,
+  "prixHaut": 102,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF271",
+  "appellation": "Macvin du Jura",
+  "type": "AOC",
+  "region": "Jura",
+  "couleur": "VDN / Vin de liqueur",
+  "puissance": 5,
+  "acidite": 2,
+  "tanin": 2,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil très puissant, acidité équilibrée, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Fruits confits",
+   "cacao",
+   "rancio",
+   "noix",
+   "épices"
+  ],
+  "accords": [
+   "Chocolat noir",
+   "desserts",
+   "fromages bleus",
+   "aperitif"
+  ],
+  "prixEntree": 20,
+  "prixCoeur": 28,
+  "prixHaut": 45,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF272",
+  "appellation": "Madiran",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 18,
+  "prixHaut": 55,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF273",
+  "appellation": "Malepère",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil puissant, acidité équilibrée, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 14,
+  "prixHaut": 35,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF274",
+  "appellation": "Maranges",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 45,
+  "prixHaut": 150,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF275",
+  "appellation": "Maranges Premier Cru",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 44,
+  "prixCoeur": 90,
+  "prixHaut": 300,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF276",
+  "appellation": "Marcillac",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 15,
+  "prixHaut": 28,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF277",
+  "appellation": "Margaux",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 40,
+  "prixCoeur": 100,
+  "prixHaut": 800,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF278",
+  "appellation": "Marsannay",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 20,
+  "prixCoeur": 30,
+  "prixHaut": 60,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF279",
+  "appellation": "Marsannay Rosé",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rosé",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 1,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fraise",
+   "pêche",
+   "agrume",
+   "fleurs",
+   "épices douces"
+  ],
+  "accords": [
+   "Cuisine mediterraneenne",
+   "grillades",
+   "salades",
+   "tapas"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 15,
+  "prixHaut": 32,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF280",
+  "appellation": "Maury",
+  "type": "AOC",
+  "region": "Roussillon",
+  "couleur": "VDN / Vin de liqueur",
+  "puissance": 5,
+  "acidite": 2,
+  "tanin": 2,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil très puissant, acidité équilibrée, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Fruits confits",
+   "cacao",
+   "rancio",
+   "noix",
+   "épices"
+  ],
+  "accords": [
+   "Chocolat noir",
+   "desserts",
+   "fromages bleus",
+   "aperitif"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 22,
+  "prixHaut": 60,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF281",
+  "appellation": "Mazis-Chambertin",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 200,
+  "prixCoeur": 320,
+  "prixHaut": 650,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF282",
+  "appellation": "Mazoyères-Chambertin",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 140,
+  "prixCoeur": 220,
+  "prixHaut": 450,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF283",
+  "appellation": "Médoc",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 40,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF284",
+  "appellation": "Menetou-Salon",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 19,
+  "prixHaut": 38,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF285",
+  "appellation": "Mercurey",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 18,
+  "prixCoeur": 28,
+  "prixHaut": 60,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF286",
+  "appellation": "Meursault",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 38,
+  "prixCoeur": 65,
+  "prixHaut": 200,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF287",
+  "appellation": "Minervois",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil puissant, acidité équilibrée, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 13,
+  "prixHaut": 30,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF288",
+  "appellation": "Minervois-La Livinière",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil puissant, acidité équilibrée, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 14,
+  "prixHaut": 35,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF289",
+  "appellation": "Monbazillac",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 20,
+  "prixHaut": 60,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF290",
+  "appellation": "Montagne Saint-Émilion",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF291",
+  "appellation": "Montagny",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 24,
+  "prixHaut": 45,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF292",
+  "appellation": "Monthélie",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 45,
+  "prixHaut": 150,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF293",
+  "appellation": "Montlouis-sur-Loire",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 20,
+  "prixHaut": 55,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF294",
+  "appellation": "Montlouis-sur-Loire Mousseux",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF295",
+  "appellation": "Montlouis-sur-Loire Pétillant",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF296",
+  "appellation": "Montrachet",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 1800,
+  "prixCoeur": 3000,
+  "prixHaut": 7000,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF297",
+  "appellation": "Montravel",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil ample, acidité vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits exotiques",
+   "agrume",
+   "miel",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 15,
+  "prixHaut": 35,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF298",
+  "appellation": "Morey-Saint-Denis",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 45,
+  "prixCoeur": 75,
+  "prixHaut": 220,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF299",
+  "appellation": "Morgon",
+  "type": "AOC",
+  "region": "Beaujolais",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive, tanins souples. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Fraise",
+   "banane",
+   "kirsch",
+   "granit",
+   "poivre"
+  ],
+  "accords": [
+   "Charcuterie",
+   "andouillette",
+   "quenelles",
+   "fromages frais"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF300",
+  "appellation": "Moselle",
+  "type": "AOC",
+  "region": "Lorraine / Est",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits",
+   "fleurs",
+   "épices"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 16,
+  "prixHaut": 30,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF301",
+  "appellation": "Moulin-a-Vent",
+  "type": "AOC",
+  "region": "Beaujolais",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive, tanins souples. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Fraise",
+   "banane",
+   "kirsch",
+   "granit",
+   "poivre"
+  ],
+  "accords": [
+   "Charcuterie",
+   "andouillette",
+   "quenelles",
+   "fromages frais"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 20,
+  "prixHaut": 50,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF302",
+  "appellation": "Moulis (Moulis-en-Médoc)",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 25,
+  "prixHaut": 60,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF303",
+  "appellation": "Muscadet",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 6,
+  "prixCoeur": 9,
+  "prixHaut": 18,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF304",
+  "appellation": "Muscadet Côtes de Grandlieu",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 17,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF305",
+  "appellation": "Muscadet Sèvre-et-Maine",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 12,
+  "prixHaut": 30,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF306",
+  "appellation": "Muscadet Coteaux de la Loire",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 17,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF307",
+  "appellation": "Muscat de Beaumes-de-Venise",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "VDN / Vin de liqueur",
+  "puissance": 5,
+  "acidite": 2,
+  "tanin": 2,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil très puissant, acidité équilibrée, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Fruits confits",
+   "cacao",
+   "rancio",
+   "noix",
+   "épices"
+  ],
+  "accords": [
+   "Chocolat noir",
+   "desserts",
+   "fromages bleus",
+   "aperitif"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 22,
+  "prixHaut": 60,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF308",
+  "appellation": "Muscat de Frontignan",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "VDN / Vin de liqueur",
+  "puissance": 5,
+  "acidite": 2,
+  "tanin": 2,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil très puissant, acidité équilibrée, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Fruits confits",
+   "cacao",
+   "rancio",
+   "noix",
+   "épices"
+  ],
+  "accords": [
+   "Chocolat noir",
+   "desserts",
+   "fromages bleus",
+   "aperitif"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 22,
+  "prixHaut": 60,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF309",
+  "appellation": "Muscat de Lunel",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "VDN / Vin de liqueur",
+  "puissance": 5,
+  "acidite": 2,
+  "tanin": 2,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil très puissant, acidité équilibrée, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Fruits confits",
+   "cacao",
+   "rancio",
+   "noix",
+   "épices"
+  ],
+  "accords": [
+   "Chocolat noir",
+   "desserts",
+   "fromages bleus",
+   "aperitif"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 22,
+  "prixHaut": 60,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF310",
+  "appellation": "Muscat de Mireval",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "VDN / Vin de liqueur",
+  "puissance": 5,
+  "acidite": 2,
+  "tanin": 2,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil très puissant, acidité équilibrée, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Fruits confits",
+   "cacao",
+   "rancio",
+   "noix",
+   "épices"
+  ],
+  "accords": [
+   "Chocolat noir",
+   "desserts",
+   "fromages bleus",
+   "aperitif"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 22,
+  "prixHaut": 60,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF311",
+  "appellation": "Muscat de Rivesaltes",
+  "type": "AOC",
+  "region": "Roussillon",
+  "couleur": "VDN / Vin de liqueur",
+  "puissance": 5,
+  "acidite": 2,
+  "tanin": 2,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil très puissant, acidité équilibrée, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Fruits confits",
+   "cacao",
+   "rancio",
+   "noix",
+   "épices"
+  ],
+  "accords": [
+   "Chocolat noir",
+   "desserts",
+   "fromages bleus",
+   "aperitif"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 22,
+  "prixHaut": 60,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF312",
+  "appellation": "Muscat de Saint-Jean-de-Minervois",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "VDN / Vin de liqueur",
+  "puissance": 5,
+  "acidite": 2,
+  "tanin": 2,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil très puissant, acidité équilibrée, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Fruits confits",
+   "cacao",
+   "rancio",
+   "noix",
+   "épices"
+  ],
+  "accords": [
+   "Chocolat noir",
+   "desserts",
+   "fromages bleus",
+   "aperitif"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 22,
+  "prixHaut": 60,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF313",
+  "appellation": "Muscat du Cap Corse",
+  "type": "AOC",
+  "region": "Corse",
+  "couleur": "VDN / Vin de liqueur",
+  "puissance": 5,
+  "acidite": 2,
+  "tanin": 2,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil très puissant, acidité équilibrée, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Fruits confits",
+   "cacao",
+   "rancio",
+   "noix",
+   "épices"
+  ],
+  "accords": [
+   "Chocolat noir",
+   "desserts",
+   "fromages bleus",
+   "aperitif"
+  ],
+  "prixEntree": 18,
+  "prixCoeur": 26,
+  "prixHaut": 45,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF314",
+  "appellation": "Musigny",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 900,
+  "prixCoeur": 1600,
+  "prixHaut": 4000,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF315",
+  "appellation": "Nuits-Saint-Georges",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 38,
+  "prixCoeur": 65,
+  "prixHaut": 200,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF316",
+  "appellation": "Orléans",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF317",
+  "appellation": "Orléans-Cléry",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF318",
+  "appellation": "Pacherenc du Vic-Bilh",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Blanc moelleux",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 4,
+  "intensite": 5,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Ananas",
+   "mangue",
+   "miel",
+   "agrume confit"
+  ],
+  "accords": [
+   "Foie gras",
+   "cuisine épicée",
+   "desserts fruites"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 20,
+  "prixHaut": 45,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF319",
+  "appellation": "Pacherenc du Vic-Bilh Sec",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil ample, acidité vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits exotiques",
+   "agrume",
+   "miel",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 15,
+  "prixHaut": 35,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF320",
+  "appellation": "Palette",
+  "type": "AOC",
+  "region": "Provence",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Mûre",
+   "cuir",
+   "gibier",
+   "thym",
+   "romarin"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 35,
+  "prixCoeur": 50,
+  "prixHaut": 90,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF321",
+  "appellation": "Patrimonio",
+  "type": "AOC",
+  "region": "Corse",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Cerise",
+   "maquis",
+   "immortelle",
+   "cuir"
+  ],
+  "accords": [
+   "Charcuterie corse",
+   "cabri",
+   "brocciu",
+   "agneau"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 24,
+  "prixHaut": 50,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF322",
+  "appellation": "Pauillac",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 45,
+  "prixCoeur": 110,
+  "prixHaut": 900,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF323",
+  "appellation": "Pécharmant",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 17,
+  "prixHaut": 40,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF324",
+  "appellation": "Pernand-Vergelesses",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 45,
+  "prixHaut": 150,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF325",
+  "appellation": "Pessac-Léognan",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 28,
+  "prixCoeur": 65,
+  "prixHaut": 600,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF326",
+  "appellation": "Petit Chablis",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 15,
+  "prixHaut": 26,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF327",
+  "appellation": "Pineau des Charentes",
+  "type": "AOC",
+  "region": "Charentes",
+  "couleur": "VDN / Vin de liqueur",
+  "puissance": 5,
+  "acidite": 2,
+  "tanin": 2,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil très puissant, acidité équilibrée, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Fruits confits",
+   "cacao",
+   "rancio",
+   "noix",
+   "épices"
+  ],
+  "accords": [
+   "Chocolat noir",
+   "desserts",
+   "fromages bleus",
+   "aperitif"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 18,
+  "prixHaut": 35,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF328",
+  "appellation": "Pomerol",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 45,
+  "prixCoeur": 140,
+  "prixHaut": 3000,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF329",
+  "appellation": "Pommard",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 38,
+  "prixCoeur": 65,
+  "prixHaut": 180,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF330",
+  "appellation": "Pouilly-Fuissé",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 18,
+  "prixCoeur": 30,
+  "prixHaut": 90,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF331",
+  "appellation": "Pouilly-Fumé",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 16,
+  "prixCoeur": 24,
+  "prixHaut": 70,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF332",
+  "appellation": "Pouilly-Loché",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 16,
+  "prixCoeur": 35,
+  "prixHaut": 120,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF333",
+  "appellation": "Pouilly-sur-Loire",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 17,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF334",
+  "appellation": "Pouilly-Vinzelles",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 16,
+  "prixCoeur": 35,
+  "prixHaut": 120,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF335",
+  "appellation": "Premières Côtes de Blaye",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF336",
+  "appellation": "Premières Côtes de Bordeaux",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF337",
+  "appellation": "Puisseguin Saint-Émilion",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF338",
+  "appellation": "Puligny-Montrachet",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 45,
+  "prixCoeur": 80,
+  "prixHaut": 250,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF339",
+  "appellation": "Quarts de Chaume",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 30,
+  "prixCoeur": 50,
+  "prixHaut": 120,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF340",
+  "appellation": "Quincy",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 17,
+  "prixHaut": 30,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF341",
+  "appellation": "Rasteau",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "VDN / Vin de liqueur",
+  "puissance": 5,
+  "acidite": 2,
+  "tanin": 2,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil très puissant, acidité équilibrée, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Fruits confits",
+   "cacao",
+   "rancio",
+   "noix",
+   "épices"
+  ],
+  "accords": [
+   "Chocolat noir",
+   "desserts",
+   "fromages bleus",
+   "aperitif"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 20,
+  "prixHaut": 45,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF342",
+  "appellation": "Régnié",
+  "type": "AOC",
+  "region": "Beaujolais",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive, tanins souples. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Fraise",
+   "banane",
+   "kirsch",
+   "granit",
+   "poivre"
+  ],
+  "accords": [
+   "Charcuterie",
+   "andouillette",
+   "quenelles",
+   "fromages frais"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 16,
+  "prixHaut": 30,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF343",
+  "appellation": "Reuilly",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 18,
+  "prixHaut": 32,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF344",
+  "appellation": "Richebourg",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 1400,
+  "prixCoeur": 2200,
+  "prixHaut": 4500,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF345",
+  "appellation": "Rivesaltes",
+  "type": "AOC",
+  "region": "Roussillon",
+  "couleur": "VDN / Vin de liqueur",
+  "puissance": 5,
+  "acidite": 2,
+  "tanin": 2,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil très puissant, acidité équilibrée, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Fruits confits",
+   "cacao",
+   "rancio",
+   "noix",
+   "épices"
+  ],
+  "accords": [
+   "Chocolat noir",
+   "desserts",
+   "fromages bleus",
+   "aperitif"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 60,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF346",
+  "appellation": "Romanée-Conti",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 18000,
+  "prixCoeur": 26000,
+  "prixHaut": 45000,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF347",
+  "appellation": "Romanée-Saint-Vivant",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 900,
+  "prixCoeur": 1500,
+  "prixHaut": 3000,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF348",
+  "appellation": "Rosé d'Anjou",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rosé",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 1,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fraise",
+   "pêche",
+   "agrume",
+   "fleurs",
+   "épices douces"
+  ],
+  "accords": [
+   "Cuisine mediterraneenne",
+   "grillades",
+   "salades",
+   "tapas"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 15,
+  "prixHaut": 32,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF349",
+  "appellation": "Rosé de Loire",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rosé",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 1,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fraise",
+   "pêche",
+   "agrume",
+   "fleurs",
+   "épices douces"
+  ],
+  "accords": [
+   "Cuisine mediterraneenne",
+   "grillades",
+   "salades",
+   "tapas"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 15,
+  "prixHaut": 32,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF350",
+  "appellation": "Rosé des Riceys",
+  "type": "AOC",
+  "region": "Champagne",
+  "couleur": "Rosé",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 1,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fraise",
+   "pêche",
+   "agrume",
+   "fleurs",
+   "épices douces"
+  ],
+  "accords": [
+   "Cuisine mediterraneenne",
+   "grillades",
+   "salades",
+   "tapas"
+  ],
+  "prixEntree": 28,
+  "prixCoeur": 40,
+  "prixHaut": 70,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF351",
+  "appellation": "Rosette",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 30,
+  "prixHaut": 90,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF352",
+  "appellation": "Roussette de Savoie",
+  "type": "AOC",
+  "region": "Savoie",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Silex",
+   "pomme",
+   "fleurs alpines"
+  ],
+  "accords": [
+   "Fondue",
+   "raclette",
+   "poissons de lac",
+   "tartiflette"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 17,
+  "prixHaut": 35,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF353",
+  "appellation": "Roussette du Bugey",
+  "type": "AOC",
+  "region": "Savoie",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Silex",
+   "pomme",
+   "fleurs alpines"
+  ],
+  "accords": [
+   "Fondue",
+   "raclette",
+   "poissons de lac",
+   "tartiflette"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 15,
+  "prixHaut": 30,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF354",
+  "appellation": "Ruchottes-Chambertin",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 280,
+  "prixCoeur": 420,
+  "prixHaut": 800,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF355",
+  "appellation": "Rully",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 16,
+  "prixCoeur": 26,
+  "prixHaut": 55,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF356",
+  "appellation": "Saint-Amour",
+  "type": "AOC",
+  "region": "Beaujolais",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive, tanins souples. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Fraise",
+   "banane",
+   "kirsch",
+   "granit",
+   "poivre"
+  ],
+  "accords": [
+   "Charcuterie",
+   "andouillette",
+   "quenelles",
+   "fromages frais"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 18,
+  "prixHaut": 35,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF357",
+  "appellation": "Saint-Aubin",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 28,
+  "prixCoeur": 45,
+  "prixHaut": 110,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF358",
+  "appellation": "Saint-Bris",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 16,
+  "prixHaut": 28,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF359",
+  "appellation": "Saint-Chinian",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil puissant, acidité équilibrée, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 15,
+  "prixHaut": 35,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF360",
+  "appellation": "Saint-Chinian Berlou",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil puissant, acidité équilibrée, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 14,
+  "prixHaut": 35,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF361",
+  "appellation": "Saint-Chinian Roquebrun",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil puissant, acidité équilibrée, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 14,
+  "prixHaut": 35,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF362",
+  "appellation": "Saint-Émilion",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 18,
+  "prixCoeur": 30,
+  "prixHaut": 90,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF363",
+  "appellation": "Saint-Émilion Grand Cru",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 25,
+  "prixCoeur": 65,
+  "prixHaut": 900,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF364",
+  "appellation": "Saint-Estèphe",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 30,
+  "prixCoeur": 70,
+  "prixHaut": 300,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF365",
+  "appellation": "Saint-Georges Saint-Émilion",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF366",
+  "appellation": "Saint-Joseph",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 20,
+  "prixCoeur": 35,
+  "prixHaut": 90,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF367",
+  "appellation": "Saint-Julien",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 40,
+  "prixCoeur": 95,
+  "prixHaut": 400,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF368",
+  "appellation": "Saint-Nicolas-de-Bourgueil",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 17,
+  "prixHaut": 40,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF369",
+  "appellation": "Saint-Péray",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Blanc",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 5,
+  "garde": 3,
+  "profil": "Profil puissant, acidité équilibrée. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Abricot",
+   "pêche",
+   "violette",
+   "amande",
+   "miel"
+  ],
+  "accords": [
+   "Poissons riches",
+   "volaille crémée",
+   "cuisine épicée"
+  ],
+  "prixEntree": 18,
+  "prixCoeur": 28,
+  "prixHaut": 60,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF370",
+  "appellation": "Saint-Péray Mousseux",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF371",
+  "appellation": "Saint-Pourçain",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF372",
+  "appellation": "Saint-Romain",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 45,
+  "prixHaut": 150,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF373",
+  "appellation": "Saint-Sardos",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 15,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF374",
+  "appellation": "Saint-Véran",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 20,
+  "prixHaut": 40,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF375",
+  "appellation": "Sainte-Croix-du-Mont",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 30,
+  "prixHaut": 90,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF376",
+  "appellation": "Sainte-Foy-Bordeaux",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "cèdre",
+   "graphite",
+   "tabac",
+   "épices douces"
+  ],
+  "accords": [
+   "Entrecote",
+   "agneau de Pauillac",
+   "canard",
+   "fromages affinés"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 18,
+  "prixHaut": 45,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF377",
+  "appellation": "Sancerre",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 16,
+  "prixCoeur": 24,
+  "prixHaut": 60,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF378",
+  "appellation": "Santenay",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 35,
+  "prixHaut": 80,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF379",
+  "appellation": "Saumur",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF380",
+  "appellation": "Saumur Mousseux",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF381",
+  "appellation": "Saumur-Champigny",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 19,
+  "prixHaut": 55,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF382",
+  "appellation": "Saussignac",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 30,
+  "prixHaut": 90,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF383",
+  "appellation": "Sauternes",
+  "type": "AOC",
+  "region": "Bordeaux",
+  "couleur": "Blanc liquoreux",
+  "puissance": 4,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 5,
+  "intensite": 5,
+  "garde": 5,
+  "profil": "Profil puissant, acidité vive, sucrosite marquée équilibrée par l'acidité. Garde estimée : 20 ans et plus.",
+  "aromes": [
+   "Miel",
+   "abricot confit",
+   "safran",
+   "cire",
+   "botrytis"
+  ],
+  "accords": [
+   "Foie gras",
+   "roquefort",
+   "desserts aux fruits jaunes"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 50,
+  "prixHaut": 400,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF384",
+  "appellation": "Savennières",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 18,
+  "prixCoeur": 28,
+  "prixHaut": 80,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF385",
+  "appellation": "Savigny-les-Beaune",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 24,
+  "prixCoeur": 38,
+  "prixHaut": 90,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF386",
+  "appellation": "Seyssel",
+  "type": "AOC",
+  "region": "Savoie",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Silex",
+   "pomme",
+   "fleurs alpines"
+  ],
+  "accords": [
+   "Fondue",
+   "raclette",
+   "poissons de lac",
+   "tartiflette"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 16,
+  "prixHaut": 28,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF387",
+  "appellation": "Seyssel Mousseux",
+  "type": "AOC",
+  "region": "Savoie",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF388",
+  "appellation": "Tavel",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rosé",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 1,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fraise",
+   "pêche",
+   "agrume",
+   "fleurs",
+   "épices douces"
+  ],
+  "accords": [
+   "Cuisine mediterraneenne",
+   "grillades",
+   "salades",
+   "tapas"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 18,
+  "prixHaut": 35,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF389",
+  "appellation": "Touraine",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF390",
+  "appellation": "Touraine Amboise",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF391",
+  "appellation": "Touraine Azay-le-Rideau",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF392",
+  "appellation": "Touraine Mesland",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF393",
+  "appellation": "Touraine Mousseux",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF394",
+  "appellation": "Touraine Noble-Joue",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rosé",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 1,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fraise",
+   "pêche",
+   "agrume",
+   "fleurs",
+   "épices douces"
+  ],
+  "accords": [
+   "Cuisine mediterraneenne",
+   "grillades",
+   "salades",
+   "tapas"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 15,
+  "prixHaut": 32,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF395",
+  "appellation": "Touraine Pétillant",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF396",
+  "appellation": "Tursan",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 15,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF397",
+  "appellation": "Vacqueyras",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 24,
+  "prixHaut": 55,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF398",
+  "appellation": "Valençay",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF399",
+  "appellation": "Ventoux",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 13,
+  "prixHaut": 28,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF400",
+  "appellation": "Vin de Savoie",
+  "type": "AOC",
+  "region": "Savoie",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil ample, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Poivre",
+   "violette",
+   "fruits noirs",
+   "altitude"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 14,
+  "prixHaut": 30,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF401",
+  "appellation": "Vin de Savoie (suivi d'un nom de cru)",
+  "type": "AOC",
+  "region": "Savoie",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil ample, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Poivre",
+   "violette",
+   "fruits noirs",
+   "altitude"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF402",
+  "appellation": "Vin de Savoie Mousseux",
+  "type": "AOC",
+  "region": "Savoie",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF403",
+  "appellation": "Vin de Savoie Pétillant",
+  "type": "AOC",
+  "region": "Savoie",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF404",
+  "appellation": "Vins d'Entraygues et du Fel",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 15,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF405",
+  "appellation": "Vins d'Estaing",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 15,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF406",
+  "appellation": "Vins de l'Orleanais",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF407",
+  "appellation": "Vins du Thouarsais",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Rouge",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité vive, tanins présents. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Framboise",
+   "mine de crayon",
+   "poivron",
+   "violette"
+  ],
+  "accords": [
+   "Rillettes",
+   "chèvre chaud",
+   "veau",
+   "cuisine légère"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 16,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF408",
+  "appellation": "Vinsobres",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 10,
+  "prixCoeur": 20,
+  "prixHaut": 55,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF409",
+  "appellation": "Viré-Clessé",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 20,
+  "prixHaut": 40,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF410",
+  "appellation": "Volnay",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 38,
+  "prixCoeur": 65,
+  "prixHaut": 180,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF411",
+  "appellation": "Volnay Santenots",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 45,
+  "prixHaut": 150,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF412",
+  "appellation": "Vosne-Romanée",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 60,
+  "prixCoeur": 110,
+  "prixHaut": 400,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF413",
+  "appellation": "Vougeot",
+  "type": "AOC",
+  "region": "Bourgogne",
+  "couleur": "Rouge",
+  "puissance": 3,
+  "acidite": 4,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil ample, acidité vive, tanins souples. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Cerise",
+   "fraise",
+   "sous-bois",
+   "rosé fanée",
+   "épices"
+  ],
+  "accords": [
+   "Bœuf bourguignon",
+   "volaille de Bresse",
+   "epoisses",
+   "champignons"
+  ],
+  "prixEntree": 22,
+  "prixCoeur": 45,
+  "prixHaut": 150,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF414",
+  "appellation": "Vouvray",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 20,
+  "prixHaut": 60,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF415",
+  "appellation": "Vouvray Mousseux",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF416",
+  "appellation": "Vouvray Pétillant",
+  "type": "AOC",
+  "region": "Vallée de la Loire",
+  "couleur": "Effervescent",
+  "puissance": 2,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 3,
+  "profil": "Profil moyen, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Pomme",
+   "agrume",
+   "brioche",
+   "fleurs blanches",
+   "craie"
+  ],
+  "accords": [
+   "Aperitif",
+   "huitres",
+   "fruits de mer",
+   "sushi"
+  ],
+  "prixEntree": 11,
+  "prixCoeur": 18,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF417",
+  "appellation": "Pic Saint-Loup",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil puissant, acidité équilibrée, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 20,
+  "prixHaut": 50,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF418",
+  "appellation": "La Clape",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil puissant, acidité équilibrée, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 19,
+  "prixHaut": 45,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF419",
+  "appellation": "Picpoul de Pinet",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "Blanc",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Fenouil",
+   "agrume",
+   "fleurs blanches",
+   "iode"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 7,
+  "prixCoeur": 10,
+  "prixHaut": 18,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF420",
+  "appellation": "Terrasses du Larzac",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil puissant, acidité équilibrée, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 22,
+  "prixHaut": 55,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF421",
+  "appellation": "Cairanne",
+  "type": "AOC",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins fermes. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 13,
+  "prixCoeur": 20,
+  "prixHaut": 45,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF422",
+  "appellation": "Corrèze",
+  "type": "AOC",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 3,
+  "tanin": 5,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 4,
+  "profil": "Profil puissant, acidité fraîche, tanins puissants. Garde estimée : 10-20 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 15,
+  "prixHaut": 40,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF423",
+  "appellation": "Sable de Camargue",
+  "type": "AOC",
+  "region": "Languedoc",
+  "couleur": "Rouge",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil puissant, acidité équilibrée, tanins fermes. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 14,
+  "prixHaut": 35,
+  "fiabilitePrix": "Modèle régional"
+ },
+ {
+  "id": "PRF-I001",
+  "appellation": "Agenais",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I002",
+  "appellation": "Aigues",
+  "type": "IGP",
+  "region": "Provence",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 1,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Mûre",
+   "cuir",
+   "gibier",
+   "thym",
+   "romarin"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I003",
+  "appellation": "Ain",
+  "type": "IGP",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I004",
+  "appellation": "Allier",
+  "type": "IGP",
+  "region": "Centre",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits",
+   "fleurs",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I005",
+  "appellation": "Allobrogie",
+  "type": "IGP",
+  "region": "Savoie",
+  "couleur": "Blanc (dominante)",
+  "puissance": 1,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 2,
+  "garde": 1,
+  "profil": "Profil léger, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Silex",
+   "pomme",
+   "fleurs alpines"
+  ],
+  "accords": [
+   "Fondue",
+   "raclette",
+   "poissons de lac",
+   "tartiflette"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 12,
+  "prixHaut": 22,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF-I006",
+  "appellation": "Alpes-de-Haute-Provence",
+  "type": "IGP",
+  "region": "Sud-Est",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits",
+   "fleurs",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I007",
+  "appellation": "Alpes-Maritimes",
+  "type": "IGP",
+  "region": "Provence",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 1,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Mûre",
+   "cuir",
+   "gibier",
+   "thym",
+   "romarin"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I008",
+  "appellation": "Ardailhou",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I009",
+  "appellation": "Ardèche",
+  "type": "IGP",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 6,
+  "prixCoeur": 10,
+  "prixHaut": 20,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF-I010",
+  "appellation": "Argens",
+  "type": "IGP",
+  "region": "Provence",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 1,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Mûre",
+   "cuir",
+   "gibier",
+   "thym",
+   "romarin"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I011",
+  "appellation": "Ariege",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I012",
+  "appellation": "Aude",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I013",
+  "appellation": "Aveyron",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I014",
+  "appellation": "Balmes dauphinoises",
+  "type": "IGP",
+  "region": "Savoie",
+  "couleur": "Blanc (dominante)",
+  "puissance": 1,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 2,
+  "garde": 1,
+  "profil": "Profil léger, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Silex",
+   "pomme",
+   "fleurs alpines"
+  ],
+  "accords": [
+   "Fondue",
+   "raclette",
+   "poissons de lac",
+   "tartiflette"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I015",
+  "appellation": "Benovie",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I016",
+  "appellation": "Berange",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I017",
+  "appellation": "Bessan",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I018",
+  "appellation": "Bigorre",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I019",
+  "appellation": "Bouches-du-Rhône",
+  "type": "IGP",
+  "region": "Provence",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 1,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Mûre",
+   "cuir",
+   "gibier",
+   "thym",
+   "romarin"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 14,
+  "prixHaut": 40,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF-I020",
+  "appellation": "Bourbonnais",
+  "type": "IGP",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc (dominante)",
+  "puissance": 1,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil léger, acidité très vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I021",
+  "appellation": "Calvados",
+  "type": "IGP",
+  "region": "Normandie",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits",
+   "fleurs",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I022",
+  "appellation": "Cassan",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I023",
+  "appellation": "Catalan",
+  "type": "IGP",
+  "region": "Roussillon",
+  "couleur": "Rouge (dominante)",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil puissant, acidité équilibrée, tanins présents. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Fruits noirs confits",
+   "schiste",
+   "cacao",
+   "épices"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I024",
+  "appellation": "Cathare",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I025",
+  "appellation": "Caux",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I026",
+  "appellation": "Cessenon",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I027",
+  "appellation": "Cevennes",
+  "type": "IGP",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I028",
+  "appellation": "Charentais",
+  "type": "IGP",
+  "region": "Charentes",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits",
+   "fleurs",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 6,
+  "prixCoeur": 9,
+  "prixHaut": 16,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF-I029",
+  "appellation": "Charente",
+  "type": "IGP",
+  "region": "Charentes",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits",
+   "fleurs",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I030",
+  "appellation": "Charente-Maritime",
+  "type": "IGP",
+  "region": "Charentes",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits",
+   "fleurs",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I031",
+  "appellation": "Cher",
+  "type": "IGP",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc (dominante)",
+  "puissance": 1,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil léger, acidité très vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I032",
+  "appellation": "Cite de Carcassonne",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I033",
+  "appellation": "Collines de la Moure",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I034",
+  "appellation": "Collines rhodaniennes",
+  "type": "IGP",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 12,
+  "prixCoeur": 20,
+  "prixHaut": 45,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF-I035",
+  "appellation": "Comte de Grignan",
+  "type": "IGP",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I036",
+  "appellation": "Comte Tolosan",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 6,
+  "prixCoeur": 9,
+  "prixHaut": 18,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF-I037",
+  "appellation": "Comtes rhodaniens",
+  "type": "IGP",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I038",
+  "appellation": "Condomois",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I039",
+  "appellation": "Corrèze",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I040",
+  "appellation": "Côte Vermeille",
+  "type": "IGP",
+  "region": "Roussillon",
+  "couleur": "Rouge (dominante)",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil puissant, acidité équilibrée, tanins présents. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Fruits noirs confits",
+   "schiste",
+   "cacao",
+   "épices"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 15,
+  "prixCoeur": 25,
+  "prixHaut": 60,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF-I041",
+  "appellation": "Coteaux charitois",
+  "type": "IGP",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc (dominante)",
+  "puissance": 1,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil léger, acidité très vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I042",
+  "appellation": "Coteaux d'Enserune",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I043",
+  "appellation": "Coteaux de Coiffy",
+  "type": "IGP",
+  "region": "Est",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits",
+   "fleurs",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I044",
+  "appellation": "Coteaux de l'Ardèche",
+  "type": "IGP",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I045",
+  "appellation": "Coteaux de l'Auxois",
+  "type": "IGP",
+  "region": "Bourgogne",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I046",
+  "appellation": "Coteaux de Bessilles",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I047",
+  "appellation": "Coteaux de Ceze",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I048",
+  "appellation": "Coteaux de Fontcaude",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I049",
+  "appellation": "Coteaux de Glanes",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I050",
+  "appellation": "Coteaux de La Cabrerisse",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I051",
+  "appellation": "Coteaux de Laurens",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I052",
+  "appellation": "Coteaux de Miramont",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I053",
+  "appellation": "Coteaux de Montelimar",
+  "type": "IGP",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I054",
+  "appellation": "Coteaux de Murviel",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I055",
+  "appellation": "Coteaux de Narbonne",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I056",
+  "appellation": "Coteaux de Peyriac",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I057",
+  "appellation": "Coteaux de Seyssuel",
+  "type": "IGP",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I058",
+  "appellation": "Coteaux de Tannay",
+  "type": "IGP",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc (dominante)",
+  "puissance": 1,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil léger, acidité très vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I059",
+  "appellation": "Coteaux des Baronnies",
+  "type": "IGP",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I060",
+  "appellation": "Coteaux des Fenouilledes",
+  "type": "IGP",
+  "region": "Roussillon",
+  "couleur": "Rouge (dominante)",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil puissant, acidité équilibrée, tanins présents. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Fruits noirs confits",
+   "schiste",
+   "cacao",
+   "épices"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I061",
+  "appellation": "Coteaux du Cher et de l'Arnon",
+  "type": "IGP",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc (dominante)",
+  "puissance": 1,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil léger, acidité très vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I062",
+  "appellation": "Coteaux du Gresivaudan",
+  "type": "IGP",
+  "region": "Savoie",
+  "couleur": "Blanc (dominante)",
+  "puissance": 1,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 2,
+  "garde": 1,
+  "profil": "Profil léger, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Silex",
+   "pomme",
+   "fleurs alpines"
+  ],
+  "accords": [
+   "Fondue",
+   "raclette",
+   "poissons de lac",
+   "tartiflette"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I063",
+  "appellation": "Coteaux du Libron",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I064",
+  "appellation": "Coteaux du Littoral Audois",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I065",
+  "appellation": "Coteaux du Pont du Gard",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I066",
+  "appellation": "Coteaux du Salagou",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I067",
+  "appellation": "Coteaux du Verdon",
+  "type": "IGP",
+  "region": "Provence",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 1,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Mûre",
+   "cuir",
+   "gibier",
+   "thym",
+   "romarin"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I068",
+  "appellation": "Coteaux et Terrasses de Montauban",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I069",
+  "appellation": "Coteaux Flaviens",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I070",
+  "appellation": "Côtes catalanes",
+  "type": "IGP",
+  "region": "Roussillon",
+  "couleur": "Rouge (dominante)",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil puissant, acidité équilibrée, tanins présents. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Fruits noirs confits",
+   "schiste",
+   "cacao",
+   "épices"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 8,
+  "prixCoeur": 14,
+  "prixHaut": 45,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF-I071",
+  "appellation": "Côtes de Gascogne",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 15,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF-I072",
+  "appellation": "Côtes de Lastours",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I073",
+  "appellation": "Côtes de Perignan",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I074",
+  "appellation": "Côtes de Prouilhe",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I075",
+  "appellation": "Côtes de Thau",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I076",
+  "appellation": "Côtes de Thongue",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I077",
+  "appellation": "Côtes du Brian",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I078",
+  "appellation": "Côtes du Ceressou",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I079",
+  "appellation": "Côtes du Tarn",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I080",
+  "appellation": "Côtes du Vidourle",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I081",
+  "appellation": "Creuse",
+  "type": "IGP",
+  "region": "Centre",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits",
+   "fleurs",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I082",
+  "appellation": "Cucugnan",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I083",
+  "appellation": "Deux-Sevres",
+  "type": "IGP",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc (dominante)",
+  "puissance": 1,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil léger, acidité très vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I084",
+  "appellation": "Dordogne",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I085",
+  "appellation": "Doubs",
+  "type": "IGP",
+  "region": "Jura",
+  "couleur": "Blanc (dominante)",
+  "puissance": 3,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil ample, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Noix",
+   "curry",
+   "pomme verte",
+   "oxydatif"
+  ],
+  "accords": [
+   "Comte affiné",
+   "poulet aux morilles",
+   "curry"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I086",
+  "appellation": "Drôme",
+  "type": "IGP",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I087",
+  "appellation": "Duche d'Uzes",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I088",
+  "appellation": "Franche-Comte",
+  "type": "IGP",
+  "region": "Jura",
+  "couleur": "Blanc (dominante)",
+  "puissance": 3,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 4,
+  "garde": 3,
+  "profil": "Profil ample, acidité très vive. Garde estimée : 5-10 ans.",
+  "aromes": [
+   "Noix",
+   "curry",
+   "pomme verte",
+   "oxydatif"
+  ],
+  "accords": [
+   "Comte affiné",
+   "poulet aux morilles",
+   "curry"
+  ],
+  "prixEntree": 9,
+  "prixCoeur": 14,
+  "prixHaut": 28,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF-I089",
+  "appellation": "Gard",
+  "type": "IGP",
+  "region": "Languedoc / Rhône",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits",
+   "fleurs",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I090",
+  "appellation": "Gers",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I091",
+  "appellation": "Gorges de l'Hérault",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I092",
+  "appellation": "Haute-Garonne",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I093",
+  "appellation": "Haute-Marne",
+  "type": "IGP",
+  "region": "Est",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits",
+   "fleurs",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I094",
+  "appellation": "Haute-Saône",
+  "type": "IGP",
+  "region": "Est",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits",
+   "fleurs",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I095",
+  "appellation": "Haute Vallée de l'Aude",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I096",
+  "appellation": "Haute Vallée de l'Orb",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I097",
+  "appellation": "Haute-Vienne",
+  "type": "IGP",
+  "region": "Centre",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits",
+   "fleurs",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I098",
+  "appellation": "Hauterive",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I099",
+  "appellation": "Hautes-Alpes",
+  "type": "IGP",
+  "region": "Sud-Est",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits",
+   "fleurs",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I100",
+  "appellation": "Hautes-Pyrénées",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I101",
+  "appellation": "Hauts de Badens",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I102",
+  "appellation": "Hérault",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 6,
+  "prixCoeur": 10,
+  "prixHaut": 60,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF-I103",
+  "appellation": "Île de Beaute",
+  "type": "IGP",
+  "region": "Corse",
+  "couleur": "Rouge (dominante)",
+  "puissance": 2,
+  "acidite": 3,
+  "tanin": 2,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité fraîche, tanins souples. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Cerise",
+   "maquis",
+   "immortelle",
+   "cuir"
+  ],
+  "accords": [
+   "Charcuterie corse",
+   "cabri",
+   "brocciu",
+   "agneau"
+  ],
+  "prixEntree": 7,
+  "prixCoeur": 11,
+  "prixHaut": 25,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF-I104",
+  "appellation": "Indre",
+  "type": "IGP",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc (dominante)",
+  "puissance": 1,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil léger, acidité très vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I105",
+  "appellation": "Indre-et-Loire",
+  "type": "IGP",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc (dominante)",
+  "puissance": 1,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil léger, acidité très vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I106",
+  "appellation": "Isère",
+  "type": "IGP",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I107",
+  "appellation": "Jardin de la France (Val de Loire)",
+  "type": "IGP",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc (dominante)",
+  "puissance": 1,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil léger, acidité très vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 6,
+  "prixCoeur": 10,
+  "prixHaut": 22,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF-I108",
+  "appellation": "Landes",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I109",
+  "appellation": "Loir-et-Cher",
+  "type": "IGP",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc (dominante)",
+  "puissance": 1,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil léger, acidité très vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I110",
+  "appellation": "Loire-Atlantique",
+  "type": "IGP",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc (dominante)",
+  "puissance": 1,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil léger, acidité très vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I111",
+  "appellation": "Loiret",
+  "type": "IGP",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc (dominante)",
+  "puissance": 1,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil léger, acidité très vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I112",
+  "appellation": "Lot",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I113",
+  "appellation": "Lot-et-Garonne",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I114",
+  "appellation": "Maine-et-Loire",
+  "type": "IGP",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc (dominante)",
+  "puissance": 1,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil léger, acidité très vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I115",
+  "appellation": "Marches de Bretagne",
+  "type": "IGP",
+  "region": "Bretagne",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits",
+   "fleurs",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I116",
+  "appellation": "Maures",
+  "type": "IGP",
+  "region": "Provence",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 1,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Mûre",
+   "cuir",
+   "gibier",
+   "thym",
+   "romarin"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I117",
+  "appellation": "Meuse",
+  "type": "IGP",
+  "region": "Est",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits",
+   "fleurs",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I118",
+  "appellation": "Mont Baudile",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I119",
+  "appellation": "Mont-Caume",
+  "type": "IGP",
+  "region": "Provence",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 1,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Mûre",
+   "cuir",
+   "gibier",
+   "thym",
+   "romarin"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I120",
+  "appellation": "Montestruc",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I121",
+  "appellation": "Monts de la Grage",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I122",
+  "appellation": "Nièvre",
+  "type": "IGP",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc (dominante)",
+  "puissance": 1,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil léger, acidité très vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I123",
+  "appellation": "Oc",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 20,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF-I124",
+  "appellation": "Perigord",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I125",
+  "appellation": "Petite Crau",
+  "type": "IGP",
+  "region": "Provence",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 1,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Mûre",
+   "cuir",
+   "gibier",
+   "thym",
+   "romarin"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I126",
+  "appellation": "Pezenas",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I127",
+  "appellation": "Portes de Méditerranée",
+  "type": "IGP",
+  "region": "Sud-Est",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits",
+   "fleurs",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I128",
+  "appellation": "Principaute d'Orange",
+  "type": "IGP",
+  "region": "Vallée du Rhône",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Poivre noir",
+   "olive",
+   "garrigue",
+   "violette",
+   "cuir"
+  ],
+  "accords": [
+   "Gibier",
+   "daube",
+   "tajine",
+   "côtes d'agneau au thym"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I129",
+  "appellation": "Puy-de-Dôme",
+  "type": "IGP",
+  "region": "Centre",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits",
+   "fleurs",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I130",
+  "appellation": "Pyrénées-Atlantiques",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I131",
+  "appellation": "Pyrénées-Orientales",
+  "type": "IGP",
+  "region": "Roussillon",
+  "couleur": "Rouge (dominante)",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil puissant, acidité équilibrée, tanins présents. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Fruits noirs confits",
+   "schiste",
+   "cacao",
+   "épices"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I132",
+  "appellation": "Sables du Golfe du Lion",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I133",
+  "appellation": "Sainte Beaume",
+  "type": "IGP",
+  "region": "Provence",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 1,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Mûre",
+   "cuir",
+   "gibier",
+   "thym",
+   "romarin"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I134",
+  "appellation": "Sainte-Marie-la-Blanche",
+  "type": "IGP",
+  "region": "Bourgogne",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I135",
+  "appellation": "Saône-et-Loire",
+  "type": "IGP",
+  "region": "Bourgogne",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I136",
+  "appellation": "Sarthe",
+  "type": "IGP",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc (dominante)",
+  "puissance": 1,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil léger, acidité très vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I137",
+  "appellation": "Seine-et-Marne",
+  "type": "IGP",
+  "region": "Est",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits",
+   "fleurs",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I138",
+  "appellation": "Tarn",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I139",
+  "appellation": "Tarn-et-Garonne",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I140",
+  "appellation": "Terroirs Landais",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I141",
+  "appellation": "Thezac-Perricard",
+  "type": "IGP",
+  "region": "Sud-Ouest",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 4,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 2,
+  "profil": "Profil ample, acidité fraîche, tanins fermes. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Prune",
+   "mûre",
+   "réglisse",
+   "violette",
+   "tanin ferme"
+  ],
+  "accords": [
+   "Confit de canard",
+   "cassoulet",
+   "garbure",
+   "magret"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I142",
+  "appellation": "Torgan",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I143",
+  "appellation": "Urfe",
+  "type": "IGP",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc (dominante)",
+  "puissance": 1,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil léger, acidité très vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I144",
+  "appellation": "Val de Cesse",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I145",
+  "appellation": "Val de Dagne",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I146",
+  "appellation": "Val de Montferrand",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I147",
+  "appellation": "Vallée du Paradis",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I148",
+  "appellation": "Vals d'Agly",
+  "type": "IGP",
+  "region": "Roussillon",
+  "couleur": "Rouge (dominante)",
+  "puissance": 4,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil puissant, acidité équilibrée, tanins présents. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Fruits noirs confits",
+   "schiste",
+   "cacao",
+   "épices"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I149",
+  "appellation": "Var",
+  "type": "IGP",
+  "region": "Provence",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 3,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 2,
+  "garde": 1,
+  "profil": "Profil ample, acidité fraîche, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Mûre",
+   "cuir",
+   "gibier",
+   "thym",
+   "romarin"
+  ],
+  "accords": [
+   "Viandes rouges grillées",
+   "agneau",
+   "gibier",
+   "fromages a pate pressée"
+  ],
+  "prixEntree": 7,
+  "prixCoeur": 11,
+  "prixHaut": 25,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF-I150",
+  "appellation": "Vaucluse",
+  "type": "IGP",
+  "region": "Sud-Est",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits",
+   "fleurs",
+   "épices"
+  ],
+  "accords": [
+   "Poissons",
+   "fruits de mer",
+   "volaille",
+   "fromages de chèvre"
+  ],
+  "prixEntree": 6,
+  "prixCoeur": 10,
+  "prixHaut": 20,
+  "fiabilitePrix": "Référence nominative"
+ },
+ {
+  "id": "PRF-I151",
+  "appellation": "Vaunage",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I152",
+  "appellation": "Vendée",
+  "type": "IGP",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc (dominante)",
+  "puissance": 1,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil léger, acidité très vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I153",
+  "appellation": "Vicomte d'Aumelas",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I154",
+  "appellation": "Vienne",
+  "type": "IGP",
+  "region": "Vallée de la Loire",
+  "couleur": "Blanc (dominante)",
+  "puissance": 1,
+  "acidite": 5,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil léger, acidité très vive. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Coing",
+   "agrume",
+   "silex",
+   "camomille",
+   "miel"
+  ],
+  "accords": [
+   "Huitres",
+   "sandre au beurre blanc",
+   "chèvre",
+   "sushi"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I155",
+  "appellation": "Vistrenque",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I156",
+  "appellation": "Yonne",
+  "type": "IGP",
+  "region": "Bourgogne",
+  "couleur": "Blanc (dominante)",
+  "puissance": 2,
+  "acidite": 4,
+  "tanin": 0,
+  "sucrosite": 1,
+  "intensite": 3,
+  "garde": 2,
+  "profil": "Profil moyen, acidité vive. Garde estimée : 3-6 ans.",
+  "aromes": [
+   "Agrumes",
+   "beurre",
+   "noisette",
+   "pierre a fusil"
+  ],
+  "accords": [
+   "Homard",
+   "poissons en sauce",
+   "volaille crémée",
+   "comte"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
+ },
+ {
+  "id": "PRF-I157",
+  "appellation": "Terres du Midi",
+  "type": "IGP",
+  "region": "Languedoc",
+  "couleur": "Rouge (dominante)",
+  "puissance": 3,
+  "acidite": 2,
+  "tanin": 3,
+  "sucrosite": 0,
+  "intensite": 3,
+  "garde": 1,
+  "profil": "Profil ample, acidité équilibrée, tanins présents. Garde estimée : 2-4 ans.",
+  "aromes": [
+   "Fruits noirs",
+   "garrigue",
+   "réglisse",
+   "thym",
+   "cacao"
+  ],
+  "accords": [
+   "Grillades",
+   "cassoulet",
+   "viandes épicées",
+   "brebis"
+  ],
+  "prixEntree": 5,
+  "prixCoeur": 8,
+  "prixHaut": 16,
+  "fiabilitePrix": "Modèle IGP"
  }
 ]
 
@@ -6181,12 +23960,12 @@ export const CEPAGES_FR = [
   ],
   "tanins": "Très élevé",
   "acidite": "Élevée",
-  "corps": "Très corse",
+  "corps": "Très corsé",
   "garde": "10-25 ans",
   "tempService": "17-18 °C",
   "accords": [
    "Gibier",
-   "viandes epicees"
+   "viandes épicées"
   ]
  },
  {
@@ -6218,12 +23997,12 @@ export const CEPAGES_FR = [
   "accords": [
    "Cassoulet",
    "magret",
-   "viandes fumees"
+   "viandes fumées"
   ]
  },
  {
   "id": "CEP006",
-  "nom": "Carmenere",
+  "nom": "Carménère",
   "couleur": "Rouge",
   "origine": "Bordeaux",
   "appellations": [
@@ -6244,7 +24023,7 @@ export const CEPAGES_FR = [
   "garde": "5-15 ans",
   "tempService": "16-17 °C",
   "accords": [
-   "Viandes rouges epicees"
+   "Viandes rouges épicées"
   ]
  },
  {
@@ -6373,7 +24152,7 @@ export const CEPAGES_FR = [
   "accords": [
    "Daube",
    "tajine",
-   "viandes mijotees"
+   "viandes mijotées"
   ]
  },
  {
@@ -6510,7 +24289,7 @@ export const CEPAGES_FR = [
   ],
   "tanins": "Très élevé",
   "acidite": "Moyenne",
-  "corps": "Très corse",
+  "corps": "Très corsé",
   "garde": "10-30 ans",
   "tempService": "17-18 °C",
   "accords": [
@@ -6582,9 +24361,7 @@ export const CEPAGES_FR = [
   "appellations": [
    "Gaillac"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Poivre",
    "fruits rouges"
@@ -6612,7 +24389,7 @@ export const CEPAGES_FR = [
   ],
   "aromes": [
    "Fruits rouges pales",
-   "rosé fanee"
+   "rosé fanée"
   ],
   "tanins": "Très faible",
   "acidite": "Élevée",
@@ -6707,10 +24484,10 @@ export const CEPAGES_FR = [
   "id": "CEP023",
   "nom": "Nielluccio",
   "couleur": "Rouge",
-  "origine": "Corsé",
+  "origine": "Corse",
   "appellations": [
    "Patrimonio",
-   "Corsé"
+   "Corse"
   ],
   "synonymes": [
    "Sangiovese"
@@ -6734,7 +24511,7 @@ export const CEPAGES_FR = [
   "id": "CEP024",
   "nom": "Sciaccarellu",
   "couleur": "Rouge",
-  "origine": "Corsé",
+  "origine": "Corse",
   "appellations": [
    "Ajaccio",
    "Sartène"
@@ -6807,7 +24584,7 @@ export const CEPAGES_FR = [
   "tempService": "10-12 °C",
   "accords": [
    "Aperitif",
-   "cuisine sucree-salee"
+   "cuisine sucrée-salée"
   ]
  },
  {
@@ -6868,9 +24645,7 @@ export const CEPAGES_FR = [
   "appellations": [
    "Vin de France (historique)"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Fruits rouges legers"
   ],
@@ -6891,9 +24666,7 @@ export const CEPAGES_FR = [
   "appellations": [
    "Chateauneuf-du-Pape"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Fruits rouges",
    "herbes"
@@ -7044,9 +24817,7 @@ export const CEPAGES_FR = [
    "Bordeaux",
    "Bergerac"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Muscat",
    "fleurs",
@@ -7071,12 +24842,10 @@ export const CEPAGES_FR = [
    "Alsace Grand Cru",
    "Alsace"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Citron",
-   "petrole",
+   "pétrole",
    "fleur blanche",
    "minérale"
   ],
@@ -7190,7 +24959,7 @@ export const CEPAGES_FR = [
    "Silvaner"
   ],
   "aromes": [
-   "Herbes fraiches",
+   "Herbes fraîches",
    "agrume discret"
   ],
   "tanins": null,
@@ -7240,9 +25009,7 @@ export const CEPAGES_FR = [
    "Bouzeron",
    "Bourgogne Aligoté"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Citron",
    "pomme verte",
@@ -7313,7 +25080,7 @@ export const CEPAGES_FR = [
   "garde": "5-20 ans",
   "tempService": "11-13 °C",
   "accords": [
-   "Volaille cremee",
+   "Volaille crémée",
    "poissons gras"
   ]
  },
@@ -7383,9 +25150,7 @@ export const CEPAGES_FR = [
    "Clairette de Die",
    "Clairette du Languedoc"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Fleurs",
    "fenouil",
@@ -7457,15 +25222,15 @@ export const CEPAGES_FR = [
   "id": "CEP050",
   "nom": "Vermentino",
   "couleur": "Blanc",
-  "origine": "Corsé / Provence",
+  "origine": "Corse / Provence",
   "appellations": [
    "Patrimonio",
-   "Corsé",
+   "Corse",
    "Côtes de Provence"
   ],
   "synonymes": [
    "Rolle",
-   "Malvoisie de Corsé"
+   "Malvoisie de Corse"
   ],
   "aromes": [
    "Poire",
@@ -7514,7 +25279,7 @@ export const CEPAGES_FR = [
  },
  {
   "id": "CEP052",
-  "nom": "Jacquere",
+  "nom": "Jacquère",
   "couleur": "Blanc",
   "origine": "Savoie",
   "appellations": [
@@ -7522,9 +25287,7 @@ export const CEPAGES_FR = [
    "Abymes",
    "Chignin"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Silex",
    "pomme",
@@ -7653,9 +25416,7 @@ export const CEPAGES_FR = [
   "appellations": [
    "Cour-Cheverny"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Citron",
    "miel",
@@ -7705,9 +25466,7 @@ export const CEPAGES_FR = [
    "Jurançon",
    "Pacherenc du Vic-Bilh"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Ananas",
    "mangue",
@@ -7734,9 +25493,7 @@ export const CEPAGES_FR = [
    "Pacherenc",
    "IGP Côtes de Gascogne"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Agrume",
    "fruit exotique",
@@ -7812,9 +25569,7 @@ export const CEPAGES_FR = [
   "appellations": [
    "IGP Côtes de Gascogne"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Pamplemousse",
    "buis"
@@ -7864,9 +25619,7 @@ export const CEPAGES_FR = [
    "Jurançon",
    "Béarn"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Fleurs",
    "agrume",
@@ -7947,9 +25700,7 @@ export const CEPAGES_FR = [
    "Collioure",
    "Côtes Catalanes"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Agrume",
    "épices",
@@ -8033,7 +25784,7 @@ export const CEPAGES_FR = [
   "garde": "5-15 ans",
   "tempService": "15-16 °C",
   "accords": [
-   "Viandes mijotees"
+   "Viandes mijotées"
   ]
  },
  {
@@ -8094,9 +25845,7 @@ export const CEPAGES_FR = [
   "appellations": [
    "Chateauneuf-du-Pape"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Floral",
    "fruits rouges frais"
@@ -8142,9 +25891,7 @@ export const CEPAGES_FR = [
   "appellations": [
    "Chateauneuf-du-Pape"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Neutre",
    "floral"
@@ -8179,7 +25926,7 @@ export const CEPAGES_FR = [
   "garde": "5-15 ans",
   "tempService": "16 °C",
   "accords": [
-   "Viandes mijotees"
+   "Viandes mijotées"
   ]
  },
  {
@@ -8217,9 +25964,7 @@ export const CEPAGES_FR = [
   "appellations": [
    "Ayze"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Fleurs blanches",
    "poire",
@@ -8243,9 +25988,7 @@ export const CEPAGES_FR = [
   "appellations": [
    "Seyssel Mousseux"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Neutre",
    "floral"
@@ -8295,12 +26038,10 @@ export const CEPAGES_FR = [
   "appellations": [
    "Champagne (cépage rare)"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Floral",
-   "acidité extreme"
+   "acidité extrême"
   ],
   "tanins": null,
   "acidite": "Très élevée",
@@ -8319,9 +26060,7 @@ export const CEPAGES_FR = [
   "appellations": [
    "Champagne (rare)"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Agrume",
    "herbes",
@@ -8392,9 +26131,7 @@ export const CEPAGES_FR = [
   "appellations": [
    "Gaillac"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Fleurs",
    "poire",
@@ -8417,9 +26154,7 @@ export const CEPAGES_FR = [
   "appellations": [
    "Gaillac"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Prune",
    "violette"
@@ -8441,9 +26176,7 @@ export const CEPAGES_FR = [
   "appellations": [
    "Côtes du Marmandais"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Fruits rouges",
    "épices"
@@ -8484,13 +26217,11 @@ export const CEPAGES_FR = [
   "id": "CEP090",
   "nom": "Sciacarello blanc / Codivarta",
   "couleur": "Blanc",
-  "origine": "Corsé",
+  "origine": "Corse",
   "appellations": [
    "Patrimonio"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Fleurs",
    "amande"
@@ -8508,13 +26239,11 @@ export const CEPAGES_FR = [
   "id": "CEP091",
   "nom": "Biancu Gentile",
   "couleur": "Blanc",
-  "origine": "Corsé",
+  "origine": "Corse",
   "appellations": [
-   "Corsé (rare)"
+   "Corse (rare)"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Agrume",
    "maquis",
@@ -8534,13 +26263,11 @@ export const CEPAGES_FR = [
   "id": "CEP092",
   "nom": "Barbarossa",
   "couleur": "Rosé",
-  "origine": "Corsé",
+  "origine": "Corse",
   "appellations": [
-   "Corsé (rare)"
+   "Corse (rare)"
   ],
-  "synonymes": [
-   "-"
-  ],
+  "synonymes": [],
   "aromes": [
    "Fruits rouges",
    "épices"
@@ -8660,7 +26387,7 @@ export const DOMAINES_FR = [
    "Chapelle d'Ausone"
   ],
   "style": "Minérale, côtes calcaires",
-  "statut": "1er GCC A (retire)",
+  "statut": "1er GCC A (retiré)",
   "note": null
  },
  {
@@ -8711,7 +26438,7 @@ export const DOMAINES_FR = [
    "Grand Vin",
    "Petit Lion"
   ],
-  "style": "Precis, tendu, super-second",
+  "style": "Précis, tendu, super-second",
   "statut": "2e Cru Classé",
   "note": null
  },
@@ -8779,7 +26506,7 @@ export const DOMAINES_FR = [
    "Richebourg",
    "Chambertin"
   ],
-  "style": "Biodynamie extreme, rendements minuscules",
+  "style": "Biodynamie extrême, rendements minuscules",
   "statut": "Grands Crus",
   "note": null
  },
@@ -8804,9 +26531,9 @@ export const DOMAINES_FR = [
   "appellation": "Meursault",
   "cuvees": [
    "Corton-Charlemagne",
-   "Meursault Perrieres"
+   "Meursault Perrières"
   ],
-  "style": "Reduction, tension, culte",
+  "style": "Réduction, tension, culte",
   "statut": "Blancs",
   "note": null
  },
@@ -8820,7 +26547,7 @@ export const DOMAINES_FR = [
    "Chevalier",
    "Bâtard"
   ],
-  "style": "Biodynamie pionniere",
+  "style": "Biodynamie pionnière",
   "statut": "Grands Crus blancs",
   "note": null
  },
@@ -8846,7 +26573,7 @@ export const DOMAINES_FR = [
    "Clos de la Roche",
    "Clos St-Denis"
   ],
-  "style": "Vendange entiere, parfum",
+  "style": "Vendange entière, parfum",
   "statut": "Grands Crus",
   "note": null
  },
@@ -8859,7 +26586,7 @@ export const DOMAINES_FR = [
    "Cros Parantoux",
    "Richebourg"
   ],
-  "style": "Elegance, boise maitrise",
+  "style": "Élégance, boise maitrise",
   "statut": "Grands Crus",
   "note": null
  },
@@ -8871,7 +26598,7 @@ export const DOMAINES_FR = [
   "cuvees": [
    "Les Clos",
    "Blanchot",
-   "Montee de Tonnerre"
+   "Montée de Tonnerre"
   ],
   "style": "Minérale absolue, garde",
   "statut": "Grands Crus",
@@ -8886,7 +26613,7 @@ export const DOMAINES_FR = [
    "Les Clos",
    "Les Preuses"
   ],
-  "style": "Tension, elevage foudre",
+  "style": "Tension, élevage foudre",
   "statut": "Grands Crus",
   "note": null
  },
@@ -8911,7 +26638,7 @@ export const DOMAINES_FR = [
   "cuvees": [
    "Clos des Ducs"
   ],
-  "style": "Purete, biodynamie",
+  "style": "Pureté, biodynamie",
   "statut": "1ers Crus",
   "note": null
  },
@@ -8923,7 +26650,7 @@ export const DOMAINES_FR = [
   "cuvees": [
    "Nombreuses"
   ],
-  "style": "Negoce-domaine, qualite reguliere",
+  "style": "Negoce-domaine, qualite régulière",
   "statut": "Multi",
   "note": null
  },
@@ -8934,7 +26661,7 @@ export const DOMAINES_FR = [
   "appellation": "Morgon",
   "cuvees": [
    "Morgon",
-   "Cuvee Camille"
+   "Cuvée Camille"
   ],
   "style": "Nature, sans soufre, pionnier",
   "statut": "Cru",
@@ -8949,7 +26676,7 @@ export const DOMAINES_FR = [
    "Côte du Py",
    "3.14"
   ],
-  "style": "Nature, elegance",
+  "style": "Nature, élégance",
   "statut": "Cru",
   "note": null
  },
@@ -8959,7 +26686,7 @@ export const DOMAINES_FR = [
   "region": "Beaujolais",
   "appellation": "Côte de Brouilly",
   "cuvees": [
-   "Cuvee Zaccharie"
+   "Cuvée Zaccharie"
   ],
   "style": "Classique, roche bleue",
   "statut": "Cru",
@@ -9015,7 +26742,7 @@ export const DOMAINES_FR = [
    "Côte-Rôtie",
    "Côte Brune"
   ],
-  "style": "Poivre, purete Syrah",
+  "style": "Poivre, pureté Syrah",
   "statut": "AOC",
   "note": null
  },
@@ -9079,7 +26806,7 @@ export const DOMAINES_FR = [
   "cuvees": [
    "Clos des Papes"
   ],
-  "style": "Equilibre, garde",
+  "style": "Équilibre, garde",
   "statut": "AOC",
   "note": null
  },
@@ -9105,7 +26832,7 @@ export const DOMAINES_FR = [
    "Pur Sang",
    "Buisson Renard"
   ],
-  "style": "Sauvignon extreme, elevage bois",
+  "style": "Sauvignon extrême, élevage bois",
   "statut": "AOC",
   "note": "Culte"
  },
@@ -9137,11 +26864,11 @@ export const DOMAINES_FR = [
  },
  {
   "id": "DOM045",
-  "nom": "Nicolas Joly - Coulee de Serrant",
+  "nom": "Nicolas Joly - Coulée de Serrant",
   "region": "Loire",
   "appellation": "Savennières",
   "cuvees": [
-   "Coulee de Serrant"
+   "Coulée de Serrant"
   ],
   "style": "Biodynamie historique, oxydatif",
   "statut": "AOC monopole",
@@ -9182,13 +26909,13 @@ export const DOMAINES_FR = [
    "Le Bourg",
    "Les Poyeux"
   ],
-  "style": "Culte, elevage long",
+  "style": "Culte, élevage long",
   "statut": "AOC",
-  "note": "Freres Foucault"
+  "note": "Frères Foucault"
  },
  {
   "id": "DOM049",
-  "nom": "Domaine de la Pepiere",
+  "nom": "Domaine de la Pépière",
   "region": "Loire",
   "appellation": "Muscadet",
   "cuvees": [
@@ -9221,7 +26948,7 @@ export const DOMAINES_FR = [
    "Schlossberg",
    "Furstentum"
   ],
-  "style": "Elegance, Riesling",
+  "style": "Élégance, Riesling",
   "statut": "Grands Crus",
   "note": null
  },
@@ -9232,7 +26959,7 @@ export const DOMAINES_FR = [
   "appellation": "Ribeauville",
   "cuvees": [
    "Clos Ste Hune",
-   "Cuvee Frederic Emile"
+   "Cuvée Frederic Emile"
   ],
   "style": "Riesling sec, tension",
   "statut": "Grands Crus",
@@ -9260,7 +26987,7 @@ export const DOMAINES_FR = [
    "Muenchberg",
    "Fronholz"
   ],
-  "style": "Biodynamie, elevage bois",
+  "style": "Biodynamie, élevage bois",
   "statut": "Grands Crus",
   "note": null
  },
@@ -9270,11 +26997,11 @@ export const DOMAINES_FR = [
   "region": "Champagne",
   "appellation": "Reims",
   "cuvees": [
-   "Grande Cuvee",
+   "Grande Cuvée",
    "Clos du Mesnil",
    "Clos d'Ambonnay"
   ],
-  "style": "Vinification fut, reserves perpetuelles",
+  "style": "Vinification fut, réservés perpetuelles",
   "statut": "Maison",
   "note": "Prestige"
  },
@@ -9284,11 +27011,11 @@ export const DOMAINES_FR = [
   "region": "Champagne",
   "appellation": "Le Mesnil-sur-Oger",
   "cuvees": [
-   "Cuvee S"
+   "Cuvée S"
   ],
   "style": "Blanc de Blancs millésime uniquement",
   "statut": "Maison",
-  "note": "Rarete"
+  "note": "Rareté"
  },
  {
   "id": "DOM057",
@@ -9337,7 +27064,7 @@ export const DOMAINES_FR = [
   "appellation": "Ambonnay",
   "cuvees": [
    "Grand Cru VP",
-   "Les Crayeres"
+   "Les Crayères"
   ],
   "style": "Pinot Noir, maturité",
   "statut": "RM",
@@ -9439,7 +27166,7 @@ export const DOMAINES_FR = [
  },
  {
   "id": "DOM068",
-  "nom": "Domaine de la Grange des Peres",
+  "nom": "Domaine de la Grange des Pères",
   "region": "Languedoc",
   "appellation": "IGP Hérault",
   "cuvees": [
@@ -9448,7 +27175,7 @@ export const DOMAINES_FR = [
   ],
   "style": "Assemblage, culte",
   "statut": "IGP",
-  "note": "Rarete"
+  "note": "Rareté"
  },
  {
   "id": "DOM069",
@@ -9472,7 +27199,7 @@ export const DOMAINES_FR = [
    "Clos des Cistes",
    "Syrah Leone"
   ],
-  "style": "Elevage très long",
+  "style": "Élevage très long",
   "statut": "AOC",
   "note": null
  },
@@ -9509,7 +27236,7 @@ export const DOMAINES_FR = [
   "appellation": "Banyuls/Collioure",
   "cuvees": [
    "Côte Montagne",
-   "Parce Freres"
+   "Parce Frères"
   ],
   "style": "VDN et secs",
   "statut": "AOC",
@@ -9547,7 +27274,7 @@ export const DOMAINES_FR = [
   "region": "Sud-Ouest",
   "appellation": "Madiran",
   "cuvees": [
-   "Cuvee Prestige",
+   "Cuvée Prestige",
    "XL"
   ],
   "style": "Tannat puissant, Brumont",
@@ -9573,10 +27300,10 @@ export const DOMAINES_FR = [
   "region": "Sud-Ouest",
   "appellation": "Jurançon",
   "cuvees": [
-   "Cuvee Marie",
+   "Cuvée Marie",
    "Happy Hour"
   ],
-  "style": "Equilibre sucre-acidité",
+  "style": "Équilibre sucre-acidité",
   "statut": "AOC",
   "note": null
  },
@@ -9607,11 +27334,11 @@ export const DOMAINES_FR = [
  },
  {
   "id": "DOM081",
-  "nom": "Château Tirecul la Graviere",
+  "nom": "Château Tirecul la Gravière",
   "region": "Sud-Ouest",
   "appellation": "Monbazillac",
   "cuvees": [
-   "Cuvee Madame"
+   "Cuvée Madame"
   ],
   "style": "Liquoreux d'exception",
   "statut": "AOC",
@@ -9623,7 +27350,7 @@ export const DOMAINES_FR = [
   "region": "Jura",
   "appellation": "Côtes du Jura",
   "cuvees": [
-   "Nombreuses micro-cuvees"
+   "Nombreuses micro-cuvées"
   ],
   "style": "Nature, cépages oublies",
   "statut": "AOC",
@@ -9693,7 +27420,7 @@ export const DOMAINES_FR = [
   ],
   "style": "Gringet, biodynamie",
   "statut": "AOC",
-  "note": "Rarete"
+  "note": "Rareté"
  },
  {
   "id": "DOM088",
@@ -9724,7 +27451,7 @@ export const DOMAINES_FR = [
  {
   "id": "DOM090",
   "nom": "Domaine Antoine Arena",
-  "region": "Corsé",
+  "region": "Corse",
   "appellation": "Patrimonio",
   "cuvees": [
    "Carco",
@@ -9738,7 +27465,7 @@ export const DOMAINES_FR = [
  {
   "id": "DOM091",
   "nom": "Clos Canarelli",
-  "region": "Corsé",
+  "region": "Corse",
   "appellation": "Figari",
   "cuvees": [
    "Rouge",
@@ -9752,10 +27479,10 @@ export const DOMAINES_FR = [
  {
   "id": "DOM092",
   "nom": "Domaine Comte Abbatucci",
-  "region": "Corsé",
+  "region": "Corse",
   "appellation": "Ajaccio",
   "cuvees": [
-   "Cuvee Collection",
+   "Cuvée Collection",
    "Faustine"
   ],
   "style": "Biodynamie, cépages autochtones",
@@ -9796,7 +27523,7 @@ export const DOMAINES_FR = [
    "Chaillot",
    "Reynard"
   ],
-  "style": "Nature, precision",
+  "style": "Nature, précision",
   "statut": "AOC",
   "note": "Culte"
  },
@@ -9873,7 +27600,7 @@ export const MILLESIMES_FR = [
   "id": "MIL001",
   "annee": 2005,
   "region": "Bordeaux",
-  "note": 19,
+  "note": 19.0,
   "style": "Classique, structure",
   "apogee": "2015-2045",
   "commentaire": "Grand millésime homogène rive gauche et droite"
@@ -9891,7 +27618,7 @@ export const MILLESIMES_FR = [
   "id": "MIL003",
   "annee": 2010,
   "region": "Bordeaux",
-  "note": 19,
+  "note": 19.0,
   "style": "Structure, fraîcheur",
   "apogee": "2020-2050",
   "commentaire": "Concentration + acidité, très longue garde"
@@ -9918,17 +27645,17 @@ export const MILLESIMES_FR = [
   "id": "MIL006",
   "annee": 2018,
   "region": "Bordeaux",
-  "note": 18,
+  "note": 18.0,
   "style": "Puissant, solaire",
   "apogee": "2025-2050",
-  "commentaire": "Mildiou puis canicule, volumes reduits"
+  "commentaire": "Mildiou puis canicule, volumes réduits"
  },
  {
   "id": "MIL007",
   "annee": 2019,
   "region": "Bordeaux",
-  "note": 18,
-  "style": "Equilibre",
+  "note": 18.0,
+  "style": "Équilibre",
   "apogee": "2025-2045",
   "commentaire": "Trio 2018-19-20 remarquable"
  },
@@ -9936,7 +27663,7 @@ export const MILLESIMES_FR = [
   "id": "MIL008",
   "annee": 2020,
   "region": "Bordeaux",
-  "note": 18,
+  "note": 18.0,
   "style": "Concentré",
   "apogee": "2026-2050",
   "commentaire": "Secheresse, petits rendements"
@@ -9945,7 +27672,7 @@ export const MILLESIMES_FR = [
   "id": "MIL009",
   "annee": 2021,
   "region": "Bordeaux",
-  "note": 15,
+  "note": 15.0,
   "style": "Classique, léger",
   "apogee": "2024-2032",
   "commentaire": "Millésime frais, gel et mildiou"
@@ -9954,10 +27681,10 @@ export const MILLESIMES_FR = [
   "id": "MIL010",
   "annee": 2022,
   "region": "Bordeaux",
-  "note": 18,
+  "note": 18.0,
   "style": "Solaire, surprenant",
   "apogee": "2028-2055",
-  "commentaire": "Canicule mais fraîcheur preservee"
+  "commentaire": "Canicule mais fraîcheur préservée"
  },
  {
   "id": "MIL011",
@@ -9966,13 +27693,13 @@ export const MILLESIMES_FR = [
   "note": 16.5,
   "style": "Heterogene",
   "apogee": "2027-2042",
-  "commentaire": "Pression mildiou, tri severe"
+  "commentaire": "Pression mildiou, tri sévère"
  },
  {
   "id": "MIL012",
   "annee": 2000,
   "region": "Bordeaux",
-  "note": 18,
+  "note": 18.0,
   "style": "Mythique",
   "apogee": "2010-2035",
   "commentaire": "Millésime du siecle mediatique"
@@ -9981,16 +27708,16 @@ export const MILLESIMES_FR = [
   "id": "MIL013",
   "annee": 1982,
   "region": "Bordeaux",
-  "note": 19,
+  "note": 19.0,
   "style": "Legendaire",
   "apogee": "1990-2030",
-  "commentaire": "Maturité revolutionnaire, essor Parker"
+  "commentaire": "Maturité révolutionnaire, essor Parker"
  },
  {
   "id": "MIL014",
   "annee": 1989,
   "region": "Bordeaux",
-  "note": 18,
+  "note": 18.0,
   "style": "Solaire",
   "apogee": "1998-2025",
   "commentaire": "Sauternes exceptionnel"
@@ -10020,13 +27747,13 @@ export const MILLESIMES_FR = [
   "note": 18.5,
   "style": "Tension",
   "apogee": "2018-2040",
-  "commentaire": "Petits rendements, purete"
+  "commentaire": "Petits rendements, pureté"
  },
  {
   "id": "MIL018",
   "annee": 2015,
   "region": "Bourgogne",
-  "note": 18,
+  "note": 18.0,
   "style": "Solaire rouges",
   "apogee": "2022-2040",
   "commentaire": "Rouges concentres, blancs plus lourds"
@@ -10035,10 +27762,10 @@ export const MILLESIMES_FR = [
   "id": "MIL019",
   "annee": 2017,
   "region": "Bourgogne",
-  "note": 17,
+  "note": 17.0,
   "style": "Blancs excellents",
   "apogee": "2021-2032",
-  "commentaire": "Volumes retrouves"
+  "commentaire": "Volumes retrouvés"
  },
  {
   "id": "MIL020",
@@ -10053,19 +27780,19 @@ export const MILLESIMES_FR = [
   "id": "MIL021",
   "annee": 2020,
   "region": "Bourgogne",
-  "note": 18,
-  "style": "Precoce, dense",
+  "note": 18.0,
+  "style": "Précoce, dense",
   "apogee": "2025-2042",
-  "commentaire": "Vendanges très precoces"
+  "commentaire": "Vendanges très précoces"
  },
  {
   "id": "MIL022",
   "annee": 2021,
   "region": "Bourgogne",
-  "note": 16,
+  "note": 16.0,
   "style": "Classique, frais",
   "apogee": "2024-2035",
-  "commentaire": "Gel severe, volumes minuscules"
+  "commentaire": "Gel sévère, volumes minuscules"
  },
  {
   "id": "MIL023",
@@ -10080,7 +27807,7 @@ export const MILLESIMES_FR = [
   "id": "MIL024",
   "annee": 2023,
   "region": "Bourgogne",
-  "note": 17,
+  "note": 17.0,
   "style": "Genereux",
   "apogee": "2026-2038",
   "commentaire": "Gros volumes, tri necessaire"
@@ -10089,7 +27816,7 @@ export const MILLESIMES_FR = [
   "id": "MIL025",
   "annee": 1999,
   "region": "Bourgogne",
-  "note": 18,
+  "note": 18.0,
   "style": "Genereux",
   "apogee": "2008-2030",
   "commentaire": "Grande année rouges"
@@ -10101,13 +27828,13 @@ export const MILLESIMES_FR = [
   "note": 17.5,
   "style": "Acidité haute",
   "apogee": "2006-2030",
-  "commentaire": "Blancs sujets a oxydation prematuree"
+  "commentaire": "Blancs sujets a oxydation prématurée"
  },
  {
   "id": "MIL027",
   "annee": 2009,
   "region": "Rhône Nord",
-  "note": 18,
+  "note": 18.0,
   "style": "Solaire",
   "apogee": "2016-2040",
   "commentaire": "Syrah mûre et genereuse"
@@ -10116,7 +27843,7 @@ export const MILLESIMES_FR = [
   "id": "MIL028",
   "annee": 2010,
   "region": "Rhône Nord",
-  "note": 19,
+  "note": 19.0,
   "style": "Classique parfait",
   "apogee": "2018-2045",
   "commentaire": "Référence moderne"
@@ -10135,7 +27862,7 @@ export const MILLESIMES_FR = [
   "annee": 2016,
   "region": "Rhône Nord",
   "note": 18.5,
-  "style": "Equilibre",
+  "style": "Équilibre",
   "apogee": "2023-2048",
   "commentaire": "Fraîcheur et maturité"
  },
@@ -10155,7 +27882,7 @@ export const MILLESIMES_FR = [
   "note": 16.5,
   "style": "Frais, tendu",
   "apogee": "2025-2038",
-  "commentaire": "Style ancien, faible degre"
+  "commentaire": "Style ancien, faible degré"
  },
  {
   "id": "MIL033",
@@ -10170,8 +27897,8 @@ export const MILLESIMES_FR = [
   "id": "MIL034",
   "annee": 2010,
   "region": "Rhône Sud",
-  "note": 19,
-  "style": "Equilibre parfait",
+  "note": 19.0,
+  "style": "Équilibre parfait",
   "apogee": "2018-2045",
   "commentaire": "Meilleur du siecle pour beaucoup"
  },
@@ -10179,7 +27906,7 @@ export const MILLESIMES_FR = [
   "id": "MIL035",
   "annee": 2016,
   "region": "Rhône Sud",
-  "note": 19,
+  "note": 19.0,
   "style": "Complet",
   "apogee": "2023-2050",
   "commentaire": "Grande année CDP"
@@ -10188,10 +27915,10 @@ export const MILLESIMES_FR = [
   "id": "MIL036",
   "annee": 2019,
   "region": "Rhône Sud",
-  "note": 18,
+  "note": 18.0,
   "style": "Solaire",
   "apogee": "2025-2045",
-  "commentaire": "Degres eleves"
+  "commentaire": "Degrés élevés"
  },
  {
   "id": "MIL037",
@@ -10200,13 +27927,13 @@ export const MILLESIMES_FR = [
   "note": 17.5,
   "style": "Fruit, souplesse",
   "apogee": "2024-2040",
-  "commentaire": "Acces precoce"
+  "commentaire": "Acces précoce"
  },
  {
   "id": "MIL038",
   "annee": 2005,
   "region": "Loire",
-  "note": 18,
+  "note": 18.0,
   "style": "Chenin exceptionnel",
   "apogee": "2012-2045",
   "commentaire": "Liquoreux et secs de garde"
@@ -10224,7 +27951,7 @@ export const MILLESIMES_FR = [
   "id": "MIL040",
   "annee": 2015,
   "region": "Loire",
-  "note": 18,
+  "note": 18.0,
   "style": "Concentré",
   "apogee": "2020-2040",
   "commentaire": "Cabernet Franc dense"
@@ -10242,8 +27969,8 @@ export const MILLESIMES_FR = [
   "id": "MIL042",
   "annee": 2019,
   "region": "Loire",
-  "note": 18,
-  "style": "Equilibre",
+  "note": 18.0,
+  "style": "Équilibre",
   "apogee": "2024-2042",
   "commentaire": "Excellent partout"
  },
@@ -10263,7 +27990,7 @@ export const MILLESIMES_FR = [
   "note": 17.5,
   "style": "Solaire",
   "apogee": "2026-2040",
-  "commentaire": "Secheresse mais equilibre"
+  "commentaire": "Secheresse mais équilibré"
  },
  {
   "id": "MIL045",
@@ -10287,7 +28014,7 @@ export const MILLESIMES_FR = [
   "id": "MIL047",
   "annee": 2015,
   "region": "Champagne",
-  "note": 17,
+  "note": 17.0,
   "style": "Solaire",
   "apogee": "2022-2035",
   "commentaire": "Style genereux"
@@ -10305,8 +28032,8 @@ export const MILLESIMES_FR = [
   "id": "MIL049",
   "annee": 2019,
   "region": "Champagne",
-  "note": 18,
-  "style": "Equilibre",
+  "note": 18.0,
+  "style": "Équilibre",
   "apogee": "2026-2042",
   "commentaire": "Concentration et fraîcheur"
  },
@@ -10317,16 +28044,16 @@ export const MILLESIMES_FR = [
   "note": 18.5,
   "style": "Classique",
   "apogee": "2010-2035",
-  "commentaire": "Référence des annees 2000"
+  "commentaire": "Référence des années 2000"
  },
  {
   "id": "MIL051",
   "annee": 1996,
   "region": "Champagne",
-  "note": 18,
-  "style": "Acidité extreme",
+  "note": 18.0,
+  "style": "Acidité extrême",
   "apogee": "2006-2035",
-  "commentaire": "Evolution debattue"
+  "commentaire": "Evolution débattue"
  },
  {
   "id": "MIL052",
@@ -10341,8 +28068,8 @@ export const MILLESIMES_FR = [
   "id": "MIL053",
   "annee": 2017,
   "region": "Alsace",
-  "note": 18,
-  "style": "Equilibre",
+  "note": 18.0,
+  "style": "Équilibre",
   "apogee": "2022-2042",
   "commentaire": "Grande année secs"
  },
@@ -10350,7 +28077,7 @@ export const MILLESIMES_FR = [
   "id": "MIL054",
   "annee": 2019,
   "region": "Alsace",
-  "note": 18,
+  "note": 18.0,
   "style": "Concentré",
   "apogee": "2024-2045",
   "commentaire": "Excellents Grands Crus"
@@ -10368,7 +28095,7 @@ export const MILLESIMES_FR = [
   "id": "MIL056",
   "annee": 2010,
   "region": "Jura",
-  "note": 18,
+  "note": 18.0,
   "style": "Tension",
   "apogee": "2018-2050",
   "commentaire": "Savagnin exceptionnel"
@@ -10395,8 +28122,8 @@ export const MILLESIMES_FR = [
   "id": "MIL059",
   "annee": 2016,
   "region": "Provence",
-  "note": 17,
-  "style": "Equilibre",
+  "note": 17.0,
+  "style": "Équilibre",
   "apogee": "2020-2035",
   "commentaire": "Bandol solide"
  },
@@ -10404,7 +28131,7 @@ export const MILLESIMES_FR = [
   "id": "MIL060",
   "annee": 2019,
   "region": "Provence",
-  "note": 18,
+  "note": 18.0,
   "style": "Concentré",
   "apogee": "2024-2045",
   "commentaire": "Mourvedre superbe"
@@ -10413,7 +28140,7 @@ export const MILLESIMES_FR = [
   "id": "MIL061",
   "annee": 2015,
   "region": "Languedoc",
-  "note": 18,
+  "note": 18.0,
   "style": "Concentré",
   "apogee": "2020-2038",
   "commentaire": "Grande année rouges"
@@ -10422,8 +28149,8 @@ export const MILLESIMES_FR = [
   "id": "MIL062",
   "annee": 2019,
   "region": "Languedoc",
-  "note": 18,
-  "style": "Solaire equilibre",
+  "note": 18.0,
+  "style": "Solaire équilibré",
   "apogee": "2024-2042",
   "commentaire": "Excellent"
  },
@@ -10431,7 +28158,7 @@ export const MILLESIMES_FR = [
   "id": "MIL063",
   "annee": 2016,
   "region": "Roussillon",
-  "note": 18,
+  "note": 18.0,
   "style": "Dense",
   "apogee": "2022-2045",
   "commentaire": "Schistes expressifs"
@@ -10440,7 +28167,7 @@ export const MILLESIMES_FR = [
   "id": "MIL064",
   "annee": 2015,
   "region": "Sud-Ouest",
-  "note": 18,
+  "note": 18.0,
   "style": "Tannat mur",
   "apogee": "2022-2045",
   "commentaire": "Madiran remarquable"
@@ -10449,7 +28176,7 @@ export const MILLESIMES_FR = [
   "id": "MIL065",
   "annee": 2019,
   "region": "Sud-Ouest",
-  "note": 18,
+  "note": 18.0,
   "style": "Complet",
   "apogee": "2025-2045",
   "commentaire": "Cahors et Madiran"
@@ -10458,7 +28185,7 @@ export const MILLESIMES_FR = [
   "id": "MIL066",
   "annee": 2018,
   "region": "Beaujolais",
-  "note": 18,
+  "note": 18.0,
   "style": "Solaire",
   "apogee": "2022-2035",
   "commentaire": "Crus de garde"
@@ -10470,13 +28197,13 @@ export const MILLESIMES_FR = [
   "note": 18.5,
   "style": "Concentré",
   "apogee": "2023-2038",
-  "commentaire": "Référence recente"
+  "commentaire": "Référence récente"
  },
  {
   "id": "MIL068",
   "annee": 2020,
   "region": "Beaujolais",
-  "note": 18,
+  "note": 18.0,
   "style": "Fruit dense",
   "apogee": "2023-2036",
   "commentaire": "Excellent"
@@ -10484,7 +28211,7 @@ export const MILLESIMES_FR = [
  {
   "id": "MIL069",
   "annee": 2015,
-  "region": "Corsé",
+  "region": "Corse",
   "note": 17.5,
   "style": "Solaire",
   "apogee": "2019-2032",
@@ -10493,9 +28220,9 @@ export const MILLESIMES_FR = [
  {
   "id": "MIL070",
   "annee": 2019,
-  "region": "Corsé",
-  "note": 18,
-  "style": "Equilibre",
+  "region": "Corse",
+  "note": 18.0,
+  "style": "Équilibre",
   "apogee": "2023-2038",
   "commentaire": "Belle année"
  },
@@ -10521,7 +28248,7 @@ export const MILLESIMES_FR = [
   "id": "MIL073",
   "annee": 2001,
   "region": "Sauternes",
-  "note": 19,
+  "note": 19.0,
   "style": "Référence",
   "apogee": "2010-2060",
   "commentaire": "Millésime mythique Sauternes"
@@ -10533,31 +28260,31 @@ export const MILLESIMES_FR = [
   "note": 16.5,
   "style": "Heterogene",
   "apogee": "2022-2035",
-  "commentaire": "Gel avril severe"
+  "commentaire": "Gel avril sévère"
  },
  {
   "id": "MIL075",
   "annee": 2014,
   "region": "Bordeaux",
-  "note": 17,
+  "note": 17.0,
   "style": "Classique",
   "apogee": "2022-2038",
-  "commentaire": "Belle arriere-saison"
+  "commentaire": "Belle arrière-saison"
  },
  {
   "id": "MIL076",
   "annee": 2025,
   "region": "France (general)",
   "note": 17.5,
-  "style": "Precoce, sain, concentré",
+  "style": "Précoce, sain, concentré",
   "apogee": "2028-2050",
-  "commentaire": "Vendanges jusqu'a 20 j d'avance ; ~37,4 Mhl (+3% vs 2024, -13% vs moyenne 5 ans) ; acidites preservees"
+  "commentaire": "Vendanges jusqu'a 20 j d'avance ; ~37,4 Mhl (+3% vs 2024, -13% vs moyenne 5 ans) ; acidites préservées"
  },
  {
   "id": "MIL077",
   "annee": 2025,
   "region": "Bordeaux",
-  "note": 18,
+  "note": 18.0,
   "style": "Structure, tanins murs",
   "apogee": "2030-2055",
   "commentaire": "Vendanges des mi-aout ; etat sanitaire remarquable, pellicules epaisses, volumes en retrait"
@@ -10569,25 +28296,25 @@ export const MILLESIMES_FR = [
   "note": 17.5,
   "style": "Qualite + volume retrouve",
   "apogee": "2029-2048",
-  "commentaire": "Rendements +45% vs 2024 ; floraison precoce, chaos climatique gere"
+  "commentaire": "Rendements +45% vs 2024 ; floraison précoce, chaos climatique géré"
  },
  {
   "id": "MIL079",
   "annee": 2025,
   "region": "Champagne",
-  "note": 17,
-  "style": "Exigeant mais equilibre",
+  "note": 17.0,
+  "style": "Exigeant mais équilibré",
   "apogee": "2032-2050",
-  "commentaire": "Multiples controles de maturité ; etat sanitaire remarquable ; mise en reserve partielle"
+  "commentaire": "Multiples controles de maturité ; etat sanitaire remarquable ; mise en réserve partielle"
  },
  {
   "id": "MIL080",
   "annee": 2025,
   "region": "Loire",
-  "note": 18,
+  "note": 18.0,
   "style": "Eclat, droiture",
   "apogee": "2028-2048",
-  "commentaire": "Vendanges des fin aout ; blancs nets et acidité integree ; rouges souples et precis"
+  "commentaire": "Vendanges des fin aout ; blancs nets et acidité intégrée ; rouges souples et précis"
  },
  {
   "id": "MIL081",
@@ -10611,8 +28338,8 @@ export const MILLESIMES_FR = [
   "id": "MIL083",
   "annee": 2024,
   "region": "Saint-Émilion",
-  "note": 16,
-  "style": "Frais, fruite, equilibre",
+  "note": 16.0,
+  "style": "Frais, fruite, équilibré",
   "apogee": "2028-2040",
   "commentaire": "Profil frais et intense en fruit selon l'ODG"
  },
@@ -10621,15 +28348,15 @@ export const MILLESIMES_FR = [
   "annee": 2023,
   "region": "Saint-Émilion",
   "note": 16.5,
-  "style": "Frais, élégant, equilibre",
+  "style": "Frais, élégant, équilibré",
   "apogee": "2027-2042",
-  "commentaire": "Profil ODG : fraîcheur et elegance"
+  "commentaire": "Profil ODG : fraîcheur et élégance"
  },
  {
   "id": "MIL085",
   "annee": 2022,
   "region": "Saint-Émilion",
-  "note": 18,
+  "note": 18.0,
   "style": "Genereux, concentré",
   "apogee": "2028-2050",
   "commentaire": "Profil ODG : generosite et concentration malgre la canicule"
@@ -12790,13 +30517,13 @@ export const CRUS_FR = [
  }
 ]
 
-// 15 repères chiffrés (INAO, interprofessions).
+// 16 repères chiffrés (INAO, interprofessions).
 export const REPERES_FR = [
  {
   "id": "REP01",
   "region": "Bourgogne",
   "sujet": "84 AOC au total",
-  "donnee": "33 Grands Crus, 44 appellations Villages, 7 appellations Regionales",
+  "donnee": "33 Grands Crus, 44 appellations Villages, 7 appellations Régionales",
   "source": "vins-bourgogne.fr"
  },
  {
@@ -12810,7 +30537,7 @@ export const REPERES_FR = [
   "id": "REP03",
   "region": "Alsace",
   "sujet": "Grands Crus",
-  "donnee": "51 terroirs sur 47 communes (decret 12/01/2007) ; 14 Bas-Rhin, 37 Haut-Rhin ; ~4-5% de la production",
+  "donnee": "51 terroirs sur 47 communes (décret 12/01/2007) ; 14 Bas-Rhin, 37 Haut-Rhin ; ~4-5% de la production",
   "source": "INAO / CIVA"
  },
  {
@@ -12831,7 +30558,7 @@ export const REPERES_FR = [
   "id": "REP06",
   "region": "Bordeaux",
   "sujet": "Classement 1855 Médoc",
-  "donnee": "61 crus classés, jamais revise sauf 1973 (Mouton en 1er)",
+  "donnee": "61 crus classés, jamais révisé sauf 1973 (Mouton en 1er)",
   "source": "Classement 1855"
  },
  {
@@ -12845,7 +30572,7 @@ export const REPERES_FR = [
   "id": "REP08",
   "region": "Bordeaux",
   "sujet": "Graves 1953/1959",
-  "donnee": "16 mentions de cru classé (14 chateaux), tous en Pessac-Léognan (AOC creee en 1989)",
+  "donnee": "16 mentions de cru classé (14 chateaux), tous en Pessac-Léognan (AOC créée en 1989)",
   "source": "Classement Graves"
  },
  {
@@ -12880,22 +30607,29 @@ export const REPERES_FR = [
   "id": "REP13",
   "region": "France",
   "sujet": "AOC/AOP viticoles",
-  "donnee": "386 AOC/AOP viticoles + 77 IG viticoles annoncees par l'INAO (2023) ; ~3 280 produits sous AOC en avril 2026",
+  "donnee": "386 AOC/AOP viticoles + 77 IG viticoles annoncees par l'INAO (2023)",
   "source": "INAO / Wikipedia"
  },
  {
   "id": "REP14",
   "region": "France",
   "sujet": "Premières AOC",
-  "donnee": "76 appellations reconnues en 1936, dont les 6 premieres au decret du 15 mai 1936 : Arbois, Cassis, Chateauneuf-du-Pape, Cognac, Monbazillac, Tavel",
+  "donnee": "76 appellations reconnues en 1936 ; les 6 premières au décret du 15 mai 1936 : Arbois, Cassis, Chateauneuf-du-Pape, Cognac, Monbazillac, Tavel",
   "source": "INAO / Vitisphere"
  },
  {
   "id": "REP15",
   "region": "France",
   "sujet": "Reforme 2009",
-  "donnee": "Les Vins de Pays sont devenus des IGP ; les AOVDQS ont disparu en 2011 (bascule en AOC ou IGP)",
-  "source": "Reglementation UE/INAO"
+  "donnee": "Les Vins de Pays sont devenus des IGP ; les AOVDQS ont disparu en 2011",
+  "source": "Reglementation UE / INAO"
+ },
+ {
+  "id": "REP16",
+  "region": "France",
+  "sujet": "Prix (methode)",
+  "donnee": "Fourchettes estimees prix caviste TTC 2026 : 225 appellations en référence nominative, 355 par modèle régional/IGP",
+  "source": "Estimation Oeno"
  }
 ]
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { Search, X, Star, Grape, ArrowRight, Library, Camera, MapPin, Landmark } from 'lucide-react'
-import { WINE_DB } from '../data/wineDatabase'
+import { CATALOGUE } from '../lib/vinsReferentiel'
 import { millesimesAPrivilegier } from '../lib/millesimes'
 import { normaliser } from '../data/aromes'
 import { getDecouvertesAsWines } from '../lib/decouvertes'
@@ -29,7 +29,7 @@ function chercher(query, extra = []) {
   const q = normaliser(query.trim())
   if (q.length < 2) return []
   const res = []
-  for (const w of [...WINE_DB, ...extra]) {
+  for (const w of [...CATALOGUE, ...extra]) {
     const app = normaliser(w.appellation)
     const cepageHit = (w.cepages || []).find(c => normaliser(c).includes(q))
     let score = 0
