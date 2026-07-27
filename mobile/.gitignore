@@ -1,0 +1,26 @@
+# Expo / RN
+node_modules/
+.expo/
+dist/
+web-build/
+*.orig.*
+
+# Native
+ios/
+android/
+
+# Metro
+.metro-health-check*
+
+# Debug
+npm-debug.*
+*.log
+
+# macOS
+.DS_Store
+
+# Env
+.env*.local
+
+# Typescript
+expo-env.d.ts
