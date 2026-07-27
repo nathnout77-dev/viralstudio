@@ -316,6 +316,13 @@ export default async function handler(req, res) {
   // répond de façon fiable — inutile de lui faire attendre 8 s derrière deux
   // échecs. Les deux autres suivent en décalé comme filets de sécurité, prêts
   // à prendre le relais si Claude est lui-même limité. Le premier JSON gagne.
+  //
+  // Ordre des filets : Gemini AVANT Groq. Les logs Vercel (24-25/07/2026)
+  // confirment que ce compte Groq n'a plus AUCUN modèle vision servi — les
+  // quatre modèles codés répondent 404/400 et la découverte du catalogue
+  // renvoie « (aucun) ». Groq vision passe donc en dernier recours : s'il
+  // redevient disponible un jour, la découverte le rattrape automatiquement,
+  // mais il ne doit jamais retarder un fournisseur qui, lui, sait lire.
   const delai = ms => new Promise(r => setTimeout(r, ms))
   let gagne = false
   const enCourse = (chaine, attente, nom) => (async () => {
@@ -330,7 +337,7 @@ export default async function handler(req, res) {
   })()
 
   const chaines = { claude: chaineClaude, groq: chaineGroq, gemini: chaineGemini }
-  const ordreDefaut = ['claude', 'groq', 'gemini']
+  const ordreDefaut = ['claude', 'gemini', 'groq']
   const tete = memoire.gagnant && ordreDefaut.includes(memoire.gagnant)
     ? [memoire.gagnant, ...ordreDefaut.filter(f => f !== memoire.gagnant)]
     : ordreDefaut
