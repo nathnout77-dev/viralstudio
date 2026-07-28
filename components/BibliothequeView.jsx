@@ -16,6 +16,7 @@ import BadgeGrandPublic from './BadgeGrandPublic'
 import PastilleQualitePrix from './PastilleQualitePrix'
 import { loadDecouvertes, removeDecouverte, decouverteNumero } from '../lib/decouvertes'
 import { partagerVin } from '../lib/partage'
+import BoutonAchat from './BoutonAchat'
 import { useAppellationRef } from '../lib/useReferentiel'
 
 // Chargé dynamiquement : Comparateur importe FicheVin de ce fichier — le
@@ -506,6 +507,9 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
               </p>
             </div>
           )}
+
+          {/* Où l'acheter — présent sur chaque vin, sans exception */}
+          <BoutonAchat wine={wine} millesime={wine.bonsMilsimes?.[0] || null} />
 
           {/* Le terroir, d'après la base viticole nationale (chargée à la volée) */}
           <BlocTerroir appellation={wine.appellation} region={wine.region} />

@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { Wine, Sparkles, Plus, Utensils, ScanLine, UserCircle2, Sprout, GraduationCap, Home, Search, LayoutGrid, Library, Map, Layers } from 'lucide-react'
+import { Wine, Sparkles, Plus, Utensils, ScanLine, UserCircle2, Sprout, GraduationCap, Home, Search, LayoutGrid, Library, Map, Layers, Users } from 'lucide-react'
 import LogoOeno from './LogoOeno'
 import useCtaBreathe from '../lib/useCtaBreathe'
 
@@ -15,6 +15,7 @@ const TABLET_NAV = [
   { id: 'decouvrir', label: 'Découvrir', Icon: Layers },
   { id: 'trouver',   label: 'Trouver',   Icon: Search },
   { id: 'cave',      label: 'Cave',      Icon: Wine },
+  { id: 'social',    label: 'Amis',      Icon: Users },
   { id: 'vins',      label: 'Vins',      Icon: Library },
   { id: 'explorer',  label: 'Explorer',  Icon: Map },
   { id: 'apprendre', label: 'Apprendre', Icon: GraduationCap },

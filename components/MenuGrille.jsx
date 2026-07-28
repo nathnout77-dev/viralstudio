@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import {
   X, Home, Search, Wine, Library, Map, GraduationCap, Sparkles,
-  GlassWater, BookOpen, ScanLine, Utensils, UserCircle2, Plus, Layers,
+  GlassWater, BookOpen, ScanLine, Utensils, UserCircle2, Plus, Layers, Users,
 } from 'lucide-react'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -15,6 +15,7 @@ const PARCOURS = [
   { id: 'decouvrir', label: 'Découvrir',            Icon: Layers },
   { id: 'trouver',   label: 'Trouver un vin',       Icon: Search },
   { id: 'cave',      label: 'Ma cave',              Icon: Wine },
+  { id: 'social',    label: 'Mes amis',             Icon: Users },
   { id: 'vins',      label: 'Bibliothèque',         Icon: Library },
   { id: 'explorer',  label: 'Explorer les régions', Icon: Map },
   { id: 'apprendre', label: 'Apprendre',            Icon: GraduationCap },

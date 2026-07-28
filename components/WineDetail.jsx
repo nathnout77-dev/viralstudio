@@ -3,6 +3,7 @@ import { X, Star, Thermometer, Clock, Wine, MapPin, Grape, TrendingUp, UtensilsC
 import dynamic from 'next/dynamic'
 import WineGlassAnim from './WineGlassAnim'
 import { FavoriStar } from './WineCard'
+import BoutonAchat from './BoutonAchat'
 import useModalBehavior from '../lib/useModal'
 
 const DegustationSimulateur = dynamic(() => import('./DegustationSimulateur'), { ssr: false })
@@ -172,6 +173,12 @@ export default function WineDetail({ wine, onClose, onEdit, onToggleFavori }) {
               <p className="text-sm text-anthracite-700 italic leading-relaxed">&ldquo;{wine.notes}&rdquo;</p>
             </div>
           )}
+
+          {/* En racheter : la bouteille de la cave garde son chemin d'achat */}
+          <BoutonAchat
+            wine={{ appellation: wine.name || wine.appellation, region: wine.region }}
+            millesime={wine.vintage || null}
+          />
         </div>
       </div>
 

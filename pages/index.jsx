@@ -42,6 +42,10 @@ const DecouvrirSwipe  = dynamic(() => import('../components/DecouvrirSwipe'), { 
 const SommelierForm   = dynamic(() => import('../components/SommelierForm'), { ssr: false })
 const GuideView       = dynamic(() => import('../components/GuideView'), { ssr: false })
 const FicheVin        = dynamic(() => import('../components/BibliothequeView').then(m => m.FicheVin), { ssr: false })
+// Le social ne sert qu'aux comptes connectés : inutile de le charger au démarrage.
+const SocialView      = dynamic(() => import('../components/SocialView'), { ssr: false })
+// La présentation embarque les chiffres de la base nationale : à la demande.
+const PitchOeno       = dynamic(() => import('../components/PitchOeno'), { ssr: false })
 
 // Étapes de la visite guidée (premier lancement mobile) : chaque étape éclaire
 // un vrai bouton de l'écran et explique sa fonction.
@@ -110,6 +114,7 @@ const VUES = {
   decouvrir: { titre: '🍷 Découvrir',              sousTitre: 'Glissez, gardez ce qui vous plaît' },
   trouver:   { titre: '🔍 Trouver un vin',        sousTitre: 'On vous guide en 2 questions' },
   cave:      { titre: '🍾 Ma cave',                sousTitre: 'Bouteilles, dégustations, envies' },
+  social:    { titre: '👥 Mes amis',               sousTitre: 'Caves partagées et discussions' },
   vins:      { titre: '📚 La bibliothèque',        sousTitre: `${WINE_DB_TERROIR.length} vins décodés` },
   explorer:  { titre: '🗺️ Explorer les régions',   sousTitre: 'Carte, routes des vins, domaines' },
   apprendre: { titre: '🎓 Apprendre',              sousTitre: 'Votre parcours du vin' },
@@ -137,6 +142,7 @@ export default function App() {
   const [journalPrefill, setJournalPrefill] = useState(null)
   const [enviePrefill, setEnviePrefill] = useState(null) // « J'ai acheté » depuis la liste d'envies
   const [showCompte, setShowCompte]   = useState(false)
+  const [showPitch, setShowPitch]     = useState(false) // « Œno, c'est quoi ? »
   const [friendCode, setFriendCode]   = useState(null) // ?cave=CODE → cave d'un ami
   const [nextStep, setNextStep]       = useState(null) // guidage : prochaine étape après un ajout
   const [showTour, setShowTour]       = useState(false) // visite guidée premier lancement mobile
@@ -447,6 +453,7 @@ export default function App() {
               onScan={() => setShowScan(true)}
               onAssistant={() => setShowAssistant(true)}
               onRecherche={() => setShowRecherche(true)}
+              onPitch={() => setShowPitch(true)}
             />
           )}
           {view === 'decouvrir' && (
@@ -472,6 +479,7 @@ export default function App() {
               onOpenBibliotheque={() => goTo('vins')}
             />
           )}
+          {view === 'social'    && <SocialView onCompte={() => setShowCompte(true)} onVoirVin={setDetailWine} />}
           {view === 'vins'      && <BibliothequeView onAddWine={saveWine} mode={mode} initialSearch={librarySearch} onNoter={noterDegustation} />}
           {view === 'explorer'  && <ParcoursExplorer onAddWine={saveWine} onNoter={noterDegustation} />}
           {view === 'apprendre' && <ParcoursApprendre />}
@@ -530,6 +538,12 @@ export default function App() {
         )}
         {friendCode && <CaveAmieViewer code={friendCode} onClose={closeFriendCave} />}
         {showCompte && <CompteSync onClose={() => setShowCompte(false)} />}
+        {showPitch && (
+          <PitchOeno
+            onClose={() => setShowPitch(false)}
+            onCommencer={() => { setShowPitch(false); goTo('trouver') }}
+          />
+        )}
         {showAssistant && <AssistantView onClose={() => setShowAssistant(false)} />}
         {showMenu && (
           <MenuGrille

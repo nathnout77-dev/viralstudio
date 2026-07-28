@@ -16,6 +16,7 @@ import { supabase } from '../lib/supabase'
 import { logAchat } from '../lib/achats'
 import { partagerVin } from '../lib/partage'
 import BadgeGrandPublic from './BadgeGrandPublic'
+import BoutonAchat from './BoutonAchat'
 import Icone from './Icone'
 
 const DegustationSimulateur = dynamic(() => import('./DegustationSimulateur'), { ssr: false })
@@ -1602,6 +1603,8 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
               {onAddWine && (
                 <AchatBloc achat={achat} onDecision={deciderAchat} millesime={pickMillesime(matched, parsed)} />
               )}
+              {/* Comparer le prix du rayon avant de se décider */}
+              <BoutonAchat wine={matched} millesime={pickMillesime(matched, parsed)} />
               <button
                 onClick={recommencer}
                 className="w-full min-h-[44px] flex items-center justify-center gap-2 rounded-full text-xs font-medium text-anthracite-500 hover:text-anthracite-800 transition-colors duration-300 cursor-pointer"
@@ -1711,6 +1714,18 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
               {nomEnvie && <EnvieAction appellation={nomEnvie} />}
               {onAddWine && (parsed.appellation || parsed.domaine) && (
                 <AchatBloc achat={achat} onDecision={deciderAchat} millesime={Number(parsed.millesime) || null} />
+              )}
+              {/* Vin inconnu de la base : on cherche quand même chez les marchands,
+                  à partir de ce que l'étiquette a livré. */}
+              {(parsed.appellation || parsed.domaine) && (
+                <BoutonAchat
+                  wine={{
+                    appellation: parsed.appellation || parsed.domaine,
+                    domaines: parsed.domaine ? [{ name: parsed.domaine }] : undefined,
+                    region: parsed.region,
+                  }}
+                  millesime={Number(parsed.millesime) || null}
+                />
               )}
               <button
                 onClick={recommencer}

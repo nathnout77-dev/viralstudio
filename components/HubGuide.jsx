@@ -48,7 +48,7 @@ function CarteIntention({ intention, onClick, index }) {
   )
 }
 
-export default function HubGuide({ wines, onParcours, onScan, onAssistant, onRecherche, prenom }) {
+export default function HubGuide({ wines, onParcours, onScan, onAssistant, onRecherche, onPitch, prenom }) {
   const [suggestion, setSuggestion] = useState(null)
 
   useEffect(() => {
@@ -131,6 +131,35 @@ export default function HubGuide({ wines, onParcours, onScan, onAssistant, onRec
           </button>
         </div>
       </div>
+
+      {/* Présentation d'Œno. Mise en avant tant que la cave est vide — c'est le
+          moment où l'on se demande à quoi sert l'app — puis reléguée à un
+          simple lien pour ne pas encombrer les habitués. */}
+      {onPitch && (wines?.length ? (
+        <button
+          onClick={onPitch}
+          className="mx-auto mt-8 flex items-center gap-1.5 text-[11px] font-semibold text-anthracite-400 hover:text-wine-800 transition-colors cursor-pointer"
+        >
+          <span role="img" aria-hidden="true">✨</span> Œno, c&apos;est quoi ?
+        </button>
+      ) : (
+        <button
+          onClick={onPitch}
+          className="w-full mt-6 rounded-3xl p-5 text-left text-cream shadow-wine hover:-translate-y-0.5 active:scale-[0.99] transition-all duration-300 cursor-pointer animate-fade-in-up"
+          style={{ background: 'linear-gradient(135deg, #0C0A09 0%, #3a0616 60%, #5c0d22 100%)' }}
+        >
+          <div className="flex items-center gap-4">
+            <span className="text-2xl leading-none flex-shrink-0" role="img" aria-hidden="true">✨</span>
+            <div className="min-w-0 flex-1">
+              <div className="font-serif text-base font-bold">Première visite ? Voici Œno en 30 secondes</div>
+              <div className="text-[11px] text-cream/60 mt-0.5">
+                Ce que l&apos;app fait, et pourquoi elle ne vous prendra pas pour un expert
+              </div>
+            </div>
+            <ArrowRight size={16} className="text-gold-400 flex-shrink-0" />
+          </div>
+        </button>
+      ))}
     </div>
   )
 }

@@ -175,10 +175,14 @@ export function CaveAmieViewer({ code, onClose }) {
       setState({ loading: false, partage: null, error: 'Le partage de cave n\'est pas disponible pour le moment.' })
       return
     }
-    supabase.from('partages').select('*').eq('code', code.toUpperCase()).maybeSingle()
+    // Lecture par code via une fonction dédiée : elle exige le code exact et ne
+    // renvoie qu'une cave. La table n'est plus lisible en vrac, ce qui empêche
+    // d'énumérer les caves des autres.
+    supabase.rpc('cave_par_code', { code_recherche: code.toUpperCase() })
       .then(({ data, error }) => {
-        if (error || !data) setState({ loading: false, partage: null, error: 'Ce code de partage est introuvable ou a été désactivé.' })
-        else setState({ loading: false, partage: data, error: null })
+        const ligne = Array.isArray(data) ? data[0] : data
+        if (error || !ligne) setState({ loading: false, partage: null, error: 'Ce code de partage est introuvable ou a été désactivé.' })
+        else setState({ loading: false, partage: ligne, error: null })
       })
   }, [code])
 
