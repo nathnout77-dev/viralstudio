@@ -3,6 +3,7 @@ import { Bell, BellOff, BellRing, Check, Loader2, Share } from 'lucide-react'
 import {
   etatNotifications, demanderNotifications, installationRequise, essaiNotification,
 } from '../lib/notifications'
+import { activerPush, pushActif, pushConfigure } from '../lib/push'
 import { toast } from './Toast'
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -21,10 +22,12 @@ export default function ReglagesNotifications({ compact = false }) {
   const [etat, setEtat]       = useState(null)   // null = pas encore lu (rendu serveur)
   const [aInstaller, setAInstaller] = useState(false)
   const [occupe, setOccupe]   = useState(false)
+  const [ferme, setFerme]     = useState(false)  // prévenu même app fermée (Web Push)
 
   const relire = useCallback(() => {
     setEtat(etatNotifications())
     setAInstaller(installationRequise())
+    pushActif().then(setFerme)
   }, [])
 
   useEffect(() => {
@@ -43,6 +46,7 @@ export default function ReglagesNotifications({ compact = false }) {
     setOccupe(false)
     if (r === 'granted') {
       toast('🔔 Notifications activées')
+      setFerme(await activerPush())
       essaiNotification()
     } else if (r === 'denied') {
       toast('Notifications refusées')
@@ -116,7 +120,11 @@ export default function ReglagesNotifications({ compact = false }) {
           <div className="min-w-0 flex-1">
             <Entete Icone={BellRing} titre="Notifications activées" actif />
             <p className="text-[11px] text-anthracite-400 leading-relaxed mt-1">
-              Œno vous prévient quand un ami écrit, app ouverte ou en arrière-plan.
+              {ferme
+                ? 'Œno vous prévient quand un ami écrit, même application fermée.'
+                : pushConfigure
+                  ? 'Œno vous prévient quand un ami écrit, app ouverte ou en arrière-plan. L’alerte application fermée s’activera à la prochaine ouverture.'
+                  : 'Œno vous prévient quand un ami écrit, app ouverte ou en arrière-plan.'}
             </p>
           </div>
           <button onClick={essayer} disabled={occupe}

@@ -4,6 +4,7 @@ import {
 } from '../lib/social'
 import { notifier, pastilleApp } from '../lib/notifications'
 import { lireAvatar, ecrireAvatar, ecrirePseudo, recupererAvatarCloud } from '../lib/avatar'
+import { activerPush, pushConfigure } from '../lib/push'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Veille des messages d'amis — le seul endroit de l'app qui surveille la
@@ -72,6 +73,19 @@ export default function VeilleMessages({ amiOuvert }) {
       }
     })()
     return () => { vivant = false }
+  }, [moi?.id]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Inscription au push, à chaque ouverture de l'app : l'adresse d'envoi
+  // attribuée par le navigateur peut changer, et c'est en base qu'elle doit
+  // être à jour — sinon l'ami écrit dans le vide. Sans effet si le push n'est
+  // pas configuré ou si l'autorisation manque.
+  useEffect(() => {
+    if (!moi || !pushConfigure) return
+    activerPush()
+    if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) return
+    const surMessage = e => { if (e.data?.type === 'oeno-push-a-renouveler') activerPush() }
+    navigator.serviceWorker.addEventListener('message', surMessage)
+    return () => navigator.serviceWorker.removeEventListener('message', surMessage)
   }, [moi?.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Annuaire des pseudos — rafraîchi de loin en loin, une amitié se noue rarement.

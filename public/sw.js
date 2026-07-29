@@ -36,6 +36,45 @@ self.addEventListener('activate', (event) => {
   self.clients.claim()
 })
 
+// Message poussé par le serveur — le seul chemin qui fonctionne application
+// fermée, puisque plus aucune page n'est là pour surveiller quoi que ce soit.
+//
+// Les navigateurs imposent qu'un push se voie toujours : on affiche donc à
+// tous les coups. Quand une fenêtre Œno est déjà ouverte et visible, la
+// veille en direct a probablement déjà prévenu — même `tag`, la pastille est
+// alors remplacée au lieu d'être doublée, et sans réalerter.
+self.addEventListener('push', (event) => {
+  let charge = {}
+  try { charge = event.data ? event.data.json() : {} } catch (e) { /* charge illisible */ }
+  const amiId = charge.amiId || ''
+
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((fenetres) => {
+      const sousLesYeux = fenetres.some((f) => f.visibilityState === 'visible')
+      return self.registration.showNotification(charge.titre || '🍷 Œno', {
+        body: charge.corps || 'Un ami vous a écrit.',
+        tag: amiId ? `oeno-ami-${amiId}` : 'oeno-message',
+        renotify: !sousLesYeux,
+        silent: sousLesYeux,
+        icon: '/icons/icon-192.png',
+        badge: '/icons/icon-192.png',
+        vibrate: sousLesYeux ? undefined : [90, 45, 90],
+        data: { amiId },
+      })
+    })
+  )
+})
+
+// Les adresses d'envoi tournent de temps en temps (le navigateur en décide) :
+// on prévient les fenêtres ouvertes pour qu'elles réenregistrent la nouvelle.
+self.addEventListener('pushsubscriptionchange', (event) => {
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((fenetres) => {
+      fenetres.forEach((f) => f.postMessage({ type: 'oeno-push-a-renouveler' }))
+    })
+  )
+})
+
 // Clic sur la notification « un ami vous a écrit » : on ramène l'onglet Œno
 // existant au premier plan plutôt que d'en ouvrir un second, et on lui indique
 // quelle conversation ouvrir. Sans onglet vivant, on démarre l'app sur la
