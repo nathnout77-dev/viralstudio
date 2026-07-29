@@ -175,7 +175,7 @@ export default function BudgetCaviste() {
               className={`px-4 py-2.5 rounded-xl text-sm font-bold border transition-all cursor-pointer ${
                 !custom && budget === b
                   ? 'bg-wine-800 text-cream border-wine-800 shadow-wine'
-                  : 'bg-white text-anthracite-600 border-anthracite-200 hover:border-wine-300'
+                  : 'bg-carte text-anthracite-600 border-anthracite-200 hover:border-wine-300'
               }`}
             >
               {b} €
@@ -187,7 +187,7 @@ export default function BudgetCaviste() {
               value={custom}
               onChange={e => setCustom(e.target.value)}
               className={`w-28 pl-3 pr-8 py-2.5 rounded-xl text-sm font-semibold border focus:outline-none focus:ring-2 focus:ring-gold-600/40 transition-all ${
-                custom ? 'border-wine-700 bg-wine-50 text-wine-800' : 'border-anthracite-200 bg-white text-anthracite-700'
+                custom ? 'border-wine-700 bg-wine-50 text-wine-800' : 'border-anthracite-200 bg-carte text-anthracite-700'
               }`}
               aria-label="Budget libre en euros"
             />
@@ -204,7 +204,7 @@ export default function BudgetCaviste() {
               className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                 occasion === id
                   ? 'border-wine-700 bg-wine-50 shadow-sm'
-                  : 'border-anthracite-200 bg-white hover:border-wine-300'
+                  : 'border-anthracite-200 bg-carte hover:border-wine-300'
               }`}
             >
               <Icon size={15} className={occasion === id ? 'text-wine-700' : 'text-anthracite-400'} />
@@ -224,7 +224,7 @@ export default function BudgetCaviste() {
                 className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
                   couleur === c.id
                     ? 'bg-wine-800 text-cream border-wine-800'
-                    : 'bg-white text-anthracite-600 border-anthracite-200 hover:border-wine-300'
+                    : 'bg-carte text-anthracite-600 border-anthracite-200 hover:border-wine-300'
                 }`}
               >
                 {c.label}
@@ -333,7 +333,7 @@ export default function BudgetCaviste() {
                           ) : (
                             <span
                               key={d.name}
-                              className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium text-anthracite-600 bg-white border border-anthracite-200"
+                              className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium text-anthracite-600 bg-carte border border-anthracite-200"
                               title="À demander chez votre caviste"
                             >
                               {d.name}

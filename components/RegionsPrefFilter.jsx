@@ -41,7 +41,7 @@ export default function RegionsPrefFilter({ selected, onChange }) {
               className={`px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-all cursor-pointer ${
                 active
                   ? 'bg-wine-800 border-wine-800 text-cream shadow-sm'
-                  : 'bg-white border-anthracite-200 text-anthracite-600 hover:border-wine-300'
+                  : 'bg-carte border-anthracite-200 text-anthracite-600 hover:border-wine-300'
               }`}
               aria-pressed={active}
             >

@@ -5,6 +5,8 @@ import {
 import { notifier, pastilleApp } from '../lib/notifications'
 import { lireAvatar, ecrireAvatar, ecrirePseudo, recupererAvatarCloud } from '../lib/avatar'
 import { activerPush, pushConfigure } from '../lib/push'
+import { lireReglages } from '../lib/reglages'
+import { glouglou } from '../lib/son'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Veille des messages d'amis — le seul endroit de l'app qui surveille la
@@ -114,6 +116,10 @@ export default function VeilleMessages({ amiOuvert }) {
     // l'app est au premier plan.
     const lisible = typeof document !== 'undefined' && document.visibilityState === 'visible'
     if (lisible && ouvert.current && message.expediteur_id === ouvert.current) return
+
+    // Le glouglou d'Œno, en plus de la notification système : c'est lui qu'on
+    // reconnaît sans regarder l'écran. Il ne peut sonner que l'app ouverte.
+    if (lireReglages().son) glouglou()
 
     const pseudo = pseudos.current.get(message.expediteur_id) || 'Un ami'
     await notifier({

@@ -93,7 +93,7 @@ function Bulle({ message, deMoi, onVoirVin }) {
       <div className={`max-w-[78%] rounded-2xl px-3.5 py-2.5 ${
         deMoi
           ? 'bg-wine-800 text-cream rounded-br-sm'
-          : 'bg-white border border-anthracite-900/[0.08] text-anthracite-900 rounded-bl-sm'
+          : 'bg-carte border border-anthracite-900/[0.08] text-anthracite-900 rounded-bl-sm'
       }`}>
         {message.vin && (
           <button
@@ -257,7 +257,7 @@ function Discussion({ ami, moi, photo, onRetour, onVoirCave, onVoirVin }) {
 
       {/* Joindre une bouteille de ma cave */}
       {joindre && (
-        <div className="border border-gold-500/30 rounded-2xl bg-white p-3 mb-2 max-h-52 overflow-y-auto animate-fade-in">
+        <div className="border border-gold-500/30 rounded-2xl bg-carte p-3 mb-2 max-h-52 overflow-y-auto animate-fade-in">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[11px] font-bold text-anthracite-700">🍷 Quelle bouteille ?</span>
             <button onClick={() => setJoindre(false)} className="text-anthracite-400 hover:text-anthracite-900 cursor-pointer">

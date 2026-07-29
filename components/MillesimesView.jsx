@@ -288,7 +288,7 @@ export default function MillesimesView() {
                 key={w.id}
                 onClick={() => setVinChoisi(w)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
-                  vinFocus?.id === w.id ? 'bg-wine-800 text-cream border-transparent' : 'bg-white text-anthracite-600 border-anthracite-200 hover:border-wine-300'
+                  vinFocus?.id === w.id ? 'bg-wine-800 text-cream border-transparent' : 'bg-carte text-anthracite-600 border-anthracite-200 hover:border-wine-300'
                 }`}
               >
                 <WineVisuel type={w.type} size={11} />
@@ -312,7 +312,7 @@ export default function MillesimesView() {
             <div className="mt-4 rounded-2xl border border-gold-500/30 p-4"
                  style={{ background: 'linear-gradient(135deg, #fdf9f0, #f7ecd9)' }}>
               <div className="flex items-start gap-3">
-                <div className="w-11 h-11 rounded-2xl bg-white flex items-center justify-center flex-shrink-0 border border-anthracite-900/[0.06]">
+                <div className="w-11 h-11 rounded-2xl bg-carte flex items-center justify-center flex-shrink-0 border border-anthracite-900/[0.06]">
                   <WineVisuel type={vinFocus.type} size={22} />
                 </div>
                 <div className="min-w-0 flex-1">
@@ -372,7 +372,7 @@ export default function MillesimesView() {
               <select
                 value={value}
                 onChange={e => onChange(e.target.value)}
-                className="pl-3 pr-8 py-2 bg-white border border-anthracite-900/10 rounded-full text-xs text-anthracite-700 focus:outline-none focus:ring-2 focus:ring-gold-600/40 cursor-pointer appearance-none transition-all"
+                className="pl-3 pr-8 py-2 bg-carte border border-anthracite-900/10 rounded-full text-xs text-anthracite-700 focus:outline-none focus:ring-2 focus:ring-gold-600/40 cursor-pointer appearance-none transition-all"
               >
                 {options.map(o => <option key={o}>{o}</option>)}
               </select>

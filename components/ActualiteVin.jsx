@@ -130,7 +130,7 @@ export default function ActualiteVin() {
         <button
           onClick={() => load(true)}
           disabled={loading}
-          className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold bg-white text-anthracite-600 border border-anthracite-200 hover:border-wine-300 hover:text-wine-700 transition-all cursor-pointer disabled:opacity-50 min-h-[44px]"
+          className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold bg-carte text-anthracite-600 border border-anthracite-200 hover:border-wine-300 hover:text-wine-700 transition-all cursor-pointer disabled:opacity-50 min-h-[44px]"
           aria-label="Actualiser les actualités"
         >
           <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />

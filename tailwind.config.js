@@ -5,7 +5,9 @@ module.exports = {
     extend: {
       colors: {
         wine: {
-          50:  '#fdf2f4',
+          /* Rose très pâle des encarts : sur fond sombre, il devient une
+             teinte bordeaux profonde plutôt qu'un aplat rose éclatant. */
+          50:  'rgb(var(--wine-50) / <alpha-value>)',
           100: '#fae0e4',
           200: '#f5c0ca',
           300: '#ee91a2',
@@ -21,23 +23,39 @@ module.exports = {
           300: '#e8c96b',
           400: '#d4a847',
           500: '#c9a84c',
-          600: '#A16207', /* or texte sur fond clair — contraste ≥ 4.5:1 */
-          700: '#854d0e',
+          /* Or de TEXTE : doit rester lisible sur le fond du moment, donc
+             variable — sombre sur crème, clair sur nuit. Contraste ≥ 4.5:1
+             dans les deux thèmes. */
+          600: 'rgb(var(--or-texte) / <alpha-value>)',
+          700: 'rgb(var(--or-texte-fort) / <alpha-value>)',
         },
-        /* Gamme "pierre chaude" — noir profond luxe (#0C0A09 → crème) */
+        /* Gamme "pierre chaude". Elle porte le texte ET les bordures, donc
+           elle s'inverse avec le thème : anthracite-900 est le texte
+           principal, sombre sur clair et clair sur sombre. Les surfaces qui
+           doivent rester noires quel que soit le thème utilisent `nuit`. */
         anthracite: {
-          50:  '#fafaf9',
-          100: '#f0efed',
-          200: '#e7e5e4',
-          300: '#d6d3d1',
-          400: '#a8a29e',
-          500: '#78716c',
-          600: '#57534e',
-          700: '#44403c',
-          800: '#292524',
-          900: '#1c1917',
-          950: '#0c0a09',
+          50:  'rgb(var(--anth-50) / <alpha-value>)',
+          100: 'rgb(var(--anth-100) / <alpha-value>)',
+          200: 'rgb(var(--anth-200) / <alpha-value>)',
+          300: 'rgb(var(--anth-300) / <alpha-value>)',
+          400: 'rgb(var(--anth-400) / <alpha-value>)',
+          500: 'rgb(var(--anth-500) / <alpha-value>)',
+          600: 'rgb(var(--anth-600) / <alpha-value>)',
+          700: 'rgb(var(--anth-700) / <alpha-value>)',
+          800: 'rgb(var(--anth-800) / <alpha-value>)',
+          900: 'rgb(var(--anth-900) / <alpha-value>)',
+          950: 'rgb(var(--anth-950) / <alpha-value>)',
         },
+        /* Le fond de page et la surface des cartes — le cœur du thème. */
+        fond:  'rgb(var(--fond) / <alpha-value>)',
+        carte: 'rgb(var(--carte) / <alpha-value>)',
+        /* Noirs FIXES : voiles de modale, bulles d'aide, encarts sombres
+           assumés. Ils ne suivent pas le thème, sinon ils s'éclairciraient
+           en mode sombre alors qu'ils portent du texte crème. */
+        nuit:      '#0C0A09',
+        'nuit-doux': '#1C1917',
+        /* Crème FIXE : c'est la couleur du texte posé sur bordeaux ou sur
+           noir. Elle doit rester claire dans les deux thèmes. */
         cream: '#FAFAF9',
       },
       fontFamily: {

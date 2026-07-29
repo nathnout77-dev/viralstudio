@@ -21,6 +21,7 @@ import { toast } from '../components/Toast'
 import { normaliser } from '../data/aromes'
 import { WINE_DB_TERROIR } from '../data/wineDatabase'
 import useSwipeNav from '../lib/useSwipeNav'
+import { lireReglages } from '../lib/reglages'
 
 // Ordre des onglets pour la navigation par glissement (mobile). Il reprend
 // EXACTEMENT l'ordre visible dans la barre du bas (Découvrir · Trouver · Scan ·
@@ -47,6 +48,7 @@ const SocialView      = dynamic(() => import('../components/SocialView'), { ssr:
 // La présentation embarque les chiffres de la base nationale : à la demande.
 const PitchOeno       = dynamic(() => import('../components/PitchOeno'), { ssr: false })
 const AvatarEditeur   = dynamic(() => import('../components/AvatarProfil'), { ssr: false })
+const Reglages        = dynamic(() => import('../components/Reglages'), { ssr: false })
 // Veille des messages d'amis : aucun rendu, mais elle doit tourner en
 // permanence — c'est elle qui notifie quand un ami écrit, quel que soit l'écran.
 const VeilleMessages  = dynamic(() => import('../components/VeilleMessages'), { ssr: false })
@@ -150,6 +152,7 @@ export default function App() {
   const [showCompte, setShowCompte]   = useState(false)
   const [showPitch, setShowPitch]     = useState(false) // « Œno, c'est quoi ? »
   const [showAvatar, setShowAvatar]   = useState(false) // éditeur de photo de profil
+  const [showReglages, setShowReglages] = useState(false) // thème, taille, son, écran d'ouverture
   const [friendCode, setFriendCode]   = useState(null) // ?cave=CODE → cave d'un ami
   const [nextStep, setNextStep]       = useState(null) // guidage : prochaine étape après un ajout
   const [showTour, setShowTour]       = useState(false) // visite guidée premier lancement mobile
@@ -197,7 +200,7 @@ export default function App() {
     if (window.innerWidth < 768 && !code) {
       sessionStorage.setItem('landing-seen', '1')
       setShowLanding(false)
-      if (!action && !ami) setView('cave')
+      if (!action && !ami) setView(lireReglages().ecranDepart || 'cave')
       // Nouveau visiteur sans profil : on propose l'onboarding tout de suite.
       if (!loadProfil()) setShowOnboarding(true)
     }
@@ -357,7 +360,7 @@ export default function App() {
   // et dès qu'un overlay/fiche est ouvert : le geste ne doit agir que sur la
   // vue principale.
   const overlayOuvert = showLanding || showCeSoir || showScan || showAssistant ||
-    showMenu || showRecherche || showCompte || showForm || showOnboarding || showAvatar ||
+    showMenu || showRecherche || showCompte || showForm || showOnboarding || showAvatar || showReglages ||
     !!detailWine || !!editWine || !!enviePrefill || !!friendCode || !!ficheVin
   // Sur « Découvrir », le glissement horizontal appartient aux cartes : la
   // navigation entre onglets par swipe se met en retrait pour ne pas voler le geste.
@@ -438,7 +441,7 @@ export default function App() {
           c'est elle qui notifie et tient la pastille de l'icône à jour. */}
       <VeilleMessages amiOuvert={amiOuvert} />
 
-      <div className="min-h-dvh bg-cream font-sans lg:pl-64">
+      <div className="min-h-dvh bg-fond font-sans lg:pl-64">
         {/* Mobile / tablette : topbar + bottom nav guidée */}
         <Navbar
           view={view}
@@ -587,6 +590,7 @@ export default function App() {
         {friendCode && <CaveAmieViewer code={friendCode} onClose={closeFriendCave} />}
         {showCompte && <CompteSync onClose={() => setShowCompte(false)} />}
         {showAvatar && <AvatarEditeur onClose={() => setShowAvatar(false)} prenom={profil?.prenom} />}
+        {showReglages && <Reglages onClose={() => setShowReglages(false)} />}
         {showPitch && (
           <PitchOeno
             onClose={() => setShowPitch(false)}
@@ -603,6 +607,7 @@ export default function App() {
             onCompte={() => setShowCompte(true)}
             onAdd={() => setShowForm(true)}
             onRecherche={() => setShowRecherche(true)}
+            onReglages={() => setShowReglages(true)}
             onClose={() => setShowMenu(false)}
           />
         )}
@@ -616,7 +621,7 @@ export default function App() {
 
         {/* Guidage : prochaine étape naturelle après un ajout en cave */}
         {nextStep?.type === 'vin-ajoute' && !showForm && !editWine && (
-          <div className="fixed bottom-36 md:bottom-6 left-4 right-4 md:left-auto md:right-24 z-40 md:w-96 card !bg-anthracite-950 !border-white/10 p-4 shadow-2xl animate-slide-up">
+          <div className="fixed bottom-36 md:bottom-6 left-4 right-4 md:left-auto md:right-24 z-40 md:w-96 card !bg-nuit !border-white/10 p-4 shadow-2xl animate-slide-up">
             <button
               onClick={() => setNextStep(null)}
               className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full flex items-center justify-center text-stone-500 hover:text-cream transition-colors cursor-pointer"

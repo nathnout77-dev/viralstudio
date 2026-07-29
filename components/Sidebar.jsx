@@ -1,4 +1,4 @@
-import { Wine, Library, Map, Sparkles, Plus, Utensils, ScanLine, UserCircle2, MessageCircleHeart, Sprout, GraduationCap, Home, Search, LayoutGrid, Layers, Users } from 'lucide-react'
+import { Wine, Library, Map, Sparkles, Plus, Utensils, ScanLine, UserCircle2, MessageCircleHeart, Sprout, GraduationCap, Home, Search, LayoutGrid, Layers, Users , SlidersHorizontal} from 'lucide-react'
 import RollingNumber from './RollingNumber'
 import AvatarOeno from './AvatarOeno'
 
@@ -53,7 +53,7 @@ function NavItem({ active, onClick, Icon, label, accent = false }) {
   )
 }
 
-export default function Sidebar({ view, setView, total, mode, prenom, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte, onAssistant, onMenu, onRecherche, onAvatar }) {
+export default function Sidebar({ view, setView, total, mode, prenom, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte, onAssistant, onMenu, onRecherche, onAvatar, onReglages }) {
   const badge = MODE_BADGE[mode]
   return (
     <aside
@@ -92,6 +92,7 @@ export default function Sidebar({ view, setView, total, mode, prenom, onProfil, 
         <NavItem accent onClick={onAssistant} Icon={MessageCircleHeart} label="Assistant" />
         <NavItem accent onClick={onCeSoir}    Icon={Utensils}          label="Ce soir ?" />
         <NavItem accent onClick={onCompte}    Icon={UserCircle2}       label="Compte" />
+        <NavItem accent onClick={onReglages}  Icon={SlidersHorizontal} label="Réglages" />
         <div className="px-6 pt-3">
           <button onClick={onAdd} className="btn-gold w-full text-xs px-4 py-2.5">
             <Plus size={14} /> Ajouter un vin

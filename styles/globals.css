@@ -17,13 +17,64 @@
     --muted:      #78716c;
     --border:     rgba(28,25,23,0.08);
     --ease-luxe:  cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* ── Thème clair ─────────────────────────────────────────────────────
+       Ces trois familles portent tout le thème. Les composants n'écrivent
+       jamais une couleur de surface en dur : ils nomment `bg-fond`,
+       `bg-carte`, `text-anthracite-900`… et basculent d'eux-mêmes. */
+    --fond:  250 250 249;   /* la page */
+    --carte: 255 255 255;   /* cartes, champs, panneaux */
+    --wine-50: 253 242 244;
+    --or-texte:      161 98 7;
+    --or-texte-fort: 133 77 14;
+
+    --anth-50:  250 250 249;
+    --anth-100: 240 239 237;
+    --anth-200: 231 229 228;
+    --anth-300: 214 211 209;
+    --anth-400: 168 162 158;
+    --anth-500: 120 113 108;
+    --anth-600: 87 83 78;
+    --anth-700: 68 64 60;
+    --anth-800: 41 37 36;
+    --anth-900: 28 25 23;    /* texte principal */
+    --anth-950: 12 10 9;
+  }
+
+  /* ── Thème sombre ───────────────────────────────────────────────────────
+     La gamme s'inverse, mais pas linéairement : une inversion arithmétique
+     donne des gris trop crus. Les valeurs sont réchauffées (elles gardent la
+     dominante pierre) et les tons de texte remontés pour tenir le contraste
+     sur fond noir. */
+  :root[data-theme='sombre'] {
+    --fond:  20 18 16;
+    --carte: 32 28 26;
+    --wine-50: 42 20 25;
+    --or-texte:      212 168 71;
+    --or-texte-fort: 232 201 107;
+
+    --anth-50:  27 25 23;
+    --anth-100: 38 34 32;
+    --anth-200: 50 46 43;
+    --anth-300: 70 65 61;
+    --anth-400: 141 133 126;
+    --anth-500: 160 152 146;
+    --anth-600: 181 173 166;
+    --anth-700: 196 189 182;
+    --anth-800: 222 216 210;
+    --anth-900: 239 234 229;  /* texte principal */
+    --anth-950: 247 244 240;
+
+    --surface: #141210;
+    --text:    #efeae5;
+    --border:  rgba(239,234,229,0.10);
   }
 
   html { scroll-behavior: smooth; }
 
   body {
-    background-color: #FAFAF9;
-    color: #1C1917;
+    background-color: rgb(var(--fond));
+    color: rgb(var(--anth-900));
     font-family: var(--font-inter), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -54,7 +105,7 @@
   input, select, textarea, button { font-family: inherit; }
 
   ::-webkit-scrollbar { width: 5px; height: 5px; }
-  ::-webkit-scrollbar-track { background: #f0efed; }
+  ::-webkit-scrollbar-track { background: rgb(var(--anth-100)); }
   ::-webkit-scrollbar-thumb { background: rgba(161,98,7,0.45); border-radius: 4px; }
 
   /* Respecter les préférences de mouvement réduites */
@@ -71,18 +122,18 @@
 @layer components {
   /* ── Boutons pill, transitions lentes et sobres ─────────────────────────── */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-anthracite-950 text-cream font-medium text-sm rounded-full
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-anthracite-950 text-fond font-medium text-sm rounded-full
            hover:bg-anthracite-800 active:scale-[0.98] transition-all duration-300 cursor-pointer
            focus:outline-none focus:ring-2 focus:ring-gold-600 focus:ring-offset-2;
   }
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 text-anthracite-700 text-sm rounded-full border border-anthracite-900/15
-           hover:bg-anthracite-950 hover:text-cream hover:border-anthracite-950 active:scale-[0.98]
+           hover:bg-anthracite-950 hover:text-fond hover:border-anthracite-950 active:scale-[0.98]
            transition-all duration-300 cursor-pointer
            focus:outline-none focus:ring-2 focus:ring-gold-600;
   }
   .btn-gold {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-medium text-sm rounded-full text-anthracite-950
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-medium text-sm rounded-full text-nuit
            transition-all duration-300 cursor-pointer shadow-gold active:scale-[0.98]
            focus:outline-none focus:ring-2 focus:ring-gold-600 focus:ring-offset-2;
     background: linear-gradient(115deg, #d4a847 0%, #c9a84c 30%, #e8c96b 50%, #c9a84c 70%, #b8962a 100%);
@@ -96,11 +147,11 @@
 
   /* ── Cartes épurées : bordure hairline, ombre douce et diffuse ──────────── */
   .card {
-    @apply bg-white rounded-2xl border border-anthracite-900/[0.07] shadow-card hover:shadow-card-hover;
+    @apply bg-carte rounded-2xl border border-anthracite-900/[0.07] shadow-card hover:shadow-card-hover;
     transition: box-shadow 0.5s var(--ease-luxe), transform 0.5s var(--ease-luxe), border-color 0.5s var(--ease-luxe);
   }
   .card-dark {
-    @apply bg-anthracite-950 rounded-2xl border border-white/[0.08] shadow-card;
+    @apply bg-nuit rounded-2xl border border-white/[0.08] shadow-card;
   }
   .card-glass {
     background: rgba(255, 255, 255, 0.05);
@@ -133,12 +184,12 @@
   }
 
   .input-field {
-    @apply w-full px-4 py-3 bg-white border border-anthracite-900/10 rounded-xl text-base sm:text-sm text-anthracite-900
+    @apply w-full px-4 py-3 bg-carte border border-anthracite-900/10 rounded-xl text-base sm:text-sm text-anthracite-900
            placeholder-anthracite-400 focus:outline-none focus:ring-2 focus:ring-gold-600/40 focus:border-gold-600
            transition-all duration-300;
   }
   .select-field {
-    @apply w-full px-4 py-3 bg-white border border-anthracite-900/10 rounded-xl text-base sm:text-sm text-anthracite-900
+    @apply w-full px-4 py-3 bg-carte border border-anthracite-900/10 rounded-xl text-base sm:text-sm text-anthracite-900
            focus:outline-none focus:ring-2 focus:ring-gold-600/40 focus:border-gold-600 cursor-pointer
            transition-all duration-300 appearance-none;
   }
@@ -197,7 +248,7 @@
      Double filet (cadre hairline + filet or pâle décalé de 4px), coins quasi
      droits — l'objet tranche volontairement avec les pills du reste. */
   .etiquette {
-    @apply bg-white;
+    @apply bg-carte;
     position: relative;
     border: 1px solid rgba(28,25,23,0.16);
     border-radius: 3px;
@@ -393,15 +444,15 @@
     -webkit-backdrop-filter: blur(8px);
   }
   .modal-panel {
-    @apply bg-cream w-full rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col;
+    @apply bg-fond w-full rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col;
     animation: modalIn 0.4s var(--ease-luxe);
   }
   /* Boutons de choix élégants (quiz, onboarding) */
   .choice-btn {
-    @apply bg-white rounded-2xl border border-anthracite-900/10 text-left cursor-pointer;
+    @apply bg-carte rounded-2xl border border-anthracite-900/10 text-left cursor-pointer;
     transition: all 0.35s var(--ease-luxe);
   }
-  .choice-btn:hover { background: #f5f4f2; border-color: rgba(28,25,23,0.25); transform: translateY(-2px); }
+  .choice-btn:hover { background: rgb(var(--anth-100)); border-color: rgba(28,25,23,0.25); transform: translateY(-2px); }
   .choice-btn:active { transform: scale(0.98); }
   .choice-btn.selected { background: #1C1917; border-color: #1C1917; color: #FAFAF9; }
 }

@@ -246,14 +246,14 @@ export default function DecouvrirSwipe({ onFiche, onAddWine }) {
         <button
           onClick={() => trancher(-1)}
           aria-label="Passer ce vin"
-          className="w-14 h-14 rounded-full bg-white border border-anthracite-900/12 flex items-center justify-center text-anthracite-400 hover:text-wine-700 hover:border-wine-300 active:scale-90 transition-all cursor-pointer shadow-card"
+          className="w-14 h-14 rounded-full bg-carte border border-anthracite-900/12 flex items-center justify-center text-anthracite-400 hover:text-wine-700 hover:border-wine-300 active:scale-90 transition-all cursor-pointer shadow-card"
         >
           <X size={22} />
         </button>
         <button
           onClick={() => onFiche?.(wine)}
           aria-label="Voir la fiche complète"
-          className="w-12 h-12 rounded-full bg-white border border-anthracite-900/12 flex items-center justify-center text-anthracite-400 hover:text-gold-700 hover:border-gold-400 active:scale-90 transition-all cursor-pointer shadow-card"
+          className="w-12 h-12 rounded-full bg-carte border border-anthracite-900/12 flex items-center justify-center text-anthracite-400 hover:text-gold-700 hover:border-gold-400 active:scale-90 transition-all cursor-pointer shadow-card"
         >
           <Info size={19} />
         </button>
@@ -272,7 +272,7 @@ export default function DecouvrirSwipe({ onFiche, onAddWine }) {
               trancher(1)
             }}
             aria-label="Ajouter directement à ma cave"
-            className="w-12 h-12 rounded-full bg-white border border-anthracite-900/12 flex items-center justify-center text-anthracite-400 hover:text-emerald-700 hover:border-emerald-300 active:scale-90 transition-all cursor-pointer shadow-card"
+            className="w-12 h-12 rounded-full bg-carte border border-anthracite-900/12 flex items-center justify-center text-anthracite-400 hover:text-emerald-700 hover:border-emerald-300 active:scale-90 transition-all cursor-pointer shadow-card"
           >
             <Plus size={19} />
           </button>

@@ -105,12 +105,12 @@ export default function QuizFrance() {
               disabled={revele}
               className={`w-full flex items-center gap-3 p-3.5 rounded-2xl border-2 text-left text-sm transition-all ${
                 !revele
-                  ? 'bg-white border-anthracite-200 hover:border-wine-300 cursor-pointer active:scale-[0.99]'
+                  ? 'bg-carte border-anthracite-200 hover:border-wine-300 cursor-pointer active:scale-[0.99]'
                   : estBonne
                     ? 'bg-emerald-50 border-emerald-400 text-emerald-900'
                     : choisie
                       ? 'bg-wine-50 border-wine-400 text-wine-900'
-                      : 'bg-white border-anthracite-100 text-anthracite-400'
+                      : 'bg-carte border-anthracite-100 text-anthracite-400'
               }`}
             >
               <span className="flex-1 min-w-0">{opt}</span>

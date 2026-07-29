@@ -56,7 +56,7 @@ export default function GuideView({ onAddWine }) {
             className={`flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer lg:px-5 lg:py-3 lg:text-[13px] ${
               sub === id
                 ? 'bg-wine-800 text-cream shadow-wine'
-                : 'bg-white text-anthracite-600 border border-anthracite-200 hover:border-wine-300'
+                : 'bg-carte text-anthracite-600 border border-anthracite-200 hover:border-wine-300'
             }`}
           >
             <Icon size={13} />

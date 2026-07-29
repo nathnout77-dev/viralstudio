@@ -41,7 +41,7 @@ export default function Navbar({ view, setView, total, mode, prenom, onProfil, o
     <>
       {/* Top header — verre translucide crème, hairline */}
       <header className="lg:hidden sticky top-0 z-50 backdrop-blur-xl border-b border-anthracite-900/[0.08]"
-              style={{ background: 'rgba(250,250,249,0.82)' }}>
+              style={{ background: 'rgb(var(--fond) / 0.82)' }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6">
           {/* Avatar du compte, à la place de l'emblème : c'est soi qu'on veut
               sous la main, pas la marque. Le texte garde l'accès à l'accueil. */}
@@ -147,7 +147,7 @@ export default function Navbar({ view, setView, total, mode, prenom, onProfil, o
       {/* Mobile bottom nav — 4 repères du mode guidé + Scan central proéminent */}
       <nav
         className="fixed bottom-0 left-0 right-0 z-50 md:hidden backdrop-blur-xl border-t border-anthracite-900/[0.08]"
-        style={{ paddingBottom: 'env(safe-area-inset-bottom)', background: 'rgba(250,250,249,0.88)' }}
+        style={{ paddingBottom: 'env(safe-area-inset-bottom)', background: 'rgb(var(--fond) / 0.88)' }}
         role="navigation"
       >
         <div className="flex h-[64px]">
@@ -184,7 +184,7 @@ export default function Navbar({ view, setView, total, mode, prenom, onProfil, o
                   aria-label="Scanner une étiquette"
                 >
                   <span
-                    className="w-12 h-12 rounded-full flex items-center justify-center text-cream shadow-wine ring-4 ring-cream active:scale-95 transition-transform duration-300"
+                    className="w-12 h-12 rounded-full flex items-center justify-center text-cream shadow-wine ring-4 ring-fond active:scale-95 transition-transform duration-300"
                     style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
                   >
                     <span className="text-[21px] leading-none" role="img" aria-hidden="true">📷</span>

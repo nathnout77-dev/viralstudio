@@ -80,7 +80,7 @@ export default function ParcoursApprendre() {
               key={id}
               onClick={() => setEtape(id)}
               className={`p-3.5 lg:p-4 rounded-2xl border-2 text-left transition-all duration-300 cursor-pointer ${
-                actif ? 'border-wine-700 bg-wine-50 shadow-md' : 'border-anthracite-200 bg-white hover:border-wine-300'
+                actif ? 'border-wine-700 bg-wine-50 shadow-md' : 'border-anthracite-200 bg-carte hover:border-wine-300'
               }`}
             >
               <div className="flex items-center gap-2 mb-1.5">

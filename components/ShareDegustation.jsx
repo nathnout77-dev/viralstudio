@@ -287,7 +287,7 @@ export default function ShareDegustation({ entry, onClose }) {
           </p>
         </div>
 
-        <div className="p-5 border-t border-anthracite-100 bg-cream flex-shrink-0 flex items-center gap-3">
+        <div className="p-5 border-t border-anthracite-100 bg-fond flex-shrink-0 flex items-center gap-3">
           <button onClick={download} disabled={!ready} className="btn-ghost text-xs px-4 py-2.5 flex-1 justify-center">
             <Download size={13} /> Télécharger
           </button>

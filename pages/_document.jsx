@@ -34,6 +34,26 @@ export default function Document() {
             node_modules (voir pages/_app.jsx) plutôt que via ce CDN externe,
             qui rendait la carte des vignobles cassée dès que unpkg.com
             n'était pas joignable (réseau restreint, offline, etc.). */}
+        {/* Thème posé AVANT le premier pixel. Sans ce script, la page serait
+            rendue en clair puis basculerait en sombre après l'hydratation :
+            un éclair blanc à chaque ouverture, précisément ce qu'on cherche à
+            éviter en choisissant le mode sombre. Volontairement minuscule,
+            sans dépendance, et silencieux si le stockage est refusé. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{
+var r=document.documentElement,g={},p='systeme',t='normal';
+try{g=JSON.parse(localStorage.getItem('oeno-reglages'))||{}}catch(e){}
+if(g.theme)p=g.theme; if(g.taille)t=g.taille;
+var s=p==='sombre'||(p!=='clair'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
+r.dataset.theme=s?'sombre':'clair';
+r.dataset.taille=t;
+r.style.colorScheme=s?'dark':'light';
+var z={compact:0.92,normal:1,confort:1.12}[t]||1; if(z!==1)r.style.zoom=z;
+var m=document.querySelector('meta[name="theme-color"]'); if(m)m.content=s?'#141210':'#FAFAF9';
+}catch(e){}})()`,
+          }}
+        />
       </Head>
       <body>
         <Main />

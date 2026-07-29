@@ -459,7 +459,7 @@ export default function CompteSync({ onClose, extraSection = null }) {
           {/* Connecté */}
           {cloudDisponible && user && !conflict && (
             <div className="animate-fade-in">
-              <div className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-anthracite-900/10 mb-4">
+              <div className="flex items-center gap-3 p-4 rounded-2xl bg-carte border border-anthracite-900/10 mb-4">
                 <UserCircle2 size={28} className="text-wine-800 flex-shrink-0" strokeWidth={1.5} />
                 <div className="min-w-0 flex-1">
                   <div className="text-sm font-semibold text-anthracite-900 truncate">{user.email}</div>

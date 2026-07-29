@@ -23,7 +23,7 @@ function SelectFilter({ value, onChange, options, label }) {
       <select
         value={value}
         onChange={e => onChange(e.target.value)}
-        className="pl-3 pr-8 py-2 bg-white border border-anthracite-900/10 rounded-full text-xs text-anthracite-700 focus:outline-none focus:ring-2 focus:ring-gold-600/40 cursor-pointer appearance-none"
+        className="pl-3 pr-8 py-2 bg-carte border border-anthracite-900/10 rounded-full text-xs text-anthracite-700 focus:outline-none focus:ring-2 focus:ring-gold-600/40 cursor-pointer appearance-none"
         aria-label={label}
       >
         {options.map(o => <option key={o.value || o} value={o.value || o}>{o.label || o}</option>)}
@@ -106,7 +106,7 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
             className={`flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer lg:px-5 ${
               sub === id
                 ? 'bg-wine-800 text-cream shadow-wine'
-                : 'bg-white text-anthracite-600 border border-anthracite-200 hover:border-wine-300'
+                : 'bg-carte text-anthracite-600 border border-anthracite-200 hover:border-wine-300'
             }`}
           >
             <span className="text-base leading-none" role="img" aria-hidden="true">{emoji}</span>
@@ -124,7 +124,7 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
         {/* Compte & synchronisation */}
         <button
           onClick={onCompte}
-          className="ml-auto flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer bg-white text-anthracite-600 border border-anthracite-200 hover:border-gold-500/70"
+          className="ml-auto flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer bg-carte text-anthracite-600 border border-anthracite-200 hover:border-gold-500/70"
           title="Mon compte, sauvegarde et synchronisation"
         >
           <CloudUpload size={13} className="text-gold-600" />
@@ -185,7 +185,7 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
             className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full border text-xs font-medium transition-all cursor-pointer ${
               showFilters || hasFilters
                 ? 'bg-wine-50 border-wine-300 text-wine-800'
-                : 'bg-white border-anthracite-200 text-anthracite-600 hover:border-anthracite-300'
+                : 'bg-carte border-anthracite-200 text-anthracite-600 hover:border-anthracite-300'
             }`}
           >
             <SlidersHorizontal size={13} />
@@ -195,7 +195,7 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
           <div className="flex border border-anthracite-900/10 rounded-full overflow-hidden">
             {[['grid', LayoutGrid], ['list', List]].map(([v, Icon]) => (
               <button key={v} onClick={() => setView(v)}
-                      className={`px-2.5 py-2 transition-all cursor-pointer ${view === v ? 'bg-wine-800 text-cream' : 'bg-white text-anthracite-400 hover:text-anthracite-700'}`}
+                      className={`px-2.5 py-2 transition-all cursor-pointer ${view === v ? 'bg-wine-800 text-cream' : 'bg-carte text-anthracite-400 hover:text-anthracite-700'}`}
                       aria-label={v === 'grid' ? 'Grille' : 'Liste'} aria-pressed={view === v}>
                 <Icon size={14} />
               </button>
@@ -216,7 +216,7 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
                 className={`px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
                   typeFilter === t
                     ? 'bg-wine-800 text-cream border-wine-800'
-                    : 'bg-white text-anthracite-500 border-anthracite-200 hover:border-anthracite-300'
+                    : 'bg-carte text-anthracite-500 border-anthracite-200 hover:border-anthracite-300'
                 }`}
               >
                 {t}
@@ -230,7 +230,7 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
               className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
                 favOnly
                   ? 'bg-gold-500/15 text-gold-700 border-gold-500/50'
-                  : 'bg-white text-anthracite-500 border-anthracite-200 hover:border-gold-500/50'
+                  : 'bg-carte text-anthracite-500 border-anthracite-200 hover:border-gold-500/50'
               }`}
             >
               <Star size={12} strokeWidth={1.8} fill={favOnly ? '#c9a84c' : 'none'} className={favOnly ? 'text-gold-500' : 'text-anthracite-400'} />

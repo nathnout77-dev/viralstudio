@@ -93,13 +93,13 @@ export default function TourGuide({ steps, onClose }) {
 
       {/* Bulle explicative */}
       <div
-        className="absolute card !bg-anthracite-950 !border-gold-500/40 p-4 shadow-2xl animate-fade-in"
+        className="absolute card !bg-nuit !border-gold-500/40 p-4 shadow-2xl animate-fade-in"
         style={bulleStyle}
       >
         {/* Flèche */}
         {rect && (
           <span
-            className="absolute w-3.5 h-3.5 rotate-45 bg-anthracite-950 border-gold-500/40"
+            className="absolute w-3.5 h-3.5 rotate-45 bg-nuit border-gold-500/40"
             style={arrowEnHaut
               ? { top: -7, left: arrowLeft, borderLeft: '1px solid', borderTop: '1px solid', borderColor: 'rgba(201,168,76,0.4)' }
               : { bottom: -7, left: arrowLeft, borderRight: '1px solid', borderBottom: '1px solid', borderColor: 'rgba(201,168,76,0.4)' }}

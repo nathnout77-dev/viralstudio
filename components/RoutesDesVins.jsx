@@ -223,7 +223,7 @@ export default function RoutesDesVins({ onAddWine, onNoter }) {
                         <button
                           key={id}
                           onClick={() => setSelected(w)}
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border border-anthracite-200 bg-white text-anthracite-700 hover:border-wine-300 hover:text-wine-700 transition-all cursor-pointer"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border border-anthracite-200 bg-carte text-anthracite-700 hover:border-wine-300 hover:text-wine-700 transition-all cursor-pointer"
                         >
                           <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: w.color }} />
                           {w.appellation}

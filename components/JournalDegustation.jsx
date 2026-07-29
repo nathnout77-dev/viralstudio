@@ -110,13 +110,13 @@ function WinePicker({ query, onQueryChange, onPick, caveWines }) {
         />
       </div>
       {open && suggestions.length > 0 && (
-        <div className="absolute z-10 mt-1.5 w-full bg-white border border-anthracite-900/10 rounded-xl shadow-card-hover overflow-hidden animate-fade-in">
+        <div className="absolute z-10 mt-1.5 w-full bg-carte border border-anthracite-900/10 rounded-xl shadow-card-hover overflow-hidden animate-fade-in">
           {suggestions.map((s, i) => (
             <button
               key={i}
               type="button"
               onMouseDown={() => onPick(s)}
-              className="w-full text-left px-4 py-2.5 hover:bg-cream transition-colors cursor-pointer flex items-center justify-between gap-2"
+              className="w-full text-left px-4 py-2.5 hover:bg-fond transition-colors cursor-pointer flex items-center justify-between gap-2"
             >
               <span className="min-w-0">
                 <span className="font-wine-name text-lg text-anthracite-900 truncate block leading-tight">{s.name}</span>
@@ -142,7 +142,7 @@ function ChipRow({ chips, onPick }) {
           key={c}
           type="button"
           onClick={() => onPick(c)}
-          className="px-2.5 py-1 rounded-full text-[11px] font-medium border border-anthracite-900/10 text-anthracite-600 bg-white hover:border-gold-500/60 hover:text-anthracite-900 transition-all cursor-pointer"
+          className="px-2.5 py-1 rounded-full text-[11px] font-medium border border-anthracite-900/10 text-anthracite-600 bg-carte hover:border-gold-500/60 hover:text-anthracite-900 transition-all cursor-pointer"
         >
           {c}
         </button>
@@ -286,7 +286,7 @@ function JournalForm({ initial, caveWines, onSave, onClose }) {
           </div>
         </div>
 
-        <div className="p-5 border-t border-anthracite-100 bg-cream flex-shrink-0 flex items-center gap-3">
+        <div className="p-5 border-t border-anthracite-100 bg-fond flex-shrink-0 flex items-center gap-3">
           <button type="button" onClick={onClose} className="btn-ghost text-xs px-5 py-2.5 flex-1 justify-center">Annuler</button>
           <button type="submit" className="btn-gold text-xs px-5 py-2.5 flex-1 justify-center" disabled={!form.name.trim()}>
             {initial ? 'Enregistrer' : 'Consigner ce souvenir'}
@@ -311,7 +311,7 @@ function CarnetPage({ entry, onClose, onEdit, onDelete }) {
       <div
         className="modal-panel sm:max-w-2xl max-h-[92vh] shadow-card-hover"
         style={{
-          background: '#FBF8F1',
+          background: 'rgb(var(--carte))',
           backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(28,25,23,0.035) 1px, transparent 0)',
           backgroundSize: '18px 18px',
         }}
@@ -324,15 +324,15 @@ function CarnetPage({ entry, onClose, onEdit, onDelete }) {
             </button>
             <div className="flex items-center gap-2 flex-shrink-0">
               <button onClick={() => setShowShare(true)} aria-label="Partager cette dégustation" title="Partager cette dégustation"
-                      className="w-8 h-8 flex items-center justify-center rounded-full bg-white border border-anthracite-900/10 hover:border-gold-500/60 text-anthracite-600 transition-all cursor-pointer">
+                      className="w-8 h-8 flex items-center justify-center rounded-full bg-carte border border-anthracite-900/10 hover:border-gold-500/60 text-anthracite-600 transition-all cursor-pointer">
                 <Share2 size={13} />
               </button>
               <button onClick={() => onEdit(entry)} aria-label="Modifier"
-                      className="w-8 h-8 flex items-center justify-center rounded-full bg-white border border-anthracite-900/10 hover:border-gold-500/60 text-anthracite-600 transition-all cursor-pointer">
+                      className="w-8 h-8 flex items-center justify-center rounded-full bg-carte border border-anthracite-900/10 hover:border-gold-500/60 text-anthracite-600 transition-all cursor-pointer">
                 <Pencil size={13} />
               </button>
               <button onClick={() => onDelete(entry.id)} aria-label="Supprimer"
-                      className="w-8 h-8 flex items-center justify-center rounded-full bg-white border border-anthracite-900/10 hover:border-red-400 hover:text-red-600 text-anthracite-600 transition-all cursor-pointer">
+                      className="w-8 h-8 flex items-center justify-center rounded-full bg-carte border border-anthracite-900/10 hover:border-red-400 hover:text-red-600 text-anthracite-600 transition-all cursor-pointer">
                 <Trash2 size={13} />
               </button>
               <button onClick={onClose} aria-label="Fermer"
@@ -574,7 +574,7 @@ export default function JournalDegustation({ prefill, onConsumePrefill, onMarkFa
             <div className="relative">
               <select
                 value={sort} onChange={e => setSort(e.target.value)}
-                className="pl-3 pr-8 py-2.5 bg-white border border-anthracite-900/10 rounded-full text-xs text-anthracite-700 focus:outline-none focus:ring-2 focus:ring-gold-600/40 cursor-pointer appearance-none"
+                className="pl-3 pr-8 py-2.5 bg-carte border border-anthracite-900/10 rounded-full text-xs text-anthracite-700 focus:outline-none focus:ring-2 focus:ring-gold-600/40 cursor-pointer appearance-none"
               >
                 <option value="recent">Plus récent</option>
                 <option value="note">Meilleure note</option>

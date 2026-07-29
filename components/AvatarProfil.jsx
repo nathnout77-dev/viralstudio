@@ -103,7 +103,7 @@ export default function AvatarEditeur({ onClose, prenom = null }) {
                 <LogoOeno size={96} />
               )}
               {occupe && (
-                <span className="absolute inset-0 rounded-full flex items-center justify-center bg-anthracite-950/50">
+                <span className="absolute inset-0 rounded-full flex items-center justify-center bg-nuit/50">
                   <Loader2 size={22} className="text-gold-400 animate-spin" />
                 </span>
               )}

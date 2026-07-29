@@ -287,7 +287,7 @@ export default function Comparateur({ onClose, onAddWine }) {
                     <button
                       key={w.id}
                       onClick={() => ajouter(w.id)}
-                      className="w-full flex items-center gap-3 p-3 rounded-xl border border-anthracite-900/[0.07] bg-white hover:border-gold-500/50 active:scale-[0.99] transition-all cursor-pointer text-left"
+                      className="w-full flex items-center gap-3 p-3 rounded-xl border border-anthracite-900/[0.07] bg-carte hover:border-gold-500/50 active:scale-[0.99] transition-all cursor-pointer text-left"
                     >
                       <WineVisuel type={w.type} size={16} className="flex-shrink-0" />
                       <span className="min-w-0 flex-1">
@@ -357,7 +357,7 @@ export default function Comparateur({ onClose, onAddWine }) {
                       </div>
                     </div>
 
-                    <div className="p-4 space-y-3 bg-white">
+                    <div className="p-4 space-y-3 bg-carte">
                       {/* Critères */}
                       <div className="space-y-2">
                         {CRITERES.map(c => (

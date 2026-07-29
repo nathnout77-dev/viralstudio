@@ -51,7 +51,7 @@ function DishField({ course, value, onChange }) {
           className="input-field"
         />
         {focused && suggestions.length > 0 && (
-          <div className="absolute z-20 left-0 right-0 mt-1.5 bg-white rounded-xl border border-anthracite-900/10 shadow-card-hover overflow-hidden">
+          <div className="absolute z-20 left-0 right-0 mt-1.5 bg-carte rounded-xl border border-anthracite-900/10 shadow-card-hover overflow-hidden">
             {suggestions.map(s => (
               <button
                 key={s}
@@ -73,8 +73,8 @@ function DishField({ course, value, onChange }) {
             onClick={() => onChange(c)}
             className={`text-[11px] px-2.5 py-1 rounded-full border transition-all cursor-pointer ${
               value === c
-                ? 'bg-anthracite-950 text-cream border-anthracite-950'
-                : 'bg-white text-anthracite-500 border-anthracite-200 hover:border-gold-600/50 hover:text-anthracite-800'
+                ? 'bg-nuit text-cream border-nuit'
+                : 'bg-carte text-anthracite-500 border-anthracite-200 hover:border-gold-600/50 hover:text-anthracite-800'
             }`}
           >
             {c}
@@ -298,7 +298,7 @@ function ShareMenu({ menu, convives, onClose }) {
           <p className="text-[11px] text-anthracite-400 text-center mt-3">Format A5 vertical — à imprimer ou envoyer aux convives.</p>
         </div>
 
-        <div className="p-5 border-t border-anthracite-100 bg-cream flex-shrink-0 flex items-center gap-3">
+        <div className="p-5 border-t border-anthracite-100 bg-fond flex-shrink-0 flex items-center gap-3">
           <button onClick={download} disabled={!ready} className="btn-ghost text-xs px-4 py-2.5 flex-1 justify-center">
             <Download size={13} /> Télécharger
           </button>
@@ -508,7 +508,7 @@ export default function ModeDiner() {
         </div>
 
         <label className={`flex items-center gap-3 p-3.5 rounded-xl border transition-all ${
-          caveIds.size ? 'cursor-pointer border-anthracite-200 hover:border-gold-600/50 bg-white' : 'border-anthracite-100 bg-anthracite-50 opacity-60'
+          caveIds.size ? 'cursor-pointer border-anthracite-200 hover:border-gold-600/50 bg-carte' : 'border-anthracite-100 bg-anthracite-50 opacity-60'
         }`}>
           <input
             type="checkbox" checked={useCave} disabled={!caveIds.size}

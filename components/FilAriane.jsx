@@ -10,7 +10,7 @@ export default function FilAriane({ titre, sousTitre, onAccueil }) {
     <div className="flex items-center gap-3 mb-6 lg:mb-8 animate-fade-in">
       <button
         onClick={onAccueil}
-        className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[11px] font-semibold uppercase tracking-[0.12em] text-anthracite-600 bg-white border border-anthracite-200 hover:border-gold-500/60 hover:text-anthracite-900 active:scale-[0.97] transition-all duration-300 cursor-pointer flex-shrink-0"
+        className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[11px] font-semibold uppercase tracking-[0.12em] text-anthracite-600 bg-carte border border-anthracite-200 hover:border-gold-500/60 hover:text-anthracite-900 active:scale-[0.97] transition-all duration-300 cursor-pointer flex-shrink-0"
         aria-label="Revenir à l'accueil"
       >
         <ChevronLeft size={13} className="-ml-0.5" />

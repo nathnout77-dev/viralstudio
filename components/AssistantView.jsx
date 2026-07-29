@@ -626,7 +626,7 @@ export default function AssistantView({ onClose }) {
               <div className={`max-w-[85%] rounded-2xl px-4 py-3 ${
                 m.role === 'user'
                   ? 'text-cream rounded-br-md'
-                  : 'bg-white border border-anthracite-100 text-anthracite-700 rounded-bl-md shadow-card'
+                  : 'bg-carte border border-anthracite-100 text-anthracite-700 rounded-bl-md shadow-card'
               }`}
                    style={m.role === 'user' ? { background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' } : {}}>
                 {m.role === 'user'
@@ -646,7 +646,7 @@ export default function AssistantView({ onClose }) {
 
           {loading && (
             <div className="flex justify-start animate-fade-in">
-              <div className="bg-white border border-anthracite-100 rounded-2xl rounded-bl-md px-4 py-3 shadow-card flex items-center gap-2">
+              <div className="bg-carte border border-anthracite-100 rounded-2xl rounded-bl-md px-4 py-3 shadow-card flex items-center gap-2">
                 <Wine size={13} className="text-wine-700 animate-bounce-subtle" />
                 <span className="text-xs text-anthracite-400">Œno réfléchit…</span>
               </div>
@@ -656,7 +656,7 @@ export default function AssistantView({ onClose }) {
 
         {/* Menu + input */}
         {profilStep === 999 && (
-          <div className="flex-shrink-0 border-t border-anthracite-100 bg-cream p-4 space-y-3">
+          <div className="flex-shrink-0 border-t border-anthracite-100 bg-fond p-4 space-y-3">
             <div className="flex gap-2 overflow-x-auto hide-scrollbar">
               <button
                 onClick={() => platInputRef.current?.click()}
@@ -671,7 +671,7 @@ export default function AssistantView({ onClose }) {
                   key={item.id}
                   onClick={() => sendMessage(item.prompt, item.id)}
                   disabled={loading}
-                  className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold bg-white border border-anthracite-200 text-anthracite-700 hover:border-wine-400 hover:text-wine-800 transition-all cursor-pointer disabled:opacity-50"
+                  className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold bg-carte border border-anthracite-200 text-anthracite-700 hover:border-wine-400 hover:text-wine-800 transition-all cursor-pointer disabled:opacity-50"
                 >
                   <Icone nom={item.ic} size={16} className="text-wine-700 flex-shrink-0" />
                   {item.label}
@@ -697,12 +697,12 @@ export default function AssistantView({ onClose }) {
                 disabled={loading}
                 title="Photographier un plat pour trouver l'accord vin"
                 aria-label="Photographier un plat pour l'accord mets-vins"
-                className="w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-2xl bg-white border border-anthracite-200 text-wine-700 hover:border-gold-500/70 hover:text-wine-900 transition-all cursor-pointer disabled:opacity-40"
+                className="w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-2xl bg-carte border border-anthracite-200 text-wine-700 hover:border-gold-500/70 hover:text-wine-900 transition-all cursor-pointer disabled:opacity-40"
               >
                 <Camera size={17} />
               </button>
               <input
-                className="flex-1 px-4 py-3 bg-white border border-anthracite-200 rounded-2xl text-sm placeholder-anthracite-400 focus:outline-none focus:ring-2 focus:ring-gold-600/40 focus:border-gold-500 transition-all"
+                className="flex-1 px-4 py-3 bg-carte border border-anthracite-200 rounded-2xl text-sm placeholder-anthracite-400 focus:outline-none focus:ring-2 focus:ring-gold-600/40 focus:border-gold-500 transition-all"
                 placeholder="Posez votre question sur le vin…"
                 value={input}
                 onChange={e => setInput(e.target.value)}

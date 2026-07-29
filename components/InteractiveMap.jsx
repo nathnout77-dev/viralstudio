@@ -60,7 +60,7 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
   }
 
   return (
-    <div className="absolute inset-2 sm:inset-auto sm:top-3 sm:right-3 sm:bottom-3 z-[1000] sm:w-80 lg:w-96 bg-cream rounded-xl shadow-card-hover border border-anthracite-200 overflow-hidden flex flex-col animate-slide-up">
+    <div className="absolute inset-2 sm:inset-auto sm:top-3 sm:right-3 sm:bottom-3 z-[1000] sm:w-80 lg:w-96 bg-fond rounded-xl shadow-card-hover border border-anthracite-200 overflow-hidden flex flex-col animate-slide-up">
       {/* Header */}
       <div className="p-4 flex-shrink-0 text-cream relative overflow-hidden"
            style={{ background: `linear-gradient(150deg, ${wine.color} 0%, ${wine.color}cc 55%, #1e2426 150%)` }}>
@@ -83,7 +83,7 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
         </div>
         <div className="mt-2 relative flex items-center gap-1.5 flex-wrap">
           <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20">
-            <span className="w-1.5 h-1.5 rounded-full bg-white" />
+            <span className="w-1.5 h-1.5 rounded-full bg-carte" />
             {wine.typeLabel}
           </span>
           {hasPetitDomaine && (
@@ -154,7 +154,7 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
                 className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-all duration-200 cursor-pointer ${
                   millesime === y
                     ? 'border-current text-cream font-semibold scale-105'
-                    : 'bg-white border-anthracite-200 text-anthracite-600 hover:border-anthracite-400'
+                    : 'bg-carte border-anthracite-200 text-anthracite-600 hover:border-anthracite-400'
                 }`}
                 style={millesime === y ? { background: wine.color, borderColor: wine.color } : {}}
               >
@@ -231,12 +231,12 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
       </div>
 
       {/* Add to cave */}
-      <div className="p-4 border-t border-anthracite-100 bg-cream flex-shrink-0">
+      <div className="p-4 border-t border-anthracite-100 bg-fond flex-shrink-0">
         <div className="text-[10px] uppercase tracking-wider font-semibold text-anthracite-400 mb-2.5">
           Ajouter — millésime {millesime}
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1 border border-anthracite-900/10 rounded-full bg-white overflow-hidden">
+          <div className="flex items-center gap-1 border border-anthracite-900/10 rounded-full bg-carte overflow-hidden">
             <button onClick={() => setQty(q => Math.max(1, q - 1))}
                     className="w-8 h-8 flex items-center justify-center text-anthracite-500 hover:text-wine-700 hover:bg-anthracite-50 transition-all cursor-pointer text-lg leading-none">−</button>
             <span className="w-8 text-center text-sm font-semibold text-anthracite-900">{qty}</span>
@@ -329,8 +329,8 @@ function PanoramaRegion({ region }) {
             key={a.id}
             className={`px-2 py-0.5 rounded-full text-[10px] border ${
               a.type === 'IGP'
-                ? 'bg-white border-anthracite-200 text-anthracite-500'
-                : 'bg-cream border-anthracite-900/10 text-anthracite-700'
+                ? 'bg-carte border-anthracite-200 text-anthracite-500'
+                : 'bg-fond border-anthracite-900/10 text-anthracite-700'
             }`}
           >
             {a.nom}
@@ -461,7 +461,7 @@ export default function InteractiveMap({ onAddWine, onNoter }) {
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               view === id
                 ? 'bg-wine-800 text-cream shadow-wine'
-                : 'bg-white text-anthracite-600 border border-anthracite-200 hover:border-wine-300'
+                : 'bg-carte text-anthracite-600 border border-anthracite-200 hover:border-wine-300'
             }`}
           >
             <Icon size={13} />
@@ -483,7 +483,7 @@ export default function InteractiveMap({ onAddWine, onNoter }) {
             className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-200 cursor-pointer ${
               activeRegion === r
                 ? 'bg-wine-800 text-cream border-wine-800'
-                : 'bg-white text-anthracite-600 border-anthracite-200 hover:border-wine-300'
+                : 'bg-carte text-anthracite-600 border-anthracite-200 hover:border-wine-300'
             }`}
           >
             {r}
@@ -514,7 +514,7 @@ export default function InteractiveMap({ onAddWine, onNoter }) {
                   <button
                     key={d.name}
                     onClick={() => openDomaineWine(d.wines)}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs border border-anthracite-200 bg-white text-anthracite-700 hover:border-wine-300 hover:text-wine-700 transition-all cursor-pointer"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs border border-anthracite-200 bg-carte text-anthracite-700 hover:border-wine-300 hover:text-wine-700 transition-all cursor-pointer"
                   >
                     {d.confidentiel && <Sparkles size={9} className="text-gold-600" />}
                     {d.name}
@@ -602,7 +602,7 @@ export default function InteractiveMap({ onAddWine, onNoter }) {
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs border transition-all duration-200 cursor-pointer ${
                   selected?.id === w.id
                     ? 'text-cream border-transparent font-semibold shadow-sm scale-105'
-                    : 'bg-white border-anthracite-200 text-anthracite-600 hover:border-anthracite-400 hover:scale-105'
+                    : 'bg-carte border-anthracite-200 text-anthracite-600 hover:border-anthracite-400 hover:scale-105'
                 }`}
                 style={selected?.id === w.id ? { background: w.color, borderColor: w.color } : {}}
               >

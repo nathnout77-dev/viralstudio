@@ -39,7 +39,7 @@ export default function BoutonAchat({ wine, millesime = null, compact = false })
               href={l.url}
               target="_blank"
               rel="noopener noreferrer nofollow"
-              className={`flex items-center gap-3 rounded-2xl border bg-white px-3.5 py-2.5 transition-all duration-300 hover:-translate-y-px cursor-pointer ${
+              className={`flex items-center gap-3 rounded-2xl border bg-carte px-3.5 py-2.5 transition-all duration-300 hover:-translate-y-px cursor-pointer ${
                 l.producteur
                   ? 'border-gold-500/45 hover:border-gold-500/80'
                   : 'border-anthracite-900/[0.08] hover:border-gold-500/40'

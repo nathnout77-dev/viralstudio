@@ -108,7 +108,7 @@ export default function AccordsView() {
             className={`p-3.5 rounded-xl border-2 text-left transition-all duration-150 cursor-pointer ${
               selected === p.id
                 ? 'bg-wine-800 border-wine-700 text-cream shadow-wine'
-                : 'bg-white border-anthracite-200 hover:border-wine-200 hover:bg-wine-50/30'
+                : 'bg-carte border-anthracite-200 hover:border-wine-200 hover:bg-wine-50/30'
             }`}
             aria-pressed={selected === p.id}
           >

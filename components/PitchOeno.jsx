@@ -88,12 +88,12 @@ export default function PitchOeno({ onClose, onCommencer }) {
   useModalBehavior(onClose)
 
   return (
-    <div className="fixed inset-0 z-[85] overflow-y-auto bg-cream animate-fade-in">
+    <div className="fixed inset-0 z-[85] overflow-y-auto bg-fond animate-fade-in">
       <button
         onClick={onClose}
         aria-label="Fermer"
         className="fixed top-4 right-4 z-10 w-11 h-11 flex items-center justify-center rounded-full backdrop-blur-xl text-anthracite-600 border border-anthracite-900/15 hover:text-anthracite-900 hover:border-anthracite-900/40 transition-all cursor-pointer"
-        style={{ background: 'rgba(250,250,249,0.9)' }}
+        style={{ background: 'rgb(var(--fond) / 0.9)' }}
       >
         <X size={18} />
       </button>
@@ -146,7 +146,7 @@ export default function PitchOeno({ onClose, onCommencer }) {
         </div>
 
         {/* Honnêteté sur la donnée — c'est un argument, pas une note de bas de page */}
-        <div className="rounded-3xl border border-gold-500/25 bg-white p-6 mb-14">
+        <div className="rounded-3xl border border-gold-500/25 bg-carte p-6 mb-14">
           <div className="flex items-start gap-3">
             <span className="text-xl leading-none flex-shrink-0" role="img" aria-hidden="true">📊</span>
             <div>
@@ -179,7 +179,7 @@ export default function PitchOeno({ onClose, onCommencer }) {
               key={p.nom}
               className={`rounded-3xl p-6 border ${
                 p.actuel
-                  ? 'bg-white border-gold-500/45 shadow-card'
+                  ? 'bg-carte border-gold-500/45 shadow-card'
                   : 'bg-anthracite-50/60 border-anthracite-900/[0.08]'
               }`}
             >

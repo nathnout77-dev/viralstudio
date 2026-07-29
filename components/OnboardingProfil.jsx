@@ -300,7 +300,7 @@ export default function OnboardingProfil({ onComplete }) {
               </div>
               <button
                 onClick={finish}
-                className="w-full mt-6 flex items-center justify-center gap-2 py-3.5 rounded-full text-sm font-semibold text-cream bg-anthracite-950 hover:bg-anthracite-800 active:scale-[0.98] transition-all duration-300 cursor-pointer"
+                className="w-full mt-6 flex items-center justify-center gap-2 py-3.5 rounded-full text-sm font-semibold text-cream bg-nuit hover:bg-nuit-doux active:scale-[0.98] transition-all duration-300 cursor-pointer"
               >
                 Découvrir Œno <ArrowRight size={15} />
               </button>

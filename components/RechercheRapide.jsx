@@ -53,7 +53,7 @@ function LigneResultat({ w, via, onOpen }) {
   return (
     <button
       onClick={onOpen}
-      className="w-full flex items-center gap-3 p-3 rounded-2xl bg-white border border-anthracite-200 hover:border-gold-500/60 active:scale-[0.99] transition-all cursor-pointer text-left"
+      className="w-full flex items-center gap-3 p-3 rounded-2xl bg-carte border border-anthracite-200 hover:border-gold-500/60 active:scale-[0.99] transition-all cursor-pointer text-left"
     >
       <WineVisuel type={w.type} size={26} className="flex-shrink-0" />
       <div className="min-w-0 flex-1">
@@ -117,7 +117,7 @@ function LigneReferentiel({ kind, item, onOpen }) {
   return (
     <button
       onClick={onOpen}
-      className="w-full flex items-center gap-3 p-3 rounded-2xl bg-white border border-anthracite-200 hover:border-gold-500/60 active:scale-[0.99] transition-all cursor-pointer text-left"
+      className="w-full flex items-center gap-3 p-3 rounded-2xl bg-carte border border-anthracite-200 hover:border-gold-500/60 active:scale-[0.99] transition-all cursor-pointer text-left"
     >
       <span className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: meta.fond }}>
         <meta.Icon size={15} className={meta.couleur} />
@@ -174,8 +174,8 @@ export default function RechercheRapide({ onClose, onOpenBibliotheque }) {
 
   return (
     <div className="fixed inset-0 z-[70] flex items-end sm:items-start justify-center sm:pt-[8vh]" role="dialog" aria-modal="true" aria-label="Recherche rapide">
-      <div className="absolute inset-0 bg-anthracite-950/50 backdrop-blur-sm animate-fade-in" onClick={onClose} />
-      <div className="relative w-full sm:max-w-xl max-h-[88dvh] flex flex-col bg-cream rounded-t-3xl sm:rounded-3xl shadow-2xl animate-slide-up overflow-hidden">
+      <div className="absolute inset-0 bg-nuit/50 backdrop-blur-sm animate-fade-in" onClick={onClose} />
+      <div className="relative w-full sm:max-w-xl max-h-[88dvh] flex flex-col bg-fond rounded-t-3xl sm:rounded-3xl shadow-2xl animate-slide-up overflow-hidden">
         {/* Champ de recherche */}
         <div className="p-4 pb-3 border-b border-anthracite-900/[0.07] flex items-center gap-3">
           <Search size={17} className="text-gold-600 flex-shrink-0" />
@@ -209,7 +209,7 @@ export default function RechercheRapide({ onClose, onOpenBibliotheque }) {
               <div className="flex flex-wrap gap-2 mb-5">
                 {SUGGESTIONS_APPELLATIONS.map(s => (
                   <button key={s} onClick={() => setQuery(s)}
-                    className="px-3 py-1.5 rounded-full text-xs font-semibold text-anthracite-700 bg-white border border-anthracite-200 hover:border-gold-500/60 active:scale-[0.97] transition-all cursor-pointer">
+                    className="px-3 py-1.5 rounded-full text-xs font-semibold text-anthracite-700 bg-carte border border-anthracite-200 hover:border-gold-500/60 active:scale-[0.97] transition-all cursor-pointer">
                     {s}
                   </button>
                 ))}

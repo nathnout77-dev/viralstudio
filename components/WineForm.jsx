@@ -300,7 +300,7 @@ export default function WineForm({ initial, onSave, onClose }) {
               Tapez le nom du vin : on le retrouve dans la bibliothèque et on préremplit la fiche.
               Absent&nbsp;? On le cherche sur internet.
             </p>
-            <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-white border border-anthracite-200 focus-within:border-gold-500/60 transition-colors">
+            <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-carte border border-anthracite-200 focus-within:border-gold-500/60 transition-colors">
               <Search size={16} className="text-gold-600 flex-shrink-0" />
               <input
                 autoFocus
@@ -327,7 +327,7 @@ export default function WineForm({ initial, onSave, onClose }) {
                   <button
                     key={w.id}
                     onClick={() => prefillFromDB(w)}
-                    className="w-full flex items-center gap-3 p-3 rounded-2xl bg-white border border-anthracite-200 hover:border-gold-500/60 active:scale-[0.99] transition-all cursor-pointer text-left"
+                    className="w-full flex items-center gap-3 p-3 rounded-2xl bg-carte border border-anthracite-200 hover:border-gold-500/60 active:scale-[0.99] transition-all cursor-pointer text-left"
                   >
                     <WineVisuel type={w.type} size={24} className="flex-shrink-0" />
                     <div className="min-w-0 flex-1">
@@ -387,7 +387,7 @@ export default function WineForm({ initial, onSave, onClose }) {
                   className={`px-3.5 py-1.5 rounded-full text-xs font-medium border transition-all cursor-pointer ${
                     form.type === t.value
                       ? 'bg-wine-800 text-cream border-wine-800 shadow-sm'
-                      : 'bg-white text-anthracite-600 border-anthracite-200 hover:border-wine-300'
+                      : 'bg-carte text-anthracite-600 border-anthracite-200 hover:border-wine-300'
                   }`}
                 >
                   {t.label}
@@ -511,7 +511,7 @@ export default function WineForm({ initial, onSave, onClose }) {
                   className={`px-3 py-1.5 rounded-full text-xs border transition-all cursor-pointer ${
                     form.foodPairings.includes(f)
                       ? 'bg-gold-500/20 border-gold-500/50 text-gold-700 font-medium'
-                      : 'bg-white border-anthracite-200 text-anthracite-500 hover:border-anthracite-300'
+                      : 'bg-carte border-anthracite-200 text-anthracite-500 hover:border-anthracite-300'
                   }`}
                 >
                   {f}
@@ -534,7 +534,7 @@ export default function WineForm({ initial, onSave, onClose }) {
         )}
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-2.5 px-5 py-4 border-t border-anthracite-100 flex-shrink-0 bg-cream">
+        <div className="flex items-center justify-end gap-2.5 px-5 py-4 border-t border-anthracite-100 flex-shrink-0 bg-fond">
           {phase === 'recherche' ? (
             <>
               <button type="button" onClick={saisieManuelle} className="btn-ghost inline-flex items-center gap-1.5">

@@ -129,7 +129,7 @@ export default function CaveAmisSection({ user }) {
         </div>
       ) : (
         <div className="animate-fade-in">
-          <div className="rounded-2xl bg-white border border-gold-500/40 p-4 mb-3">
+          <div className="rounded-2xl bg-carte border border-gold-500/40 p-4 mb-3">
             <div className="text-[10px] uppercase tracking-[0.2em] text-gold-700 font-semibold mb-1">Votre code de partage</div>
             <div className="font-serif text-2xl font-bold text-anthracite-900 tracking-[0.25em]">{partage.code}</div>
             <div className="text-[11px] text-anthracite-400 mt-1 break-all">{lien}</div>
@@ -214,10 +214,10 @@ export function CaveAmieViewer({ code, onClose }) {
   }, [])
 
   return (
-    <div className="fixed inset-0 z-[80] overflow-y-auto bg-cream animate-fade-in">
+    <div className="fixed inset-0 z-[80] overflow-y-auto bg-fond animate-fade-in">
       {/* En-tête */}
       <header className="sticky top-0 z-10 backdrop-blur-xl border-b border-anthracite-900/[0.08]"
-              style={{ background: 'rgba(250,250,249,0.88)' }}>
+              style={{ background: 'rgb(var(--fond) / 0.88)' }}>
         <div className="max-w-5xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full flex items-center justify-center"

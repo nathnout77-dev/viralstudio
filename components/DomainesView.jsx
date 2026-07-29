@@ -129,7 +129,7 @@ export default function DomainesView({ onAddWine }) {
       <div className="relative mb-4">
         <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-anthracite-400" />
         <input
-          className="w-full pl-11 pr-4 py-3 bg-white border border-anthracite-200 rounded-2xl text-sm placeholder-anthracite-400 focus:outline-none focus:ring-2 focus:ring-gold-600/40 focus:border-gold-500 transition-all"
+          className="w-full pl-11 pr-4 py-3 bg-carte border border-anthracite-200 rounded-2xl text-sm placeholder-anthracite-400 focus:outline-none focus:ring-2 focus:ring-gold-600/40 focus:border-gold-500 transition-all"
           placeholder="Cherchez un domaine, une appellation, une région…"
           value={search}
           onChange={e => setSearch(e.target.value)}
@@ -147,7 +147,7 @@ export default function DomainesView({ onAddWine }) {
           <select
             value={region}
             onChange={e => setRegion(e.target.value)}
-            className="pl-3 pr-8 py-2 bg-white border border-anthracite-200 rounded-xl text-xs text-anthracite-700 focus:outline-none focus:ring-2 focus:ring-gold-600/40 cursor-pointer appearance-none font-medium"
+            className="pl-3 pr-8 py-2 bg-carte border border-anthracite-200 rounded-xl text-xs text-anthracite-700 focus:outline-none focus:ring-2 focus:ring-gold-600/40 cursor-pointer appearance-none font-medium"
           >
             <option value="all">Toutes régions</option>
             {REGIONS_LIST.map(r => <option key={r} value={r}>{r}</option>)}
@@ -157,7 +157,7 @@ export default function DomainesView({ onAddWine }) {
         <button
           onClick={() => setOnlyConfidentiel(v => !v)}
           className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
-            onlyConfidentiel ? 'bg-gold-500/15 text-gold-700 border-gold-500/40' : 'bg-white text-anthracite-600 border-anthracite-200 hover:border-gold-400'
+            onlyConfidentiel ? 'bg-gold-500/15 text-gold-700 border-gold-500/40' : 'bg-carte text-anthracite-600 border-anthracite-200 hover:border-gold-400'
           }`}
         >
           <Sparkles size={12} />

@@ -18,7 +18,7 @@ const TYPE_COULEURS = { red: '#8c2f39', white: '#c9a84c', 'rosé': '#e58f8f', sw
 function Puce({ children, color }) {
   return (
     <span
-      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white border border-anthracite-200"
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-carte border border-anthracite-200"
       style={color ? { borderColor: color + '55', color } : undefined}
     >
       {children}

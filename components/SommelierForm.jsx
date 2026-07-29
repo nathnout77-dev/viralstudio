@@ -143,7 +143,7 @@ function ToolSwitch({ tool, setTool }) {
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             tool === id
               ? 'bg-wine-800 text-cream shadow-wine'
-              : 'bg-white text-anthracite-600 border border-anthracite-200 hover:border-wine-300'
+              : 'bg-carte text-anthracite-600 border border-anthracite-200 hover:border-wine-300'
           }`}
         >
           <Icon size={13} />
@@ -422,7 +422,7 @@ export default function SommelierForm({ onOpenBibliotheque }) {
               className={`p-5 rounded-2xl border-2 text-center transition-all duration-200 cursor-pointer hover:-translate-y-1 animate-scale-in ${
                 answers[current.id] === opt.label
                   ? 'border-wine-700 bg-wine-50 shadow-md'
-                  : 'border-anthracite-200 bg-white hover:border-wine-300'
+                  : 'border-anthracite-200 bg-carte hover:border-wine-300'
               }`}
               style={{ animationDelay: `${i * 60}ms`, animationFillMode: 'both' }}
             >

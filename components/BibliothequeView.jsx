@@ -148,7 +148,7 @@ function DecouverteFiche({ dec, onClose, onDelete }) {
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {dec.cepages.map(c => (
-                  <span key={c} className="text-xs bg-white border border-anthracite-200 text-anthracite-600 px-2.5 py-1 rounded-full">{c}</span>
+                  <span key={c} className="text-xs bg-carte border border-anthracite-200 text-anthracite-600 px-2.5 py-1 rounded-full">{c}</span>
                 ))}
               </div>
             </div>
@@ -161,7 +161,7 @@ function DecouverteFiche({ dec, onClose, onDelete }) {
               </div>
               <div className="flex flex-wrap gap-2">
                 {dec.accords.map(a => (
-                  <span key={a} className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-cream border border-anthracite-900/10 text-anthracite-700">{a}</span>
+                  <span key={a} className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-fond border border-anthracite-900/10 text-anthracite-700">{a}</span>
                 ))}
               </div>
             </div>
@@ -255,7 +255,7 @@ function BlocTerroir({ appellation, region }) {
           </div>
           <div className="flex flex-wrap gap-1.5">
             {crus.slice(0, 8).map(c => (
-              <span key={c.id} className="text-[10px] bg-white border border-anthracite-200 text-anthracite-600 px-2 py-0.5 rounded-full">
+              <span key={c.id} className="text-[10px] bg-carte border border-anthracite-200 text-anthracite-600 px-2 py-0.5 rounded-full">
                 {c.chateau}
               </span>
             ))}
@@ -275,7 +275,7 @@ function BlocTerroir({ appellation, region }) {
             {millesimes.map(m => (
               <span
                 key={m.id}
-                className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-white border border-gold-500/30 text-anthracite-700"
+                className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-carte border border-gold-500/30 text-anthracite-700"
                 title={m.commentaire || m.style || ''}
               >
                 {m.annee}
@@ -424,7 +424,7 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
                 <button
                   key={v.id}
                   onClick={() => setWine(v)}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border border-anthracite-200 bg-white text-anthracite-700 hover:border-gold-500/60 transition-all cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border border-anthracite-200 bg-carte text-anthracite-700 hover:border-gold-500/60 transition-all cursor-pointer"
                   title={`Voir ${v.appellation}`}
                 >
                   <span className="w-2.5 h-2.5 rounded-full ring-1 ring-anthracite-900/10" style={pastilleStyle(v.type)} aria-hidden="true" />
@@ -443,7 +443,7 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
                   <button
                     key={v.id}
                     onClick={() => setWine(v)}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border border-anthracite-200 bg-white text-anthracite-700 hover:border-gold-500/60 transition-all cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border border-anthracite-200 bg-carte text-anthracite-700 hover:border-gold-500/60 transition-all cursor-pointer"
                     title={`${v.region} · ~${v.prixMoyen} €`}
                   >
                     <span className="w-2.5 h-2.5 rounded-full ring-1 ring-anthracite-900/10" style={pastilleStyle(v.type)} aria-hidden="true" />
@@ -467,7 +467,7 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
             <p className="text-sm text-anthracite-700">{wine.aromes}</p>
             <div className="flex flex-wrap gap-1.5 mt-2">
               {wine.cepages.map(c => (
-                <span key={c} className="text-xs bg-white border border-anthracite-200 text-anthracite-600 px-2.5 py-1 rounded-full">
+                <span key={c} className="text-xs bg-carte border border-anthracite-200 text-anthracite-600 px-2.5 py-1 rounded-full">
                   {c}
                 </span>
               ))}
@@ -496,7 +496,7 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
           {/* Honnêteté : cette fiche est dérivée de la base nationale, pas
               rédigée à la main. Le prix est relevé ou modélisé — on le dit. */}
           {wine.referentiel && (
-            <div className="rounded-2xl border border-anthracite-900/[0.08] bg-white p-3.5 flex items-start gap-2.5">
+            <div className="rounded-2xl border border-anthracite-900/[0.08] bg-carte p-3.5 flex items-start gap-2.5">
               <span className="text-base leading-none flex-shrink-0" role="img" aria-hidden="true">📊</span>
               <p className="text-[11px] text-anthracite-500 leading-relaxed">
                 Fiche établie depuis la base viticole nationale
@@ -580,7 +580,7 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
         </div>
 
         {/* Footer : ajout cave — sur une ligne en desktop */}
-        <div className="p-5 lg:px-7 lg:py-4 border-t border-anthracite-100 bg-cream flex-shrink-0">
+        <div className="p-5 lg:px-7 lg:py-4 border-t border-anthracite-100 bg-fond flex-shrink-0">
           <div className="lg:flex lg:items-center lg:gap-6">
             <div className="lg:flex-1 lg:min-w-0">
               <div className="flex items-center gap-2 mb-3 lg:mb-1.5 overflow-x-auto hide-scrollbar">
@@ -595,7 +595,7 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
                       onClick={() => setMillesime(y)}
                       title={reco ? 'Millésime à privilégier' : undefined}
                       className={`px-2.5 py-1 rounded-full text-xs font-semibold border transition-all cursor-pointer flex-shrink-0 ${
-                        millesime === y ? 'text-cream border-transparent' : 'bg-white border-anthracite-200 text-anthracite-600'
+                        millesime === y ? 'text-cream border-transparent' : 'bg-carte border-anthracite-200 text-anthracite-600'
                       }`}
                       style={millesime === y ? { background: wine.color } : {}}
                     >
@@ -746,7 +746,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
         </div>
         <button
           onClick={() => setShowComparateur(true)}
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-xs font-bold text-anthracite-700 bg-white border border-anthracite-200 hover:border-gold-500/70 hover:text-anthracite-950 active:scale-[0.98] transition-all cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-xs font-bold text-anthracite-700 bg-carte border border-anthracite-200 hover:border-gold-500/70 hover:text-anthracite-950 active:scale-[0.98] transition-all cursor-pointer"
           title="Comparer 2 ou 3 vins côte à côte"
         >
           <Scale size={13} className="text-gold-600" />
@@ -759,7 +759,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
         <button
           onClick={() => setOnglet('collection')}
           className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
-            onglet === 'collection' ? 'bg-wine-800 text-cream shadow-wine' : 'bg-white text-anthracite-600 border border-anthracite-200 hover:border-wine-300'
+            onglet === 'collection' ? 'bg-wine-800 text-cream shadow-wine' : 'bg-carte text-anthracite-600 border border-anthracite-200 hover:border-wine-300'
           }`}
         >
           <Library size={13} /> La collection <span className="opacity-70">({WINE_DB.length})</span>
@@ -767,7 +767,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
         <button
           onClick={() => setOnglet('decouvertes')}
           className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
-            onglet === 'decouvertes' ? 'bg-wine-800 text-cream shadow-wine' : 'bg-white text-anthracite-600 border border-anthracite-200 hover:border-wine-300'
+            onglet === 'decouvertes' ? 'bg-wine-800 text-cream shadow-wine' : 'bg-carte text-anthracite-600 border border-anthracite-200 hover:border-wine-300'
           }`}
         >
           <Camera size={13} /> Mes découvertes <span className="opacity-70">({decouvertes.length})</span>
@@ -798,7 +798,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
       <div className="relative mb-4 lg:mb-6">
         <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-anthracite-400" />
         <input
-          className="w-full pl-11 pr-4 py-3 bg-white border border-anthracite-200 rounded-2xl text-base sm:text-sm placeholder-anthracite-400 focus:outline-none focus:ring-2 focus:ring-gold-600/40 focus:border-gold-500 transition-all"
+          className="w-full pl-11 pr-4 py-3 bg-carte border border-anthracite-200 rounded-2xl text-base sm:text-sm placeholder-anthracite-400 focus:outline-none focus:ring-2 focus:ring-gold-600/40 focus:border-gold-500 transition-all"
           placeholder="Cherchez un vin, une région, un cépage, un arôme…"
           value={search}
           onChange={e => setSearch(e.target.value)}
@@ -821,7 +821,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
                 key={f.value}
                 onClick={() => setType(f.value)}
                 className={`px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer lg:w-full lg:text-left lg:rounded-xl lg:px-3.5 lg:py-2 ${
-                  type === f.value ? 'bg-wine-800 text-cream border-wine-800' : 'bg-white text-anthracite-600 border-anthracite-200 hover:border-wine-300'
+                  type === f.value ? 'bg-wine-800 text-cream border-wine-800' : 'bg-carte text-anthracite-600 border-anthracite-200 hover:border-wine-300'
                 }`}
               >
                 {f.label}
@@ -842,7 +842,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
                   value={value}
                   onChange={e => set(e.target.value)}
                   aria-label={label}
-                  className="pl-3 pr-8 py-2 lg:w-full bg-white border border-anthracite-200 rounded-xl text-xs text-anthracite-700 focus:outline-none focus:ring-2 focus:ring-gold-600/40 cursor-pointer appearance-none font-medium"
+                  className="pl-3 pr-8 py-2 lg:w-full bg-carte border border-anthracite-200 rounded-xl text-xs text-anthracite-700 focus:outline-none focus:ring-2 focus:ring-gold-600/40 cursor-pointer appearance-none font-medium"
                 >
                   {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>

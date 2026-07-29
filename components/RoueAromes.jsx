@@ -358,7 +358,7 @@ export default function RoueAromes() {
                     <button
                       key={w.id}
                       onClick={() => setFicheWine(w)}
-                      className="min-h-[44px] inline-flex items-center gap-2 pl-3 pr-4 rounded-full bg-white border border-anthracite-900/10 shadow-card hover:border-gold-500/60 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300 cursor-pointer"
+                      className="min-h-[44px] inline-flex items-center gap-2 pl-3 pr-4 rounded-full bg-carte border border-anthracite-900/10 shadow-card hover:border-gold-500/60 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300 cursor-pointer"
                       title={`Ouvrir la fiche ${w.appellation}`}
                     >
                       <WineVisuel type={w.type} size={14} />

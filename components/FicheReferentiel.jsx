@@ -26,7 +26,7 @@ const typeDepuisCouleur = (c) => COULEUR_TYPE[normaliser(c)] || 'red'
 function Bloc({ Icon, titre, children }) {
   if (!children) return null
   return (
-    <div className="rounded-2xl border border-anthracite-900/[0.07] bg-white p-4">
+    <div className="rounded-2xl border border-anthracite-900/[0.07] bg-carte p-4">
       <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] font-bold text-anthracite-400 mb-2">
         <Icon size={11} className="text-gold-600" /> {titre}
       </div>
@@ -38,7 +38,7 @@ function Bloc({ Icon, titre, children }) {
 const Puces = ({ items, className = '' }) => (
   <div className="flex flex-wrap gap-1.5">
     {items.map(x => (
-      <span key={x} className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium bg-cream border border-anthracite-900/10 text-anthracite-700 ${className}`}>
+      <span key={x} className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium bg-fond border border-anthracite-900/10 text-anthracite-700 ${className}`}>
         {x}
       </span>
     ))}
@@ -162,7 +162,7 @@ export default function FicheReferentiel({ entree, onClose, onOuvrirVin }) {
                   {[['Tanins', item.tanins], ['Acidité', item.acidite], ['Corps', item.corps]]
                     .filter(([, v]) => v)
                     .map(([k, v]) => (
-                      <div key={k} className="rounded-xl bg-cream p-2.5">
+                      <div key={k} className="rounded-xl bg-fond p-2.5">
                         <div className="text-[9px] uppercase tracking-wider font-bold text-anthracite-400">{k}</div>
                         <div className="text-[13px] font-semibold text-anthracite-800 mt-0.5">{v}</div>
                       </div>
@@ -263,7 +263,7 @@ export default function FicheReferentiel({ entree, onClose, onOuvrirVin }) {
                   <button
                     key={w.id}
                     onClick={() => onOuvrirVin?.(w)}
-                    className="min-h-[40px] inline-flex items-center gap-2 pl-2.5 pr-3 rounded-full bg-cream border border-anthracite-900/10 hover:border-gold-500/60 active:scale-[0.98] transition-all cursor-pointer"
+                    className="min-h-[40px] inline-flex items-center gap-2 pl-2.5 pr-3 rounded-full bg-fond border border-anthracite-900/10 hover:border-gold-500/60 active:scale-[0.98] transition-all cursor-pointer"
                   >
                     {w.emoji && <span role="img" aria-hidden="true">{w.emoji}</span>}
                     <span className="text-[12px] font-semibold text-anthracite-800">{w.appellation}</span>

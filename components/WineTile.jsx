@@ -145,7 +145,7 @@ export default function WineTile({
       <div className="flex items-start gap-3">
         <div
           className={`flex items-center justify-center flex-shrink-0 ${iconClass}`}
-          style={{ background: color ? `${color}18` : '#f0e9dd' }}
+          style={{ background: color ? `${color}18` : 'rgb(var(--anth-100))' }}
         >
           <WineVisuel type={type} size={22} />
         </div>

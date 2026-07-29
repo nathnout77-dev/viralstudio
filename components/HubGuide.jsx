@@ -69,7 +69,7 @@ export default function HubGuide({ wines, onParcours, onScan, onAssistant, onRec
           cépage → millésimes à privilégier, sans naviguer. Pensé rayon. */}
       <button
         onClick={onRecherche}
-        className="w-full flex items-center gap-3 px-4 py-3 mb-6 rounded-full bg-white border border-anthracite-200 hover:border-gold-500/50 active:scale-[0.99] transition-all cursor-pointer text-left"
+        className="w-full flex items-center gap-3 px-4 py-3 mb-6 rounded-full bg-carte border border-anthracite-200 hover:border-gold-500/50 active:scale-[0.99] transition-all cursor-pointer text-left"
         aria-label="Recherche rapide — appellation, cépage, millésimes"
       >
         <span className="text-base leading-none flex-shrink-0" role="img" aria-hidden="true">🔍</span>

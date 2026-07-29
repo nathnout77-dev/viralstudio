@@ -317,7 +317,7 @@ const CONFIANCE_LABEL = {
 // pas » mémorise quand même — dans les deux cas le vin reste retrouvable.
 function AchatBloc({ achat, onDecision, millesime }) {
   return (
-    <div className="rounded-2xl border border-anthracite-900/[0.08] bg-white p-4">
+    <div className="rounded-2xl border border-anthracite-900/[0.08] bg-carte p-4">
       <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-2.5">
         Verdict en rayon ?
       </div>
@@ -373,7 +373,7 @@ function verdictPrix(prix, fourchette) {
 function PrixRayonBloc({ verdict, prixRayon, editingPrix, prixDraft, setPrixDraft, setEditingPrix, confirmerPrix }) {
   if (editingPrix) {
     return (
-      <div className="rounded-2xl p-4 border border-anthracite-900/[0.08] bg-white space-y-2.5">
+      <div className="rounded-2xl p-4 border border-anthracite-900/[0.08] bg-carte space-y-2.5">
         <label htmlFor="scan-prix-edit" className="text-xs font-semibold text-anthracite-600">Prix affiché en rayon (€)</label>
         <div className="flex gap-2">
           <input
@@ -460,7 +460,7 @@ function AvisEtAccords({ parsed, fiabilite = null, enrichState = 'idle' }) {
           </div>
           <div className="flex flex-wrap gap-2">
             {parsed.accordsSuggeres.map(plat => (
-              <span key={plat} className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-cream border border-anthracite-900/10 text-anthracite-700">
+              <span key={plat} className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-fond border border-anthracite-900/10 text-anthracite-700">
                 {plat}
               </span>
             ))}
@@ -1135,7 +1135,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
 
               <button
                 onClick={() => { setModeRayon(true); ouvrirCamera() }}
-                className="w-full min-h-[52px] flex items-center justify-center gap-2.5 rounded-2xl border border-gold-500/40 text-sm font-semibold text-anthracite-800 hover:border-gold-500/80 hover:bg-white active:scale-[0.99] transition-all duration-300 cursor-pointer"
+                className="w-full min-h-[52px] flex items-center justify-center gap-2.5 rounded-2xl border border-gold-500/40 text-sm font-semibold text-anthracite-800 hover:border-gold-500/80 hover:bg-carte active:scale-[0.99] transition-all duration-300 cursor-pointer"
                 style={{ background: 'rgba(199,161,90,0.07)' }}
               >
                 <Library size={16} className="text-gold-600" />
@@ -1145,7 +1145,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
 
               <button
                 onClick={() => galleryRef.current?.click()}
-                className="w-full min-h-[52px] flex items-center justify-center gap-2.5 rounded-2xl border border-anthracite-900/15 text-sm font-medium text-anthracite-700 hover:border-anthracite-900/40 hover:bg-white active:scale-[0.99] transition-all duration-300 cursor-pointer"
+                className="w-full min-h-[52px] flex items-center justify-center gap-2.5 rounded-2xl border border-anthracite-900/15 text-sm font-medium text-anthracite-700 hover:border-anthracite-900/40 hover:bg-carte active:scale-[0.99] transition-all duration-300 cursor-pointer"
               >
                 <ImageIcon size={16} className="text-gold-600" />
                 Choisir une photo dans la galerie
@@ -1232,7 +1232,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                 <button
                   onClick={capturerDepuisVideo}
                   aria-label="Prendre la photo"
-                  className="w-16 h-16 rounded-full border-4 border-wine-800 flex items-center justify-center bg-white active:scale-95 transition-transform cursor-pointer shadow-wine"
+                  className="w-16 h-16 rounded-full border-4 border-wine-800 flex items-center justify-center bg-carte active:scale-95 transition-transform cursor-pointer shadow-wine"
                 >
                   <span className="w-12 h-12 rounded-full" style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }} />
                 </button>
@@ -1427,8 +1427,8 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                     v.interessant
                       ? 'border-gold-500/50 shadow-card hover:-translate-y-0.5'
                       : v.matched
-                        ? 'border-anthracite-900/[0.08] bg-white hover:border-anthracite-900/25'
-                        : 'border-anthracite-900/[0.06] bg-white hover:border-gold-500/40'
+                        ? 'border-anthracite-900/[0.08] bg-carte hover:border-anthracite-900/25'
+                        : 'border-anthracite-900/[0.06] bg-carte hover:border-gold-500/40'
                   }`}
                   style={v.interessant ? { background: 'rgba(199,161,90,0.08)' } : {}}
                 >
@@ -1523,7 +1523,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                   </div>
                 </div>
 
-                <div className="p-5 space-y-4 bg-white">
+                <div className="p-5 space-y-4 bg-carte">
                   {confiance && (
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-gold-500/15 text-gold-700">
                       ⚠️ {confiance}
@@ -1647,7 +1647,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                   </div>
                 </div>
 
-                <div className="p-5 space-y-4 bg-white">
+                <div className="p-5 space-y-4 bg-carte">
                   {confiance && (
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-gold-500/15 text-gold-700">
                       ⚠️ {confiance}
@@ -1690,7 +1690,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                           <button
                             key={w.id}
                             onClick={() => setFicheWine(w)}
-                            className="min-h-[44px] inline-flex items-center gap-2 pl-3 pr-3.5 rounded-full bg-cream border border-anthracite-900/10 hover:border-gold-500/60 active:scale-[0.98] transition-all duration-300 cursor-pointer"
+                            className="min-h-[44px] inline-flex items-center gap-2 pl-3 pr-3.5 rounded-full bg-fond border border-anthracite-900/10 hover:border-gold-500/60 active:scale-[0.98] transition-all duration-300 cursor-pointer"
                             title={`Ouvrir la fiche ${w.appellation}`}
                           >
                             <WineVisuel type={w.type} size={13} />

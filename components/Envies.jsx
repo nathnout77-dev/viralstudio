@@ -114,7 +114,7 @@ export function EnvieButton({ appellation, vin = null, size = 15, light = false,
       className={`relative inline-flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 cursor-pointer hover:scale-110 active:scale-95 ${
         light
           ? 'bg-white/20 hover:bg-white/35'
-          : 'bg-white border border-anthracite-900/10 hover:border-wine-300'
+          : 'bg-carte border border-anthracite-900/10 hover:border-wine-300'
       } ${className}`}
     >
       <Heart
@@ -256,7 +256,7 @@ export default function EnviesView({ onBuy }) {
               <button
                 onClick={() => removeEnvie(id)}
                 aria-label={`Retirer ${appellation} de la liste`}
-                className="w-9 h-9 flex items-center justify-center rounded-full bg-white border border-anthracite-900/10 text-anthracite-400 hover:border-red-300 hover:text-red-600 transition-all cursor-pointer"
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-carte border border-anthracite-900/10 text-anthracite-400 hover:border-red-300 hover:text-red-600 transition-all cursor-pointer"
               >
                 <Trash2 size={13} />
               </button>
@@ -268,7 +268,7 @@ export default function EnviesView({ onBuy }) {
             return (
               <div key={id} className="card p-4 animate-fade-in-up" style={{ animationDelay: `${Math.min(i * 50, 350)}ms`, animationFillMode: 'both' }}>
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-lg flex-shrink-0" style={{ background: '#f0e9dd' }}>
+                  <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-lg flex-shrink-0" style={{ background: 'rgb(var(--anth-100))' }}>
                     <Wine size={15} className="text-anthracite-400" />
                   </div>
                   <div className="min-w-0 flex-1">

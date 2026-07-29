@@ -1,8 +1,7 @@
 import { useEffect } from 'react'
 import {
   X, Home, Search, Wine, Library, Map, GraduationCap, Sparkles,
-  GlassWater, BookOpen, ScanLine, Utensils, UserCircle2, Plus, Layers, Users,
-} from 'lucide-react'
+  GlassWater, BookOpen, ScanLine, Utensils, UserCircle2, Plus, Layers, Users, SlidersHorizontal } from 'lucide-react'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MenuGrille — « Tout Œno ». Le mode guidé est l'entrée principale, mais les
@@ -27,7 +26,7 @@ const CLASSIQUES = [
   { id: 'carte',     label: 'Carte seule',     Icon: GlassWater, sous: 'Vignobles & routes des vins' },
 ]
 
-export default function MenuGrille({ onGo, onScan, onAssistant, onCeSoir, onCompte, onAdd, onRecherche, onClose }) {
+export default function MenuGrille({ onGo, onScan, onAssistant, onCeSoir, onCompte, onAdd, onRecherche, onReglages, onClose }) {
   useEffect(() => {
     const esc = e => { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', esc)
@@ -39,8 +38,8 @@ export default function MenuGrille({ onGo, onScan, onAssistant, onCeSoir, onComp
 
   return (
     <div className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center" role="dialog" aria-modal="true" aria-label="Menu Œno">
-      <div className="absolute inset-0 bg-anthracite-950/50 backdrop-blur-sm animate-fade-in" onClick={onClose} />
-      <div className="relative w-full sm:max-w-lg max-h-[88dvh] overflow-y-auto bg-cream rounded-t-3xl sm:rounded-3xl shadow-2xl p-6 pb-8 animate-slide-up">
+      <div className="absolute inset-0 bg-nuit/50 backdrop-blur-sm animate-fade-in" onClick={onClose} />
+      <div className="relative w-full sm:max-w-lg max-h-[88dvh] overflow-y-auto bg-fond rounded-t-3xl sm:rounded-3xl shadow-2xl p-6 pb-8 animate-slide-up">
         <div className="flex items-center justify-between mb-5">
           <div className="font-serif text-xl font-bold text-anthracite-900">Tout Œno</div>
           <button
@@ -58,7 +57,7 @@ export default function MenuGrille({ onGo, onScan, onAssistant, onCeSoir, onComp
             <button
               key={id}
               onClick={() => go(onGo, id)}
-              className="flex flex-col items-center gap-2 p-3.5 rounded-2xl bg-white border border-anthracite-200 hover:border-gold-500/50 active:scale-[0.97] transition-all cursor-pointer"
+              className="flex flex-col items-center gap-2 p-3.5 rounded-2xl bg-carte border border-anthracite-200 hover:border-gold-500/50 active:scale-[0.97] transition-all cursor-pointer"
             >
               <Icon size={18} className="text-wine-700" strokeWidth={1.7} />
               <span className="text-[11px] font-semibold text-anthracite-800 text-center leading-tight">{label}</span>
@@ -72,7 +71,7 @@ export default function MenuGrille({ onGo, onScan, onAssistant, onCeSoir, onComp
             <button
               key={id}
               onClick={() => go(onGo, id)}
-              className="w-full flex items-center gap-3 p-3.5 rounded-2xl bg-white border border-anthracite-200 hover:border-gold-500/50 active:scale-[0.99] transition-all cursor-pointer text-left"
+              className="w-full flex items-center gap-3 p-3.5 rounded-2xl bg-carte border border-anthracite-200 hover:border-gold-500/50 active:scale-[0.99] transition-all cursor-pointer text-left"
             >
               <Icon size={16} className="text-gold-700 flex-shrink-0" strokeWidth={1.7} />
               <div className="min-w-0">
@@ -85,20 +84,23 @@ export default function MenuGrille({ onGo, onScan, onAssistant, onCeSoir, onComp
 
         <div className="text-[10px] uppercase tracking-[0.2em] font-bold text-anthracite-400 mb-2.5">Actions</div>
         <div className="grid grid-cols-2 gap-2.5">
-          <button onClick={() => go(onRecherche)} className="flex items-center gap-2.5 p-3.5 rounded-2xl bg-white border border-anthracite-200 hover:border-gold-500/50 active:scale-[0.97] transition-all cursor-pointer">
+          <button onClick={() => go(onRecherche)} className="flex items-center gap-2.5 p-3.5 rounded-2xl bg-carte border border-anthracite-200 hover:border-gold-500/50 active:scale-[0.97] transition-all cursor-pointer">
             <Search size={15} className="text-gold-700" /><span className="text-xs font-semibold text-anthracite-800">Recherche</span>
           </button>
-          <button onClick={() => go(onScan)} className="flex items-center gap-2.5 p-3.5 rounded-2xl bg-white border border-anthracite-200 hover:border-gold-500/50 active:scale-[0.97] transition-all cursor-pointer">
+          <button onClick={() => go(onScan)} className="flex items-center gap-2.5 p-3.5 rounded-2xl bg-carte border border-anthracite-200 hover:border-gold-500/50 active:scale-[0.97] transition-all cursor-pointer">
             <ScanLine size={15} className="text-gold-700" /><span className="text-xs font-semibold text-anthracite-800">Scanner</span>
           </button>
-          <button onClick={() => go(onCeSoir)} className="flex items-center gap-2.5 p-3.5 rounded-2xl bg-white border border-anthracite-200 hover:border-gold-500/50 active:scale-[0.97] transition-all cursor-pointer">
+          <button onClick={() => go(onCeSoir)} className="flex items-center gap-2.5 p-3.5 rounded-2xl bg-carte border border-anthracite-200 hover:border-gold-500/50 active:scale-[0.97] transition-all cursor-pointer">
             <Utensils size={15} className="text-gold-700" /><span className="text-xs font-semibold text-anthracite-800">Ce soir ?</span>
           </button>
-          <button onClick={() => go(onAssistant)} className="flex items-center gap-2.5 p-3.5 rounded-2xl bg-white border border-anthracite-200 hover:border-gold-500/50 active:scale-[0.97] transition-all cursor-pointer">
+          <button onClick={() => go(onAssistant)} className="flex items-center gap-2.5 p-3.5 rounded-2xl bg-carte border border-anthracite-200 hover:border-gold-500/50 active:scale-[0.97] transition-all cursor-pointer">
             <Sparkles size={15} className="text-gold-700" /><span className="text-xs font-semibold text-anthracite-800">Assistant Œno</span>
           </button>
-          <button onClick={() => go(onCompte)} className="flex items-center gap-2.5 p-3.5 rounded-2xl bg-white border border-anthracite-200 hover:border-gold-500/50 active:scale-[0.97] transition-all cursor-pointer">
+          <button onClick={() => go(onCompte)} className="flex items-center gap-2.5 p-3.5 rounded-2xl bg-carte border border-anthracite-200 hover:border-gold-500/50 active:scale-[0.97] transition-all cursor-pointer">
             <UserCircle2 size={15} className="text-gold-700" /><span className="text-xs font-semibold text-anthracite-800">Compte</span>
+          </button>
+          <button onClick={() => go(onReglages)} className="flex items-center gap-2.5 p-3.5 rounded-2xl bg-carte border border-anthracite-200 hover:border-gold-500/50 active:scale-[0.97] transition-all cursor-pointer">
+            <SlidersHorizontal size={15} className="text-gold-700" /><span className="text-xs font-semibold text-anthracite-800">Réglages</span>
           </button>
         </div>
 

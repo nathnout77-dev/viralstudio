@@ -72,7 +72,7 @@ function Chip({ active, onClick, children }) {
       className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all cursor-pointer ${
         active
           ? 'bg-wine-700 border-wine-700 text-cream shadow-wine'
-          : 'bg-white border-anthracite-900/10 text-anthracite-600 hover:border-gold-500/60'
+          : 'bg-carte border-anthracite-900/10 text-anthracite-600 hover:border-gold-500/60'
       }`}
     >
       {children}
@@ -349,7 +349,7 @@ export default function DegustationSimulateur({ vin, onClose }) {
                 </div>
               </div>
 
-              <div className="rounded-2xl p-4" style={{ background: '#f0e9dd' }}>
+              <div className="rounded-2xl p-4" style={{ background: 'rgb(var(--anth-100))' }}>
                 <SectionTitre icon={Target} titre="L'idée du vin — son objectif" />
                 {prediction.idee.enUneMot && (
                   <p className="font-wine-name text-2xl text-wine-700 mb-2">« {prediction.idee.enUneMot} »</p>
@@ -497,7 +497,7 @@ export default function DegustationSimulateur({ vin, onClose }) {
               </div>
 
               {/* Objectif atteint ? */}
-              <div className="rounded-2xl p-4" style={{ background: '#f0e9dd' }}>
+              <div className="rounded-2xl p-4" style={{ background: 'rgb(var(--anth-100))' }}>
                 <SectionTitre icon={Target} titre="L'objectif était…" />
                 <p className="text-sm text-anthracite-700 leading-relaxed">{prediction.objectif}</p>
                 {note > 0 && (

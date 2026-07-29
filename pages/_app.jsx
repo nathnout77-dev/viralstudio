@@ -3,10 +3,21 @@ import '../styles/globals.css'
 import 'leaflet/dist/leaflet.css'
 import { Toaster } from '../components/Toast'
 import { inter, fraunces, tangerine } from '../lib/fonts'
+import { surveillerReglages } from '../lib/theme'
+import { amorcerSon } from '../lib/son'
 import { WifiOff } from 'lucide-react'
 
 export default function App({ Component, pageProps }) {
   const [horsLigne, setHorsLigne] = useState(false)
+
+  // Thème et taille d'affichage : appliqués avant le premier rendu par le
+  // script de _document, tenus à jour ici (changement de réglage, ou bascule
+  // du système quand c'est lui qu'on suit).
+  useEffect(() => surveillerReglages(), [])
+
+  // Le son doit être débloqué par un geste : on prend le premier qui vient,
+  // sans quoi le tout premier message reçu resterait muet.
+  useEffect(() => amorcerSon(), [])
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
