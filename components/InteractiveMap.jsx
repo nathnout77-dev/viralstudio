@@ -73,7 +73,7 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
           </div>
           <div className="flex flex-col items-center gap-1.5 flex-shrink-0">
             <WineGlassAnim color="#f5f0e8" fillLevel={fillLevelFromJauges(wine.jauges)} size={32} />
-            <EnvieButton appellation={wine.appellation} size={13} light className="!w-7 !h-7" />
+            <EnvieButton appellation={wine.appellation} vin={wine} size={13} light className="!w-7 !h-7" />
             <button onClick={onClose}
                     className="w-7 h-7 flex-shrink-0 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/35 transition-all cursor-pointer"
                     aria-label="Fermer">

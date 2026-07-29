@@ -116,7 +116,7 @@ export default function WineTile({
             </span>
           ) : <span />}
           <div className="flex items-center gap-1.5">
-            {showEnvie && <EnvieButton appellation={appellation} size={12} className="!w-6 !h-6" />}
+            {showEnvie && <EnvieButton appellation={appellation} vin={wine} size={12} className="!w-6 !h-6" />}
             {hasPetitDomaine && (
               <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-gold-500/15 text-gold-700" title="Contient un petit domaine">
                 <Sparkles size={9} />
@@ -165,7 +165,7 @@ export default function WineTile({
               </div>
             </div>
             <span className="flex items-center gap-1.5 flex-shrink-0" onClick={e => e.stopPropagation()}>
-              {showEnvie && <EnvieButton appellation={appellation} size={12} className="!w-6 !h-6" />}
+              {showEnvie && <EnvieButton appellation={appellation} vin={wine} size={12} className="!w-6 !h-6" />}
               {diff && (
                 <span className="w-2.5 h-2.5 rounded-full ring-2 ring-white flex-shrink-0" style={{ background: diff.color }} title={diff.label} />
               )}

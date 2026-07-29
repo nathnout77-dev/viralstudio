@@ -295,7 +295,7 @@ export default function BudgetCaviste() {
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0" onClick={e => e.stopPropagation()}>
                         <span className="text-sm font-bold text-anthracite-900">~{w.prixMoyen} €</span>
-                        <EnvieButton appellation={w.appellation} size={13} className="!w-7 !h-7" />
+                        <EnvieButton appellation={w.appellation} vin={w} size={13} className="!w-7 !h-7" />
                       </div>
                     </div>
                     <p className="text-xs text-anthracite-600 mt-2 leading-relaxed">

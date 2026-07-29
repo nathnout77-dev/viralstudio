@@ -354,7 +354,7 @@ function ServiceCard({ service, index, bouteilles, onFiche }) {
         <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold text-anthracite-500 bg-anthracite-50 border border-anthracite-200">
           {bouteilles} btl
         </span>
-        {!service.inCave && <EnvieButton appellation={w.appellation} size={12} className="!w-7 !h-7" />}
+        {!service.inCave && <EnvieButton appellation={w.appellation} vin={w} size={12} className="!w-7 !h-7" />}
       </div>
 
       {service.fallback && (
@@ -371,7 +371,7 @@ function ServiceCard({ service, index, bouteilles, onFiche }) {
             {service.alt.appellation}
           </button>
           {' '}(~{service.alt.prixMoyen} €){service.altInCave && ' — dans votre cave'}
-          {!service.altInCave && <EnvieButton appellation={service.alt.appellation} size={10} className="!w-6 !h-6 ml-1.5 align-middle" />}
+          {!service.altInCave && <EnvieButton appellation={service.alt.appellation} vin={service.alt} size={10} className="!w-6 !h-6 ml-1.5 align-middle" />}
         </p>
       )}
     </div>

@@ -377,7 +377,7 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
                       aria-label="Fermer">
                 <X size={14} />
               </button>
-              <EnvieButton appellation={wine.appellation} light />
+              <EnvieButton appellation={wine.appellation} vin={wine} light />
               <button
                 onClick={async () => {
                   const r = await partagerVin(wine)

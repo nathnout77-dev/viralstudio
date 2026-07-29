@@ -30,13 +30,25 @@ function saveEnvies(list) {
   window.dispatchEvent(new CustomEvent(EVENT))
 }
 
-export function toggleEnvie(appellation) {
+/**
+ * Ajoute (ou retire) un vin de la liste d'envies.
+ *
+ * `vin` est la fiche complète, gardée telle quelle avec l'envie. Elle ne
+ * pesait rien (~1 Ko) et elle évite le défaut d'origine : la liste ne
+ * mémorisait que le nom de l'appellation, et reconstituait la fiche en la
+ * cherchant dans WINE_DB. Or les vins de « Découvrir » viennent du catalogue
+ * national, précisément composé des appellations ABSENTES de WINE_DB — ils
+ * n'étaient donc jamais retrouvés, et arrivaient dans les envies sans fiche,
+ * sans région et sans prix. Une fiche gardée avec l'envie ne peut plus se
+ * perdre, y compris pour un vin scanné qui n'est dans aucun catalogue.
+ */
+export function toggleEnvie(appellation, vin = null) {
   const list = loadEnvies()
   const exists = list.find(e => e.appellation === appellation)
   saveEnvies(
     exists
       ? list.filter(e => e.appellation !== appellation)
-      : [{ id: `e${Date.now()}`, appellation, addedAt: Date.now() }, ...list]
+      : [{ id: `e${Date.now()}`, appellation, addedAt: Date.now(), vin: vin || null }, ...list]
   )
 }
 
@@ -68,7 +80,7 @@ const PARTICLES = Array.from({ length: 6 }, (_, i) => {
   return { dx: `${Math.round(Math.cos(angle) * 16)}px`, dy: `${Math.round(Math.sin(angle) * 16)}px` }
 })
 
-export function EnvieButton({ appellation, size = 15, light = false, className = '' }) {
+export function EnvieButton({ appellation, vin = null, size = 15, light = false, className = '' }) {
   const envies = useEnvies()
   const active = envies.some(e => e.appellation === appellation)
   const [burst, setBurst] = useState(false)
@@ -87,7 +99,7 @@ export function EnvieButton({ appellation, size = 15, light = false, className =
       setBurst(true)
       toast('Ajouté à vos envies')
     }
-    toggleEnvie(appellation)
+    toggleEnvie(appellation, vin)
   }
 
   return (
@@ -122,11 +134,28 @@ export function EnvieButton({ appellation, size = 15, light = false, className =
 export default function EnviesView({ onBuy }) {
   const envies = useEnvies()
   const [wineSelected, setWineSelected] = useState(null)
+  const [catalogue, setCatalogue] = useState(null)
+
+  // Repêchage des envies d'avant : elles ne portent que leur appellation. On
+  // va chercher leur fiche dans le catalogue COMPLET (fiches écrites à la
+  // main + base nationale), et seulement si l'une d'elles en a besoin — ce
+  // catalogue est volumineux, il n'a rien à faire dans le chargement initial.
+  const aRepecher = envies.some(e => !e.vin)
+  useEffect(() => {
+    if (!aRepecher || catalogue) return
+    let vivant = true
+    import('../lib/vinsReferentiel')
+      .then(m => { if (vivant) setCatalogue(m.CATALOGUE) })
+      .catch(() => { /* hors-ligne au premier appel : les initiales suffisent */ })
+    return () => { vivant = false }
+  }, [aRepecher, catalogue])
 
   const enriched = useMemo(() => envies.map(e => ({
     ...e,
-    wine: WINE_DB.find(w => w.appellation === e.appellation) || null,
-  })), [envies])
+    wine: e.vin
+      || (catalogue || WINE_DB).find(w => w.appellation === e.appellation)
+      || null,
+  })), [envies, catalogue])
 
   const share = useCallback(async () => {
     const lines = enriched.map(({ appellation, wine }) =>

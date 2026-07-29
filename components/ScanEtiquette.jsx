@@ -472,12 +472,15 @@ function AvisEtAccords({ parsed, fiabilite = null, enrichState = 'idle' }) {
 }
 
 // Bouton pleine largeur, cohérent avec le reste des actions, pour ajouter/retirer des envies.
-function EnvieAction({ appellation }) {
+// `vin` n'est renseigné que si l'étiquette a été reconnue dans le catalogue :
+// l'envie emporte alors sa fiche complète. Un vin inconnu reste sans fiche —
+// il vit de toute façon dans « Mes découvertes ».
+function EnvieAction({ appellation, vin = null }) {
   const envies = useEnvies()
   const active = envies.some(e => e.appellation === appellation)
   return (
     <button
-      onClick={() => toggleEnvie(appellation)}
+      onClick={() => toggleEnvie(appellation, vin)}
       className={`w-full flex items-center justify-center gap-2 py-3 rounded-full text-sm font-semibold transition-all duration-300 cursor-pointer ${
         active
           ? 'bg-wine-50 text-wine-700 border border-wine-200'
@@ -1590,7 +1593,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
               >
                 <Sparkles size={14} /> Simuler la dégustation
               </button>
-              {nomEnvie && <EnvieAction appellation={nomEnvie} />}
+              {nomEnvie && <EnvieAction appellation={nomEnvie} vin={matched || null} />}
               <button
                 onClick={async () => {
                   const r = await partagerVin(matched)
@@ -1711,7 +1714,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                   <Sparkles size={14} /> Simuler la dégustation
                 </button>
               )}
-              {nomEnvie && <EnvieAction appellation={nomEnvie} />}
+              {nomEnvie && <EnvieAction appellation={nomEnvie} vin={matched || null} />}
               {onAddWine && (parsed.appellation || parsed.domaine) && (
                 <AchatBloc achat={achat} onDecision={deciderAchat} millesime={Number(parsed.millesime) || null} />
               )}

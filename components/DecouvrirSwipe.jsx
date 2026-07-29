@@ -137,7 +137,7 @@ export default function DecouvrirSwipe({ onFiche, onAddWine }) {
     if (sens > 0) {
       // Glisser à droite = je garde → liste d'envies (si pas déjà dedans)
       const deja = loadEnvies().some(e => e.appellation === wine.appellation)
-      if (!deja) toggleEnvie(wine.appellation)
+      if (!deja) toggleEnvie(wine.appellation, wine)
       setGardes(n => n + 1)
     }
     setSortie(sens)
