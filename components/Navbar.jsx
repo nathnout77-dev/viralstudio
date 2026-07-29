@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import { Wine, Sparkles, Plus, Utensils, ScanLine, UserCircle2, Sprout, GraduationCap, Home, Search, LayoutGrid, Library, Map, Layers, Users } from 'lucide-react'
-import LogoOeno from './LogoOeno'
+import AvatarOeno from './AvatarOeno'
 import useCtaBreathe from '../lib/useCtaBreathe'
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -33,7 +33,7 @@ const MODE_BADGE = {
   expert:   { Icon: GraduationCap, label: 'Expert' },
 }
 
-export default function Navbar({ view, setView, total, mode, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte, onMenu, onRecherche }) {
+export default function Navbar({ view, setView, total, mode, prenom, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte, onMenu, onRecherche, onAvatar }) {
   const badge = MODE_BADGE[mode]
   const { breatheClass, settle } = useCtaBreathe() // halo du CTA « Ce soir ? »
   const ceSoir = () => { settle(); onCeSoir?.() }
@@ -43,14 +43,15 @@ export default function Navbar({ view, setView, total, mode, onProfil, onAdd, on
       <header className="lg:hidden sticky top-0 z-50 backdrop-blur-xl border-b border-anthracite-900/[0.08]"
               style={{ background: 'rgba(250,250,249,0.82)' }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6">
-          {/* Logo */}
-          <button onClick={onLanding} className="flex items-center gap-3 cursor-pointer group">
-            <LogoOeno size={36} className="transition-transform duration-500 group-hover:scale-105" />
-            <div className="text-left">
-              <div className="font-serif text-lg text-anthracite-950 tracking-wide leading-none">Œno</div>
+          {/* Avatar du compte, à la place de l'emblème : c'est soi qu'on veut
+              sous la main, pas la marque. Le texte garde l'accès à l'accueil. */}
+          <div className="flex items-center gap-3">
+            <AvatarOeno size={36} prenom={prenom} onClick={onAvatar} />
+            <button onClick={onLanding} className="text-left cursor-pointer group">
+              <div className="font-serif text-lg text-anthracite-950 tracking-wide leading-none transition-colors duration-300 group-hover:text-wine-800">Œno</div>
               <div className="text-[9px] text-gold-600 uppercase tracking-[0.2em] mt-1">{total} bouteille{total > 1 ? 's' : ''} en cave</div>
-            </div>
-          </button>
+            </button>
+          </div>
 
           {/* Nav tablette (md → lg) */}
           <nav className="hidden md:flex items-center gap-1" role="navigation">

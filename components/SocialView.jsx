@@ -6,8 +6,9 @@ import {
 import {
   monCode, definirPseudo, mesAmis, demanderAmi, accepterAmi, retirerAmi,
   lireFil, envoyerMessage, marquerLus, ecouterMessages, caveDeLAmi,
-  utilisateurCourant, cloudDisponible,
+  avatarsDesAmis, utilisateurCourant, cloudDisponible,
 } from '../lib/social'
+import { etatNotifications, demanderNotifications } from '../lib/notifications'
 import { toast } from './Toast'
 import WineCard from './WineCard'
 
@@ -44,6 +45,33 @@ function Invitation({ onCompte, indisponible }) {
           <span role="img" aria-hidden="true">✉️</span> Créer mon compte
         </button>
       )}
+    </div>
+  )
+}
+
+// ── Avatar d'un ami ────────────────────────────────────────────────────────
+// Sa photo s'il en a déposé une, l'initiale de son pseudo sinon. Les photos
+// n'arrivent qu'une fois la migration 004 appliquée : d'ici là, tout le monde
+// garde son initiale et rien ne casse.
+function AvatarAmi({ pseudo, photo, taille = 44, terne = false }) {
+  if (photo) {
+    return (
+      <img src={photo} alt="" className="rounded-full object-cover flex-shrink-0"
+           style={{ width: taille, height: taille }} />
+    )
+  }
+  return (
+    <div
+      className={`rounded-full flex items-center justify-center flex-shrink-0 font-serif font-bold ${
+        terne ? 'bg-anthracite-100 text-anthracite-400' : 'text-cream'
+      }`}
+      style={{
+        width: taille, height: taille, fontSize: Math.round(taille * 0.42),
+        background: terne ? undefined : 'linear-gradient(135deg, #8c2f39 0%, #5c0d22 100%)',
+      }}
+      aria-hidden="true"
+    >
+      {(pseudo || '?').charAt(0).toUpperCase()}
     </div>
   )
 }
@@ -103,7 +131,7 @@ function Bulle({ message, deMoi, onVoirVin }) {
 // depuis la base — si le direct rate un événement (réseau, onglet en veille,
 // souci de configuration), le message arrive quand même, au pire avec
 // quelques secondes de retard au lieu de ne jamais arriver.
-function Discussion({ ami, moi, onRetour, onVoirCave, onVoirVin }) {
+function Discussion({ ami, moi, photo, onRetour, onVoirCave, onVoirVin }) {
   const [messages, setMessages] = useState([])
   const [texte, setTexte]       = useState('')
   const [chargement, setChargement] = useState(true)
@@ -198,10 +226,7 @@ function Discussion({ ami, moi, onRetour, onVoirCave, onVoirVin }) {
                 className="w-9 h-9 flex items-center justify-center rounded-full text-anthracite-500 hover:text-anthracite-900 hover:bg-anthracite-900/[0.04] transition-all cursor-pointer">
           <ChevronLeft size={18} />
         </button>
-        <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-cream font-serif font-bold"
-             style={{ background: 'linear-gradient(135deg, #8c2f39 0%, #5c0d22 100%)' }}>
-          {ami.pseudo.charAt(0).toUpperCase()}
-        </div>
+        <AvatarAmi pseudo={ami.pseudo} photo={photo} taille={40} />
         <div className="min-w-0 flex-1">
           <div className="font-serif text-base font-bold text-anthracite-900 truncate">{ami.pseudo}</div>
           <div className="text-[10px] text-anthracite-400">Ami sur Œno</div>
@@ -352,29 +377,60 @@ function CaveDeLAmi({ ami, onRetour, onVoirVin }) {
 }
 
 // ── Vue principale ─────────────────────────────────────────────────────────
-export default function SocialView({ onCompte, onVoirVin, onEcranChange }) {
+export default function SocialView({ onCompte, onVoirVin, onEcranChange, amiInitial, onAmiInitialOuvert }) {
   const [moi, setMoi]         = useState(null)
   const [code, setCode]       = useState(null)
   const [liens, setLiens]     = useState({ demandes: [], envoyees: [], amis: [] })
+  const [avatars, setAvatars] = useState({})
   const [chargement, setChargement] = useState(true)
   const [saisie, setSaisie]   = useState('')
   const [copie, setCopie]     = useState(false)
   const [busy, setBusy]       = useState(false)
   const [ecran, setEcran]     = useState({ nom: 'liste', ami: null })
+  const [notifs, setNotifs]   = useState('indisponible')
+  const listeConnue = useRef('') // évite de redemander les photos à chaque sondage
 
-  // Le parent masque sa bulle assistante flottante pendant une conversation :
-  // elle chevauche le champ de saisie et gêne l'envoi. Le nettoyage à chaque
+  // Le parent sait quelle conversation est ouverte : il y masque sa bulle
+  // assistante flottante (elle chevauche le champ de saisie) et n'y notifie
+  // pas les messages de cet ami-là, déjà sous les yeux. Le nettoyage à chaque
   // changement d'écran — et au démontage si l'on quitte l'onglet Social en
   // pleine conversation — évite que la bulle reste masquée ailleurs dans l'app.
   useEffect(() => {
-    onEcranChange?.(ecran.nom === 'discussion')
-    return () => onEcranChange?.(false)
-  }, [ecran.nom, onEcranChange])
+    onEcranChange?.(ecran.nom === 'discussion' ? (ecran.ami?.ami_id || null) : null)
+    return () => onEcranChange?.(null)
+  }, [ecran.nom, ecran.ami?.ami_id, onEcranChange])
+
+  useEffect(() => { setNotifs(etatNotifications()) }, [])
+
+  const activerNotifs = useCallback(async () => {
+    const r = await demanderNotifications()
+    setNotifs(r)
+    if (r === 'granted') toast('🔔 Vous serez prévenu quand un ami écrit')
+    else if (r === 'denied') toast('Notifications refusées — réactivables dans les réglages du navigateur')
+  }, [])
 
   const recharger = useCallback(async () => {
     const r = await mesAmis()
     setLiens({ demandes: r.demandes, envoyees: r.envoyees, amis: r.amis })
+    // Les photos ne bougent pas au rythme du sondage : on ne les redemande
+    // que lorsque la composition de la liste change.
+    const ids = [...r.amis, ...r.demandes, ...r.envoyees].map(a => a.ami_id).filter(Boolean)
+    const cle = ids.slice().sort().join(',')
+    if (cle && cle !== listeConnue.current) {
+      listeConnue.current = cle
+      setAvatars(await avatarsDesAmis(ids))
+    }
   }, [])
+
+  // Conversation ouverte depuis une notification : dès que la liste d'amis
+  // est là, on va droit au bon fil.
+  useEffect(() => {
+    if (!amiInitial || ecran.nom === 'discussion') return
+    const ami = liens.amis.find(a => a.ami_id === amiInitial)
+    if (!ami) return
+    setEcran({ nom: 'discussion', ami })
+    onAmiInitialOuvert?.()
+  }, [amiInitial, liens.amis, ecran.nom, onAmiInitialOuvert])
 
   useEffect(() => {
     let vivant = true
@@ -448,7 +504,7 @@ export default function SocialView({ onCompte, onVoirVin, onEcranChange }) {
   if (ecran.nom === 'discussion') {
     return (
       <Discussion
-        ami={ecran.ami} moi={moi.id}
+        ami={ecran.ami} moi={moi.id} photo={avatars[ecran.ami.ami_id]}
         onRetour={() => { setEcran({ nom: 'liste', ami: null }); recharger() }}
         onVoirCave={ami => setEcran({ nom: 'cave', ami })}
         onVoirVin={onVoirVin}
@@ -504,6 +560,23 @@ export default function SocialView({ onCompte, onVoirVin, onEcranChange }) {
         </div>
       </form>
 
+      {/* Être prévenu — proposé une fois qu'on a quelqu'un à qui parler, et
+          jamais réclamé deux fois : un refus fait disparaître l'invite. */}
+      {notifs === 'default' && liens.amis.length > 0 && (
+        <div className="card p-4 mb-6 flex items-center gap-3 animate-fade-in">
+          <span className="text-xl leading-none flex-shrink-0" role="img" aria-hidden="true">🔔</span>
+          <div className="min-w-0 flex-1">
+            <div className="text-sm font-bold text-anthracite-900">Être prévenu des messages</div>
+            <div className="text-[11px] text-anthracite-400 leading-relaxed mt-0.5">
+              Œno vous signale les messages de vos amis, même depuis un autre écran de l'app.
+            </div>
+          </div>
+          <button onClick={activerNotifs} className="btn-gold text-[11px] px-3.5 !py-2 flex-shrink-0">
+            Activer
+          </button>
+        </div>
+      )}
+
       {/* Demandes reçues */}
       {liens.demandes.length > 0 && (
         <div className="mb-6">
@@ -513,10 +586,7 @@ export default function SocialView({ onCompte, onVoirVin, onEcranChange }) {
           <div className="flex flex-col gap-2">
             {liens.demandes.map(a => (
               <div key={a.ami_id} className="card p-3.5 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-cream font-serif font-bold"
-                     style={{ background: 'linear-gradient(135deg, #8c2f39 0%, #5c0d22 100%)' }}>
-                  {a.pseudo.charAt(0).toUpperCase()}
-                </div>
+                <AvatarAmi pseudo={a.pseudo} photo={avatars[a.ami_id]} taille={40} />
                 <span className="flex-1 min-w-0 font-semibold text-sm text-anthracite-900 truncate">{a.pseudo}</span>
                 <button onClick={() => repondre(a, true)} disabled={busy}
                         className="btn-gold text-[11px] px-3 !py-2 disabled:opacity-50">
@@ -555,10 +625,7 @@ export default function SocialView({ onCompte, onVoirVin, onEcranChange }) {
                 className="flex items-center gap-3 flex-1 min-w-0 text-left cursor-pointer"
               >
                 <div className="relative flex-shrink-0">
-                  <div className="w-11 h-11 rounded-full flex items-center justify-center text-cream font-serif font-bold"
-                       style={{ background: 'linear-gradient(135deg, #8c2f39 0%, #5c0d22 100%)' }}>
-                    {a.pseudo.charAt(0).toUpperCase()}
-                  </div>
+                  <AvatarAmi pseudo={a.pseudo} photo={avatars[a.ami_id]} taille={44} />
                   {a.non_lus > 0 && (
                     <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-gold-500 text-anthracite-950 text-[10px] font-bold flex items-center justify-center">
                       {a.non_lus}
@@ -585,9 +652,7 @@ export default function SocialView({ onCompte, onVoirVin, onEcranChange }) {
 
           {liens.envoyees.map(a => (
             <div key={a.ami_id} className="card p-3.5 flex items-center gap-3 opacity-60">
-              <div className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 bg-anthracite-100 text-anthracite-400 font-serif font-bold">
-                {a.pseudo.charAt(0).toUpperCase()}
-              </div>
+              <AvatarAmi pseudo={a.pseudo} photo={avatars[a.ami_id]} taille={44} terne />
               <div className="min-w-0 flex-1">
                 <div className="font-semibold text-sm text-anthracite-900 truncate">{a.pseudo}</div>
                 <div className="text-[11px] text-anthracite-400">⏳ Invitation envoyée</div>

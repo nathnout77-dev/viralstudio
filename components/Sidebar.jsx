@@ -1,6 +1,6 @@
 import { Wine, Library, Map, Sparkles, Plus, Utensils, ScanLine, UserCircle2, MessageCircleHeart, Sprout, GraduationCap, Home, Search, LayoutGrid, Layers, Users } from 'lucide-react'
 import RollingNumber from './RollingNumber'
-import LogoOeno from './LogoOeno'
+import AvatarOeno from './AvatarOeno'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Sidebar desktop (≥ lg) — signature luxe : noir profond, textes crème,
@@ -53,7 +53,7 @@ function NavItem({ active, onClick, Icon, label, accent = false }) {
   )
 }
 
-export default function Sidebar({ view, setView, total, mode, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte, onAssistant, onMenu, onRecherche }) {
+export default function Sidebar({ view, setView, total, mode, prenom, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte, onAssistant, onMenu, onRecherche, onAvatar }) {
   const badge = MODE_BADGE[mode]
   return (
     <aside
@@ -61,16 +61,16 @@ export default function Sidebar({ view, setView, total, mode, onProfil, onAdd, o
       style={{ background: '#0C0A09' }}
       aria-label="Navigation principale"
     >
-      {/* Wordmark */}
-      <button onClick={onLanding} className="flex items-center gap-3 px-6 pt-8 pb-7 cursor-pointer group text-left">
-        <LogoOeno size={40} className="transition-transform duration-500 group-hover:scale-105" />
-        <div>
-          <div className="font-serif text-2xl text-cream tracking-wide leading-none">Œno</div>
+      {/* Avatar du compte, à la place de l'emblème (voir Navbar) */}
+      <div className="flex items-center gap-3 px-6 pt-8 pb-7">
+        <AvatarOeno size={40} prenom={prenom} onClick={onAvatar} />
+        <button onClick={onLanding} className="cursor-pointer group text-left">
+          <div className="font-serif text-2xl text-cream tracking-wide leading-none transition-colors duration-300 group-hover:text-gold-400">Œno</div>
           <div className="text-[9px] text-gold-500 uppercase tracking-[0.22em] mt-1.5">
             <RollingNumber value={total} /> bouteille{total > 1 ? 's' : ''} en cave
           </div>
-        </div>
-      </button>
+        </button>
+      </div>
 
       <div className="mx-6 h-px" style={{ background: 'linear-gradient(to right, rgba(201,168,76,0.35), transparent)' }} />
 

@@ -36,6 +36,27 @@ self.addEventListener('activate', (event) => {
   self.clients.claim()
 })
 
+// Clic sur la notification « un ami vous a écrit » : on ramène l'onglet Œno
+// existant au premier plan plutôt que d'en ouvrir un second, et on lui indique
+// quelle conversation ouvrir. Sans onglet vivant, on démarre l'app sur la
+// bonne discussion via l'URL.
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close()
+  const amiId = (event.notification.data && event.notification.data.amiId) || ''
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((fenetres) => {
+      for (const fenetre of fenetres) {
+        let memeSite = false
+        try { memeSite = new URL(fenetre.url).origin === self.location.origin } catch (e) { /* URL exotique */ }
+        if (!memeSite) continue
+        fenetre.postMessage({ type: 'oeno-ouvrir-discussion', amiId })
+        return fenetre.focus()
+      }
+      return self.clients.openWindow(amiId ? `/?ami=${encodeURIComponent(amiId)}` : '/')
+    })
+  )
+})
+
 self.addEventListener('fetch', (event) => {
   const { request } = event
   if (request.method !== 'GET') return

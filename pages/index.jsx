@@ -46,6 +46,10 @@ const FicheVin        = dynamic(() => import('../components/BibliothequeView').t
 const SocialView      = dynamic(() => import('../components/SocialView'), { ssr: false })
 // La présentation embarque les chiffres de la base nationale : à la demande.
 const PitchOeno       = dynamic(() => import('../components/PitchOeno'), { ssr: false })
+const AvatarEditeur   = dynamic(() => import('../components/AvatarProfil'), { ssr: false })
+// Veille des messages d'amis : aucun rendu, mais elle doit tourner en
+// permanence — c'est elle qui notifie quand un ami écrit, quel que soit l'écran.
+const VeilleMessages  = dynamic(() => import('../components/VeilleMessages'), { ssr: false })
 
 // Étapes de la visite guidée (premier lancement mobile) : chaque étape éclaire
 // un vrai bouton de l'écran et explique sa fonction.
@@ -134,7 +138,8 @@ export default function App() {
   const [showCeSoir, setShowCeSoir]   = useState(false)
   const [showScan, setShowScan]       = useState(false)
   const [showAssistant, setShowAssistant] = useState(false)
-  const [discussionOuverte, setDiscussionOuverte] = useState(false) // conversation Social ouverte : masque la bulle assistante
+  const [amiOuvert, setAmiOuvert]     = useState(null) // conversation Social ouverte (id de l'ami) : masque la bulle assistante et ses notifications
+  const [amiCible, setAmiCible]       = useState(null) // ami à ouvrir d'emblée (clic sur une notification)
   const [showMenu, setShowMenu]       = useState(false)
   const [showRecherche, setShowRecherche] = useState(false)
   const [profil, setProfil]           = useState(null)
@@ -144,6 +149,7 @@ export default function App() {
   const [enviePrefill, setEnviePrefill] = useState(null) // « J'ai acheté » depuis la liste d'envies
   const [showCompte, setShowCompte]   = useState(false)
   const [showPitch, setShowPitch]     = useState(false) // « Œno, c'est quoi ? »
+  const [showAvatar, setShowAvatar]   = useState(false) // éditeur de photo de profil
   const [friendCode, setFriendCode]   = useState(null) // ?cave=CODE → cave d'un ami
   const [nextStep, setNextStep]       = useState(null) // guidage : prochaine étape après un ajout
   const [showTour, setShowTour]       = useState(false) // visite guidée premier lancement mobile
@@ -175,13 +181,23 @@ export default function App() {
       else setShowCeSoir(true)
       window.history.replaceState(null, '', window.location.pathname)
     }
+    // Notification « un ami vous a écrit » ouverte app entièrement fermée :
+    // /?ami=<id> nous amène droit sur la bonne conversation.
+    const ami = params.get('ami')
+    if (ami) {
+      sessionStorage.setItem('landing-seen', '1')
+      setShowLanding(false)
+      setAmiCible(ami)
+      setView('social')
+      window.history.replaceState(null, '', window.location.pathname)
+    }
     // Sur mobile, on saute l'écran d'intro (landing) et on entre directement
     // dans l'app, sur Ma cave (le hub reste accessible via « Accueil »). Les
     // raccourcis d'accueil (?action=) et les liens cave d'ami gardent la main.
     if (window.innerWidth < 768 && !code) {
       sessionStorage.setItem('landing-seen', '1')
       setShowLanding(false)
-      if (!action) setView('cave')
+      if (!action && !ami) setView('cave')
       // Nouveau visiteur sans profil : on propose l'onboarding tout de suite.
       if (!loadProfil()) setShowOnboarding(true)
     }
@@ -200,6 +216,21 @@ export default function App() {
     setShowTour(false)
     // On marque aussi le tour du hub comme vu : pas de double tutoriel.
     try { localStorage.setItem(TOUR_KEY, '1'); localStorage.setItem('oeno-hub-tour', '1') } catch { /* ignore */ }
+  }, [])
+
+  // Clic sur une notification alors que l'app tourne déjà : le service worker
+  // remet l'onglet au premier plan et nous dit quelle conversation ouvrir.
+  useEffect(() => {
+    if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) return
+    const surMessage = e => {
+      if (e.data?.type !== 'oeno-ouvrir-discussion') return
+      sessionStorage.setItem('landing-seen', '1')
+      setShowLanding(false)
+      if (e.data.amiId) setAmiCible(e.data.amiId)
+      setView('social')
+    }
+    navigator.serviceWorker.addEventListener('message', surMessage)
+    return () => navigator.serviceWorker.removeEventListener('message', surMessage)
   }, [])
 
   const closeFriendCave = useCallback(() => {
@@ -326,7 +357,7 @@ export default function App() {
   // et dès qu'un overlay/fiche est ouvert : le geste ne doit agir que sur la
   // vue principale.
   const overlayOuvert = showLanding || showCeSoir || showScan || showAssistant ||
-    showMenu || showRecherche || showCompte || showForm || showOnboarding ||
+    showMenu || showRecherche || showCompte || showForm || showOnboarding || showAvatar ||
     !!detailWine || !!editWine || !!enviePrefill || !!friendCode || !!ficheVin
   // Sur « Découvrir », le glissement horizontal appartient aux cartes : la
   // navigation entre onglets par swipe se met en retrait pour ne pas voler le geste.
@@ -403,6 +434,10 @@ export default function App() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
+      {/* Veille des messages d'amis — sans rendu, mais toujours en marche :
+          c'est elle qui notifie et tient la pastille de l'icône à jour. */}
+      <VeilleMessages amiOuvert={amiOuvert} />
+
       <div className="min-h-dvh bg-cream font-sans lg:pl-64">
         {/* Mobile / tablette : topbar + bottom nav guidée */}
         <Navbar
@@ -410,6 +445,7 @@ export default function App() {
           setView={goTo}
           total={total}
           mode={mode}
+          prenom={profil?.prenom}
           onProfil={redoProfil}
           onAdd={() => setShowForm(true)}
           onLanding={() => setShowLanding(true)}
@@ -418,6 +454,7 @@ export default function App() {
           onCompte={() => setShowCompte(true)}
           onMenu={() => setShowMenu(true)}
           onRecherche={() => setShowRecherche(true)}
+          onAvatar={() => setShowAvatar(true)}
         />
 
         {/* Desktop ≥ lg : sidebar fixe noire, signature luxe */}
@@ -426,6 +463,7 @@ export default function App() {
           setView={goTo}
           total={total}
           mode={mode}
+          prenom={profil?.prenom}
           onProfil={redoProfil}
           onAdd={() => setShowForm(true)}
           onLanding={() => setShowLanding(true)}
@@ -435,6 +473,7 @@ export default function App() {
           onAssistant={() => setShowAssistant(true)}
           onMenu={() => setShowMenu(true)}
           onRecherche={() => setShowRecherche(true)}
+          onAvatar={() => setShowAvatar(true)}
         />
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-6 lg:py-10 pb-24 md:pb-10">
@@ -480,7 +519,15 @@ export default function App() {
               onOpenBibliotheque={() => goTo('vins')}
             />
           )}
-          {view === 'social'    && <SocialView onCompte={() => setShowCompte(true)} onVoirVin={setDetailWine} onEcranChange={setDiscussionOuverte} />}
+          {view === 'social'    && (
+            <SocialView
+              onCompte={() => setShowCompte(true)}
+              onVoirVin={setDetailWine}
+              onEcranChange={setAmiOuvert}
+              amiInitial={amiCible}
+              onAmiInitialOuvert={() => setAmiCible(null)}
+            />
+          )}
           {view === 'vins'      && <BibliothequeView onAddWine={saveWine} mode={mode} initialSearch={librarySearch} onNoter={noterDegustation} />}
           {view === 'explorer'  && <ParcoursExplorer onAddWine={saveWine} onNoter={noterDegustation} />}
           {view === 'apprendre' && <ParcoursApprendre />}
@@ -539,6 +586,7 @@ export default function App() {
         )}
         {friendCode && <CaveAmieViewer code={friendCode} onClose={closeFriendCave} />}
         {showCompte && <CompteSync onClose={() => setShowCompte(false)} />}
+        {showAvatar && <AvatarEditeur onClose={() => setShowAvatar(false)} prenom={profil?.prenom} />}
         {showPitch && (
           <PitchOeno
             onClose={() => setShowPitch(false)}
@@ -605,7 +653,7 @@ export default function App() {
 
         {/* Bulle flottante Assistant Œno — masquée en pleine conversation
             Social, où elle chevauche le champ de saisie du message. */}
-        {!showAssistant && !discussionOuverte && (
+        {!showAssistant && !amiOuvert && (
           <button
             onClick={() => setShowAssistant(true)}
             data-tour="assistant"
