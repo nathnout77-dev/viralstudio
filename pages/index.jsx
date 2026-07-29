@@ -134,6 +134,7 @@ export default function App() {
   const [showCeSoir, setShowCeSoir]   = useState(false)
   const [showScan, setShowScan]       = useState(false)
   const [showAssistant, setShowAssistant] = useState(false)
+  const [discussionOuverte, setDiscussionOuverte] = useState(false) // conversation Social ouverte : masque la bulle assistante
   const [showMenu, setShowMenu]       = useState(false)
   const [showRecherche, setShowRecherche] = useState(false)
   const [profil, setProfil]           = useState(null)
@@ -479,7 +480,7 @@ export default function App() {
               onOpenBibliotheque={() => goTo('vins')}
             />
           )}
-          {view === 'social'    && <SocialView onCompte={() => setShowCompte(true)} onVoirVin={setDetailWine} />}
+          {view === 'social'    && <SocialView onCompte={() => setShowCompte(true)} onVoirVin={setDetailWine} onEcranChange={setDiscussionOuverte} />}
           {view === 'vins'      && <BibliothequeView onAddWine={saveWine} mode={mode} initialSearch={librarySearch} onNoter={noterDegustation} />}
           {view === 'explorer'  && <ParcoursExplorer onAddWine={saveWine} onNoter={noterDegustation} />}
           {view === 'apprendre' && <ParcoursApprendre />}
@@ -602,8 +603,9 @@ export default function App() {
           <TourGuide steps={TOUR_STEPS} onClose={fermerTour} />
         )}
 
-        {/* Bulle flottante Assistant Œno */}
-        {!showAssistant && (
+        {/* Bulle flottante Assistant Œno — masquée en pleine conversation
+            Social, où elle chevauche le champ de saisie du message. */}
+        {!showAssistant && !discussionOuverte && (
           <button
             onClick={() => setShowAssistant(true)}
             data-tour="assistant"

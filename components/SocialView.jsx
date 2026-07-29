@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import {
-  Users, UserPlus, Copy, Check, Send, ChevronLeft, Loader2, Wine,
+  Users, UserPlus, Copy, Check, CheckCheck, Send, ChevronLeft, Loader2, Wine,
   CloudOff, MessageCircle, Share2, Trash2, Gift, X,
 } from 'lucide-react'
 import {
@@ -49,6 +49,15 @@ function Invitation({ onCompte, indisponible }) {
 }
 
 // ── Bulle de message ───────────────────────────────────────────────────────
+// Pastille d'état pour mes propres messages : en cours d'envoi, envoyé (✓),
+// lu par l'ami (✓✓ dorés) — sur le modèle familier des messageries.
+function StatutEnvoi({ message }) {
+  const enVol = String(message.id).startsWith('tmp-')
+  if (enVol) return <Loader2 size={10} className="text-cream/50 animate-spin" />
+  if (message.lu) return <CheckCheck size={12} className="text-gold-300" />
+  return <Check size={12} className="text-cream/50" />
+}
+
 function Bulle({ message, deMoi, onVoirVin }) {
   const heure = new Date(message.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
   return (
@@ -79,13 +88,21 @@ function Bulle({ message, deMoi, onVoirVin }) {
           </button>
         )}
         <p className="text-[13px] leading-relaxed whitespace-pre-wrap break-words">{message.contenu}</p>
-        <div className={`text-[9px] mt-1 ${deMoi ? 'text-cream/55' : 'text-anthracite-300'}`}>{heure}</div>
+        <div className={`flex items-center gap-1 mt-1 ${deMoi ? 'justify-end text-cream/55' : 'text-anthracite-300'}`}>
+          <span className="text-[9px]">{heure}</span>
+          {deMoi && <StatutEnvoi message={message} />}
+        </div>
       </div>
     </div>
   )
 }
 
 // ── Discussion avec un ami ─────────────────────────────────────────────────
+// Fiabilité de la livraison : le direct (Realtime) est un bonus, jamais le
+// seul chemin. Un sondage de secours toutes les 4 s recharge le fil complet
+// depuis la base — si le direct rate un événement (réseau, onglet en veille,
+// souci de configuration), le message arrive quand même, au pire avec
+// quelques secondes de retard au lieu de ne jamais arriver.
 function Discussion({ ami, moi, onRetour, onVoirCave, onVoirVin }) {
   const [messages, setMessages] = useState([])
   const [texte, setTexte]       = useState('')
@@ -93,40 +110,58 @@ function Discussion({ ami, moi, onRetour, onVoirCave, onVoirVin }) {
   const [envoi, setEnvoi]       = useState(false)
   const [joindre, setJoindre]   = useState(false)
   const basDuFil = useRef(null)
+  const enVolRef = useRef(false) // un envoi est en cours : le sondage ne doit pas l'écraser
 
   const filer = useCallback(() => {
     basDuFil.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
   }, [])
 
+  // Rechargement faisant autorité : ce que la base contient remplace l'état
+  // local, sauf un message tout juste tapé et pas encore confirmé.
+  const chargerFil = useCallback(async () => {
+    const fil = await lireFil(ami.ami_id)
+    setMessages(prev => {
+      const enAttente = prev.filter(m => String(m.id).startsWith('tmp-'))
+      return [...fil, ...enAttente]
+    })
+    marquerLus(ami.ami_id)
+  }, [ami.ami_id])
+
   useEffect(() => {
     let vivant = true
     ;(async () => {
-      const fil = await lireFil(ami.ami_id)
+      await chargerFil()
       if (!vivant) return
-      setMessages(fil)
       setChargement(false)
-      marquerLus(ami.ami_id)
       setTimeout(filer, 60)
     })()
     return () => { vivant = false }
-  }, [ami.ami_id, filer])
+  }, [chargerFil, filer])
 
-  // Réception en direct : on n'ajoute que ce qui appartient à ce fil.
+  // Réception en direct quand elle fonctionne — un simple signal qui
+  // déclenche le rechargement faisant autorité, jamais de replâtrage manuel
+  // de l'état (source d'incohérences et de doublons).
   useEffect(() => {
     return ecouterMessages(msg => {
       const duFil = (msg.expediteur_id === ami.ami_id && msg.destinataire_id === moi) ||
                     (msg.expediteur_id === moi && msg.destinataire_id === ami.ami_id)
       if (!duFil) return
-      setMessages(prev => prev.some(m => m.id === msg.id) ? prev : [...prev, msg])
-      if (msg.expediteur_id === ami.ami_id) marquerLus(ami.ami_id)
-      setTimeout(filer, 60)
+      chargerFil().then(() => setTimeout(filer, 60))
     })
-  }, [ami.ami_id, moi, filer])
+  }, [ami.ami_id, moi, chargerFil, filer])
+
+  // Filet de secours : indépendant du direct, il garantit que tout message
+  // réellement en base finit par s'afficher, même si Realtime a raté l'événement.
+  useEffect(() => {
+    const t = setInterval(() => { if (!enVolRef.current) chargerFil() }, 4000)
+    return () => clearInterval(t)
+  }, [chargerFil])
 
   const envoyer = useCallback(async (vin = null) => {
     const contenu = texte.trim()
     if (!contenu && !vin) return
     setEnvoi(true)
+    enVolRef.current = true
     // Affichage optimiste : le message apparaît tout de suite, on corrige après.
     const provisoire = {
       id: `tmp-${Date.now()}`, expediteur_id: moi, destinataire_id: ami.ami_id,
@@ -137,13 +172,21 @@ function Discussion({ ami, moi, onRetour, onVoirCave, onVoirVin }) {
     setTimeout(filer, 60)
 
     const r = await envoyerMessage(ami.ami_id, contenu, vin)
-    if (!r.ok) {
+    if (r.ok) {
+      // On retire le message provisoire et on recharge la version faisant
+      // autorité : c'est ce qui garantit que le destinataire voit exactement
+      // la même chose, sans doublon ni divergence.
+      setMessages(prev => prev.filter(m => m.id !== provisoire.id))
+      await chargerFil()
+      setTimeout(filer, 60)
+    } else {
       setMessages(prev => prev.filter(m => m.id !== provisoire.id))
       setTexte(contenu)
       toast('📡 Message non parti — vérifiez votre connexion')
     }
+    enVolRef.current = false
     setEnvoi(false)
-  }, [texte, ami.ami_id, moi, filer])
+  }, [texte, ami.ami_id, moi, filer, chargerFil])
 
   const maCave = joindre ? rafraichirCave() : []
 
@@ -309,7 +352,7 @@ function CaveDeLAmi({ ami, onRetour, onVoirVin }) {
 }
 
 // ── Vue principale ─────────────────────────────────────────────────────────
-export default function SocialView({ onCompte, onVoirVin }) {
+export default function SocialView({ onCompte, onVoirVin, onEcranChange }) {
   const [moi, setMoi]         = useState(null)
   const [code, setCode]       = useState(null)
   const [liens, setLiens]     = useState({ demandes: [], envoyees: [], amis: [] })
@@ -318,6 +361,15 @@ export default function SocialView({ onCompte, onVoirVin }) {
   const [copie, setCopie]     = useState(false)
   const [busy, setBusy]       = useState(false)
   const [ecran, setEcran]     = useState({ nom: 'liste', ami: null })
+
+  // Le parent masque sa bulle assistante flottante pendant une conversation :
+  // elle chevauche le champ de saisie et gêne l'envoi. Le nettoyage à chaque
+  // changement d'écran — et au démontage si l'on quitte l'onglet Social en
+  // pleine conversation — évite que la bulle reste masquée ailleurs dans l'app.
+  useEffect(() => {
+    onEcranChange?.(ecran.nom === 'discussion')
+    return () => onEcranChange?.(false)
+  }, [ecran.nom, onEcranChange])
 
   const recharger = useCallback(async () => {
     const r = await mesAmis()
@@ -340,10 +392,14 @@ export default function SocialView({ onCompte, onVoirVin }) {
     return () => { vivant = false }
   }, [recharger])
 
-  // Un message reçu pendant qu'on est sur la liste rafraîchit les pastilles.
+  // Un message reçu pendant qu'on est sur la liste rafraîchit les pastilles —
+  // en direct quand Realtime fonctionne, et par sondage toutes les 8 s sinon
+  // (même logique de filet de secours que dans une discussion ouverte).
   useEffect(() => {
     if (!moi || ecran.nom !== 'liste') return
-    return ecouterMessages(msg => { if (msg.destinataire_id === moi.id) recharger() })
+    const desabonner = ecouterMessages(msg => { if (msg.destinataire_id === moi.id) recharger() })
+    const sondage = setInterval(recharger, 8000)
+    return () => { desabonner(); clearInterval(sondage) }
   }, [moi, ecran.nom, recharger])
 
   const inviter = useCallback(async e => {
