@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { X, CloudOff, Cloud, Mail, LogOut, Check, RefreshCw, Smartphone, CloudDownload, UserCircle2, Download, Upload, ShieldCheck } from 'lucide-react'
 import { supabase, cloudDisponible } from '../lib/supabase'
 import CaveAmisSection, { pushPartageSnapshot } from './CaveAmis'
+import ReglagesNotifications from './ReglagesNotifications'
 import useModalBehavior from '../lib/useModal'
 import { toast } from './Toast'
 
@@ -479,6 +480,7 @@ export default function CompteSync({ onClose, extraSection = null }) {
               </p>
               {error && <p className="text-xs text-red-700 mt-3">{error}</p>}
               <CaveAmisSection user={user} />
+              <ReglagesNotifications compact />
               <ExportRestoreLocal compact />
               {extraSection}
             </div>

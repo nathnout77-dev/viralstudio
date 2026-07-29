@@ -8,7 +8,7 @@ import {
   lireFil, envoyerMessage, marquerLus, ecouterMessages, caveDeLAmi,
   avatarsDesAmis, utilisateurCourant, cloudDisponible,
 } from '../lib/social'
-import { etatNotifications, demanderNotifications } from '../lib/notifications'
+import ReglagesNotifications from './ReglagesNotifications'
 import { toast } from './Toast'
 import WineCard from './WineCard'
 
@@ -387,7 +387,6 @@ export default function SocialView({ onCompte, onVoirVin, onEcranChange, amiInit
   const [copie, setCopie]     = useState(false)
   const [busy, setBusy]       = useState(false)
   const [ecran, setEcran]     = useState({ nom: 'liste', ami: null })
-  const [notifs, setNotifs]   = useState('indisponible')
   const listeConnue = useRef('') // évite de redemander les photos à chaque sondage
 
   // Le parent sait quelle conversation est ouverte : il y masque sa bulle
@@ -399,15 +398,6 @@ export default function SocialView({ onCompte, onVoirVin, onEcranChange, amiInit
     onEcranChange?.(ecran.nom === 'discussion' ? (ecran.ami?.ami_id || null) : null)
     return () => onEcranChange?.(null)
   }, [ecran.nom, ecran.ami?.ami_id, onEcranChange])
-
-  useEffect(() => { setNotifs(etatNotifications()) }, [])
-
-  const activerNotifs = useCallback(async () => {
-    const r = await demanderNotifications()
-    setNotifs(r)
-    if (r === 'granted') toast('🔔 Vous serez prévenu quand un ami écrit')
-    else if (r === 'denied') toast('Notifications refusées — réactivables dans les réglages du navigateur')
-  }, [])
 
   const recharger = useCallback(async () => {
     const r = await mesAmis()
@@ -560,20 +550,12 @@ export default function SocialView({ onCompte, onVoirVin, onEcranChange, amiInit
         </div>
       </form>
 
-      {/* Être prévenu — proposé une fois qu'on a quelqu'un à qui parler, et
-          jamais réclamé deux fois : un refus fait disparaître l'invite. */}
-      {notifs === 'default' && liens.amis.length > 0 && (
-        <div className="card p-4 mb-6 flex items-center gap-3 animate-fade-in">
-          <span className="text-xl leading-none flex-shrink-0" role="img" aria-hidden="true">🔔</span>
-          <div className="min-w-0 flex-1">
-            <div className="text-sm font-bold text-anthracite-900">Être prévenu des messages</div>
-            <div className="text-[11px] text-anthracite-400 leading-relaxed mt-0.5">
-              Œno vous signale les messages de vos amis, même depuis un autre écran de l'app.
-            </div>
-          </div>
-          <button onClick={activerNotifs} className="btn-gold text-[11px] px-3.5 !py-2 flex-shrink-0">
-            Activer
-          </button>
+      {/* Être prévenu — affiché dès qu'on a quelqu'un à qui parler, quel que
+          soit l'état de l'autorisation : bloquée ou indisponible, c'est là
+          qu'on veut le savoir, et savoir quoi faire. */}
+      {liens.amis.length > 0 && (
+        <div className="mb-6">
+          <ReglagesNotifications />
         </div>
       )}
 
