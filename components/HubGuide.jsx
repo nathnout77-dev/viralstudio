@@ -80,7 +80,7 @@ export default function HubGuide({ wines, onParcours, onScan, onAssistant, onRec
       {suggestion && (
         <button
           onClick={() => onParcours(suggestion.action, suggestion.actionSearch)}
-          className="w-full card !bg-gradient-to-br !from-[#fdf9f0] !to-[#f7ecd9] !border-gold-500/30 p-5 lg:p-6 mb-7 text-left group hover:-translate-y-0.5 hover:!border-gold-500/60 transition-all duration-300 cursor-pointer animate-fade-in"
+          className="w-full card-suggestion p-5 lg:p-6 mb-7 text-left group hover:-translate-y-0.5 transition-all duration-300 cursor-pointer animate-fade-in"
         >
           <div className="flex items-start gap-4">
             <div className="w-11 h-11 rounded-2xl bg-gold-500/15 flex items-center justify-center flex-shrink-0">
@@ -89,7 +89,9 @@ export default function HubGuide({ wines, onParcours, onScan, onAssistant, onRec
             <div className="min-w-0 flex-1">
               <div className="text-[10px] uppercase tracking-[0.18em] font-bold text-gold-700">{suggestion.eyebrow}</div>
               <div className="font-serif text-base lg:text-lg font-bold text-anthracite-900 mt-1">{suggestion.titre}</div>
-              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-wine-800 mt-2.5 group-hover:gap-2.5 transition-all">
+              {/* Or et non bordeaux : le bordeaux n'est pas thématisé et
+                  tombe à 1,5:1 de contraste sur la carte en thème sombre. */}
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-gold-700 mt-2.5 group-hover:gap-2.5 transition-all">
                 {suggestion.actionLabel} <ArrowRight size={12} />
               </span>
             </div>
