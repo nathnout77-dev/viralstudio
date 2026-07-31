@@ -31,6 +31,18 @@ function saveEnvies(list) {
 }
 
 /**
+ * Identifiant d'envie. `Date.now()` seul ne suffit pas : deux envies ajoutées
+ * dans la même milliseconde recevaient le même identifiant, et supprimer
+ * l'une effaçait alors l'autre en silence. Le compteur garantit l'unicité même
+ * à cette échelle, sans dépendre de `crypto.randomUUID` (absent des vieux
+ * WebView Android, où l'app tourne aussi).
+ */
+let compteur = 0
+function identifiant() {
+  return `e${Date.now()}-${compteur++}-${Math.random().toString(36).slice(2, 7)}`
+}
+
+/**
  * Ajoute (ou retire) un vin de la liste d'envies.
  *
  * `vin` est la fiche complète, gardée telle quelle avec l'envie. Elle ne
@@ -48,7 +60,7 @@ export function toggleEnvie(appellation, vin = null) {
   saveEnvies(
     exists
       ? list.filter(e => e.appellation !== appellation)
-      : [{ id: `e${Date.now()}`, appellation, addedAt: Date.now(), vin: vin || null }, ...list]
+      : [{ id: identifiant(), appellation, addedAt: Date.now(), vin: vin || null }, ...list]
   )
 }
 
