@@ -20,12 +20,12 @@ export default function RegionsPrefFilter({ selected, onChange }) {
   return (
     <div className="mb-4">
       <div className="flex items-center gap-1.5 text-[11px] font-bold text-anthracite-500 uppercase tracking-wider mb-2">
-        <MapPin size={11} className="text-wine-700" />
+        <MapPin size={11} className="text-wine-texte" />
         Vos régions préférées
         {selected.length > 0 && (
           <button
             onClick={() => { setRegionsPref([]); onChange([]) }}
-            className="ml-auto normal-case tracking-normal font-semibold text-wine-700 hover:text-wine-800 cursor-pointer"
+            className="ml-auto normal-case tracking-normal font-semibold text-wine-texte hover:text-wine-texte cursor-pointer"
           >
             Tout effacer
           </button>

@@ -126,6 +126,19 @@ de Tailwind. Les couleurs de `tailwind.config.js` pointent vers des variables
 définies dans `styles/globals.css` (`:root` et `:root[data-theme='sombre']`).
 Une classe existante comme `bg-anthracite-900` s'adapte donc toute seule.
 
+Trois rôles, trois familles — les confondre est le piège nº 3 :
+
+| Rôle | Quoi employer |
+|---|---|
+| Texte courant, bordures | `anthracite-*` (s'inverse) |
+| Texte bordeaux | `text-wine-texte` — **jamais** `text-wine-800` |
+| Fond bordeaux | `bg-wine-*` (la gamme numérique) |
+| Sens (qualité/prix, difficulté, garde) | jetons `--vert`, `--ambre`, `--rouge`, `--bleu`, `--diff-*` via `tonJeton()` |
+
+Le bordeaux a **deux rôles opposés** : un fond bordeaux doit rester sombre,
+un texte bordeaux doit s'éclaircir en thème sombre. D'où deux jetons séparés.
+Les avoir confondus rendait 112 textes illisibles.
+
 Ce qui en découle :
 
 - **Ne jamais écrire une couleur en dur** dans un composant : elle ne
@@ -181,6 +194,23 @@ Trois pièges connus :
   est épinglé à la version qui correspond à ce build ; ne pas lancer
   `playwright install`, ne pas relever la version à la légère.
 - Compiler ne prouve rien. Le bug des envies compilait parfaitement.
+
+### L'audit de contraste
+
+```bash
+npx next start -p 3216 &        # sur un build de production
+node scripts/audit-contraste.mjs sombre 3216
+node scripts/audit-contraste.mjs clair  3216
+```
+
+Il ouvre chaque écran et mesure le contraste réel de **chaque texte affiché**,
+puis le confirme au pixel près sur une capture de l'élément — sans quoi un
+texte posé sur un calque frère est dénoncé à tort. Il regroupe par couleur
+fautive : c'est la cause qu'on veut voir, pas 2 300 occurrences.
+
+Référence actuelle : **4 restants en clair, 3 en sombre**, tous l'attribution
+Leaflet (tierce) ou à 4,4:1 pour un seuil à 4,5. Toute nouvelle entrée dans
+cette liste est une régression.
 
 Vérifier aussi **dans les deux thèmes** dès qu'on touche à l'apparence, et
 **sur les deux mises en page** : barre latérale au-delà de `lg`, barre du bas

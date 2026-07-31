@@ -33,7 +33,7 @@ export function LexiqueView() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {GLOSSAIRE_LIST.map((entry, i) => (
           <div key={entry.terme} className="card p-4 animate-fade-in-up" style={{ animationDelay: `${Math.min(i * 40, 400)}ms`, animationFillMode: 'both' }}>
-            <div className="font-serif text-base font-bold text-wine-800 mb-1.5">{entry.terme}</div>
+            <div className="font-serif text-base font-bold text-wine-texte mb-1.5">{entry.terme}</div>
             <p className="text-xs text-anthracite-600 leading-relaxed">{entry.simple}</p>
           </div>
         ))}

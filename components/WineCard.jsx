@@ -4,7 +4,7 @@ import { tintStyle, pastilleStyle, regionMonogram } from '../lib/wineStyle'
 import { MiniVerre } from './WineGlassAnim'
 
 const TYPE_CONFIG = {
-  red:       { label: 'Rouge',       color: '#72102a', cls: 'border-wine-800/25 text-wine-800',   dot: 'bg-wine-700' },
+  red:       { label: 'Rouge',       color: '#72102a', cls: 'border-wine-800/25 text-wine-texte',   dot: 'bg-wine-700' },
   white:     { label: 'Blanc',       color: '#b8962a', cls: 'border-gold-600/30 text-gold-700',   dot: 'bg-gold-500' },
   rosé:      { label: 'Rosé',        color: '#e45872', cls: 'border-pink-700/25 text-pink-800',   dot: 'bg-pink-400' },
   sparkling: { label: 'Effervescent',color: '#3b82f6', cls: 'border-blue-700/25 text-blue-800',   dot: 'bg-blue-400' },
@@ -63,9 +63,9 @@ function DrinkingWindow({ wine }) {
   const start = wine.vintage + (wine.drinkFrom || 2)
   const end   = wine.vintage + (wine.drinkUntil || 8)
 
-  if (now < start)  return <span className="inline-flex px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.1em] border border-blue-700/25 text-blue-800">Trop jeune · {start - now} ans</span>
+  if (now < start)  return <span className="inline-flex px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.1em] border" style={{ borderColor: 'rgb(var(--bleu) / 0.3)', color: 'rgb(var(--bleu))' }}>Trop jeune · {start - now} ans</span>
   if (now > end)    return <span className="inline-flex px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.1em] border border-anthracite-900/15 text-anthracite-500">Passé l'apogée</span>
-  return <span className="inline-flex px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.1em] border border-emerald-800/25 text-emerald-800">À boire · jusqu'à {end}</span>
+  return <span className="inline-flex px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.1em] border" style={{ borderColor: 'rgb(var(--vert) / 0.3)', color: 'rgb(var(--vert))' }}>À boire · jusqu'à {end}</span>
 }
 
 export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty, onToggleFavori, compact = false }) {
@@ -133,7 +133,7 @@ export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty
           <div className="flex-1 min-w-0">
             <button
               onClick={() => onSelect?.(wine)}
-              className="font-wine-name text-3xl text-anthracite-900 hover:text-wine-800 transition-colors text-left cursor-pointer"
+              className="font-wine-name text-3xl text-anthracite-900 hover:text-wine-texte transition-colors text-left cursor-pointer"
             >
               {wine.name}
             </button>
@@ -217,7 +217,7 @@ export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty
           <div className="flex items-center gap-1">
             <button
               onClick={(e) => { e.stopPropagation(); onEdit?.(wine) }}
-              className="w-8 h-8 flex items-center justify-center rounded-full text-anthracite-400 hover:text-wine-800 hover:bg-wine-50 transition-all cursor-pointer"
+              className="w-8 h-8 flex items-center justify-center rounded-full text-anthracite-400 hover:text-wine-texte hover:bg-wine-50 transition-all cursor-pointer"
               aria-label="Modifier"
             >
               <Edit2 size={13} />

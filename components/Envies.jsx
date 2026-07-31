@@ -133,7 +133,7 @@ export function EnvieButton({ appellation, vin = null, size = 15, light = false,
         size={size}
         strokeWidth={1.8}
         fill={burst ? '#c9a84c' : active ? '#8c2f39' : 'none'}
-        className={`${burst ? 'envie-pop text-gold-500' : active ? 'text-wine-700' : light ? 'text-cream' : 'text-anthracite-400'}`}
+        className={`${burst ? 'envie-pop text-gold-500' : active ? 'text-wine-texte' : light ? 'text-cream' : 'text-anthracite-400'}`}
       />
       {burst && PARTICLES.map((p, i) => (
         <span key={i} className="envie-particle" style={{ '--dx': p.dx, '--dy': p.dy }} aria-hidden="true" />

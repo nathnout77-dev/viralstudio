@@ -89,7 +89,7 @@ function LeconView({ lecon, progress, onFinish, onBack }) {
           <div className="space-y-7">
             {lecon.sections.map((s, i) => (
               <section key={i} className="animate-fade-in-up" style={{ animationDelay: `${i * 70}ms`, animationFillMode: 'both' }}>
-                <h3 className="font-serif text-lg font-bold text-wine-800 mb-2">{s.titre}</h3>
+                <h3 className="font-serif text-lg font-bold text-wine-texte mb-2">{s.titre}</h3>
                 <p className="text-[15px] text-anthracite-700 leading-[1.75]">{s.texte}</p>
               </section>
             ))}
@@ -138,7 +138,7 @@ function LeconView({ lecon, progress, onFinish, onBack }) {
                       ? isGood
                         ? '!border-emerald-500 !bg-emerald-50 !text-emerald-800'
                         : picked === i
-                          ? '!border-wine-700 !bg-wine-50 !text-wine-800 opacity-90'
+                          ? '!border-wine-700 !bg-wine-50 !text-wine-texte opacity-90'
                           : 'opacity-45'
                       : ''
                   }`}
@@ -157,7 +157,7 @@ function LeconView({ lecon, progress, onFinish, onBack }) {
               <div className={`rounded-xl p-4 text-sm leading-relaxed ${
                 picked === question.bonne
                   ? 'bg-emerald-50 border border-emerald-200 text-emerald-900'
-                  : 'bg-wine-50 border border-wine-200 text-wine-900'
+                  : 'bg-wine-50 border border-wine-200 text-wine-texte'
               }`}>
                 <span className="font-bold">{picked === question.bonne ? 'Bien vu ! ' : 'Pas tout à fait. '}</span>
                 {question.explication}

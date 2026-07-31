@@ -340,9 +340,9 @@ export default function DegustationSimulateur({ vin, onClose }) {
               <div className="card p-4">
                 <SectionTitre icon={Wine} titre="La bouche — le déroulé attendu" />
                 <div className="space-y-2 text-sm text-anthracite-700 leading-relaxed">
-                  <p><span className="font-semibold text-wine-700">L'attaque · </span>{prediction.bouche.attaque}</p>
-                  <p><span className="font-semibold text-wine-700">Le milieu · </span>{prediction.bouche.milieu}</p>
-                  <p><span className="font-semibold text-wine-700">La finale · </span>{prediction.bouche.finale}</p>
+                  <p><span className="font-semibold text-wine-texte">L'attaque · </span>{prediction.bouche.attaque}</p>
+                  <p><span className="font-semibold text-wine-texte">Le milieu · </span>{prediction.bouche.milieu}</p>
+                  <p><span className="font-semibold text-wine-texte">La finale · </span>{prediction.bouche.finale}</p>
                 </div>
                 <div className="mt-4 pt-3 border-t border-anthracite-100">
                   <JaugesGout jauges={prediction.jauges} compact />
@@ -352,7 +352,7 @@ export default function DegustationSimulateur({ vin, onClose }) {
               <div className="rounded-2xl p-4" style={{ background: 'rgb(var(--anth-100))' }}>
                 <SectionTitre icon={Target} titre="L'idée du vin — son objectif" />
                 {prediction.idee.enUneMot && (
-                  <p className="font-wine-name text-2xl text-wine-700 mb-2">« {prediction.idee.enUneMot} »</p>
+                  <p className="font-wine-name text-2xl text-wine-texte mb-2">« {prediction.idee.enUneMot} »</p>
                 )}
                 <p className="text-sm text-anthracite-700 leading-relaxed">{prediction.objectif}</p>
                 {prediction.idee.pourQui && (
@@ -361,8 +361,8 @@ export default function DegustationSimulateur({ vin, onClose }) {
               </div>
 
               <div className="flex items-center gap-3 text-xs text-anthracite-600">
-                <span className="inline-flex items-center gap-1.5"><Thermometer size={12} className="text-wine-600" /> {prediction.service.temperature}</span>
-                <span className="inline-flex items-center gap-1.5"><Clock size={12} className="text-wine-600" /> Carafage : {prediction.service.carafage || 'inutile'}</span>
+                <span className="inline-flex items-center gap-1.5"><Thermometer size={12} className="text-wine-texte" /> {prediction.service.temperature}</span>
+                <span className="inline-flex items-center gap-1.5"><Clock size={12} className="text-wine-texte" /> Carafage : {prediction.service.carafage || 'inutile'}</span>
               </div>
 
               <button

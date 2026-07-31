@@ -62,7 +62,7 @@ export default function ProfilGout({ onOpenBibliotheque }) {
       <div className="grid sm:grid-cols-2 gap-4">
         {/* Couleurs */}
         <div className="card p-4">
-          <div className="flex items-center gap-2 text-[11px] font-bold text-anthracite-700 mb-3"><Wine size={13} className="text-wine-700" /> Vos couleurs</div>
+          <div className="flex items-center gap-2 text-[11px] font-bold text-anthracite-700 mb-3"><Wine size={13} className="text-wine-texte" /> Vos couleurs</div>
           <div className="flex flex-wrap gap-2">
             {profil.typesPreferes.length ? profil.typesPreferes.map(t => (
               <Puce key={t} color={TYPE_COULEURS[t]}>
@@ -87,7 +87,7 @@ export default function ProfilGout({ onOpenBibliotheque }) {
         {/* Régions */}
         {profil.regionsFavorites.length > 0 && (
           <div className="card p-4">
-            <div className="flex items-center gap-2 text-[11px] font-bold text-anthracite-700 mb-3"><MapPin size={13} className="text-wine-700" /> Vos régions</div>
+            <div className="flex items-center gap-2 text-[11px] font-bold text-anthracite-700 mb-3"><MapPin size={13} className="text-wine-texte" /> Vos régions</div>
             <div className="flex flex-wrap gap-2">
               {profil.regionsFavorites.map(r => <Puce key={r}>{r}</Puce>)}
             </div>
@@ -134,7 +134,7 @@ export default function ProfilGout({ onOpenBibliotheque }) {
           {onOpenBibliotheque && (
             <button
               onClick={onOpenBibliotheque}
-              className="mt-4 inline-flex items-center gap-1.5 text-[11px] font-bold text-wine-800 hover:gap-2.5 transition-all cursor-pointer"
+              className="mt-4 inline-flex items-center gap-1.5 text-[11px] font-bold text-wine-texte hover:gap-2.5 transition-all cursor-pointer"
             >
               Explorer toute la bibliothèque <ArrowRight size={12} />
             </button>

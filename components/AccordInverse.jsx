@@ -63,8 +63,8 @@ export default function AccordInverse({ wine, onClose }) {
           {/* Conseil de service */}
           <div className="rounded-2xl p-4 flex items-start gap-3" style={{ background: 'rgb(var(--anth-100))' }}>
             <div className="flex items-center gap-1.5 flex-shrink-0 mt-0.5">
-              <Thermometer size={13} className="text-wine-700" />
-              {wine.carafage && <Clock size={13} className="text-wine-700" />}
+              <Thermometer size={13} className="text-wine-texte" />
+              {wine.carafage && <Clock size={13} className="text-wine-texte" />}
             </div>
             <p className="text-sm text-anthracite-700 leading-relaxed">
               <span className="font-semibold text-anthracite-900">Avant de passer à table : </span>

@@ -18,7 +18,7 @@ import useReferentiel from '../lib/useReferentiel'
 const DegustationSimulateur = dynamic(() => import('./DegustationSimulateur'), { ssr: false })
 
 const TYPE_COLORS = {
-  red:       { bg: 'bg-wine-100',  text: 'text-wine-800',  label: 'Rouge' },
+  red:       { bg: 'bg-wine-100',  text: 'text-wine-texte',  label: 'Rouge' },
   white:     { bg: 'bg-amber-50',  text: 'text-amber-800', label: 'Blanc' },
   sweet:     { bg: 'bg-amber-100', text: 'text-amber-900', label: 'Liquoreux' },
   sparkling: { bg: 'bg-blue-50',   text: 'text-blue-700',  label: 'Effervescent' },
@@ -182,7 +182,7 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
           </div>
           <button
             onClick={() => setShowAccordInverse(true)}
-            className="mt-2.5 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
+            className="mt-2.5 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold text-wine-texte bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
           >
             <ChefHat size={12} /> Que cuisiner avec ?
           </button>
@@ -212,7 +212,7 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
                     href={d.url}
                     target="_blank" rel="noopener noreferrer"
                     onClick={e => e.stopPropagation()}
-                    className="flex-shrink-0 flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
+                    className="flex-shrink-0 flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold text-wine-texte bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
                     title={`Visiter le site de ${d.name}`}
                   >
                     <ExternalLink size={9} />
@@ -238,10 +238,10 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1 border border-anthracite-900/10 rounded-full bg-carte overflow-hidden">
             <button onClick={() => setQty(q => Math.max(1, q - 1))}
-                    className="w-8 h-8 flex items-center justify-center text-anthracite-500 hover:text-wine-700 hover:bg-anthracite-50 transition-all cursor-pointer text-lg leading-none">−</button>
+                    className="w-8 h-8 flex items-center justify-center text-anthracite-500 hover:text-wine-texte hover:bg-anthracite-50 transition-all cursor-pointer text-lg leading-none">−</button>
             <span className="w-8 text-center text-sm font-semibold text-anthracite-900">{qty}</span>
             <button onClick={() => setQty(q => q + 1)}
-                    className="w-8 h-8 flex items-center justify-center text-anthracite-500 hover:text-wine-700 hover:bg-anthracite-50 transition-all cursor-pointer text-lg leading-none">+</button>
+                    className="w-8 h-8 flex items-center justify-center text-anthracite-500 hover:text-wine-texte hover:bg-anthracite-50 transition-all cursor-pointer text-lg leading-none">+</button>
           </div>
           <span className="text-xs text-anthracite-400">bouteille{qty > 1 ? 's' : ''}</span>
 
@@ -272,7 +272,7 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
         {onNoter && (
           <button
             onClick={() => onNoter({ name: wine.appellation, domain: wine.domaines?.[0]?.name || '', vintage: millesime, type: wine.type })}
-            className="w-full flex items-center justify-center gap-1.5 py-2 mt-2 rounded-full text-xs font-semibold text-anthracite-500 hover:text-wine-700 transition-colors cursor-pointer"
+            className="w-full flex items-center justify-center gap-1.5 py-2 mt-2 rounded-full text-xs font-semibold text-anthracite-500 hover:text-wine-texte transition-colors cursor-pointer"
           >
             <NotebookPen size={12} /> Noter cette dégustation
           </button>
@@ -306,7 +306,7 @@ function PanoramaRegion({ region }) {
   return (
     <div className="mt-3 pt-3 border-t border-anthracite-100 animate-fade-in">
       <div className="flex flex-wrap gap-1.5 mb-2.5">
-        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-wine-50 text-wine-800 border border-wine-100">
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-wine-50 text-wine-texte border border-wine-100">
           {stats.aoc} AOC
         </span>
         {stats.igp > 0 && (
@@ -339,7 +339,7 @@ function PanoramaRegion({ region }) {
         {appellations.length > visibles.length && (
           <button
             onClick={() => setTout(true)}
-            className="px-2 py-0.5 rounded-full text-[10px] font-bold text-wine-700 bg-wine-50 border border-wine-200 hover:border-wine-300 cursor-pointer"
+            className="px-2 py-0.5 rounded-full text-[10px] font-bold text-wine-texte bg-wine-50 border border-wine-200 hover:border-wine-300 cursor-pointer"
           >
             +{appellations.length - visibles.length} autres
           </button>
@@ -495,7 +495,7 @@ export default function InteractiveMap({ onAddWine, onNoter }) {
       {activeRegion !== 'Toutes' && (
         <div className="card p-4 mb-4 animate-fade-in-up" style={{ animationFillMode: 'both' }}>
           <div className="flex items-start gap-3">
-            <Icone nom={regionInfo(activeRegion).ic} size={24} className="text-wine-700 flex-shrink-0" />
+            <Icone nom={regionInfo(activeRegion).ic} size={24} className="text-wine-texte flex-shrink-0" />
             <div className="min-w-0">
               <div className="font-serif text-base font-bold text-anthracite-900 mb-1">{activeRegion}</div>
               <p className="text-sm text-anthracite-600 leading-relaxed">{regionInfo(activeRegion).blurb}</p>
@@ -514,7 +514,7 @@ export default function InteractiveMap({ onAddWine, onNoter }) {
                   <button
                     key={d.name}
                     onClick={() => openDomaineWine(d.wines)}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs border border-anthracite-200 bg-carte text-anthracite-700 hover:border-wine-300 hover:text-wine-700 transition-all cursor-pointer"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs border border-anthracite-200 bg-carte text-anthracite-700 hover:border-wine-300 hover:text-wine-texte transition-all cursor-pointer"
                   >
                     {d.confidentiel && <Sparkles size={9} className="text-gold-600" />}
                     {d.name}

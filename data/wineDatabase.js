@@ -5566,12 +5566,15 @@ const _prixMedianParStyle = (() => {
   return med
 })()
 
+// `jeton` plutôt qu'une couleur : la teinte dépend du thème, elle est donc
+// résolue au rendu par la variable CSS. Écrite en dur ici, elle rendait ces
+// pastilles illisibles en thème sombre (jusqu'à 2,2:1).
 const QPR_CONFIG = {
-  5: { niveau: 'Excellent rapport qualité/prix', court: 'Excellent rapport', couleur: '#16a34a', ton: 'vert' },
-  4: { niveau: 'Très bon rapport qualité/prix',  court: 'Très bon rapport', couleur: '#65a30d', ton: 'vert' },
-  3: { niveau: 'Rapport qualité/prix correct',   court: 'Rapport correct',  couleur: '#f59e0b', ton: 'orange' },
-  2: { niveau: 'Prix premium pour la catégorie', court: 'Prix premium',     couleur: '#ea580c', ton: 'rouge' },
-  1: { niveau: 'Vin de prestige — on paie la rareté', court: 'Prix de prestige', couleur: '#dc2626', ton: 'rouge' },
+  5: { niveau: 'Excellent rapport qualité/prix', court: 'Excellent rapport', jeton: '--vert',   ton: 'vert' },
+  4: { niveau: 'Très bon rapport qualité/prix',  court: 'Très bon rapport',  jeton: '--lime',   ton: 'vert' },
+  3: { niveau: 'Rapport qualité/prix correct',   court: 'Rapport correct',   jeton: '--ambre',  ton: 'orange' },
+  2: { niveau: 'Prix premium pour la catégorie', court: 'Prix premium',      jeton: '--orange', ton: 'rouge' },
+  1: { niveau: 'Vin de prestige — on paie la rareté', court: 'Prix de prestige', jeton: '--rouge', ton: 'rouge' },
 }
 
 export function rapportQualitePrix(wine) {
@@ -5624,10 +5627,21 @@ export const WINE_DB_DOMAINES = (() => {
 // section "Domaine du moment" sur la landing page).
 export const CONFIDENTIEL_DOMAINES = WINE_DB_DOMAINES.filter(d => d.confidentiel)
 
+// Même raison que QPR_CONFIG : la teinte suit le thème. Le fond se déduit
+// du jeton par transparence, il n'a donc plus à être écrit séparément.
 export const DIFFICULTE_CONFIG = {
-  facile:   { label: 'Facile à aimer', color: '#4d7c50', bg: '#e8f0e8' },
-  explorer: { label: 'Pour explorer', color: '#b8722c', bg: '#f7ecd9' },
-  pointu:   { label: 'Pointu',         color: '#8c2f39', bg: '#f5e3e5' },
+  facile:   { label: 'Facile à aimer', jeton: '--diff-facile' },
+  explorer: { label: 'Pour explorer',  jeton: '--diff-explorer' },
+  pointu:   { label: 'Pointu',         jeton: '--diff-pointu' },
+}
+
+/** Teinte + fond assorti d'un jeton de sens, prêts pour un style en ligne. */
+export function tonJeton(jeton, { fond = 0.13, bordure = 0.28 } = {}) {
+  return {
+    color: `rgb(var(${jeton}))`,
+    background: `rgb(var(${jeton}) / ${fond})`,
+    border: `1px solid rgb(var(${jeton}) / ${bordure})`,
+  }
 }
 
 // ── Variantes de couleur d'une même appellation ──────────────────────────────

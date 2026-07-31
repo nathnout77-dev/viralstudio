@@ -161,7 +161,7 @@ function ExportRestoreLocal({ compact = false }) {
     <div className={compact ? 'mt-4 pt-4 border-t border-anthracite-900/[0.07]' : ''}>
       {!compact && (
         <div className="flex items-start gap-2 mb-3">
-          <ShieldCheck size={14} className="text-wine-800 flex-shrink-0 mt-0.5" />
+          <ShieldCheck size={14} className="text-wine-texte flex-shrink-0 mt-0.5" />
           <p className="text-xs text-anthracite-500 leading-relaxed">
             En attendant, gardez un filet de sécurité local : exportez un fichier de
             sauvegarde, ou restaurez-en un précédemment téléchargé.
@@ -447,14 +447,14 @@ export default function CompteSync({ onClose, extraSection = null }) {
               </p>
               <div className="space-y-3">
                 <button onClick={keepLocal} className="choice-btn w-full p-4 flex items-start gap-3">
-                  <Smartphone size={18} className="text-wine-800 flex-shrink-0 mt-0.5" />
+                  <Smartphone size={18} className="text-wine-texte flex-shrink-0 mt-0.5" />
                   <span>
                     <span className="block text-sm font-bold text-anthracite-900">Garder les données de cet appareil</span>
                     <span className="block text-xs text-anthracite-500 mt-1">Elles remplaceront la sauvegarde cloud.</span>
                   </span>
                 </button>
                 <button onClick={keepCloud} className="choice-btn w-full p-4 flex items-start gap-3">
-                  <CloudDownload size={18} className="text-wine-800 flex-shrink-0 mt-0.5" />
+                  <CloudDownload size={18} className="text-wine-texte flex-shrink-0 mt-0.5" />
                   <span>
                     <span className="block text-sm font-bold text-anthracite-900">Récupérer celles du cloud</span>
                     <span className="block text-xs text-anthracite-500 mt-1">Cet appareil sera mis à jour avec votre sauvegarde.</span>
@@ -468,7 +468,7 @@ export default function CompteSync({ onClose, extraSection = null }) {
           {cloudDisponible && user && !conflict && (
             <div className="animate-fade-in">
               <div className="flex items-center gap-3 p-4 rounded-2xl bg-carte border border-anthracite-900/10 mb-4">
-                <UserCircle2 size={28} className="text-wine-800 flex-shrink-0" strokeWidth={1.5} />
+                <UserCircle2 size={28} className="text-wine-texte flex-shrink-0" strokeWidth={1.5} />
                 <div className="min-w-0 flex-1">
                   <div className="text-sm font-semibold text-anthracite-900 truncate">{user.email}</div>
                   <div className="flex items-center gap-1.5 text-[11px] mt-0.5">

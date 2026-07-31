@@ -11,7 +11,7 @@ const CACHE_KEY = 'oeno-actu'
 const CACHE_TTL = 24 * 60 * 60 * 1000 // 24 h
 
 const CATEGORIES = {
-  vendanges:  { label: 'Vendanges',  Icon: Grape,        cls: 'bg-wine-50 text-wine-700 border-wine-200' },
+  vendanges:  { label: 'Vendanges',  Icon: Grape,        cls: 'bg-wine-50 text-wine-texte border-wine-200' },
   millesimes: { label: 'Millésimes', Icon: Sparkles,     cls: 'bg-gold-500/10 text-gold-700 border-gold-500/30' },
   salons:     { label: 'Salons & foires', Icon: CalendarDays, cls: 'bg-anthracite-50 text-anthracite-700 border-anthracite-200' },
   tendances:  { label: 'Tendances',  Icon: TrendingUp,   cls: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
@@ -130,7 +130,7 @@ export default function ActualiteVin() {
         <button
           onClick={() => load(true)}
           disabled={loading}
-          className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold bg-carte text-anthracite-600 border border-anthracite-200 hover:border-wine-300 hover:text-wine-700 transition-all cursor-pointer disabled:opacity-50 min-h-[44px]"
+          className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold bg-carte text-anthracite-600 border border-anthracite-200 hover:border-wine-300 hover:text-wine-texte transition-all cursor-pointer disabled:opacity-50 min-h-[44px]"
           aria-label="Actualiser les actualités"
         >
           <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />

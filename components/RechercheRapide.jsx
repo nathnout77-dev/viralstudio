@@ -66,7 +66,7 @@ function LigneResultat({ w, via, onOpen }) {
           )}
           {w.grandPublic && <BadgeGrandPublic compact />}
           {via?.type === 'cepage' && (
-            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-wine-50 text-wine-800">
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-wine-50 text-wine-texte">
               <Grape size={8} /> {via.label}
             </span>
           )}
@@ -103,7 +103,7 @@ function LigneResultat({ w, via, onOpen }) {
 // Résultat issu de la base viticole nationale (appellation, cépage, domaine)
 const META_REF = {
   appellation: { Icon: MapPin,   label: 'Appellation', couleur: 'text-gold-700',  fond: 'rgba(199,161,90,0.13)' },
-  cepage:      { Icon: Grape,    label: 'Cépage',      couleur: 'text-wine-700',  fond: 'rgba(140,47,57,0.10)' },
+  cepage:      { Icon: Grape,    label: 'Cépage',      couleur: 'text-wine-texte',  fond: 'rgba(140,47,57,0.10)' },
   domaine:     { Icon: Landmark, label: 'Domaine',     couleur: 'text-anthracite-600', fond: 'rgba(28,25,23,0.06)' },
 }
 
@@ -218,7 +218,7 @@ export default function RechercheRapide({ onClose, onOpenBibliotheque }) {
               <div className="flex flex-wrap gap-2 mb-5">
                 {SUGGESTIONS_CEPAGES.map(s => (
                   <button key={s} onClick={() => setQuery(s)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-wine-800 bg-wine-50 border border-wine-100 hover:border-wine-300 active:scale-[0.97] transition-all cursor-pointer">
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-wine-texte bg-wine-50 border border-wine-100 hover:border-wine-300 active:scale-[0.97] transition-all cursor-pointer">
                     <Grape size={11} /> {s}
                   </button>
                 ))}

@@ -56,7 +56,7 @@ export default function PetitsPrix({
             <div className="font-wine-name text-2xl text-anthracite-900 leading-tight">{w.appellation}</div>
             <div className="text-[11px] text-anthracite-500 mt-0.5">
               {w.region} · {w.typeLabel}
-              {meilleurMillesime(w) ? <> · mill. <span className="font-semibold text-wine-800">{meilleurMillesime(w)}</span></> : null}
+              {meilleurMillesime(w) ? <> · mill. <span className="font-semibold text-wine-texte">{meilleurMillesime(w)}</span></> : null}
             </div>
             <div className="text-[11px] text-anthracite-600 italic mt-1.5 line-clamp-2">« {w.enUneMot} »</div>
             {detail && (

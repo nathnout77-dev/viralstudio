@@ -61,7 +61,7 @@ export default function ParcoursApprendre() {
               {progress.lecons}/{LECONS.length} leçons · {progress.capsules}/{CAPSULES.length} capsules vues
             </div>
           </div>
-          <div className="font-serif text-2xl font-bold text-wine-800 flex-shrink-0">{pct}%</div>
+          <div className="font-serif text-2xl font-bold text-wine-texte flex-shrink-0">{pct}%</div>
         </div>
         <div className="h-1.5 rounded-full bg-anthracite-100 overflow-hidden">
           <div
@@ -87,7 +87,7 @@ export default function ParcoursApprendre() {
                 <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${
                   actif ? 'bg-wine-800 text-cream' : 'bg-anthracite-100 text-anthracite-500'
                 }`}>{num}</span>
-                <Icon size={14} className={actif ? 'text-wine-700' : 'text-anthracite-400'} />
+                <Icon size={14} className={actif ? 'text-wine-texte' : 'text-anthracite-400'} />
               </div>
               <div className={`text-xs lg:text-[13px] font-bold ${actif ? 'text-anthracite-900' : 'text-anthracite-600'}`}>{label}</div>
               <div className="text-[10px] text-anthracite-400 mt-0.5 hidden sm:block">{texte}</div>

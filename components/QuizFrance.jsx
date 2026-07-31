@@ -109,13 +109,13 @@ export default function QuizFrance() {
                   : estBonne
                     ? 'bg-emerald-50 border-emerald-400 text-emerald-900'
                     : choisie
-                      ? 'bg-wine-50 border-wine-400 text-wine-900'
+                      ? 'bg-wine-50 border-wine-400 text-wine-texte'
                       : 'bg-carte border-anthracite-100 text-anthracite-400'
               }`}
             >
               <span className="flex-1 min-w-0">{opt}</span>
               {revele && estBonne && <Check size={16} className="text-emerald-600 flex-shrink-0" />}
-              {revele && choisie && !estBonne && <X size={16} className="text-wine-600 flex-shrink-0" />}
+              {revele && choisie && !estBonne && <X size={16} className="text-wine-texte flex-shrink-0" />}
             </button>
           )
         })}

@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react'
 import {
   Coins, RefreshCw, ExternalLink, Wine, Sparkles, Gift, Home, PartyPopper, Users, ChevronDown,
 } from 'lucide-react'
-import { DIFFICULTE_CONFIG } from '../data/wineDatabase'
+import { DIFFICULTE_CONFIG, tonJeton } from '../data/wineDatabase'
 import { CATALOGUE } from '../lib/vinsReferentiel'
 import { millesimesAPrivilegier } from '../lib/millesimes'
 import { EnvieButton } from './Envies'
@@ -187,7 +187,7 @@ export default function BudgetCaviste() {
               value={custom}
               onChange={e => setCustom(e.target.value)}
               className={`w-28 pl-3 pr-8 py-2.5 rounded-xl text-sm font-semibold border focus:outline-none focus:ring-2 focus:ring-gold-600/40 transition-all ${
-                custom ? 'border-wine-700 bg-wine-50 text-wine-800' : 'border-anthracite-200 bg-carte text-anthracite-700'
+                custom ? 'border-wine-700 bg-wine-50 text-wine-texte' : 'border-anthracite-200 bg-carte text-anthracite-700'
               }`}
               aria-label="Budget libre en euros"
             />
@@ -207,7 +207,7 @@ export default function BudgetCaviste() {
                   : 'border-anthracite-200 bg-carte hover:border-wine-300'
               }`}
             >
-              <Icon size={15} className={occasion === id ? 'text-wine-700' : 'text-anthracite-400'} />
+              <Icon size={15} className={occasion === id ? 'text-wine-texte' : 'text-anthracite-400'} />
               <div className="text-xs font-bold text-anthracite-800 mt-1.5">{label}</div>
               <div className="text-[10px] text-anthracite-400 mt-0.5 leading-snug">{hint}</div>
             </button>
@@ -250,7 +250,7 @@ export default function BudgetCaviste() {
         <div className="card p-8 text-center">
           <p className="text-sm text-anthracite-500">
             Aucun vin de notre bibliothèque ne rentre dans cette enveloppe
-            {selection.minPrix ? <> — le ticket d'entrée est à <span className="font-bold text-wine-800">{selection.minPrix} €</span>{couleur !== 'mixte' ? ' pour cette couleur' : ''}.</> : '.'}
+            {selection.minPrix ? <> — le ticket d'entrée est à <span className="font-bold text-wine-texte">{selection.minPrix} €</span>{couleur !== 'mixte' ? ' pour cette couleur' : ''}.</> : '.'}
           </p>
         </div>
       )}
@@ -260,12 +260,12 @@ export default function BudgetCaviste() {
           <div className="flex items-center justify-between flex-wrap gap-2">
             <p className="text-sm text-anthracite-600">
               <span className="font-serif text-lg font-bold text-anthracite-900">{selection.wines.length} bouteilles</span>
-              {' '}pour <span className="font-bold text-wine-800">{selection.total} €</span>
+              {' '}pour <span className="font-bold text-wine-texte">{selection.total} €</span>
               <span className="text-anthracite-400 text-xs"> (budget : {effectiveBudget} €)</span>
             </p>
             <button
               onClick={compose}
-              className="flex items-center gap-1.5 text-xs font-semibold text-wine-700 hover:text-wine-800 cursor-pointer"
+              className="flex items-center gap-1.5 text-xs font-semibold text-wine-texte hover:text-wine-texte cursor-pointer"
             >
               <RefreshCw size={12} className={spinning ? 'animate-spin' : ''} /> Une autre proposition
             </button>
@@ -305,14 +305,14 @@ export default function BudgetCaviste() {
                       const mils = millesimesAPrivilegier(w, 3)
                       return mils.length ? (
                         <p className="text-[11px] text-anthracite-600 mt-1.5">
-                          Millésime conseillé : <span className="font-bold text-wine-800">{mils[0]}</span>
+                          Millésime conseillé : <span className="font-bold text-wine-texte">{mils[0]}</span>
                           {mils.length > 1 && <span className="text-anthracite-400"> (ou {mils.slice(1).join(', ')})</span>}
                         </p>
                       ) : null
                     })()}
                     <div className="flex items-center gap-2 mt-2 flex-wrap">
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold"
-                            style={{ background: diff.bg, color: diff.color }}>
+                            style={tonJeton(diff.jeton)}>
                         {diff.label}
                       </span>
                     </div>
@@ -326,7 +326,7 @@ export default function BudgetCaviste() {
                               href={d.url}
                               target="_blank" rel="noopener noreferrer"
                               onClick={e => e.stopPropagation()}
-                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
+                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold text-wine-texte bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
                             >
                               <ExternalLink size={9} /> {d.name}
                             </a>

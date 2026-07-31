@@ -343,7 +343,7 @@ function CarnetPage({ entry, onClose, onEdit, onDelete }) {
           </div>
 
           <p className="eyebrow mb-2">{formatDate(entry.tastedAt)}</p>
-          <h2 className="font-wine-name text-6xl text-wine-800 leading-none">{entry.name}</h2>
+          <h2 className="font-wine-name text-6xl text-wine-texte leading-none">{entry.name}</h2>
           {(entry.domain || entry.vintage) && (
             <p className="font-wine-name text-3xl text-anthracite-500 mt-1">
               {entry.domain}{entry.domain && entry.vintage ? ' · ' : ''}{entry.vintage}
@@ -381,7 +381,7 @@ function CarnetPage({ entry, onClose, onEdit, onDelete }) {
           </div>
 
           {entry.unMot && (
-            <p className="font-wine-name text-4xl text-wine-700 text-center my-7">« {entry.unMot} »</p>
+            <p className="font-wine-name text-4xl text-wine-texte text-center my-7">« {entry.unMot} »</p>
           )}
 
           {/* Dégustation guidée : le bilan Vous vs Œno */}

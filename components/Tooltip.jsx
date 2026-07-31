@@ -13,7 +13,7 @@ export default function Terme({ id, children }) {
       <button
         type="button"
         onClick={(e) => { e.stopPropagation(); setOpen(o => !o) }}
-        className="inline-flex items-center gap-0.5 border-b border-dashed border-wine-400 text-inherit cursor-help hover:text-wine-700 transition-colors"
+        className="inline-flex items-center gap-0.5 border-b border-dashed border-wine-400 text-inherit cursor-help hover:text-wine-texte transition-colors"
       >
         {children || entry.terme}
         <HelpCircle size={9} className="text-wine-400 flex-shrink-0" />

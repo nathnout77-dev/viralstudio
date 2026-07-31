@@ -78,7 +78,7 @@ const ACCORDS = {
   ],
 }
 
-const TYPE_COLORS = { red:'bg-wine-100 text-wine-800', white:'bg-amber-50 text-amber-800', rosé:'bg-pink-50 text-pink-700', sparkling:'bg-blue-50 text-blue-700', sweet:'bg-amber-100 text-amber-900' }
+const TYPE_COLORS = { red:'bg-wine-100 text-wine-texte', white:'bg-amber-50 text-amber-800', rosé:'bg-pink-50 text-pink-700', sparkling:'bg-blue-50 text-blue-700', sweet:'bg-amber-100 text-amber-900' }
 const TYPE_LABELS = { red:'Rouge', white:'Blanc', rosé:'Rosé', sparkling:'Effervescent', sweet:'Liquoreux' }
 
 export default function AccordsView() {
@@ -112,7 +112,7 @@ export default function AccordsView() {
             }`}
             aria-pressed={selected === p.id}
           >
-            <Icone nom={p.id} size={22} className={`mb-2 ${selected === p.id ? 'text-gold-400' : 'text-wine-700'}`} />
+            <Icone nom={p.id} size={22} className={`mb-2 ${selected === p.id ? 'text-gold-400' : 'text-wine-texte'}`} />
             <div className={`text-xs font-semibold mb-0.5 ${selected === p.id ? 'text-cream' : 'text-anthracite-800'}`}>{p.label}</div>
             <div className={`text-[10px] leading-tight ${selected === p.id ? 'text-cream/60' : 'text-anthracite-400'}`}>{p.desc}</div>
           </button>
@@ -158,7 +158,7 @@ export default function AccordsView() {
                         {TYPE_LABELS[a.type]}
                       </span>
                       {matchedWine && (
-                        <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-wine-50 text-wine-700 border border-wine-200">
+                        <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-wine-50 text-wine-texte border border-wine-200">
                           Voir la fiche
                         </span>
                       )}

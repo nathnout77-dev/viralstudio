@@ -191,7 +191,7 @@ export default function PitchOeno({ onClose, onCommencer }) {
                   </span>
                 )}
               </div>
-              <div className="font-serif text-2xl font-bold text-wine-800 mb-0.5">{p.prix}</div>
+              <div className="font-serif text-2xl font-bold text-wine-texte mb-0.5">{p.prix}</div>
               <div className="text-[11px] text-anthracite-400 mb-4">{p.detail}</div>
               <ul className="flex flex-col gap-2">
                 {p.lignes.map(l => (

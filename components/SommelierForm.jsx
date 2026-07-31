@@ -5,7 +5,7 @@ import {
   CakeSlice, IceCream2, Apple, Beef, Soup, Milk, Sandwich,
   Sofa, Compass, Rocket, Banknote, PiggyBank, Crown,
 } from 'lucide-react'
-import { DIFFICULTE_CONFIG } from '../data/wineDatabase'
+import { DIFFICULTE_CONFIG, tonJeton } from '../data/wineDatabase'
 import { CATALOGUE } from '../lib/vinsReferentiel'
 import { millesimesAPrivilegier } from '../lib/millesimes'
 import { computeProfilAppris, bonusProfilAppris } from '../data/goutsAppris'
@@ -335,7 +335,7 @@ export default function SommelierForm({ onOpenBibliotheque }) {
                     </div>
                     <div className="mt-2">
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold"
-                            style={{ background: diff.bg, color: diff.color }}>
+                            style={tonJeton(diff.jeton)}>
                         {diff.label}
                       </span>
                     </div>
@@ -427,7 +427,7 @@ export default function SommelierForm({ onOpenBibliotheque }) {
               style={{ animationDelay: `${i * 60}ms`, animationFillMode: 'both' }}
             >
               <div className="w-11 h-11 rounded-2xl flex items-center justify-center mx-auto mb-2.5 bg-wine-50">
-                <opt.Icon size={20} className="text-wine-700" />
+                <opt.Icon size={20} className="text-wine-texte" />
               </div>
               <div className="text-sm font-semibold text-anthracite-800">{opt.label}</div>
             </button>

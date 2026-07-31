@@ -59,7 +59,7 @@ export default function MenuGrille({ onGo, onScan, onAssistant, onCeSoir, onComp
               onClick={() => go(onGo, id)}
               className="flex flex-col items-center gap-2 p-3.5 rounded-2xl bg-carte border border-anthracite-200 hover:border-gold-500/50 active:scale-[0.97] transition-all cursor-pointer"
             >
-              <Icon size={18} className="text-wine-700" strokeWidth={1.7} />
+              <Icon size={18} className="text-wine-texte" strokeWidth={1.7} />
               <span className="text-[11px] font-semibold text-anthracite-800 text-center leading-tight">{label}</span>
             </button>
           ))}

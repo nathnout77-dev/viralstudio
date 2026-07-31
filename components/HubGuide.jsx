@@ -140,7 +140,7 @@ export default function HubGuide({ wines, onParcours, onScan, onAssistant, onRec
       {onPitch && (wines?.length ? (
         <button
           onClick={onPitch}
-          className="mx-auto mt-8 flex items-center gap-1.5 text-[11px] font-semibold text-anthracite-400 hover:text-wine-800 transition-colors cursor-pointer"
+          className="mx-auto mt-8 flex items-center gap-1.5 text-[11px] font-semibold text-anthracite-400 hover:text-wine-texte transition-colors cursor-pointer"
         >
           <span role="img" aria-hidden="true">✨</span> Œno, c&apos;est quoi ?
         </button>

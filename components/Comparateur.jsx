@@ -393,7 +393,7 @@ export default function Comparateur({ onClose, onAddWine }) {
 
                       <button
                         onClick={() => setFiche(w)}
-                        className="w-full flex items-center justify-center gap-1.5 py-2 rounded-full text-[11px] font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
+                        className="w-full flex items-center justify-center gap-1.5 py-2 rounded-full text-[11px] font-semibold text-wine-texte bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
                       >
                         <BookOpen size={11} /> Fiche complète
                       </button>

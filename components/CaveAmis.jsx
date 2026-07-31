@@ -300,7 +300,7 @@ export function CaveAmieViewer({ code, onClose }) {
                     className="card p-4 flex items-center gap-3 cursor-pointer hover:border-gold-500/30 transition-all"
                   >
                     <div className="w-9 h-9 rounded-2xl bg-wine-50 flex items-center justify-center flex-shrink-0">
-                      <Heart size={14} className="text-wine-700" />
+                      <Heart size={14} className="text-wine-texte" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="font-wine-name text-2xl text-anthracite-900 leading-none truncate">{e.appellation}</div>

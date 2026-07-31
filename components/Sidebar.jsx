@@ -88,7 +88,7 @@ export default function Sidebar({ view, setView, total, caveDemo = false, mode, 
 
       {/* Actions */}
       <div className="flex flex-col gap-1 py-5">
-        <div className="px-6 pb-2 text-[9px] uppercase tracking-[0.25em] text-stone-600 font-semibold">Actions</div>
+        <div className="px-6 pb-2 text-[9px] uppercase tracking-[0.25em] text-stone-400 font-semibold">Actions</div>
         <NavItem accent onClick={onRecherche} Icon={Search}            label="Recherche" />
         <NavItem accent onClick={onScan}      Icon={ScanLine}          label="Scanner" />
         <NavItem accent onClick={onAssistant} Icon={MessageCircleHeart} label="Assistant" />
@@ -114,10 +114,10 @@ export default function Sidebar({ view, setView, total, caveDemo = false, mode, 
             {badge.label}
           </button>
         )}
-        <button onClick={onLanding} className="block text-[10px] text-stone-600 hover:text-gold-500 uppercase tracking-[0.18em] transition-colors duration-300 cursor-pointer">
+        <button onClick={onLanding} className="block text-[10px] text-stone-400 hover:text-gold-500 uppercase tracking-[0.18em] transition-colors duration-300 cursor-pointer">
           Découvrir Œno
         </button>
-        <div className="text-[9px] text-stone-700 uppercase tracking-[0.18em] mt-2">Œno · v3</div>
+        <div className="text-[9px] text-stone-400 uppercase tracking-[0.18em] mt-2">Œno · v3</div>
       </div>
     </aside>
   )

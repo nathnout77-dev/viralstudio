@@ -286,7 +286,7 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
                       }`}
                       style={{ animationDelay: `${i * 50}ms`, animationFillMode: 'both' }}
                     >
-                      <Icone nom={o.ic} size={21} className={`mx-auto mb-1.5 ${answers[current.id] === o.v ? 'text-gold-400' : 'text-wine-700'}`} />
+                      <Icone nom={o.ic} size={21} className={`mx-auto mb-1.5 ${answers[current.id] === o.v ? 'text-gold-400' : 'text-wine-texte'}`} />
                       <div className="text-xs font-semibold leading-snug">{o.label}</div>
                     </button>
                   ))}
@@ -309,7 +309,7 @@ export default function CeSoirMode({ onClose, onOpenBibliotheque, mode }) {
                 </div>
               )}
               <div className="flex items-center justify-end mb-1">
-                <button onClick={reset} className="text-xs text-wine-700 hover:text-wine-800 cursor-pointer flex items-center gap-1 font-semibold">
+                <button onClick={reset} className="text-xs text-wine-texte hover:text-wine-texte cursor-pointer flex items-center gap-1 font-semibold">
                   <RefreshCw size={11} /> Recommencer
                 </button>
               </div>

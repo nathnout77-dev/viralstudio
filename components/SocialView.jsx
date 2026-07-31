@@ -626,7 +626,7 @@ export default function SocialView({ onCompte, onVoirVin, onEcranChange, amiInit
                 <span className="text-base" role="img" aria-hidden="true">🍾</span>
               </button>
               <button onClick={() => supprimer(a)} disabled={busy} aria-label={`Retirer ${a.pseudo}`}
-                      className="w-9 h-9 items-center justify-center rounded-full text-anthracite-300 hover:text-wine-700 transition-all cursor-pointer flex-shrink-0 hidden group-hover:flex disabled:opacity-50">
+                      className="w-9 h-9 items-center justify-center rounded-full text-anthracite-300 hover:text-wine-texte transition-all cursor-pointer flex-shrink-0 hidden group-hover:flex disabled:opacity-50">
                 <Trash2 size={14} />
               </button>
             </div>
@@ -640,7 +640,7 @@ export default function SocialView({ onCompte, onVoirVin, onEcranChange, amiInit
                 <div className="text-[11px] text-anthracite-400">⏳ Invitation envoyée</div>
               </div>
               <button onClick={() => supprimer(a)} disabled={busy} aria-label="Annuler l'invitation"
-                      className="w-9 h-9 flex items-center justify-center rounded-full text-anthracite-300 hover:text-wine-700 transition-all cursor-pointer flex-shrink-0 disabled:opacity-50">
+                      className="w-9 h-9 flex items-center justify-center rounded-full text-anthracite-300 hover:text-wine-texte transition-all cursor-pointer flex-shrink-0 disabled:opacity-50">
                 <X size={14} />
               </button>
             </div>

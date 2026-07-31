@@ -246,7 +246,7 @@ export default function DecouvrirSwipe({ onFiche, onAddWine }) {
         <button
           onClick={() => trancher(-1)}
           aria-label="Passer ce vin"
-          className="w-14 h-14 rounded-full bg-carte border border-anthracite-900/12 flex items-center justify-center text-anthracite-400 hover:text-wine-700 hover:border-wine-300 active:scale-90 transition-all cursor-pointer shadow-card"
+          className="w-14 h-14 rounded-full bg-carte border border-anthracite-900/12 flex items-center justify-center text-anthracite-400 hover:text-wine-texte hover:border-wine-300 active:scale-90 transition-all cursor-pointer shadow-card"
         >
           <X size={22} />
         </button>

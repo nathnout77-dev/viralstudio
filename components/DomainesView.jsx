@@ -51,7 +51,7 @@ function DomaineCard({ domaine, onOpenWine, index }) {
           <a
             href={domaine.url}
             target="_blank" rel="noopener noreferrer"
-            className="flex-shrink-0 flex items-center gap-1 px-3 py-2 rounded-full text-xs font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
+            className="flex-shrink-0 flex items-center gap-1 px-3 py-2 rounded-full text-xs font-semibold text-wine-texte bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
             title={`Visiter le site de ${domaine.name}`}
           >
             <ExternalLink size={11} />

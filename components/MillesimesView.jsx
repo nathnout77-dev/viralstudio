@@ -20,7 +20,7 @@ const REC_CONFIG = {
 }
 
 const TYPE_STYLE = {
-  'Rouge':       'bg-wine-100 text-wine-800',
+  'Rouge':       'bg-wine-100 text-wine-texte',
   'Blanc':       'bg-amber-50 text-amber-800 border border-amber-200',
   'Rosé':        'bg-pink-50 text-pink-700 border border-pink-200',
   'Liquoreux':   'bg-amber-100 text-amber-900',
@@ -336,7 +336,7 @@ export default function MillesimesView() {
                   )}
                   <button
                     onClick={() => setFicheVin(vinFocus)}
-                    className="inline-flex items-center gap-1.5 text-[11px] font-bold text-wine-800 mt-2.5 cursor-pointer hover:underline"
+                    className="inline-flex items-center gap-1.5 text-[11px] font-bold text-wine-texte mt-2.5 cursor-pointer hover:underline"
                   >
                     <BookOpen size={11} /> Voir la fiche complète
                   </button>
@@ -384,7 +384,7 @@ export default function MillesimesView() {
           {(region !== 'Toutes' || type !== 'Tous' || year || rec !== 'Tous' || search) && (
             <button
               onClick={() => { setRegion('Toutes'); setType('Tous'); setYear(''); setRec('Tous'); setSearch(''); setVinChoisi(null) }}
-              className="px-3 py-2 text-xs text-wine-700 bg-wine-50 border border-wine-200 rounded-full hover:bg-wine-100 transition-colors cursor-pointer"
+              className="px-3 py-2 text-xs text-wine-texte bg-wine-50 border border-wine-200 rounded-full hover:bg-wine-100 transition-colors cursor-pointer"
             >
               Réinitialiser
             </button>

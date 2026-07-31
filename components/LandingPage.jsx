@@ -394,7 +394,7 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
         <div className="max-w-4xl mx-auto text-center">
           <span className="eyebrow reveal">L'œnologie, une idée de vie</span>
           <h2 className="font-serif text-3xl sm:text-5xl font-medium text-anthracite-950 leading-[1.15] tracking-tight mt-5 reveal reveal-delay-1">
-            L'œnologie, c'est <span className="italic text-wine-900">la science du vin</span> —
+            L'œnologie, c'est <span className="italic text-wine-texte">la science du vin</span> —
             <br className="hidden sm:block" /> mais surtout, un art de vivre au quotidien.
           </h2>
           <p className="reveal reveal-delay-2 text-anthracite-500 font-light text-lg mt-7 max-w-2xl mx-auto leading-relaxed">
@@ -428,7 +428,7 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
                 style={{ fontSize: 'clamp(2.6rem, 9vw, 6.2rem)', letterSpacing: '-0.015em' }}>
               <span data-lp-line style={hiddenLine} className="block">Vous n'y connaissez</span>
               <span data-lp-line style={hiddenLine} className="block">rien en vin ?</span>
-              <span data-lp-line style={hiddenLine} className="block italic text-wine-900 mt-3">Parfait.</span>
+              <span data-lp-line style={hiddenLine} className="block italic text-wine-texte mt-3">Parfait.</span>
             </h2>
           </div>
         </div>
@@ -492,7 +492,7 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
             <span className="eyebrow mb-6 reveal">Apprenez à sentir</span>
             <h2 className="font-serif text-4xl sm:text-6xl font-medium text-anthracite-950 leading-[1.1] tracking-tight reveal reveal-delay-1">
               Votre nez sait déjà
-              <br /><span className="italic text-wine-900">tout faire.</span>
+              <br /><span className="italic text-wine-texte">tout faire.</span>
             </h2>
             <p className="reveal reveal-delay-2 text-anthracite-500 font-light mt-6 max-w-xl mx-auto">
               Huit familles d'arômes suffisent pour décrire presque tous les vins du monde.
@@ -511,7 +511,7 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
           <span className="eyebrow mb-6 reveal">Œno en chiffres</span>
           <h2 className="font-serif text-4xl sm:text-6xl font-medium text-anthracite-950 leading-[1.1] tracking-tight reveal reveal-delay-1">
             Une cave de savoir,
-            <br /><span className="italic text-wine-900">ouverte à tous.</span>
+            <br /><span className="italic text-wine-texte">ouverte à tous.</span>
           </h2>
 
           <div ref={statsRef} className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-14 mt-24 reveal reveal-delay-2">
@@ -565,7 +565,7 @@ export default function LandingPage({ onEnter, onTabChange, onCeSoir, onScan }) 
         <div className="max-w-6xl mx-auto px-6 sm:px-10 text-center mb-14">
           <span className="eyebrow mb-6 reveal">L'expérience Œno</span>
           <h2 className="font-serif text-4xl sm:text-5xl font-medium text-anthracite-950 tracking-tight reveal reveal-delay-1">
-            Six façons de trouver <span className="italic text-wine-900">votre</span> vin
+            Six façons de trouver <span className="italic text-wine-texte">votre</span> vin
           </h2>
           <p className="reveal reveal-delay-2 inline-flex items-center gap-2 text-anthracite-500 text-xs uppercase tracking-[0.25em] mt-6">
             Faites glisser <ArrowRight size={12} className="text-gold-600" />

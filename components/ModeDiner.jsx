@@ -35,7 +35,7 @@ function DishField({ course, value, onChange }) {
       <label className="label" htmlFor={`diner-${course.key}`}>
         {course.label}
         {course.key === 'plat'
-          ? <span className="text-wine-700 normal-case tracking-normal ml-1">*</span>
+          ? <span className="text-wine-texte normal-case tracking-normal ml-1">*</span>
           : <span className="text-anthracite-300 normal-case tracking-normal ml-1.5">facultatif</span>}
       </label>
       <div className="relative">
@@ -367,7 +367,7 @@ function ServiceCard({ service, index, bouteilles, onFiche }) {
         <p className="text-xs text-anthracite-500 mt-2.5">
           Alternative :{' '}
           <button onClick={() => onFiche(service.alt)}
-                  className="font-semibold text-anthracite-700 underline decoration-gold-600/50 underline-offset-2 hover:text-wine-800 cursor-pointer">
+                  className="font-semibold text-anthracite-700 underline decoration-gold-600/50 underline-offset-2 hover:text-wine-texte cursor-pointer">
             {service.alt.appellation}
           </button>
           {' '}(~{service.alt.prixMoyen} €){service.altInCave && ' — dans votre cave'}

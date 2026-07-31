@@ -318,7 +318,7 @@ export default function OnboardingProfil({ onComplete }) {
                     className="w-full choice-btn p-4 flex items-center gap-4 animate-scale-in"
                     style={{ animationDelay: `${i * 80}ms`, animationFillMode: 'both' }}
                   >
-                    <Icone nom={o.ic} size={22} className="text-wine-700 flex-shrink-0" />
+                    <Icone nom={o.ic} size={22} className="text-wine-texte flex-shrink-0" />
                     <span>
                       <span className="block text-sm font-bold text-anthracite-900">{o.label}</span>
                       <span className="block text-xs text-anthracite-400 leading-snug mt-0.5">{o.hint}</span>
@@ -351,7 +351,7 @@ export default function OnboardingProfil({ onComplete }) {
                     className="w-full choice-btn p-4 flex items-center gap-3 animate-scale-in"
                     style={{ animationDelay: `${i * 60}ms`, animationFillMode: 'both' }}
                   >
-                    <Icone nom={o.ic} size={19} className="text-wine-700 flex-shrink-0" />
+                    <Icone nom={o.ic} size={19} className="text-wine-texte flex-shrink-0" />
                     <span className="text-sm font-semibold text-anthracite-800">{o.label}</span>
                   </button>
                 ))}

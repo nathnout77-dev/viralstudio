@@ -282,7 +282,7 @@ export default function WineForm({ initial, onSave, onClose }) {
               </button>
             )}
             <div className="w-8 h-8 rounded-lg bg-wine-100 flex items-center justify-center">
-              <Wine size={14} className="text-wine-800" />
+              <Wine size={14} className="text-wine-texte" />
             </div>
             <h2 className="font-serif text-base font-semibold text-anthracite-900">
               {initial ? 'Modifier le vin' : 'Ajouter un vin'}
@@ -347,7 +347,7 @@ export default function WineForm({ initial, onSave, onClose }) {
             {query.trim().length >= 2 && resultats.length === 0 && (
               <div className="mt-4">
                 {lookupError && (
-                  <p className="text-[12px] text-wine-700 bg-wine-50 border border-wine-100 rounded-xl px-3 py-2 mb-3">
+                  <p className="text-[12px] text-wine-texte bg-wine-50 border border-wine-100 rounded-xl px-3 py-2 mb-3">
                     {errMsg[lookupError]}
                   </p>
                 )}
@@ -427,7 +427,7 @@ export default function WineForm({ initial, onSave, onClose }) {
                   <button
                     type="button"
                     onClick={() => setUseFreeText(false)}
-                    className="text-[11px] text-wine-700 hover:underline cursor-pointer flex items-center gap-1"
+                    className="text-[11px] text-wine-texte hover:underline cursor-pointer flex items-center gap-1"
                   >
                     <Sparkles size={10} className="text-gold-500" /> Choisir dans la liste
                   </button>

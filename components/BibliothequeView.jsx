@@ -144,7 +144,7 @@ function DecouverteFiche({ dec, onClose, onDelete }) {
           {dec.cepages?.length > 0 && (
             <div>
               <div className="text-[10px] uppercase tracking-wider font-bold text-anthracite-400 mb-1.5 flex items-center gap-1.5">
-                <Grape size={11} className="text-wine-600" /> Cépages probables
+                <Grape size={11} className="text-wine-texte" /> Cépages probables
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {dec.cepages.map(c => (
@@ -175,7 +175,7 @@ function DecouverteFiche({ dec, onClose, onDelete }) {
 
           {dec.siteWeb && (
             <a href={dec.siteWeb} target="_blank" rel="noopener noreferrer"
-               className="flex items-center gap-1.5 text-xs font-semibold text-wine-700 hover:text-wine-800">
+               className="flex items-center gap-1.5 text-xs font-semibold text-wine-texte hover:text-wine-texte">
               <Globe size={12} /> Site officiel du domaine
             </a>
           )}
@@ -477,17 +477,17 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
           {/* Service */}
           <div className="grid grid-cols-3 gap-2">
             <div className="card p-3 text-center">
-              <Thermometer size={13} className="text-wine-600 mx-auto mb-1" />
+              <Thermometer size={13} className="text-wine-texte mx-auto mb-1" />
               <div className="text-xs font-bold text-anthracite-800">{wine.temperature}</div>
               <div className="text-[9px] text-anthracite-400 uppercase mt-0.5">Service</div>
             </div>
             <div className="card p-3 text-center">
-              <Clock size={13} className="text-wine-600 mx-auto mb-1" />
+              <Clock size={13} className="text-wine-texte mx-auto mb-1" />
               <div className="text-xs font-bold text-anthracite-800">{wine.carafage || 'Non'}</div>
               <div className="text-[9px] text-anthracite-400 uppercase mt-0.5"><Terme id="carafage">Carafage</Terme></div>
             </div>
             <div className="card p-3 text-center">
-              <Wine size={13} className="text-wine-600 mx-auto mb-1" />
+              <Wine size={13} className="text-wine-texte mx-auto mb-1" />
               <div className="text-xs font-bold text-anthracite-800">{wine.garde}</div>
               <div className="text-[9px] text-anthracite-400 uppercase mt-0.5"><Terme id="garde">Garde</Terme></div>
             </div>
@@ -526,7 +526,7 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
             </div>
             <button
               onClick={() => setShowAccordInverse(true)}
-              className="mt-3 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
+              className="mt-3 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold text-wine-texte bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
             >
               <ChefHat size={13} /> Que cuisiner avec ?
             </button>
@@ -559,7 +559,7 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
                         href={d.url}
                         target="_blank" rel="noopener noreferrer"
                         onClick={e => e.stopPropagation()}
-                        className="flex-shrink-0 flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold text-wine-700 bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
+                        className="flex-shrink-0 flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold text-wine-texte bg-wine-50 border border-wine-200 hover:bg-wine-100 transition-colors cursor-pointer"
                         title={`Visiter le site de ${d.name}`}
                       >
                         <ExternalLink size={9} />
@@ -639,7 +639,7 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
               {onNoter && (
                 <button
                   onClick={() => onNoter({ name: wine.appellation, domain: wine.domaines?.[0]?.name || '', vintage: millesime, type: wine.type })}
-                  className="w-full lg:w-auto flex items-center justify-center gap-1.5 py-2.5 lg:px-4 mt-2 lg:mt-0 rounded-full text-xs font-semibold text-anthracite-500 hover:text-wine-700 transition-colors cursor-pointer"
+                  className="w-full lg:w-auto flex items-center justify-center gap-1.5 py-2.5 lg:px-4 mt-2 lg:mt-0 rounded-full text-xs font-semibold text-anthracite-500 hover:text-wine-texte transition-colors cursor-pointer"
                 >
                   <NotebookPen size={13} /> Noter cette dégustation
                 </button>

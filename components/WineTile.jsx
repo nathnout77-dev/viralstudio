@@ -1,5 +1,5 @@
 import { Quote, Sparkles } from 'lucide-react'
-import { DIFFICULTE_CONFIG } from '../data/wineDatabase'
+import { DIFFICULTE_CONFIG, tonJeton } from '../data/wineDatabase'
 import WineVisuel from './WineVisuel'
 import { tintStyle, pastilleStyle, regionMonogram, collectionNumero } from '../lib/wineStyle'
 import { MiniVerre, fillLevelFromJauges } from './WineGlassAnim'
@@ -110,7 +110,7 @@ export default function WineTile({
           {diff ? (
             <span
               className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold"
-              style={{ background: diff.bg, color: diff.color }}
+              style={tonJeton(diff.jeton)}
             >
               {diff.label}
             </span>
@@ -167,7 +167,7 @@ export default function WineTile({
             <span className="flex items-center gap-1.5 flex-shrink-0" onClick={e => e.stopPropagation()}>
               {showEnvie && <EnvieButton appellation={appellation} vin={wine} size={12} className="!w-6 !h-6" />}
               {diff && (
-                <span className="w-2.5 h-2.5 rounded-full ring-2 ring-white flex-shrink-0" style={{ background: diff.color }} title={diff.label} />
+                <span className="w-2.5 h-2.5 rounded-full ring-2 ring-white flex-shrink-0" style={{ background: `rgb(var(${diff.jeton}))` }} title={diff.label} />
               )}
             </span>
           </div>
@@ -177,7 +177,7 @@ export default function WineTile({
             if (!mils.length) return null
             return (
               <p className="text-[11px] text-anthracite-600 mt-1.5">
-                Millésime conseillé : <span className="font-bold text-wine-800">{mils[0]}</span>
+                Millésime conseillé : <span className="font-bold text-wine-texte">{mils[0]}</span>
                 {mils.length > 1 && <span className="text-anthracite-400"> (ou {mils.slice(1).join(', ')})</span>}
               </p>
             )

@@ -8,9 +8,11 @@ module.exports = {
           /* Rose très pâle des encarts : sur fond sombre, il devient une
              teinte bordeaux profonde plutôt qu'un aplat rose éclatant. */
           50:  'rgb(var(--wine-50) / <alpha-value>)',
-          100: '#fae0e4',
-          200: '#f5c0ca',
-          300: '#ee91a2',
+          /* Teintes claires : elles servent de SURFACES (encarts, survols,
+             bordures). Elles s'inversent donc, comme la gamme pierre. */
+          100: 'rgb(var(--wine-100) / <alpha-value>)',
+          200: 'rgb(var(--wine-200) / <alpha-value>)',
+          300: 'rgb(var(--wine-300) / <alpha-value>)',
           400: '#e45872',
           500: '#d42e4f',
           600: '#b81d3c',
@@ -18,6 +20,11 @@ module.exports = {
           800: '#72102a',
           900: '#5c0d22',
           950: '#3a0616',
+          /* Bordeaux de TEXTE — `text-wine-texte`. Séparé de la gamme
+             numérique parce que les deux rôles divergent en thème sombre :
+             un fond bordeaux reste sombre, un texte bordeaux doit
+             s'éclaircir pour rester lisible. Ne jamais l'employer en fond. */
+          texte: 'rgb(var(--wine-texte) / <alpha-value>)',
         },
         gold: {
           300: '#e8c96b',

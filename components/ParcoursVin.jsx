@@ -94,7 +94,7 @@ export default function ParcoursVin({ mode, onOpenBibliotheque }) {
             style={{ animationDelay: `${i * 70}ms`, animationFillMode: 'both' }}
           >
             <div className="w-12 h-12 rounded-2xl bg-wine-50 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
-              <s.Icon size={20} className="text-wine-700" strokeWidth={1.7} />
+              <s.Icon size={20} className="text-wine-texte" strokeWidth={1.7} />
             </div>
             <div className="min-w-0 flex-1">
               <div className="font-serif text-base font-bold text-anthracite-900">{s.titre}</div>

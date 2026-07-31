@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { X, Camera, Image as ImageIcon, RefreshCw, Sparkles, Plus, Check, MapPin, BookOpen, Tag, Pencil, UtensilsCrossed, Heart, Globe, Library, Zap, ZapOff, ShoppingCart, Share2, ChevronRight } from 'lucide-react'
-import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
+import { WINE_DB, DIFFICULTE_CONFIG, tonJeton } from '../data/wineDatabase'
 import { regionInfo } from '../data/regionsInfo'
 import { normaliser } from '../data/aromes'
 import JaugesGout from './JaugesGout'
@@ -483,11 +483,11 @@ function EnvieAction({ appellation, vin = null }) {
       onClick={() => toggleEnvie(appellation, vin)}
       className={`w-full flex items-center justify-center gap-2 py-3 rounded-full text-sm font-semibold transition-all duration-300 cursor-pointer ${
         active
-          ? 'bg-wine-50 text-wine-700 border border-wine-200'
+          ? 'bg-wine-50 text-wine-texte border border-wine-200'
           : 'border border-anthracite-900/15 text-anthracite-700 hover:border-anthracite-900/40 active:scale-[0.98]'
       }`}
     >
-      <Heart size={15} className={active ? 'fill-wine-600 text-wine-600' : ''} />
+      <Heart size={15} className={active ? 'fill-wine-600 text-wine-texte' : ''} />
       {active ? 'Dans mes envies' : 'Ajouter à mes envies'}
     </button>
   )
@@ -526,7 +526,7 @@ function DecouverteBanner({ dejaConnu, enrichState, decouverte }) {
         {decouverte.siteWeb && (
           <a href={decouverte.siteWeb} target="_blank" rel="noopener noreferrer"
              onClick={e => e.stopPropagation()}
-             className="inline-flex items-center gap-1 mt-2 text-[11px] font-semibold text-wine-700 hover:text-wine-800">
+             className="inline-flex items-center gap-1 mt-2 text-[11px] font-semibold text-wine-texte hover:text-wine-texte">
             <Globe size={10} /> Site officiel
           </a>
         )}
@@ -1392,7 +1392,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                   </button>
                 </div>
                 {manuelIntrouvable && (
-                  <p className="text-[11px] text-wine-700 mt-2 text-left">
+                  <p className="text-[11px] text-wine-texte mt-2 text-left">
                     Introuvable dans la bibliothèque — essayez le nom de l'appellation (ex. « Saint-Émilion » plutôt que le château).
                   </p>
                 )}
@@ -1568,7 +1568,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
                       ~ {matched.prixMoyen} € la bouteille
                     </span>
                     <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold"
-                          style={{ background: DIFFICULTE_CONFIG[matched.difficulte].bg, color: DIFFICULTE_CONFIG[matched.difficulte].color }}>
+                          style={tonJeton(DIFFICULTE_CONFIG[matched.difficulte].jeton)}>
                       {DIFFICULTE_CONFIG[matched.difficulte].label}
                     </span>
                   </div>

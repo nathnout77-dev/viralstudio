@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { X, Send, Sparkles, RefreshCw, Wine, Camera } from 'lucide-react'
-import { WINE_DB, WINE_DB_TERROIR, WINE_DB_GRAND_PUBLIC, MILLESIMES_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
+import { WINE_DB, WINE_DB_TERROIR, WINE_DB_GRAND_PUBLIC, MILLESIMES_DB, DIFFICULTE_CONFIG, tonJeton } from '../data/wineDatabase'
 import Icone from './Icone'
 import { profilApprisPourAssistant } from '../data/goutsAppris'
 import { resumeAchats } from '../lib/achats'
@@ -170,7 +170,7 @@ function renderMarkdown(text) {
     const t = line.trim()
     if (/^#{1,4}\s/.test(t)) {
       flush()
-      out.push(<h4 key={i} className="font-serif text-sm font-bold text-wine-800 mt-3 mb-1">{t.replace(/^#+\s*/, '')}</h4>)
+      out.push(<h4 key={i} className="font-serif text-sm font-bold text-wine-texte mt-3 mb-1">{t.replace(/^#+\s*/, '')}</h4>)
     } else if (t.startsWith('- ') || t.startsWith('* ') || /^\d+\.\s/.test(t)) {
       const content = t.replace(/^(-|\*|\d+\.)\s+/, '')
       list = list || []
@@ -266,7 +266,7 @@ function InlineWineCard({ wine, onSelect }) {
         <div className="flex items-center justify-between gap-2">
           <div className="font-serif text-[13px] font-bold text-anthracite-900 truncate">{wine.appellation}</div>
           <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0"
-                style={{ background: diff.bg, color: diff.color }}>
+                style={tonJeton(diff.jeton)}>
             ~{wine.prixMoyen}€
           </span>
         </div>
@@ -584,7 +584,7 @@ export default function AssistantView({ onClose }) {
                     className="w-full card p-4 flex items-center gap-4 text-left hover:-translate-y-0.5 hover:border-wine-300 transition-all cursor-pointer animate-scale-in"
                     style={{ animationDelay: `${i * 80}ms`, animationFillMode: 'both' }}
                   >
-                    <Icone nom={o.ic} size={22} className="text-wine-700 flex-shrink-0" />
+                    <Icone nom={o.ic} size={22} className="text-wine-texte flex-shrink-0" />
                     <span>
                       <span className="block text-sm font-bold text-anthracite-900">{o.label}</span>
                       <span className="block text-xs text-anthracite-400">{o.hint}</span>
@@ -613,7 +613,7 @@ export default function AssistantView({ onClose }) {
                     className="w-full card p-3.5 flex items-center gap-3 text-left hover:-translate-y-0.5 hover:border-wine-300 transition-all cursor-pointer animate-scale-in"
                     style={{ animationDelay: `${i * 60}ms`, animationFillMode: 'both' }}
                   >
-                    <Icone nom={o.ic} size={19} className="text-wine-700 flex-shrink-0" />
+                    <Icone nom={o.ic} size={19} className="text-wine-texte flex-shrink-0" />
                     <span className="text-sm font-semibold text-anthracite-800">{o.label}</span>
                   </button>
                 ))}
@@ -647,7 +647,7 @@ export default function AssistantView({ onClose }) {
           {loading && (
             <div className="flex justify-start animate-fade-in">
               <div className="bg-carte border border-anthracite-100 rounded-2xl rounded-bl-md px-4 py-3 shadow-card flex items-center gap-2">
-                <Wine size={13} className="text-wine-700 animate-bounce-subtle" />
+                <Wine size={13} className="text-wine-texte animate-bounce-subtle" />
                 <span className="text-xs text-anthracite-400">Œno réfléchit…</span>
               </div>
             </div>
@@ -661,7 +661,7 @@ export default function AssistantView({ onClose }) {
               <button
                 onClick={() => platInputRef.current?.click()}
                 disabled={loading}
-                className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold bg-wine-50 border border-wine-200 text-wine-800 hover:border-wine-400 transition-all cursor-pointer disabled:opacity-50"
+                className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold bg-wine-50 border border-wine-200 text-wine-texte hover:border-wine-400 transition-all cursor-pointer disabled:opacity-50"
               >
                 <Camera size={13} />
                 Accord d’un plat
@@ -671,9 +671,9 @@ export default function AssistantView({ onClose }) {
                   key={item.id}
                   onClick={() => sendMessage(item.prompt, item.id)}
                   disabled={loading}
-                  className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold bg-carte border border-anthracite-200 text-anthracite-700 hover:border-wine-400 hover:text-wine-800 transition-all cursor-pointer disabled:opacity-50"
+                  className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold bg-carte border border-anthracite-200 text-anthracite-700 hover:border-wine-400 hover:text-wine-texte transition-all cursor-pointer disabled:opacity-50"
                 >
-                  <Icone nom={item.ic} size={16} className="text-wine-700 flex-shrink-0" />
+                  <Icone nom={item.ic} size={16} className="text-wine-texte flex-shrink-0" />
                   {item.label}
                 </button>
               ))}
@@ -697,7 +697,7 @@ export default function AssistantView({ onClose }) {
                 disabled={loading}
                 title="Photographier un plat pour trouver l'accord vin"
                 aria-label="Photographier un plat pour l'accord mets-vins"
-                className="w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-2xl bg-carte border border-anthracite-200 text-wine-700 hover:border-gold-500/70 hover:text-wine-900 transition-all cursor-pointer disabled:opacity-40"
+                className="w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-2xl bg-carte border border-anthracite-200 text-wine-texte hover:border-gold-500/70 hover:text-wine-texte transition-all cursor-pointer disabled:opacity-40"
               >
                 <Camera size={17} />
               </button>

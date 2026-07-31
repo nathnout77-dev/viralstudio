@@ -27,15 +27,44 @@
     --suggestion-de:   253 249 240;  /* carte du jour, dégradé chaud */
     --suggestion-vers: 247 236 217;
     --wine-50: 253 242 244;
+    --wine-100: 250 224 228;
+    --wine-200: 245 192 202;
+    --wine-300: 238 145 162;
+    /* Le bordeaux QUAND IL SERT DE TEXTE. Un jeton distinct de la gamme
+       numérique, parce que les deux rôles divergent en thème sombre : un
+       fond bordeaux doit rester sombre, un texte bordeaux doit s'éclaircir.
+       Confondre les deux rendait 112 textes illisibles ou obligeait à
+       casser les boutons pour les réparer. */
+    --wine-texte: 114 16 42;
     --or-texte:      161 98 7;
     --or-texte-fort: 133 77 14;
+
+    /* ── Couleurs de sens ────────────────────────────────────────────────
+       Rapport qualité/prix, difficulté, fenêtre de dégustation. Elles
+       portent une information, pas une décoration : elles doivent rester
+       lisibles dans les deux thèmes. Écrites en dur, elles tombaient à
+       2,2:1 sur fond sombre — l'information disparaissait. */
+    --vert:    21 128 61;
+    --lime:    77 124 15;
+    --ambre:  161 98 7;
+    --orange: 194 65 12;
+    --rouge:  185 28 28;
+    --bleu:    29 78 216;
+    --diff-facile:   61 99 64;
+    --diff-explorer: 146 89 33;
+    --diff-pointu:   140 47 57;
 
     --anth-50:  250 250 249;
     --anth-100: 240 239 237;
     --anth-200: 231 229 228;
     --anth-300: 214 211 209;
-    --anth-400: 168 162 158;
-    --anth-500: 120 113 108;
+    /* Texte secondaire. À 168/162/158 il ne tenait que 2,5:1 sur blanc —
+       sous le seuil AA, et c'est la couleur de presque tout le texte
+       secondaire de l'app. Assombri au minimum qui passe (4,8:1), pour
+       rester au plus près de la nuance d'origine ; le cran suivant se
+       décale d'autant pour garder une vraie gradation. */
+    --anth-400: 118 113 111;
+    --anth-500:  99  93  89;
     --anth-600: 87 83 78;
     --anth-700: 68 64 60;
     --anth-800: 41 37 36;
@@ -55,8 +84,23 @@
     --suggestion-de:   44 36 28;
     --suggestion-vers: 33 28 24;
     --wine-50: 42 20 25;
+    --wine-100: 58 27 34;
+    --wine-200: 76 36 45;
+    --wine-300: 96 47 58;
+    --wine-texte: 240 154 172;   /* ≥ 4.5:1 sur les surfaces sombres et sur --wine-50 */
     --or-texte:      212 168 71;
     --or-texte-fort: 232 201 107;
+
+    /* Mêmes sens, remontés pour tenir sur fond sombre. */
+    --vert:   134 239 172;
+    --lime:   190 242 100;
+    --ambre:  252 211 77;
+    --orange: 253 186 116;
+    --rouge:  252 165 165;
+    --bleu:   147 197 253;
+    --diff-facile:   150 214 160;
+    --diff-explorer: 235 178 110;
+    --diff-pointu:   240 154 172;
 
     --anth-50:  27 25 23;
     --anth-100: 38 34 32;
