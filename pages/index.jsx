@@ -477,6 +477,7 @@ export default function App() {
           onMenu={() => setShowMenu(true)}
           onRecherche={() => setShowRecherche(true)}
           onAvatar={() => setShowAvatar(true)}
+          onReglages={() => setShowReglages(true)}
         />
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-6 lg:py-10 pb-24 md:pb-10">
