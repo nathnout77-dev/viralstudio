@@ -22,6 +22,7 @@ import { normaliser } from '../data/aromes'
 import { WINE_DB_TERROIR } from '../data/wineDatabase'
 import useSwipeNav from '../lib/useSwipeNav'
 import { lireReglages } from '../lib/reglages'
+import { estVinDemo, approprier, caveEncoreDemo } from '../lib/demo'
 
 // Ordre des onglets pour la navigation par glissement (mobile). Il reprend
 // EXACTEMENT l'ordre visible dans la barre du bas (Découvrir · Trouver · Scan ·
@@ -113,7 +114,9 @@ const DEMO_WINES = [
     foodPairings:['Poisson','Fruits de mer','Fromage'],
     notes:'Vif et tendu. Citron vert, buis, pierre à fusil.',
   },
-]
+// `demo: true` n'est pas décoratif : c'est lui qui empêche ces bouteilles de
+// partir dans le cloud et de se faire passer pour la cave de quelqu'un.
+].map(v => ({ ...v, demo: true }))
 
 // Intitulés du fil d'Ariane pour chaque parcours (le hub n'en a pas)
 const VUES = {
@@ -294,11 +297,15 @@ export default function App() {
   }, [])
 
   const saveWine = useCallback(w => {
-    setWines(prev =>
-      prev.find(x => x.id === w.id)
-        ? prev.map(x => x.id === w.id ? w : x)
-        : [...prev, w]
-    )
+    setWines(prev => {
+      const connu = prev.find(x => x.id === w.id)
+      // Une bouteille qu'on modifie devient la sienne : on lui retire sa
+      // marque de démonstration plutôt que de la voir s'effacer plus tard.
+      if (connu) return prev.map(x => x.id === w.id ? approprier(w) : x)
+      // Premier vin bien à soi : les bouteilles d'exemple ont fini leur
+      // office. Les garder mêlerait pour toujours du décor à une vraie cave.
+      return [...prev.filter(x => !estVinDemo(x)), w]
+    })
     setShowForm(false)
     setEditWine(null)
     toast('Enregistré dans votre cave')
@@ -354,6 +361,8 @@ export default function App() {
   }, [wines])
 
   const total = wines.reduce((s, w) => s + w.quantity, 0)
+  // Cave encore entièrement composée d'exemples : rien n'appartient au visiteur.
+  const caveDemo = caveEncoreDemo(wines)
   const ariane = VUES[view]
 
   // Glissement horizontal entre onglets (mobile). Désactivé pendant la landing
@@ -447,6 +456,7 @@ export default function App() {
           view={view}
           setView={goTo}
           total={total}
+          caveDemo={caveDemo}
           mode={mode}
           prenom={profil?.prenom}
           onProfil={redoProfil}
@@ -465,6 +475,7 @@ export default function App() {
           view={view}
           setView={goTo}
           total={total}
+          caveDemo={caveDemo}
           mode={mode}
           prenom={profil?.prenom}
           onProfil={redoProfil}

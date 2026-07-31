@@ -53,7 +53,7 @@ function NavItem({ active, onClick, Icon, label, accent = false }) {
   )
 }
 
-export default function Sidebar({ view, setView, total, mode, prenom, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte, onAssistant, onMenu, onRecherche, onAvatar, onReglages }) {
+export default function Sidebar({ view, setView, total, caveDemo = false, mode, prenom, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte, onAssistant, onMenu, onRecherche, onAvatar, onReglages }) {
   const badge = MODE_BADGE[mode]
   return (
     <aside
@@ -66,8 +66,10 @@ export default function Sidebar({ view, setView, total, mode, prenom, onProfil, 
         <AvatarOeno size={40} prenom={prenom} onClick={onAvatar} />
         <button onClick={onLanding} className="cursor-pointer group text-left">
           <div className="font-serif text-2xl text-cream tracking-wide leading-none transition-colors duration-300 group-hover:text-gold-400">Œno</div>
+          {/* Tant que rien n'a été ajouté, annoncer un total serait présenter
+              des bouteilles d'exemple comme la collection de l'utilisateur. */}
           <div className="text-[9px] text-gold-500 uppercase tracking-[0.22em] mt-1.5">
-            <RollingNumber value={total} /> bouteille{total > 1 ? 's' : ''} en cave
+            {caveDemo ? 'Cave d’exemple' : <><RollingNumber value={total} /> bouteille{total > 1 ? 's' : ''} en cave</>}
           </div>
         </button>
       </div>

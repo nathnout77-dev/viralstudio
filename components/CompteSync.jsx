@@ -5,6 +5,7 @@ import CaveAmisSection, { pushPartageSnapshot } from './CaveAmis'
 import ReglagesNotifications from './ReglagesNotifications'
 import useModalBehavior from '../lib/useModal'
 import { decisionFusion } from '../lib/fusion'
+import { sansDemo } from '../lib/demo'
 import { toast } from './Toast'
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -25,6 +26,15 @@ export const SYNC_KEYS = {
   decouvertes: 'oeno-decouvertes',
 }
 
+/**
+ * Ce que cet appareil possède vraiment.
+ *
+ * Les bouteilles de démonstration sont retirées ici, à la source — et non
+ * chez chaque appelant. C'est le seul point de passage vers le cloud comme
+ * vers le fichier de sauvegarde : les écarter ici garantit qu'elles ne
+ * peuvent ni être envoyées, ni peser dans la décision de fusion. Voir
+ * `lib/demo.js` pour ce que leur présence coûtait.
+ */
 export function snapshotLocal() {
   const snap = {}
   for (const [col, key] of Object.entries(SYNC_KEYS)) {
@@ -35,6 +45,7 @@ export function snapshotLocal() {
       snap[col] = null
     }
   }
+  snap.cave = sansDemo(snap.cave)
   return snap
 }
 

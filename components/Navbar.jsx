@@ -33,7 +33,7 @@ const MODE_BADGE = {
   expert:   { Icon: GraduationCap, label: 'Expert' },
 }
 
-export default function Navbar({ view, setView, total, mode, prenom, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte, onMenu, onRecherche, onAvatar }) {
+export default function Navbar({ view, setView, total, caveDemo = false, mode, prenom, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte, onMenu, onRecherche, onAvatar }) {
   const badge = MODE_BADGE[mode]
   const { breatheClass, settle } = useCtaBreathe() // halo du CTA « Ce soir ? »
   const ceSoir = () => { settle(); onCeSoir?.() }
@@ -49,7 +49,7 @@ export default function Navbar({ view, setView, total, mode, prenom, onProfil, o
             <AvatarOeno size={36} prenom={prenom} onClick={onAvatar} />
             <button onClick={onLanding} className="text-left cursor-pointer group">
               <div className="font-serif text-lg text-anthracite-950 tracking-wide leading-none transition-colors duration-300 group-hover:text-wine-800">Œno</div>
-              <div className="text-[9px] text-gold-600 uppercase tracking-[0.2em] mt-1">{total} bouteille{total > 1 ? 's' : ''} en cave</div>
+              <div className="text-[9px] text-gold-600 uppercase tracking-[0.2em] mt-1">{caveDemo ? 'Cave d\u2019exemple' : `${total} bouteille${total > 1 ? 's' : ''} en cave`}</div>
             </button>
           </div>
 
