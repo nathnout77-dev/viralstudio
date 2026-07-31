@@ -259,7 +259,7 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
         <div className="card p-12 text-center">
           <Wine size={36} className="text-anthracite-200 mx-auto mb-4" />
           <p className="font-serif text-base text-anthracite-400 mb-1">Aucun vin trouvé</p>
-          <p className="text-xs text-anthracite-300 mb-4">Essayez d'autres critères ou ajoutez un vin.</p>
+          <p className="text-xs text-anthracite-400 mb-4">Essayez d'autres critères ou ajoutez un vin.</p>
           <button onClick={onAdd} className="btn-primary mx-auto"><Plus size={13} />Ajouter un vin</button>
         </div>
       ) : (

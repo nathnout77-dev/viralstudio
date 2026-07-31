@@ -13,13 +13,22 @@ import { FicheVin } from './BibliothequeView'
 // ═══════════════════════════════════════════════════════════════════════════
 
 const TYPE_NOMS = { red: 'Rouge', white: 'Blanc', 'rosé': 'Rosé', sweet: 'Liquoreux', sparkling: 'Effervescent' }
-const TYPE_COULEURS = { red: '#8c2f39', white: '#c9a84c', 'rosé': '#e58f8f', sweet: '#b8860b', sparkling: '#5b8db8' }
+// Jetons et non teintes fixes : ces puces sont du TEXTE sur une carte. En
+// dur, le bordeaux tombait à 2:1 en thème sombre — la couleur du vin, qui
+// est justement l'information, devenait indéchiffrable.
+const TYPE_COULEURS = {
+  red:         'rgb(var(--wine-texte))',
+  white:       'rgb(var(--or-texte))',
+  'rosé':      'rgb(var(--rose))',
+  sweet:       'rgb(var(--ambre))',
+  sparkling:   'rgb(var(--bleu))',
+}
 
 function Puce({ children, color }) {
   return (
     <span
       className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-carte border border-anthracite-200"
-      style={color ? { borderColor: color + '55', color } : undefined}
+      style={color ? { borderColor: color.replace('))', ') / 0.38)'), color } : undefined}
     >
       {children}
     </span>

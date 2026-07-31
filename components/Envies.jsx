@@ -224,7 +224,7 @@ export default function EnviesView({ onBuy }) {
         <div className="card p-12 text-center mb-6">
           <Heart size={36} className="text-anthracite-200 mx-auto mb-4" />
           <p className="font-serif text-base text-anthracite-400 mb-1">Aucune envie pour l'instant</p>
-          <p className="text-xs text-anthracite-300 max-w-sm mx-auto">
+          <p className="text-xs text-anthracite-400 max-w-sm mx-auto">
             Repérez un vin dans la Bibliothèque, sur la Carte ou via le Budget caviste, et touchez le petit cœur : il vous attendra ici.
           </p>
         </div>

@@ -124,7 +124,7 @@ export default function AccordsView() {
         <div className="card p-10 text-center border-dashed">
           <UtensilsCrossed size={32} className="text-anthracite-200 mx-auto mb-3" />
           <p className="font-serif text-base text-anthracite-400">Sélectionnez un plat ci-dessus</p>
-          <p className="text-xs text-anthracite-300 mt-1">pour voir les recommandations d'accords</p>
+          <p className="text-xs text-anthracite-400 mt-1">pour voir les recommandations d'accords</p>
         </div>
       )}
 

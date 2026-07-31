@@ -13,7 +13,57 @@ const THEME = process.argv[2] || 'sombre'
 const PORT  = process.argv[3] || '3216'
 const BASE  = `http://127.0.0.1:${PORT}`
 
-const ECRANS = ['Accueil', 'Découvrir', 'Trouver un vin', 'Ma Cave', 'Mes amis', 'Bibliothèque', 'Explorer', 'Apprendre']
+// Chaque vue sait s'ouvrir depuis l'accueil. Les modales comptent autant que
+// les parcours : c'est souvent là que se cachent les fonds particuliers —
+// panneaux, voiles, encarts — donc les contrastes qu'on n'a jamais regardés.
+const clic = nom => async p => { await p.getByRole('button', { name: nom, exact: true }).click() }
+// Non exact pour le second niveau : dans la grille « Tout Œno », le libellé
+// du bouton porte aussi son sous-titre (« Sommelier Goût-o-mètre · Budget… »).
+const suite = (...noms) => async p => {
+  for (let i = 0; i < noms.length; i++) {
+    // Si une modale est ouverte, le second niveau s'y cherche : l'écran resté
+    // derrière porte des libellés voisins (« Régions · Carte & routes ») que
+    // l'on attrapait à sa place — et que le voile rendait de toute façon
+    // inatteignable. Sans modale (les sous-onglets de Ma Cave), on cherche
+    // dans la page : la restreindre au dialogue les rendait introuvables.
+    const dialogue = p.getByRole('dialog')
+    const portee = (i > 0 && await dialogue.count()) ? dialogue.first() : p
+    const loc = i === 0
+      ? p.getByRole('button', { name: noms[i], exact: true })
+      : portee.getByRole('button', { name: new RegExp(noms[i].replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) })
+    await loc.first().click()
+    await p.waitForTimeout(450)
+  }
+}
+
+const VUES = [
+  // ── Les huit parcours de la barre ──────────────────────────────────────
+  ['Accueil',            clic('Accueil')],
+  ['Découvrir',          clic('Découvrir')],
+  ['Trouver un vin',     clic('Trouver un vin')],
+  ['Ma Cave',            clic('Ma Cave')],
+  ['Mes amis',           clic('Mes amis')],
+  ['Bibliothèque',       clic('Bibliothèque')],
+  ['Explorer',           clic('Explorer')],
+  ['Apprendre',          clic('Apprendre')],
+  // ── Sous-onglets de Ma Cave ────────────────────────────────────────────
+  ['Cave · Mon goût',    suite('Ma Cave', 'Mon goût')],
+  ['Cave · Mémoires',    suite('Ma Cave', 'Mémoires de Vin')],
+  ['Cave · Panorama',    suite('Ma Cave', 'Panorama')],
+  ['Cave · Envies',      suite('Ma Cave', 'Envies')],
+  // ── Modales et panneaux ────────────────────────────────────────────────
+  ['Réglages',           clic('Réglages')],
+  ['Compte',             clic('Compte')],
+  ['Recherche',          clic('Recherche')],
+  ['Assistant',          clic('Assistant')],
+  ['Ce soir ?',          clic('Ce soir ?')],
+  ['Tout Œno',           clic('Tout Œno')],
+  ['Ajouter un vin',     clic('Ajouter un vin')],
+  // ── Accès par la grille ────────────────────────────────────────────────
+  ['Sommelier',          suite('Tout Œno', 'Sommelier')],
+  ['Guide complet',      suite('Tout Œno', 'Guide complet')],
+  ['Carte seule',        suite('Tout Œno', 'Carte')],
+]
 
 const MESURE = () => {
   const lum = s => {
@@ -118,10 +168,20 @@ await p.addInitScript(t => {
 }, THEME)
 
 const parEcran = new Map()
-await p.goto(BASE, { waitUntil: 'networkidle' })
-for (const ecran of ECRANS) {
-  await p.getByRole('button', { name: ecran, exact: true }).click()
-  await p.waitForTimeout(700)
+const inaccessibles = []
+for (const [ecran, ouvrir] of VUES) {
+  // Page neuve à chaque vue : une modale laissée ouverte fausserait la
+  // suivante, et l'ordre des vues ne doit rien changer au résultat.
+  await p.goto(BASE, { waitUntil: 'networkidle' })
+  await p.waitForTimeout(350)
+  try {
+    await ouvrir(p)
+  } catch (e) {
+    // Une vue qu'on ne sait plus ouvrir est signalée, pas passée sous silence.
+    inaccessibles.push(ecran)
+    continue
+  }
+  await p.waitForTimeout(900)
   const bruts = await p.evaluate(MESURE)
   // Contre-épreuve au pixel : on ne garde que ce qui échoue encore.
   const confirmes = []
@@ -138,6 +198,10 @@ for (const ecran of ECRANS) {
   parEcran.set(ecran, confirmes)
 }
 await b.close()
+
+if (inaccessibles.length) {
+  console.log(`\n⚠  Vues non atteintes (le bouton a changé de nom ?) : ${inaccessibles.join(', ')}`)
+}
 
 // Regroupé par couleur fautive : c'est la cause, pas chaque occurrence.
 const parCouleur = new Map()

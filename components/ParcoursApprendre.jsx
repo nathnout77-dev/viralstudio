@@ -90,7 +90,7 @@ export default function ParcoursApprendre() {
                 <Icon size={14} className={actif ? 'text-wine-texte' : 'text-anthracite-400'} />
               </div>
               <div className={`text-xs lg:text-[13px] font-bold ${actif ? 'text-anthracite-900' : 'text-anthracite-600'}`}>{label}</div>
-              <div className="text-[10px] text-anthracite-400 mt-0.5 hidden sm:block">{texte}</div>
+              <div className="text-[10px] text-anthracite-500 mt-0.5 hidden sm:block">{texte}</div>
             </button>
           )
         })}

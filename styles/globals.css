@@ -50,6 +50,7 @@
     --orange: 194 65 12;
     --rouge:  185 28 28;
     --bleu:    29 78 216;
+    --rose:   176 58 88;
     --diff-facile:   61 99 64;
     --diff-explorer: 146 89 33;
     --diff-pointu:   140 47 57;
@@ -98,6 +99,7 @@
     --orange: 253 186 116;
     --rouge:  252 165 165;
     --bleu:   147 197 253;
+    --rose:   244 168 186;
     --diff-facile:   150 214 160;
     --diff-explorer: 235 178 110;
     --diff-pointu:   240 154 172;
@@ -272,11 +274,14 @@
   }
 
   /* ── Badges discrets : hairline, uppercase, micro-typo ──────────────────── */
-  .badge-rouge        { @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.12em] border border-wine-800/25 text-wine-800 bg-transparent; }
-  .badge-blanc        { @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.12em] border border-gold-600/30 text-gold-700 bg-transparent; }
-  .badge-rose         { @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.12em] border border-pink-700/25 text-pink-800 bg-transparent; }
-  .badge-effervescent { @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.12em] border border-blue-700/25 text-blue-800 bg-transparent; }
-  .badge-liquoreux    { @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.12em] border border-amber-800/30 text-amber-900 bg-transparent; }
+  /* Couleurs de vin : du TEXTE, donc des jetons. Écrites en dur, elles
+     passaient sous le seuil en thème sombre — la couleur du vin, qui est
+     l'information même de ces badges, devenait illisible. */
+  .badge-rouge { @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.12em] border bg-transparent; border-color: rgb(var(--wine-texte) / 0.3); color: rgb(var(--wine-texte)); }
+  .badge-blanc { @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.12em] border bg-transparent; border-color: rgb(var(--or-texte-fort) / 0.3); color: rgb(var(--or-texte-fort)); }
+  .badge-rose { @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.12em] border bg-transparent; border-color: rgb(var(--rose) / 0.3); color: rgb(var(--rose)); }
+  .badge-effervescent { @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.12em] border bg-transparent; border-color: rgb(var(--bleu) / 0.3); color: rgb(var(--bleu)); }
+  .badge-liquoreux { @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.12em] border bg-transparent; border-color: rgb(var(--ambre) / 0.3); color: rgb(var(--ambre)); }
 
   .divider-gold {
     @apply h-px my-6;

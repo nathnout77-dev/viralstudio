@@ -243,7 +243,7 @@ export default function PanoramaCave({ wines }) {
       <div className="card p-12 text-center animate-fade-in">
         <BarChart3 size={36} className="text-anthracite-200 mx-auto mb-4" />
         <p className="font-serif text-base text-anthracite-400 mb-1">Rien à contempler pour l'instant</p>
-        <p className="text-xs text-anthracite-300 max-w-sm mx-auto">
+        <p className="text-xs text-anthracite-400 max-w-sm mx-auto">
           Ajoutez quelques bouteilles à votre cave et ce panorama prendra vie : répartitions, valeur, apogées…
         </p>
       </div>

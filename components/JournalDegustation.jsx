@@ -592,7 +592,7 @@ export default function JournalDegustation({ prefill, onConsumePrefill, onMarkFa
         <div className="card p-12 text-center">
           <NotebookPen size={36} className="text-anthracite-200 mx-auto mb-4" />
           <p className="font-serif text-base text-anthracite-400 mb-1">Votre journal est encore vierge</p>
-          <p className="text-xs text-anthracite-300 mb-5 max-w-sm mx-auto">Chaque vin ouvert mérite un souvenir. Notez votre prochaine dégustation — un mot, une émotion, une occasion.</p>
+          <p className="text-xs text-anthracite-400 mb-5 max-w-sm mx-auto">Chaque vin ouvert mérite un souvenir. Notez votre prochaine dégustation — un mot, une émotion, une occasion.</p>
           <button onClick={() => { setEditEntry(null); setFormSeed(null); setShowForm(true) }} className="btn-primary mx-auto">
             <Plus size={13} /> Écrire ma première note
           </button>

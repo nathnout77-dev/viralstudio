@@ -203,14 +203,20 @@ node scripts/audit-contraste.mjs sombre 3216
 node scripts/audit-contraste.mjs clair  3216
 ```
 
-Il ouvre chaque écran et mesure le contraste réel de **chaque texte affiché**,
-puis le confirme au pixel près sur une capture de l'élément — sans quoi un
-texte posé sur un calque frère est dénoncé à tort. Il regroupe par couleur
-fautive : c'est la cause qu'on veut voir, pas 2 300 occurrences.
+Il ouvre **22 vues** — les huit parcours, les sous-onglets de Ma Cave, et les
+modales (réglages, compte, recherche, assistant, ce soir, formulaire, grille,
+sommelier, guide, carte) — et mesure le contraste réel de **chaque texte
+affiché**, puis le confirme au pixel près sur une capture de l'élément : sans
+cela, un texte posé sur un calque frère est dénoncé à tort. Il regroupe par
+couleur fautive : c'est la cause qu'on veut voir, pas 2 300 occurrences.
 
-Référence actuelle : **4 restants en clair, 3 en sombre**, tous l'attribution
-Leaflet (tierce) ou à 4,4:1 pour un seuil à 4,5. Toute nouvelle entrée dans
-cette liste est une régression.
+Une vue qu'il ne sait plus ouvrir est **signalée**, jamais passée sous
+silence — sinon un écran disparaîtrait de la surveillance sans qu'on le sache.
+Ajouter une vue : une ligne dans `VUES`.
+
+Référence actuelle : **6 restants dans chaque thème, tous l'attribution
+Leaflet** (tierce, 4,49:1 pour un seuil à 4,5). Aucun texte d'Œno n'est
+sous le seuil. Toute nouvelle entrée est une régression.
 
 Vérifier aussi **dans les deux thèmes** dès qu'on touche à l'apparence, et
 **sur les deux mises en page** : barre latérale au-delà de `lg`, barre du bas
