@@ -12,15 +12,17 @@ dégustation, découvrir des vins, apprendre, partager avec des amis.
 ## Commandes
 
 ```bash
-npm run dev        # développement
-npm run verifier   # garde-fou imports (voir plus bas)
-npm run build      # verifier + next build + génération du précache SW
+npm run dev            # développement
+npm test               # tests unitaires (Vitest) — rapides, à lancer souvent
+npm run test:parcours  # parcours navigateur (Playwright) — lance le serveur seul
+npm run verifier       # garde-fou imports (voir plus bas)
+npm run build          # verifier + next build + génération du précache SW
 ```
 
-**Il n'existe aucun test automatisé.** `npm run build` vérifie les imports et
-compile — c'est tout. Rien ne vérifie qu'une fonctionnalité *marche*.
-Conséquence directe : toute modification doit être vérifiée **dans un vrai
-navigateur** avant d'être annoncée comme faite. Voir « Vérifier » plus bas.
+Le filet est **mince et volontairement ciblé** : il couvre la fusion des
+données au login, les invariants du catalogue, les envies et les réglages,
+plus l'ouverture de chaque écran. Il ne couvre pas le reste. Une suite verte
+ne dispense donc pas de regarder à l'écran ce qu'on vient de changer.
 
 ---
 
@@ -153,17 +155,37 @@ déjà arrivée en production (« Réparer le scan : import manquant »).
 
 ## Vérifier
 
-Sans test automatisé, la vérification se fait au navigateur, avec Playwright :
-lancer `npm run dev`, piloter Chromium, **reproduire le geste réel** de
-l'utilisateur, et regarder les captures.
+```
+tests/*.test.js    Vitest — logique pure, jsdom. `npm test`
+tests/*.spec.mjs   Playwright — parcours réel. `npm run test:parcours`
+```
 
-Deux pièges connus :
+Ce que couvre le filet, et pourquoi :
 
-- Chromium sans tête refuse les notifications quoi qu'on autorise — lancer avec
-  `channel: 'chromium'`.
+| Fichier | Ce qu'il protège |
+|---|---|
+| `fusion.test.js` | La fusion au login — **le seul endroit où un bug fait perdre une cave**. Ne jamais écraser sans demander. |
+| `catalogue.test.js` | L'invariant `WINE_DB` ⊥ `VINS_REFERENTIEL` (piège nº 1). |
+| `envies.test.js` | La fiche voyage avec l'envie ; les anciens formats restent lisibles. |
+| `reglages.test.js` | Les défauts, la tolérance aux données illisibles, et la frontière avec `SYNC_KEYS` (piège nº 2). |
+| `parcours.spec.mjs` | Chaque écran s'ouvre, **zéro exception JS**, thème posé avant le premier rendu. |
+
+Ce que le filet **ne** couvre pas : le scan, l'IA, le social, la carte, l'école.
+Y toucher demande toujours un passage au navigateur, à la main.
+
+Trois pièges connus :
+
+- Chromium sans tête refuse les notifications quoi qu'on autorise — d'où
+  `channel: 'chromium'` dans `playwright.config.mjs`.
+- Le navigateur est **déjà installé** (`/opt/pw-browsers`). `@playwright/test`
+  est épinglé à la version qui correspond à ce build ; ne pas lancer
+  `playwright install`, ne pas relever la version à la légère.
 - Compiler ne prouve rien. Le bug des envies compilait parfaitement.
 
-Vérifier aussi **dans les deux thèmes** dès qu'on touche à l'apparence.
+Vérifier aussi **dans les deux thèmes** dès qu'on touche à l'apparence, et
+**sur les deux mises en page** : barre latérale au-delà de `lg`, barre du bas
+en-dessous. Un bouton câblé d'un seul côté ne se voit pas autrement — c'est
+exactement ce qui est arrivé à « Réglages » dans la barre latérale.
 
 ---
 

@@ -7,3 +7,7 @@ viralstudio.zip
 
 # Manifeste de précache du service worker — généré à chaque build
 public/sw-precache.js
+
+# Tests
+test-results/
+playwright-report/

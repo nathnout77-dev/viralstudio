@@ -4,6 +4,7 @@ import { supabase, cloudDisponible } from '../lib/supabase'
 import CaveAmisSection, { pushPartageSnapshot } from './CaveAmis'
 import ReglagesNotifications from './ReglagesNotifications'
 import useModalBehavior from '../lib/useModal'
+import { decisionFusion } from '../lib/fusion'
 import { toast } from './Toast'
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -45,12 +46,6 @@ function applyCloudToLocal(row) {
   }
 }
 
-const isEmptyVal = v =>
-  v === null || v === undefined ||
-  (Array.isArray(v) && v.length === 0) ||
-  (typeof v === 'object' && !Array.isArray(v) && Object.keys(v).length === 0)
-
-const allEmpty = snap => Object.values(snap).every(isEmptyVal)
 
 async function pushToCloud(userId) {
   const snap = snapshotLocal()
@@ -217,22 +212,24 @@ export default function CompteSync({ onClose, extraSection = null }) {
         const local = snapshotLocal()
         const cloudSnap = row ? Object.fromEntries(Object.keys(SYNC_KEYS).map(k => [k, row[k]])) : null
 
-        if (!row || allEmpty(cloudSnap)) {
-          // Cloud vide → on pousse le local
-          lastPushed.current = JSON.stringify(await pushToCloud(user.id))
-          setSyncState('synced')
-        } else if (allEmpty(local)) {
-          // Local vide → on récupère le cloud
-          applyCloudToLocal(row)
-          lastPushed.current = JSON.stringify(cloudSnap)
-          setSyncState('synced')
-          window.location.reload()
-        } else if (JSON.stringify(local) === JSON.stringify(cloudSnap)) {
-          lastPushed.current = JSON.stringify(local)
-          setSyncState('synced')
-        } else {
-          setConflict({ cloudRow: row })
-          setSyncState('idle')
+        switch (decisionFusion(local, cloudSnap)) {
+          case 'pousser':
+            lastPushed.current = JSON.stringify(await pushToCloud(user.id))
+            setSyncState('synced')
+            break
+          case 'recuperer':
+            applyCloudToLocal(row)
+            lastPushed.current = JSON.stringify(cloudSnap)
+            setSyncState('synced')
+            window.location.reload()
+            break
+          case 'identique':
+            lastPushed.current = JSON.stringify(local)
+            setSyncState('synced')
+            break
+          default: // 'conflit' — on ne tranche pas à la place de l'utilisateur
+            setConflict({ cloudRow: row })
+            setSyncState('idle')
         }
       } catch (e) {
         if (!cancelled) { setError('Synchronisation impossible pour le moment.'); setSyncState('idle') }
