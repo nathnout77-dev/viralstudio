@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { X, Camera, Image as ImageIcon, RefreshCw, Sparkles, Plus, Check, MapPin, BookOpen, Tag, Pencil, UtensilsCrossed, Heart, Globe, Library, Zap, ZapOff, ShoppingCart, Share2, ChevronRight } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG, tonJeton } from '../data/wineDatabase'
+import { bouteilleDepuisVin } from '../lib/ajoutCave'
 import { regionInfo } from '../data/regionsInfo'
 import { normaliser } from '../data/aromes'
 import JaugesGout from './JaugesGout'
@@ -1009,24 +1010,10 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
     if (!onAddWine || added) return
     if (matched) {
       const millesime = pickMillesime(matched, parsed)
-      onAddWine({
-        id: `${matched.id}-${millesime}-${Date.now()}`,
-        name: matched.appellation,
-        domain: parsed?.domaine || '',
-        appellation: matched.appellation,
-        region: matched.region,
-        type: matched.type,
-        cepages: matched.cepages,
-        vintage: millesime,
-        quantity: 1,
-        drinkFrom: matched.drinkFrom,
-        drinkUntil: matched.drinkUntil,
-        serviceTemp: matched.serviceTemp,
-        carafage: matched.carafage,
-        estimatedValue: matched.prixMoyen,
-        foodPairings: matched.accords,
-        notes: `${matched.enUneMot} — ajouté via le scan d'étiquette`,
-      })
+      onAddWine(bouteilleDepuisVin(matched, millesime, {
+        domaine: parsed?.domaine || '',
+        provenance: "ajout\u00e9 via le scan d'\u00e9tiquette",
+      }))
     } else if (parsed) {
       const vintage = Number(parsed.millesime) || new Date().getFullYear() - 2
       onAddWine({
@@ -1747,24 +1734,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
           wine={ficheWine}
           onClose={() => setFicheWine(null)}
           onAddToCave={onAddWine ? (w, m) => {
-            onAddWine({
-              id: `${w.id}-${m}-${Date.now()}`,
-              name: w.appellation,
-              domain: '',
-              appellation: w.appellation,
-              region: w.region,
-              type: w.type,
-              cepages: w.cepages,
-              vintage: m,
-              quantity: 1,
-              drinkFrom: w.drinkFrom,
-              drinkUntil: w.drinkUntil,
-              serviceTemp: w.serviceTemp,
-              carafage: w.carafage,
-              estimatedValue: w.prixMoyen,
-              foodPairings: w.accords,
-              notes: `${w.enUneMot} — Arômes : ${w.aromes}`,
-            })
+            onAddWine(bouteilleDepuisVin(w, m))
           } : undefined}
         />
       )}

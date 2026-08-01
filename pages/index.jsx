@@ -609,7 +609,7 @@ export default function App() {
             onCommencer={() => { setShowPitch(false); goTo('trouver') }}
           />
         )}
-        {showAssistant && <AssistantView onClose={() => setShowAssistant(false)} />}
+        {showAssistant && <AssistantView onClose={() => setShowAssistant(false)} onAddWine={saveWine} />}
         {showMenu && (
           <MenuGrille
             onGo={goTo}
@@ -627,6 +627,7 @@ export default function App() {
           <RechercheRapide
             onClose={() => setShowRecherche(false)}
             onOpenBibliotheque={(q) => goTo('vins', q)}
+            onAddWine={saveWine}
           />
         )}
         {showOnboarding && <OnboardingProfil onComplete={completeOnboarding} />}

@@ -101,3 +101,51 @@ test('un vin gardé depuis Découvrir arrive complet dans les envies', async ({ 
   expect(envies[0].vin.region).toBeTruthy()
   expect(incidents).toEqual([])
 })
+
+test('un vin trouvé par la recherche rejoint la cave', async ({ page }) => {
+  const incidents = surveiller(page)
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Recherche', exact: true }).click()
+  await page.getByRole('textbox').first().fill('Chablis')
+  await page.locator('button').filter({ hasText: /Chablis/ }).first().click()
+
+  await page.getByRole('button', { name: /Ajouter à ma cave/ }).first().click()
+  const cave = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem('oenotheque-v2') || '[]').filter(w => !w.demo))
+
+  expect(cave).toHaveLength(1)
+  // La bouteille arrive complète : sans région ni prix, la cave ne sait ni la
+  // classer ni l'estimer, et l'ajout ne vaut guère mieux qu'une note.
+  expect(cave[0].region).toBeTruthy()
+  expect(cave[0].estimatedValue).toBeGreaterThan(0)
+  // Le bouton s'éteint : sinon on ajoute trois fois le même vin sans le voir.
+  await expect(page.getByRole('button', { name: /Ajouté à ma cave/ })).toBeVisible()
+  expect(incidents).toEqual([])
+})
+
+test('un vin conseillé par Œno rejoint la cave', async ({ page }) => {
+  // Aucune clé d'IA en test : on simule la réponse au niveau réseau, ce qui
+  // exerce le vrai chemin d'interface — carte de vin, fiche, puis ajout.
+  for (const route of ['**/api/groq', '**/api/gemini', '**/api/claude']) {
+    await page.route(route, r => r.fulfill({
+      status: 200, contentType: 'application/json',
+      body: JSON.stringify({ content: [{ type: 'text', text: 'Je vous conseille un Chablis, vif et minéral.' }] }),
+    }))
+  }
+  const incidents = surveiller(page)
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Assistant', exact: true }).click()
+  const champ = page.getByRole('textbox').first()
+  await champ.fill('Que boire avec un poisson ?')
+  await champ.press('Enter')
+
+  await page.locator('.card').filter({ hasText: /Chablis/ }).first().click()
+  await page.getByRole('button', { name: /Ajouter à ma cave/ }).first().click()
+
+  const cave = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem('oenotheque-v2') || '[]').filter(w => !w.demo))
+  expect(cave).toHaveLength(1)
+  expect(cave[0].appellation).toBe('Chablis')
+  expect(cave[0].region).toBeTruthy()
+  expect(incidents).toEqual([])
+})

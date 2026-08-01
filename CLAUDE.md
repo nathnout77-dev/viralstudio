@@ -181,7 +181,8 @@ Ce que couvre le filet, et pourquoi :
 | `catalogue.test.js` | L'invariant `WINE_DB` ⊥ `VINS_REFERENTIEL` (piège nº 1). |
 | `envies.test.js` | La fiche voyage avec l'envie ; les anciens formats restent lisibles. |
 | `reglages.test.js` | Les défauts, la tolérance aux données illisibles, et la frontière avec `SYNC_KEYS` (piège nº 2). |
-| `parcours.spec.mjs` | Chaque écran s'ouvre, **zéro exception JS**, thème posé avant le premier rendu. |
+| `ajoutCave.test.js` | La traduction fiche de catalogue → bouteille de cave (`prixMoyen` → `estimatedValue`…). |
+| `parcours.spec.mjs` | Chaque écran s'ouvre, **zéro exception JS**, thème posé avant le premier rendu, et l'ajout à la cave depuis la recherche et depuis Œno. |
 
 Ce que le filet **ne** couvre pas : le scan, l'IA, le social, la carte, l'école.
 Y toucher demande toujours un passage au navigateur, à la main.

@@ -9,6 +9,7 @@ import JaugesGout from './JaugesGout'
 import Terme from './Tooltip'
 import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
 import useModalBehavior from '../lib/useModal'
+import { bouteilleDepuisVin } from '../lib/ajoutCave'
 import { tintStyle, pastilleStyle, regionMonogram, collectionNumero } from '../lib/wineStyle'
 import WineTile from './WineTile'
 import WineVisuel from './WineVisuel'
@@ -711,24 +712,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
   }), [search, type, budget, diff, region])
 
   const handleAdd = (wine, millesime) => {
-    onAddWine?.({
-      id: `${wine.id}-${millesime}-${Date.now()}`,
-      name: wine.appellation,
-      domain: '',
-      appellation: wine.appellation,
-      region: wine.region,
-      type: wine.type,
-      cepages: wine.cepages,
-      vintage: millesime,
-      quantity: 1,
-      drinkFrom: wine.drinkFrom,
-      drinkUntil: wine.drinkUntil,
-      serviceTemp: wine.serviceTemp,
-      carafage: wine.carafage,
-      estimatedValue: wine.prixMoyen,
-      foodPairings: wine.accords,
-      notes: `${wine.enUneMot} — Arômes : ${wine.aromes}`,
-    })
+    onAddWine?.(bouteilleDepuisVin(wine, millesime))
     setAdded(prev => new Set([...prev, `${wine.id}-${millesime}`]))
   }
 

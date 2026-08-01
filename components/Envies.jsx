@@ -5,6 +5,7 @@ import { toast } from './Toast'
 import { FicheVin } from './BibliothequeView'
 import PetitsPrix from './PetitsPrix'
 import WineTile from './WineTile'
+import { identifiantUnique } from '../lib/identifiant'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Liste d'envies — vins repérés, à acheter plus tard.
@@ -30,17 +31,6 @@ function saveEnvies(list) {
   window.dispatchEvent(new CustomEvent(EVENT))
 }
 
-/**
- * Identifiant d'envie. `Date.now()` seul ne suffit pas : deux envies ajoutées
- * dans la même milliseconde recevaient le même identifiant, et supprimer
- * l'une effaçait alors l'autre en silence. Le compteur garantit l'unicité même
- * à cette échelle, sans dépendre de `crypto.randomUUID` (absent des vieux
- * WebView Android, où l'app tourne aussi).
- */
-let compteur = 0
-function identifiant() {
-  return `e${Date.now()}-${compteur++}-${Math.random().toString(36).slice(2, 7)}`
-}
 
 /**
  * Ajoute (ou retire) un vin de la liste d'envies.
@@ -60,7 +50,7 @@ export function toggleEnvie(appellation, vin = null) {
   saveEnvies(
     exists
       ? list.filter(e => e.appellation !== appellation)
-      : [{ id: identifiant(), appellation, addedAt: Date.now(), vin: vin || null }, ...list]
+      : [{ id: identifiantUnique('e'), appellation, addedAt: Date.now(), vin: vin || null }, ...list]
   )
 }
 

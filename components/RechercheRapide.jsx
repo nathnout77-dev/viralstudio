@@ -8,6 +8,7 @@ import WineVisuel from './WineVisuel'
 import BadgeGrandPublic from './BadgeGrandPublic'
 import PastilleQualitePrix from './PastilleQualitePrix'
 import { FicheVin } from './BibliothequeView'
+import { bouteilleDepuisVin } from '../lib/ajoutCave'
 import { chercherReferentiel, COUVERTURE } from '../lib/referentiel'
 import FicheReferentiel from './FicheReferentiel'
 
@@ -136,11 +137,13 @@ function LigneReferentiel({ kind, item, onOpen }) {
   )
 }
 
-export default function RechercheRapide({ onClose, onOpenBibliotheque }) {
+export default function RechercheRapide({ onClose, onOpenBibliotheque, onAddWine }) {
   const [query, setQuery] = useState('')
   const [fiche, setFiche] = useState(null)
   const [ficheRef, setFicheRef] = useState(null)
   const [decouvertes, setDecouvertes] = useState([])
+  // Vins déjà versés à la cave depuis cette recherche : le bouton reste éteint.
+  const [ajoutes, setAjoutes] = useState(() => new Set())
   const inputRef = useRef(null)
 
   // Découvertes personnelles (vins scannés inconnus) : cherchables comme le reste
@@ -280,7 +283,20 @@ export default function RechercheRapide({ onClose, onOpenBibliotheque }) {
         )}
       </div>
 
-      {fiche && <FicheVin wine={fiche} onClose={() => setFiche(null)} />}
+      {fiche && (
+        // On cherche un vin le plus souvent pour l'acheter ou le ranger : la
+        // fiche doit donc permettre de l'ajouter sans repasser par la
+        // bibliothèque, où il faut le retrouver une seconde fois.
+        <FicheVin
+          wine={fiche}
+          onClose={() => setFiche(null)}
+          onAddToCave={onAddWine ? (w, millesime) => {
+            onAddWine(bouteilleDepuisVin(w, millesime))
+            setAjoutes(prev => new Set([...prev, `${w.id}-${millesime}`]))
+          } : undefined}
+          added={ajoutes}
+        />
+      )}
       {ficheRef && (
         <FicheReferentiel
           entree={ficheRef}

@@ -4,6 +4,7 @@ import RoutesDesVins from './RoutesDesVins'
 import AccordInverse from './AccordInverse'
 import { EnvieButton } from './Envies'
 import dynamic from 'next/dynamic'
+import { bouteilleDepuisVin } from '../lib/ajoutCave'
 import { WINE_DB, WINE_DB_TERROIR, WINE_DB_GRAND_PUBLIC, WINE_DB_DOMAINES, gardeForMillesime } from '../data/wineDatabase'
 
 // La carte des vignobles ne montre QUE les terroirs (appellations) : les vins de
@@ -40,23 +41,7 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
   const hasPetitDomaine = wine.domaines.some(d => d.confidentiel)
 
   const handleAdd = () => {
-    onAddToCave({
-      id: `${wine.id}-${millesime}-${Date.now()}`,
-      name: wine.appellation,
-      domain: '',
-      appellation: wine.appellation,
-      region: wine.region,
-      type: wine.type,
-      cepages: wine.cepages,
-      vintage: millesime,
-      quantity: qty,
-      drinkFrom: wine.drinkFrom,
-      drinkUntil: wine.drinkUntil,
-      serviceTemp: wine.serviceTemp,
-      carafage: wine.carafage,
-      foodPairings: wine.accords,
-      notes: `Arômes : ${wine.aromes}`,
-    }, wine.id, millesime)
+    onAddToCave(bouteilleDepuisVin(wine, millesime, { quantite: qty }), wine.id, millesime)
   }
 
   return (

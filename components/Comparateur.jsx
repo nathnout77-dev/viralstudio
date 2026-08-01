@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { X, Scale, Search, Trophy, Plus, BookOpen, RefreshCw, UtensilsCrossed } from 'lucide-react'
 import { WINE_DB, DIFFICULTE_CONFIG } from '../data/wineDatabase'
+import { bouteilleDepuisVin } from '../lib/ajoutCave'
 import { meilleurMillesime } from '../lib/millesimes'
 import JaugesGout from './JaugesGout'
 import WineVisuel from './WineVisuel'
@@ -419,24 +420,7 @@ export default function Comparateur({ onClose, onAddWine }) {
           wine={fiche}
           onClose={() => setFiche(null)}
           onAddToCave={onAddWine ? (w, m) => {
-            onAddWine({
-              id: `${w.id}-${m}-${Date.now()}`,
-              name: w.appellation,
-              domain: '',
-              appellation: w.appellation,
-              region: w.region,
-              type: w.type,
-              cepages: w.cepages,
-              vintage: m,
-              quantity: 1,
-              drinkFrom: w.drinkFrom,
-              drinkUntil: w.drinkUntil,
-              serviceTemp: w.serviceTemp,
-              carafage: w.carafage,
-              estimatedValue: w.prixMoyen,
-              foodPairings: w.accords,
-              notes: `${w.enUneMot} — choisi via le comparateur`,
-            })
+            onAddWine(bouteilleDepuisVin(w, m, { provenance: 'choisi via le comparateur' }))
           } : undefined}
         />
       )}

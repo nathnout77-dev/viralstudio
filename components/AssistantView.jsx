@@ -10,6 +10,7 @@ import WineVisuel from './WineVisuel'
 import useModalBehavior from '../lib/useModal'
 import { askIA } from '../lib/askIA'
 import { FicheVin } from './BibliothequeView'
+import { bouteilleDepuisVin } from '../lib/ajoutCave'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Assistant conversationnel « Œno » — profilage, menu, chat IA + fallback
@@ -305,7 +306,7 @@ function fallbackFor(menuId, profil) {
   return `Je n'arrive pas à joindre mon cerveau distant pour le moment. En attendant, explorez l'onglet **Vins** (plus de ${WINE_DB_TERROIR.length} appellations décodées) ou le **Guide** (millésimes, accords, lexique) — tout y est disponible hors-ligne !`
 }
 
-export default function AssistantView({ onClose }) {
+export default function AssistantView({ onClose, onAddWine }) {
   useModalBehavior(onClose)
   const [profil, setProfil]               = useState(null)
   const [profilStep, setProfilStep]       = useState(-1)
@@ -314,6 +315,9 @@ export default function AssistantView({ onClose }) {
   const [input, setInput]                 = useState('')
   const [loading, setLoading]             = useState(false)
   const [wineSelected, setWineSelected]   = useState(null)
+  // Vins déjà versés à la cave depuis cette conversation : le bouton doit
+  // rester éteint après coup, sinon on en ajoute trois sans s'en rendre compte.
+  const [ajoutes, setAjoutes]             = useState(() => new Set())
   const scrollRef = useRef(null)
   const platInputRef = useRef(null)
 
@@ -723,7 +727,18 @@ export default function AssistantView({ onClose }) {
       </div>
 
       {wineSelected && (
-        <FicheVin wine={wineSelected} onClose={() => setWineSelected(null)} />
+        // Un vin conseillé par Œno doit pouvoir rejoindre la cave sur place :
+        // le renvoyer chercher la même appellation dans la bibliothèque était
+        // le meilleur moyen de perdre le conseil en route.
+        <FicheVin
+          wine={wineSelected}
+          onClose={() => setWineSelected(null)}
+          onAddToCave={onAddWine ? (w, millesime) => {
+            onAddWine(bouteilleDepuisVin(w, millesime))
+            setAjoutes(prev => new Set([...prev, `${w.id}-${millesime}`]))
+          } : undefined}
+          added={ajoutes}
+        />
       )}
     </div>
   )

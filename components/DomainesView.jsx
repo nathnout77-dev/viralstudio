@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { MapPin, Search, X, ChevronDown, ExternalLink, Sparkles, Wine } from 'lucide-react'
 import { WINE_DB, WINE_DB_DOMAINES, REGIONS_LIST } from '../data/wineDatabase'
 import { FicheVin } from './BibliothequeView'
+import { bouteilleDepuisVin } from '../lib/ajoutCave'
 
 // ── Card domaine ────────────────────────────────────────────────────────────
 function DomaineCard({ domaine, onOpenWine, index }) {
@@ -90,24 +91,7 @@ export default function DomainesView({ onAddWine }) {
   }
 
   const handleAdd = (wine, millesime) => {
-    onAddWine?.({
-      id: `${wine.id}-${millesime}-${Date.now()}`,
-      name: wine.appellation,
-      domain: '',
-      appellation: wine.appellation,
-      region: wine.region,
-      type: wine.type,
-      cepages: wine.cepages,
-      vintage: millesime,
-      quantity: 1,
-      drinkFrom: wine.drinkFrom,
-      drinkUntil: wine.drinkUntil,
-      serviceTemp: wine.serviceTemp,
-      carafage: wine.carafage,
-      estimatedValue: wine.prixMoyen,
-      foodPairings: wine.accords,
-      notes: `${wine.enUneMot} — Arômes : ${wine.aromes}`,
-    })
+    onAddWine?.(bouteilleDepuisVin(wine, millesime))
     setAdded(prev => new Set([...prev, `${wine.id}-${millesime}`]))
   }
 

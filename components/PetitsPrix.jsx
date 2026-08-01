@@ -4,6 +4,7 @@ import { WINE_DB } from '../data/wineDatabase'
 import { meilleurMillesime } from '../lib/millesimes'
 import WineVisuel from './WineVisuel'
 import { FicheVin } from './BibliothequeView'
+import { bouteilleDepuisVin } from '../lib/ajoutCave'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // PetitsPrix — bandeau réutilisable « 3 à 10 € la bouteille » : les vins
@@ -71,24 +72,7 @@ export default function PetitsPrix({
           wine={fiche}
           onClose={() => setFiche(null)}
           onAddToCave={onAddWine ? (w, m) => {
-            onAddWine({
-              id: `${w.id}-${m}-${Date.now()}`,
-              name: w.appellation,
-              domain: '',
-              appellation: w.appellation,
-              region: w.region,
-              type: w.type,
-              cepages: w.cepages,
-              vintage: m,
-              quantity: 1,
-              drinkFrom: w.drinkFrom,
-              drinkUntil: w.drinkUntil,
-              serviceTemp: w.serviceTemp,
-              carafage: w.carafage,
-              estimatedValue: w.prixMoyen,
-              foodPairings: w.accords,
-              notes: `${w.enUneMot} — petit prix repéré dans Œno`,
-            })
+            onAddWine(bouteilleDepuisVin(w, m, { provenance: 'petit prix repéré dans Œno' }))
           } : undefined}
         />
       )}
