@@ -290,8 +290,8 @@ export default function RechercheRapide({ onClose, onOpenBibliotheque, onAddWine
         <FicheVin
           wine={fiche}
           onClose={() => setFiche(null)}
-          onAddToCave={onAddWine ? (w, millesime) => {
-            onAddWine(bouteilleDepuisVin(w, millesime))
+          onAddToCave={onAddWine ? (w, millesime, prix) => {
+            onAddWine(bouteilleDepuisVin(w, millesime, { prix }))
             setAjoutes(prev => new Set([...prev, `${w.id}-${millesime}`]))
           } : undefined}
           added={ajoutes}

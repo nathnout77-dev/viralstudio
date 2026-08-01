@@ -148,7 +148,7 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         {[
           { label: 'Bouteilles', value: stats.total,               sub: 'en cave' },
-          { label: 'Valeur totale',  value: `${stats.value.toLocaleString('fr')} €`, sub: 'estimée' },
+          { label: 'Valeur totale',  value: `${stats.value.toLocaleString('fr')} €`, sub: 'vos prix d’achat' },
           { label: 'Régions',    value: stats.regions,            sub: 'représentées' },
           { label: 'À boire',    value: stats.ready,              sub: 'à l\'apogée' },
         ].map(s => (

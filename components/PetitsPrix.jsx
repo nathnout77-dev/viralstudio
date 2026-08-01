@@ -71,8 +71,8 @@ export default function PetitsPrix({
         <FicheVin
           wine={fiche}
           onClose={() => setFiche(null)}
-          onAddToCave={onAddWine ? (w, m) => {
-            onAddWine(bouteilleDepuisVin(w, m, { provenance: 'petit prix repéré dans Œno' }))
+          onAddToCave={onAddWine ? (w, m, prix) => {
+            onAddWine(bouteilleDepuisVin(w, m, { prix, provenance: 'petit prix repéré dans Œno' }))
           } : undefined}
         />
       )}

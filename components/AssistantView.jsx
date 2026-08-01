@@ -733,8 +733,8 @@ export default function AssistantView({ onClose, onAddWine }) {
         <FicheVin
           wine={wineSelected}
           onClose={() => setWineSelected(null)}
-          onAddToCave={onAddWine ? (w, millesime) => {
-            onAddWine(bouteilleDepuisVin(w, millesime))
+          onAddToCave={onAddWine ? (w, millesime, prix) => {
+            onAddWine(bouteilleDepuisVin(w, millesime, { prix }))
             setAjoutes(prev => new Set([...prev, `${w.id}-${millesime}`]))
           } : undefined}
           added={ajoutes}

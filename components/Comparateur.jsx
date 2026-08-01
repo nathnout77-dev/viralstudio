@@ -419,8 +419,8 @@ export default function Comparateur({ onClose, onAddWine }) {
         <FicheVin
           wine={fiche}
           onClose={() => setFiche(null)}
-          onAddToCave={onAddWine ? (w, m) => {
-            onAddWine(bouteilleDepuisVin(w, m, { provenance: 'choisi via le comparateur' }))
+          onAddToCave={onAddWine ? (w, m, prix) => {
+            onAddWine(bouteilleDepuisVin(w, m, { prix, provenance: 'choisi via le comparateur' }))
           } : undefined}
         />
       )}

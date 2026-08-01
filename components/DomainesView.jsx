@@ -90,8 +90,8 @@ export default function DomainesView({ onAddWine }) {
     if (full) setSelectedWine(full)
   }
 
-  const handleAdd = (wine, millesime) => {
-    onAddWine?.(bouteilleDepuisVin(wine, millesime))
+  const handleAdd = (wine, millesime, prix) => {
+    onAddWine?.(bouteilleDepuisVin(wine, millesime, { prix }))
     setAdded(prev => new Set([...prev, `${wine.id}-${millesime}`]))
   }
 

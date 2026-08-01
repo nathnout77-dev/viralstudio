@@ -1733,8 +1733,8 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
         <FicheVin
           wine={ficheWine}
           onClose={() => setFicheWine(null)}
-          onAddToCave={onAddWine ? (w, m) => {
-            onAddWine(bouteilleDepuisVin(w, m))
+          onAddToCave={onAddWine ? (w, m, prix) => {
+            onAddWine(bouteilleDepuisVin(w, m, { prix }))
           } : undefined}
         />
       )}

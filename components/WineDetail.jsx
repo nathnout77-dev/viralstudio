@@ -146,7 +146,7 @@ export default function WineDetail({ wine, onClose, onEdit, onToggleFavori }) {
             <Row icon={Grape}          label="Cépages"     value={Array.isArray(wine.cepages) ? wine.cepages.join(', ') : wine.cepages} />
             <Row icon={Thermometer}    label="Température de service" value={wine.serviceTemp ? `${wine.serviceTemp}°C` : null} />
             <Row icon={Clock}          label="Carafage"    value={wine.carafage} />
-            <Row icon={TrendingUp}     label="Valeur estimée" value={wine.estimatedValue ? `${wine.estimatedValue} € / bouteille` : null} />
+            <Row icon={TrendingUp}     label="Prix payé" value={wine.estimatedValue ? `${wine.estimatedValue} € / bouteille` : null} />
           </div>
 
           {/* Accords */}

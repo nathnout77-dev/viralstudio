@@ -230,6 +230,11 @@ export default function WineForm({ initial, onSave, onClose }) {
     if (!form.name.trim())   e.name    = 'Nom requis'
     if (!form.vintage || form.vintage < 1900 || form.vintage > CURRENT_YEAR + 2) e.vintage = 'Millésime invalide'
     if (form.quantity < 0)   e.quantity = 'Quantité invalide'
+    // Le prix est le vôtre, pas celui d'Œno : sans lui, la valeur de la cave
+    // et le panorama reposeraient sur des moyennes d'appellation.
+    if (form.estimatedValue === '' || form.estimatedValue == null || Number(form.estimatedValue) < 0) {
+      e.estimatedValue = 'Prix requis'
+    }
     setErrors(e)
     return Object.keys(e).length === 0
   }
@@ -245,7 +250,7 @@ export default function WineForm({ initial, onSave, onClose }) {
       drinkFrom:      Number(form.drinkFrom),
       drinkUntil:     Number(form.drinkUntil),
       serviceTemp:    form.serviceTemp ? Number(form.serviceTemp) : undefined,
-      estimatedValue: form.estimatedValue ? Number(form.estimatedValue) : undefined,
+      estimatedValue: Number(form.estimatedValue),
       rating:         form.rating ? Number(form.rating) : undefined,
     })
   }
@@ -494,9 +499,9 @@ export default function WineForm({ initial, onSave, onClose }) {
             <Field label="Carafage">
               <input className="input-field" value={form.carafage} onChange={e => set('carafage', e.target.value)} placeholder="1h" />
             </Field>
-            <Field label="Valeur (€/btle)">
-              <input type="number" className="input-field" value={form.estimatedValue}
-                     onChange={e => set('estimatedValue', e.target.value)} placeholder="0" min={0} />
+            <Field label="Prix payé (€/btle) *" error={errors.estimatedValue}>
+              <input type="number" required className="input-field" value={form.estimatedValue}
+                     onChange={e => set('estimatedValue', e.target.value)} placeholder="0" min={0} step="0.01" />
             </Field>
           </div>
 

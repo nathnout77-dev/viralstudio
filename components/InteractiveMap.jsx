@@ -4,7 +4,7 @@ import RoutesDesVins from './RoutesDesVins'
 import AccordInverse from './AccordInverse'
 import { EnvieButton } from './Envies'
 import dynamic from 'next/dynamic'
-import { bouteilleDepuisVin } from '../lib/ajoutCave'
+import { bouteilleDepuisVin, prixSuggere } from '../lib/ajoutCave'
 import { WINE_DB, WINE_DB_TERROIR, WINE_DB_GRAND_PUBLIC, WINE_DB_DOMAINES, gardeForMillesime } from '../data/wineDatabase'
 
 // La carte des vignobles ne montre QUE les terroirs (appellations) : les vins de
@@ -37,11 +37,16 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
   }, [wine.id]) // eslint-disable-line react-hooks/exhaustive-deps
   const [showAccordInverse, setShowAccordInverse] = useState(false)
   const [showSimulateur, setShowSimulateur] = useState(false)
+  // Le prix payé, demandé avant de ranger : c'est lui qui figurera en cave,
+  // pas le prix moyen de l'appellation.
+  const [prix, setPrix] = useState(() => String(prixSuggere(wine)))
+  useEffect(() => { setPrix(String(prixSuggere(wine))) }, [wine.id])
   const isAdded = addedIds.has(`${wine.id}-${millesime}`)
   const hasPetitDomaine = wine.domaines.some(d => d.confidentiel)
 
-  const handleAdd = () => {
-    onAddToCave(bouteilleDepuisVin(wine, millesime, { quantite: qty }), wine.id, millesime)
+  const handleAdd = e => {
+    e.preventDefault()
+    onAddToCave(bouteilleDepuisVin(wine, millesime, { quantite: qty, prix }), wine.id, millesime)
   }
 
   return (
@@ -229,9 +234,22 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
                     className="w-8 h-8 flex items-center justify-center text-anthracite-500 hover:text-wine-texte hover:bg-anthracite-50 transition-all cursor-pointer text-lg leading-none">+</button>
           </div>
           <span className="text-xs text-anthracite-400">bouteille{qty > 1 ? 's' : ''}</span>
+        </div>
+        <form onSubmit={handleAdd} className="flex items-center gap-2 mt-2">
+          <label htmlFor={`prix-${wine.id}`} className="text-[11px] font-semibold text-anthracite-500 whitespace-nowrap">
+            Prix payé
+          </label>
+          <div className="relative flex-1">
+            <input
+              id={`prix-${wine.id}`} type="number" min={0} step="0.01" required disabled={isAdded}
+              value={prix} onChange={e => setPrix(e.target.value)}
+              className="input-field w-full pr-7 py-2 text-xs"
+            />
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-anthracite-400">€</span>
+          </div>
 
           <button
-            onClick={handleAdd}
+            type="submit"
             disabled={isAdded}
             className={`ml-auto flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition-all duration-300 cursor-pointer ${
               isAdded
@@ -246,7 +264,7 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
               : <><Plus size={13} /> Ajouter à la cave</>
             }
           </button>
-        </div>
+        </form>
         <button
           onClick={() => setShowSimulateur(true)}
           className="w-full flex items-center justify-center gap-1.5 py-2 mt-2 rounded-full text-xs font-semibold text-gold-700 bg-gold-500/10 border border-gold-500/30 hover:bg-gold-500/20 transition-colors cursor-pointer"

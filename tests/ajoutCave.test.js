@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { bouteilleDepuisVin } from '../lib/ajoutCave'
+import { bouteilleDepuisVin, prixSuggere } from '../lib/ajoutCave'
 import { CATALOGUE } from '../lib/vinsReferentiel'
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -19,10 +19,31 @@ const vin = {
 describe('bouteilleDepuisVin', () => {
   it('traduit les noms du catalogue vers ceux de la cave', () => {
     const b = bouteilleDepuisVin(vin, 2021)
-    expect(b.estimatedValue).toBe(18)      // prixMoyen
     expect(b.foodPairings).toEqual(['Poisson'])  // accords
     expect(b.name).toBe('Chablis')          // appellation
     expect(b.vintage).toBe(2021)
+  })
+
+  // Le prix du catalogue est une moyenne d'appellation, pas ce qu'on a payé
+  // cette bouteille-là. Le recopier en silence remplissait la cave — et sa
+  // valeur totale — de prix qui n'étaient ceux de personne.
+  it('n’invente pas de prix : celui d’Œno ne passe pas tout seul', () => {
+    expect(bouteilleDepuisVin(vin, 2021).estimatedValue).toBeUndefined()
+  })
+
+  it('garde le prix donné par l’utilisateur', () => {
+    expect(bouteilleDepuisVin(vin, 2021, { prix: 24.5 }).estimatedValue).toBe(24.5)
+    expect(bouteilleDepuisVin(vin, 2021, { prix: '31' }).estimatedValue).toBe(31)
+  })
+
+  it('un prix vide reste vide plutôt que de devenir zéro', () => {
+    expect(bouteilleDepuisVin(vin, 2021, { prix: '' }).estimatedValue).toBeUndefined()
+  })
+
+  it('Œno ne propose qu’un point de départ', () => {
+    expect(prixSuggere(vin)).toBe(18)
+    expect(prixSuggere({})).toBe('')
+    expect(prixSuggere(null)).toBe('')
   })
 
   it('reporte tout ce qui sert à savoir quand l’ouvrir', () => {

@@ -31,10 +31,12 @@ function findDbWine(w) {
   return WINE_DB.find(x => x.appellation === w.appellation) || null
 }
 
+// Seul le prix saisi compte. Retomber sur le prix moyen de l'appellation
+// affichait une valeur de cave que personne n'avait jamais payée — et la
+// présentait comme la sienne. Une bouteille sans prix vaut donc 0 ici : elle
+// est décomptée à part plutôt que devinée.
 function bottlePrice(w) {
-  if (w.estimatedValue) return Number(w.estimatedValue)
-  const db = findDbWine(w)
-  return db ? db.prixMoyen : 0
+  return w.estimatedValue ? Number(w.estimatedValue) : 0
 }
 
 // Fenêtre de garde : via gardeForMillesime si le vin est connu de la base,
@@ -272,7 +274,7 @@ export default function PanoramaCave({ wines }) {
       {/* Chiffres clés */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { Icon: Coins,         label: 'Valeur estimée',   value: `${Math.round(stats.totalValue).toLocaleString('fr')} €`, sub: 'prix moyens du marché' },
+          { Icon: Coins,         label: 'Valeur de la cave', value: `${Math.round(stats.totalValue).toLocaleString('fr')} €`, sub: 'selon vos prix d’achat' },
           { Icon: Wine,          label: 'À boire cette année', value: stats.readyCount, sub: 'dans leur fenêtre idéale' },
           { Icon: Hourglass,     label: 'Âge moyen',        value: stats.avgAge ? `${stats.avgAge.toFixed(1).replace('.', ',')} ans` : '—', sub: 'depuis le millésime' },
           { Icon: CalendarClock, label: 'Prix moyen',       value: stats.avgPrice ? `${Math.round(stats.avgPrice)} €` : '—', sub: 'par bouteille' },

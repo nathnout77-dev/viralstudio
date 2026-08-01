@@ -9,7 +9,7 @@ import JaugesGout from './JaugesGout'
 import Terme from './Tooltip'
 import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
 import useModalBehavior from '../lib/useModal'
-import { bouteilleDepuisVin } from '../lib/ajoutCave'
+import { bouteilleDepuisVin, prixSuggere } from '../lib/ajoutCave'
 import { tintStyle, pastilleStyle, regionMonogram, collectionNumero } from '../lib/wineStyle'
 import WineTile from './WineTile'
 import WineVisuel from './WineVisuel'
@@ -310,6 +310,12 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
   useEffect(() => {
     setMillesime(defaultMillesime(wine))
   }, [wine.id]) // eslint-disable-line react-hooks/exhaustive-deps
+  // Ajout en deux temps : le prix est demandé avant de ranger la bouteille.
+  // Œno propose un ordre de grandeur pour l'appellation ; ce qu'on a payé
+  // cette bouteille-là, lui seul le sait — et c'est ce prix qui doit figurer
+  // dans la cave, pas une moyenne nationale.
+  const [saisiePrix, setSaisiePrix] = useState(false)
+  const [prix, setPrix] = useState('')
   const [showAccordInverse, setShowAccordInverse] = useState(false)
   const [showSimulateur, setShowSimulateur] = useState(false)
   const [partageCopie, setPartageCopie] = useState(false)
@@ -616,9 +622,35 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
               )}
             </div>
             <div className="lg:flex lg:items-center lg:gap-3 lg:flex-shrink-0">
-              {onAddToCave && (
+              {onAddToCave && !isAdded && saisiePrix && (
+                <form
+                  onSubmit={e => {
+                    e.preventDefault()
+                    onAddToCave(wine, millesime, Number(prix))
+                    setSaisiePrix(false)
+                  }}
+                  className="w-full lg:w-auto flex items-center gap-2"
+                >
+                  <label htmlFor="prix-paye" className="text-[11px] font-semibold text-anthracite-500 whitespace-nowrap">
+                    Prix payé
+                  </label>
+                  <div className="relative flex-1 lg:w-28">
+                    <input
+                      id="prix-paye" type="number" min={0} step="0.01" required autoFocus
+                      value={prix} onChange={e => setPrix(e.target.value)}
+                      placeholder={String(prixSuggere(wine))}
+                      className="input-field w-full pr-7 py-2.5 text-sm"
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-anthracite-400">€</span>
+                  </div>
+                  <button type="submit" className="btn-gold text-sm px-5 py-2.5 whitespace-nowrap">
+                    <Check size={14} /> Ranger
+                  </button>
+                </form>
+              )}
+              {onAddToCave && !saisiePrix && (
               <button
-                onClick={() => onAddToCave(wine, millesime)}
+                onClick={() => { setPrix(String(prixSuggere(wine))); setSaisiePrix(true) }}
                 disabled={isAdded}
                 className={`w-full lg:w-auto flex items-center justify-center gap-2 py-3 lg:px-7 rounded-full text-sm font-bold transition-all cursor-pointer ${
                   isAdded
@@ -711,8 +743,8 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
     return true
   }), [search, type, budget, diff, region])
 
-  const handleAdd = (wine, millesime) => {
-    onAddWine?.(bouteilleDepuisVin(wine, millesime))
+  const handleAdd = (wine, millesime, prix) => {
+    onAddWine?.(bouteilleDepuisVin(wine, millesime, { prix }))
     setAdded(prev => new Set([...prev, `${wine.id}-${millesime}`]))
   }
 

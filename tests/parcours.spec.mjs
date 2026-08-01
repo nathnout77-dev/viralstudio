@@ -24,6 +24,21 @@ async function entrer(page) {
   })
 }
 
+/**
+ * Ouvre la recherche et clique le résultat voulu — DANS la modale.
+ *
+ * L'écran resté derrière porte des noms de vins (la suggestion du jour), et
+ * viser large y attrapait le mauvais bouton, que le voile rendait de toute
+ * façon inatteignable. Un test qui passe parce que la suggestion du jour ne
+ * porte pas le même nom que le vin cherché ne prouve rien.
+ */
+async function chercherEtOuvrir(page, nom) {
+  await page.getByRole('button', { name: 'Recherche', exact: true }).click()
+  const modale = page.getByRole('dialog', { name: /Recherche/ })
+  await modale.getByRole('textbox').first().fill(nom)
+  await modale.locator('button').filter({ hasText: new RegExp(nom) }).first().click()
+}
+
 /** Toute erreur de la page fait échouer le test qui l'a provoquée. */
 function surveiller(page) {
   const incidents = []
@@ -102,24 +117,66 @@ test('un vin gardé depuis Découvrir arrive complet dans les envies', async ({ 
   expect(incidents).toEqual([])
 })
 
-test('un vin trouvé par la recherche rejoint la cave', async ({ page }) => {
+test('un vin trouvé par la recherche rejoint la cave, au prix payé', async ({ page }) => {
   const incidents = surveiller(page)
   await page.goto('/')
-  await page.getByRole('button', { name: 'Recherche', exact: true }).click()
-  await page.getByRole('textbox').first().fill('Chablis')
-  await page.locator('button').filter({ hasText: /Chablis/ }).first().click()
-
+  await chercherEtOuvrir(page, 'Chablis')
   await page.getByRole('button', { name: /Ajouter à ma cave/ }).first().click()
+
+  // Œno propose un ordre de grandeur ; ce qu'on a payé le remplace.
+  const champ = page.locator('#prix-paye')
+  await expect(champ).toHaveValue(/\d/)
+  const suggere = await champ.inputValue()
+  await champ.fill('42.50')
+  await page.getByRole('button', { name: /Ranger/ }).click()
+
   const cave = await page.evaluate(() =>
     JSON.parse(localStorage.getItem('oenotheque-v2') || '[]').filter(w => !w.demo))
-
   expect(cave).toHaveLength(1)
-  // La bouteille arrive complète : sans région ni prix, la cave ne sait ni la
-  // classer ni l'estimer, et l'ajout ne vaut guère mieux qu'une note.
   expect(cave[0].region).toBeTruthy()
-  expect(cave[0].estimatedValue).toBeGreaterThan(0)
-  // Le bouton s'éteint : sinon on ajoute trois fois le même vin sans le voir.
+  // C'est le prix de l'utilisateur qui atterrit en cave, pas celui d'Œno.
+  expect(cave[0].estimatedValue).toBe(42.5)
+  expect(cave[0].estimatedValue).not.toBe(Number(suggere))
   await expect(page.getByRole('button', { name: /Ajouté à ma cave/ })).toBeVisible()
+  expect(incidents).toEqual([])
+})
+
+test('sans prix, la bouteille ne part pas en cave', async ({ page }) => {
+  // Le prix est obligatoire : la valeur de la cave et le panorama en dépendent,
+  // et une moyenne d'appellation n'est le prix de personne.
+  const incidents = surveiller(page)
+  await page.goto('/')
+  await chercherEtOuvrir(page, 'Sancerre')
+  await page.getByRole('button', { name: /Ajouter à ma cave/ }).first().click()
+
+  await page.locator('#prix-paye').fill('')
+  await page.getByRole('button', { name: /Ranger/ }).click()
+  await page.waitForTimeout(400)
+
+  const cave = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem('oenotheque-v2') || '[]').filter(w => !w.demo))
+  expect(cave).toEqual([])
+  expect(incidents).toEqual([])
+})
+
+test('la saisie à la main réclame aussi le prix', async ({ page }) => {
+  const incidents = surveiller(page)
+  await page.goto('/')
+  // Deux précautions pour ce bouton : il vit en bas de la barre latérale,
+  // donc hors écran sur une fenêtre courte ; et il s'anime au survol
+  // (goldSweep), si bien que Playwright ne le juge jamais « stable ».
+  const ajouter = page.getByRole('button', { name: 'Ajouter un vin', exact: true }).first()
+  await ajouter.scrollIntoViewIfNeeded()
+  await ajouter.click({ force: true })
+  await page.getByRole('button', { name: /Saisir à la main/ }).click()
+  const form = page.getByRole('dialog').last()
+  await form.getByRole('textbox').first().fill('Mon vin')
+  await form.getByRole('button', { name: /Ajouter à la cave/ }).click()
+
+  await expect(page.getByText('Prix requis')).toBeVisible()
+  const cave = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem('oenotheque-v2') || '[]').filter(w => !w.demo))
+  expect(cave).toEqual([])
   expect(incidents).toEqual([])
 })
 
@@ -142,10 +199,14 @@ test('un vin conseillé par Œno rejoint la cave', async ({ page }) => {
   await page.locator('.card').filter({ hasText: /Chablis/ }).first().click()
   await page.getByRole('button', { name: /Ajouter à ma cave/ }).first().click()
 
+  await page.locator('#prix-paye').fill('29')
+  await page.getByRole('button', { name: /Ranger/ }).click()
+
   const cave = await page.evaluate(() =>
     JSON.parse(localStorage.getItem('oenotheque-v2') || '[]').filter(w => !w.demo))
   expect(cave).toHaveLength(1)
   expect(cave[0].appellation).toBe('Chablis')
   expect(cave[0].region).toBeTruthy()
+  expect(cave[0].estimatedValue).toBe(29)
   expect(incidents).toEqual([])
 })

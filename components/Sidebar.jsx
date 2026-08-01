@@ -57,7 +57,11 @@ export default function Sidebar({ view, setView, total, caveDemo = false, mode, 
   const badge = MODE_BADGE[mode]
   return (
     <aside
-      className="hidden lg:flex fixed inset-y-0 left-0 z-30 w-64 flex-col border-r border-white/[0.06]"
+      // `overflow-y-auto` : la barre mesure ~1040 px. Sans défilement, sur un
+      // portable de 1366×768 le bouton « Ajouter un vin » et l'entrée
+      // « Réglages » tombaient sous le bord de l'écran, définitivement
+      // inatteignables — l'app paraissait simplement ne pas les avoir.
+      className="hidden lg:flex fixed inset-y-0 left-0 z-30 w-64 flex-col border-r border-white/[0.06] overflow-y-auto overscroll-contain"
       style={{ background: '#0C0A09' }}
       aria-label="Navigation principale"
     >
