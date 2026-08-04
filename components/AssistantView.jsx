@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { X, Send, Sparkles, RefreshCw, Wine, Camera } from 'lucide-react'
 import { WINE_DB, WINE_DB_TERROIR, WINE_DB_GRAND_PUBLIC, MILLESIMES_DB, DIFFICULTE_CONFIG, tonJeton } from '../data/wineDatabase'
+import { vinsCites } from '../lib/mentions'
 import Icone from './Icone'
 import { profilApprisPourAssistant } from '../data/goutsAppris'
 import { resumeAchats } from '../lib/achats'
@@ -192,11 +193,6 @@ function renderMarkdown(text) {
   return out
 }
 
-function findMentionedWines(text) {
-  const lower = text.toLowerCase()
-  return WINE_DB.filter(w => lower.includes(w.appellation.toLowerCase())).slice(0, 3)
-}
-
 // Lecture directe de la cave (l'assistant ne la reçoit pas en prop).
 function chargerCave() {
   if (typeof window === 'undefined') return []
@@ -206,7 +202,7 @@ function chargerCave() {
 // Compose le message d'accord à partir du JSON d'analyse du plat : choisit de
 // vraies appellations de WINE_DB (jauges proches du profil conseillé, couleur
 // adaptée), en priorisant celles déjà en cave. Le texte NOMME les appellations
-// pour que findMentionedWines rende automatiquement leurs cartes.
+// pour que vinsCites rende automatiquement leurs cartes.
 function messageAccord(json) {
   if (!json || !json.plat) {
     return "Je ne reconnais pas de plat sur cette photo 🤔 Réessayez avec une assiette bien cadrée, ou décrivez-moi simplement ce que vous mangez — je trouverai l'accord."
@@ -638,7 +634,7 @@ export default function AssistantView({ onClose, onAddWine }) {
                   : (
                     <>
                       {renderMarkdown(m.content)}
-                      {findMentionedWines(m.content).map(w => <InlineWineCard key={w.id} wine={w} onSelect={setWineSelected} />)}
+                      {vinsCites(m.content).map(w => <InlineWineCard key={w.id} wine={w} onSelect={setWineSelected} />)}
                       {m.fallback && (
                         <p className="text-[10px] text-anthracite-400 mt-2 italic">Mode hors-ligne — contenu depuis la base locale.</p>
                       )}

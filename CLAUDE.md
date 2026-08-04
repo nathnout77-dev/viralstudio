@@ -76,6 +76,9 @@ exactement le bug qu'ont connu les envies : les vins de « Découvrir »
 (qui puise dans `CATALOGUE`) étaient introuvables au moment de les réafficher.
 
 **Règle : pour retrouver un vin par son nom, chercher dans `CATALOGUE`.**
+C'est aussi ce qui privait l'assistant de deux tiers de ses cartes : il ne
+rendait cliquables que les appellations de `WINE_DB`, donc jamais celles du
+référentiel (voir `lib/mentions.js`).
 27 fichiers importent `WINE_DB`, 7 seulement `CATALOGUE` — la disproportion
 est suspecte, méfiance à chaque nouvelle recherche par appellation.
 
@@ -202,6 +205,7 @@ Ce que couvre le filet, et pourquoi :
 | `reglages.test.js` | Les défauts, la tolérance aux données illisibles, et la frontière avec `SYNC_KEYS` (piège nº 2). |
 | `ajoutCave.test.js` | La traduction fiche de catalogue → bouteille de cave, et le fait qu'**Œno n'impose jamais son prix** : celui de l'utilisateur seul compte. |
 | `parcours.spec.mjs` | Chaque écran s'ouvre, **zéro exception JS**, thème posé avant le premier rendu, et l'ajout à la cave depuis la recherche et depuis Œno. |
+| `mentions.test.js` | Les vins qu'Œno nomme deviennent cliquables — dans **tout** le catalogue, sans mordre dans un mot ni confondre une appellation avec un arôme. |
 | `ajoutPartout.spec.mjs` | Une fiche de vin ouverte propose **toujours** de la ranger (piège nº 4). |
 
 Ce que le filet **ne** couvre pas : le scan, l'IA, le social, la carte, l'école.
