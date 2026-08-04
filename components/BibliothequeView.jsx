@@ -676,7 +676,9 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
                 }`}
                 style={!isAdded ? { background: wine.color } : {}}
               >
-                {isAdded ? <><Check size={15} /> Ajouté à ma cave</> : <><Plus size={15} /> Ajouter à ma cave ({millesime})</>}
+                {isAdded
+                  ? <><Check size={15} /> Ajouté à ma cave</>
+                  : <><Plus size={15} /> Ajouter à ma cave{millesime ? ` (${millesime})` : ''}</>}
               </button>
               )}
               <button

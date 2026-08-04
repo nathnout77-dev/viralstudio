@@ -213,9 +213,13 @@ Ce que couvre le filet, et pourquoi :
 | `mentions.test.js` | Les vins qu'Œno nomme deviennent cliquables — dans **tout** le catalogue, sans mordre dans un mot ni confondre une appellation avec un arôme. |
 | `ajoutPartout.spec.mjs` | Une fiche de vin ouverte propose **toujours** de la ranger (piège nº 3). |
 | `ficheActions.test.jsx` | La fiche tient ses actions du **contexte**, pas de qui l'ouvre — les dix-huit chemins d'un coup, et ceux à venir. |
+| `askIA.test.js` | La chaîne de repli Groq → Gemini → Claude, et le fait qu'**une clé absente ne bloque rien**. |
+| `decouvertes.test.js` | Les vins scannés : dédoublonnage au re-scan, tolérance à une étiquette à moitié lue. |
+| `social.test.js` | **Aucune** fonction du social ne jette sans compte — la liste est parcourue en entier, y compris les fonctions à venir. |
 
-Ce que le filet **ne** couvre pas : le scan, l'IA, le social, la carte, l'école.
-Y toucher demande toujours un passage au navigateur, à la main.
+Ce que le filet **ne** couvre pas : la carte et l'école. Y toucher demande
+toujours un passage au navigateur, à la main. Le scan, l'IA et le social sont
+couverts côté logique seulement — leurs écrans, eux, restent à regarder.
 
 Trois pièges connus :
 

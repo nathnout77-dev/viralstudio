@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { createRoot } from 'react-dom/client'
-import { act } from 'react-dom/test-utils'
+import { act } from 'react'
 import { FournisseurCave } from '../lib/cave'
 import { FicheVin } from '../components/BibliothequeView'
 import { WINE_DB } from '../data/wineDatabase'
