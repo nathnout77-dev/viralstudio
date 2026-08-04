@@ -12,7 +12,7 @@ import BibliothequeView from '../components/BibliothequeView'
 import LandingPage      from '../components/LandingPage'
 import HubGuide         from '../components/HubGuide'
 import FilAriane        from '../components/FilAriane'
-import ParcoursVin      from '../components/ParcoursVin'
+import GuideVin         from '../components/GuideVin'
 import ParcoursApprendre from '../components/ParcoursApprendre'
 import ParcoursExplorer from '../components/ParcoursExplorer'
 import MenuGrille       from '../components/MenuGrille'
@@ -34,7 +34,6 @@ import { Sparkles, NotebookPen, Wine as WineIcon, X } from 'lucide-react'
 
 const InteractiveMap = dynamic(() => import('../components/InteractiveMap'), { ssr: false })
 // Overlays lourds, chargés uniquement à l'ouverture (jamais au premier rendu)
-const CeSoirMode     = dynamic(() => import('../components/CeSoirMode'), { ssr: false })
 const ScanEtiquette  = dynamic(() => import('../components/ScanEtiquette'), { ssr: false })
 const AssistantView  = dynamic(() => import('../components/AssistantView'), { ssr: false })
 const CompteSync     = dynamic(() => import('../components/CompteSync'), { ssr: false })
@@ -42,7 +41,6 @@ const CaveAmieViewer = dynamic(() => import('../components/CaveAmis').then(m => 
 const RechercheRapide = dynamic(() => import('../components/RechercheRapide'), { ssr: false })
 const TourGuide       = dynamic(() => import('../components/TourGuide'), { ssr: false })
 const DecouvrirSwipe  = dynamic(() => import('../components/DecouvrirSwipe'), { ssr: false })
-const SommelierForm   = dynamic(() => import('../components/SommelierForm'), { ssr: false })
 const GuideView       = dynamic(() => import('../components/GuideView'), { ssr: false })
 const FicheVin        = dynamic(() => import('../components/BibliothequeView').then(m => m.FicheVin), { ssr: false })
 // Le social ne sert qu'aux comptes connectés : inutile de le charger au démarrage.
@@ -122,7 +120,7 @@ const DEMO_WINES = [
 // Intitulés du fil d'Ariane pour chaque parcours (le hub n'en a pas)
 const VUES = {
   decouvrir: { titre: '🍷 Découvrir',              sousTitre: 'Glissez, gardez ce qui vous plaît' },
-  trouver:   { titre: '🔍 Trouver un vin',        sousTitre: 'On vous guide en 2 questions' },
+  trouver:   { titre: '🔍 Trouver un vin',        sousTitre: 'Quelques questions, et Œno vous conseille' },
   cave:      { titre: '🍾 Ma cave',                sousTitre: 'Bouteilles, dégustations, envies' },
   social:    { titre: '👥 Mes amis',               sousTitre: 'Caves partagées et discussions' },
   vins:      { titre: '📚 La bibliothèque',        sousTitre: `${WINE_DB_TERROIR.length} vins décodés` },
@@ -141,7 +139,10 @@ export default function App() {
   const [detailWine, setDetailWine]   = useState(null)
   const [showForm, setShowForm]       = useState(false)
   const [editWine, setEditWine]       = useState(null)
-  const [showCeSoir, setShowCeSoir]   = useState(false)
+  // « Ce soir ? » n'ouvre plus sa propre modale : c'est devenu une direction
+  // du guide. `guideDepart` la pré-sélectionne pour que le raccourci reste
+  // aussi direct qu'avant.
+  const [guideDepart, setGuideDepart] = useState(null)
   const [showScan, setShowScan]       = useState(false)
   const [showAssistant, setShowAssistant] = useState(false)
   const [amiOuvert, setAmiOuvert]     = useState(null) // conversation Social ouverte (id de l'ami) : masque la bulle assistante et ses notifications
@@ -185,7 +186,7 @@ export default function App() {
       setShowLanding(false)
       if (action === 'scan') setShowScan(true)
       else if (action === 'recherche') setShowRecherche(true)
-      else setShowCeSoir(true)
+      else { setGuideDepart('ce-soir'); setView('trouver') }   // raccourci PWA
       window.history.replaceState(null, '', window.location.pathname)
     }
     // Notification « un ami vous a écrit » ouverte app entièrement fermée :
@@ -272,6 +273,9 @@ export default function App() {
     sessionStorage.setItem('landing-seen', '1')
     setShowLanding(false)
     setLibrarySearch(searchTerm || '')
+    // Le raccourci ne vaut que pour l'ouverture qu'il provoque : revenir sur
+    // le guide plus tard doit repartir du choix de direction.
+    setGuideDepart(null)
     setView(newView)
     if (!loadProfil()) setShowOnboarding(true)
   }, [])
@@ -279,7 +283,8 @@ export default function App() {
   const openCeSoir = useCallback(() => {
     sessionStorage.setItem('landing-seen', '1')
     setShowLanding(false)
-    setShowCeSoir(true)
+    setGuideDepart('ce-soir')
+    setView('trouver')
   }, [])
 
   const openScan = useCallback(() => {
@@ -376,7 +381,7 @@ export default function App() {
   // Glissement horizontal entre onglets (mobile). Désactivé pendant la landing
   // et dès qu'un overlay/fiche est ouvert : le geste ne doit agir que sur la
   // vue principale.
-  const overlayOuvert = showLanding || showCeSoir || showScan || showAssistant ||
+  const overlayOuvert = showLanding || showScan || showAssistant ||
     showMenu || showRecherche || showCompte || showForm || showOnboarding || showAvatar || showReglages ||
     !!detailWine || !!editWine || !!enviePrefill || !!friendCode || !!ficheVin
   // Sur « Découvrir », le glissement horizontal appartient aux cartes : la
@@ -430,13 +435,6 @@ export default function App() {
         </Head>
         <LandingPage onEnter={enterApp} onTabChange={goTo} onCeSoir={openCeSoir} onScan={openScan} />
         {friendCode && <CaveAmieViewer code={friendCode} onClose={closeFriendCave} />}
-        {showCeSoir && (
-          <CeSoirMode
-            mode={mode}
-            onClose={() => setShowCeSoir(false)}
-            onOpenBibliotheque={() => goTo('vins')}
-          />
-        )}
         {showScan && (
           <ScanEtiquette
             onClose={() => setShowScan(false)}
@@ -470,7 +468,7 @@ export default function App() {
           onProfil={redoProfil}
           onAdd={() => setShowForm(true)}
           onLanding={() => setShowLanding(true)}
-          onCeSoir={() => setShowCeSoir(true)}
+          onCeSoir={openCeSoir}
           onScan={() => setShowScan(true)}
           onCompte={() => setShowCompte(true)}
           onMenu={() => setShowMenu(true)}
@@ -489,7 +487,7 @@ export default function App() {
           onProfil={redoProfil}
           onAdd={() => setShowForm(true)}
           onLanding={() => setShowLanding(true)}
-          onCeSoir={() => setShowCeSoir(true)}
+          onCeSoir={openCeSoir}
           onScan={() => setShowScan(true)}
           onCompte={() => setShowCompte(true)}
           onAssistant={() => setShowAssistant(true)}
@@ -523,7 +521,12 @@ export default function App() {
             <DecouvrirSwipe onFiche={setFicheVin} onAddWine={saveWine} />
           )}
           {view === 'trouver' && (
-            <ParcoursVin mode={mode} onOpenBibliotheque={() => goTo('vins')} />
+            <GuideVin
+              key={guideDepart || 'guide'}
+              mode={mode}
+              depart={guideDepart}
+              onOpenBibliotheque={() => goTo('vins')}
+            />
           )}
           {view === 'cave' && (
             <CaveView
@@ -556,7 +559,7 @@ export default function App() {
           {view === 'apprendre' && <ParcoursApprendre />}
           {/* Accès directs conservés pour les habitués (menu « Tout Œno ») */}
           {view === 'carte'     && <InteractiveMap onAddWine={saveWine} onNoter={noterDegustation} />}
-          {view === 'sommelier' && <SommelierForm onOpenBibliotheque={() => goTo('vins')} />}
+          {view === 'sommelier' && <GuideVin mode={mode} onOpenBibliotheque={() => goTo('vins')} />}
           {view === 'guide'     && <GuideView onAddWine={saveWine} />}
           </div>
         </main>
@@ -574,13 +577,6 @@ export default function App() {
             initial={editWine || enviePrefill || undefined}
             onSave={saveWine}
             onClose={() => { setShowForm(false); setEditWine(null); setEnviePrefill(null) }}
-          />
-        )}
-        {showCeSoir && (
-          <CeSoirMode
-            mode={mode}
-            onClose={() => setShowCeSoir(false)}
-            onOpenBibliotheque={() => goTo('vins')}
           />
         )}
         {showScan && (
@@ -613,7 +609,7 @@ export default function App() {
             onGo={goTo}
             onScan={() => setShowScan(true)}
             onAssistant={() => setShowAssistant(true)}
-            onCeSoir={() => setShowCeSoir(true)}
+            onCeSoir={openCeSoir}
             onCompte={() => setShowCompte(true)}
             onAdd={() => setShowForm(true)}
             onRecherche={() => setShowRecherche(true)}

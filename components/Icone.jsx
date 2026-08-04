@@ -91,7 +91,37 @@ const REGISTRE = {
   expert: '🎓',
   incertain: '🤷',
 
+  // ── Le quotidien, pas le vin ─────────────────────────────────────────────
+  // Le questionnaire de goût déduit le palais depuis le petit-déjeuner et les
+  // desserts : c'est tout son intérêt, et il perdrait tout à être illustré de
+  // verres de vin. D'où ces clés qui ne parlent que de la vie de tous les jours.
+  cafe: '☕',
+  the: '🍵',
+  chocolat_chaud: '🍫',
+  jus_fruits: '🧃',
+  confiture: '🍓',
+  beurre_sale: '🧈',
+  citron_miel: '🍋',
+  avocat_piment: '🥑',
+  tarte_citron: '🥧',
+  creme_brulee: '🍨',
+  fondant_chocolat: '🍫',
+  salade_fruits: '🍇',
+  cote_de_boeuf: '🐂',
+  ramen: '🍜',
+  raclette: '🫕',
+  pates_tomate: '🍅',
+
+  // ── Appétit de découverte ────────────────────────────────────────────────
+  valeurs_sures: '🛋️',
+  curieux: '🧭',
+  aventurier: '🚀',
+
   // ── Prix, prestige, occasions ────────────────────────────────────────────
+  diner_amis: '👥',
+  cadeau: '🎁',
+  cave_depart: '🏠',
+  grande_occasion: '🥂',
   petit_prix: '🪙',
   budget: '💶',
   prestige: '💰',

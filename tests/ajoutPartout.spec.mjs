@@ -37,7 +37,11 @@ test('un vin mis en envie se range en cave depuis sa fiche', async ({ page }) =>
   const fiche = page.getByRole('dialog')
   await expect(fiche).toBeVisible()
 
-  // Le bouton qui manquait.
+  // Les deux boutons qui manquaient. Les vérifier ICI, et pas seulement en
+  // test unitaire, est le vrai garde-fou : le test unitaire fournit lui-même
+  // le contexte — il prouve que la fiche l'honore, jamais que l'application le
+  // fournit.
+  await expect(fiche.getByRole('button', { name: /Noter cette dégustation/ })).toBeVisible()
   await fiche.getByRole('button', { name: /Ajouter à ma cave/ }).first().click()
 
   // Et le prix reste celui de l'utilisateur, pas la suggestion d'Œno.
@@ -80,5 +84,39 @@ test('la fiche ouverte depuis Découvrir range au prix saisi', async ({ page }) 
   expect(cave).toHaveLength(1)
   expect(cave[0].estimatedValue).toBe(61)
   expect(cave[0].estimatedValue).not.toBe(Number(suggere))
+  expect(incidents).toEqual([])
+})
+
+test('le guide conduit d’une envie à une bouteille rangée', async ({ page }) => {
+  // Le parcours complet de la refonte : une seule porte, des questions qui
+  // s'enchaînent, et des vins qu'on range sans changer d'écran.
+  const incidents = []
+  page.on('pageerror', e => incidents.push(e.message))
+  await page.goto('/')
+
+  // Le raccourci « Ce soir ? » entre dans le guide au lieu d'ouvrir sa propre
+  // modale : c'est ce qui centralise les quatre questionnaires d'avant.
+  await page.getByRole('button', { name: 'Ce soir ?', exact: true }).click()
+  await expect(page.getByRole('heading', { name: /Vous mangez quoi ce soir/ })).toBeVisible()
+
+  // Répondre jusqu'au bout, quelle que soit la longueur du chemin : la
+  // question « laquelle, précisément ? » ne s'insère que sur une viande.
+  for (let i = 0; i < 8; i++) {
+    if (await page.getByRole('heading', { name: /conseille|Rien ne correspond/ }).count()) break
+    await page.locator('main .card').first().click()
+  }
+  await expect(page.getByRole('heading', { name: /Voilà ce qu’on vous conseille/ })).toBeVisible()
+
+  await page.locator('main').getByRole('button').filter({ hasText: /~/ }).first().click()
+  const fiche = page.getByRole('dialog')
+  await expect(fiche.getByRole('button', { name: /Noter cette dégustation/ })).toBeVisible()
+  await fiche.getByRole('button', { name: /Ajouter à ma cave/ }).first().click()
+  await page.locator('#prix-paye').fill('23')
+  await page.getByRole('button', { name: /Ranger/ }).click()
+
+  const cave = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem('oenotheque-v2') || '[]').filter(w => !w.demo))
+  expect(cave).toHaveLength(1)
+  expect(cave[0].estimatedValue).toBe(23)
   expect(incidents).toEqual([])
 })

@@ -189,7 +189,7 @@ function criteresFromGouts(niveau, gouts) {
 // Profil par défaut posé quand l'utilisateur quitte l'onboarding avant la fin
 // (Échap ou lien « plus tard ») : niveau intermédiaire raisonnable, sans
 // goûts particuliers — cohérent avec les valeurs utilisées ailleurs
-// (goutsAppris.js, SommelierForm, AssistantView, RegionsPrefFilter).
+// (goutsAppris.js, le guide, AssistantView, RegionsPrefFilter).
 const PROFIL_PAR_DEFAUT = { niveau: 'amateur', gouts: {} }
 
 export default function OnboardingProfil({ onComplete }) {

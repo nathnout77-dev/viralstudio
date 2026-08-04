@@ -38,7 +38,7 @@ pages/index.jsx     Écran unique. Un état `view` commute entre les vues. Huit
                     atteintes autrement. Les modales sont des états booléens.
 pages/api/          Routes serveur : IA (claude, gemini, groq), scan,
                     recherche web (tavily), push.
-components/         67 composants. Un fichier = un écran ou un bloc.
+components/         65 composants. Un fichier = un écran ou un bloc.
 lib/                Logique sans JSX : stockage, synchro, réglages, thème…
 data/               Données statiques volumineuses (base de vins, leçons…).
 supabase/migrations Schéma SQL, numéroté, jamais réécrit.
@@ -58,7 +58,7 @@ jamais écrire de code qui suppose une clé, un compte ou une connexion présent
 
 ---
 
-## Trois pièges qui ont déjà coûté des bugs
+## Quatre pièges qui ont déjà coûté des bugs
 
 ### 1. `WINE_DB` n'est **pas** le catalogue
 
@@ -120,6 +120,29 @@ Corollaire : **ne jamais reconstruire une bouteille à la main.** Le chemin de
 « Découvrir » composait son propre objet et recopiait `prixMoyen` en ignorant
 le prix saisi. Passer par `bouteilleDepuisVin`, toujours.
 
+### 4. Un seul questionnaire, une seule porte
+
+« Ce soir ? », le Goût-o-mètre, le budget caviste et le mode dîner étaient
+quatre questionnaires distincts, atteignables par trois portes différentes.
+Le budget était demandé trois fois, avec trois formulations. Surtout, aucun ne
+savait ce que l'autre avait appris : répondre aux six questions de goût ne
+changeait rien à la recommandation du soir.
+
+Tout passe désormais par `components/GuideVin.jsx`, adossé à `lib/guide/` :
+
+| Fichier | Rôle |
+|---|---|
+| `parcours.js` | Les questions, en **données**. Chacune porte un `quand` (se pose-t-elle ?) et un `garde` (où ranger la réponse). |
+| `moteur.js` | Un seul score. Chaque critère ne pèse que si sa réponse existe — c'est ce qui fait que les directions **se composent**. |
+| `memoire.js` | Ce qui resservira (le palais, pas le plat du soir), rangé dans `oeno-profil`, donc synchronisé. |
+
+Deux directions gardent leur écran, parce que leur résultat n'est pas une
+liste de bouteilles : le **budget** compose un panier, le **repas complet** un
+menu par service. Elles ont perdu leur porte d'entrée, pas leur spécialité.
+
+Ajouter une question = une entrée dans `QUESTIONS`. Ne pas rouvrir un
+questionnaire parallèle : c'est exactement ce qu'on vient de défaire.
+
 ---
 
 ## Langue et style d'écriture
@@ -153,7 +176,7 @@ de Tailwind. Les couleurs de `tailwind.config.js` pointent vers des variables
 définies dans `styles/globals.css` (`:root` et `:root[data-theme='sombre']`).
 Une classe existante comme `bg-anthracite-900` s'adapte donc toute seule.
 
-Trois rôles, trois familles — les confondre est le piège nº 4 :
+Trois rôles, trois familles — les confondre est le piège nº 5 :
 
 | Rôle | Quoi employer |
 |---|---|
@@ -212,6 +235,7 @@ Ce que couvre le filet, et pourquoi :
 | `parcours.spec.mjs` | Chaque écran s'ouvre, **zéro exception JS**, thème posé avant le premier rendu, et l'ajout à la cave depuis la recherche et depuis Œno. |
 | `mentions.test.js` | Les vins qu'Œno nomme deviennent cliquables — dans **tout** le catalogue, sans mordre dans un mot ni confondre une appellation avec un arôme. |
 | `ajoutPartout.spec.mjs` | Une fiche de vin ouverte propose **toujours** de la ranger (piège nº 3). |
+| `guide.test.js` | Le guide unifié : les questions ne se posent que si elles servent, et **les directions se composent** (le palais affine le conseil du soir). |
 | `ficheActions.test.jsx` | La fiche tient ses actions du **contexte**, pas de qui l'ouvre — les dix-huit chemins d'un coup, et ceux à venir. |
 | `askIA.test.js` | La chaîne de repli Groq → Gemini → Claude, et le fait qu'**une clé absente ne bloque rien**. |
 | `decouvertes.test.js` | Les vins scannés : dédoublonnage au re-scan, tolérance à une étiquette à moitié lue. |
