@@ -9,6 +9,7 @@ import JaugesGout from './JaugesGout'
 import Terme from './Tooltip'
 import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
 import useModalBehavior from '../lib/useModal'
+import { useAjoutCave } from '../lib/cave'
 import { bouteilleDepuisVin, prixSuggere } from '../lib/ajoutCave'
 import { tintStyle, pastilleStyle, regionMonogram, collectionNumero } from '../lib/wineStyle'
 import WineTile from './WineTile'
@@ -320,8 +321,16 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
   const [showSimulateur, setShowSimulateur] = useState(false)
   const [partageCopie, setPartageCopie] = useState(false)
   const diff = DIFFICULTE_CONFIG[wine.difficulte]
+  // Le bouton « Ajouter à ma cave » ne dépend plus de l'écran qui ouvre la
+  // fiche : à défaut de fonction reçue, on range par le contexte. Onze écrans
+  // affichaient un vin sans le moindre moyen de le garder (voir lib/cave.js).
+  const rangerAmbiant = useAjoutCave()
+  const [rangeIci, setRangeIci] = useState(null)
+  const onRanger = onAddToCave || (rangerAmbiant
+    ? (w, m, prix) => { rangerAmbiant(bouteilleDepuisVin(w, m, { prix })); setRangeIci(`${w.id}-${m}`) }
+    : null)
   const addedSet = added || new Set()
-  const isAdded = addedSet.has(`${wine.id}-${millesime}`)
+  const isAdded = addedSet.has(`${wine.id}-${millesime}`) || rangeIci === `${wine.id}-${millesime}`
   const garde = gardeForMillesime(wine, millesime)
   const petitsDomaines = wine.domaines.filter(d => d.confidentiel)
   const hasPetitDomaine = petitsDomaines.length > 0
@@ -622,11 +631,11 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
               )}
             </div>
             <div className="lg:flex lg:items-center lg:gap-3 lg:flex-shrink-0">
-              {onAddToCave && !isAdded && saisiePrix && (
+              {onRanger && !isAdded && saisiePrix && (
                 <form
                   onSubmit={e => {
                     e.preventDefault()
-                    onAddToCave(wine, millesime, Number(prix))
+                    onRanger(wine, millesime, Number(prix))
                     setSaisiePrix(false)
                   }}
                   className="w-full lg:w-auto flex items-center gap-2"
@@ -648,7 +657,7 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
                   </button>
                 </form>
               )}
-              {onAddToCave && !saisiePrix && (
+              {onRanger && !saisiePrix && (
               <button
                 onClick={() => { setPrix(String(prixSuggere(wine))); setSaisiePrix(true) }}
                 disabled={isAdded}

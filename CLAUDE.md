@@ -58,7 +58,7 @@ jamais écrire de code qui suppose une clé, un compte ou une connexion présent
 
 ---
 
-## Deux pièges qui ont déjà coûté des bugs
+## Trois pièges qui ont déjà coûté des bugs
 
 ### 1. `WINE_DB` n'est **pas** le catalogue
 
@@ -95,6 +95,25 @@ système. Ajouter un réglage à `SYNC_KEYS` serait une régression.
 
 ---
 
+### 3. Une fiche de vin n'est jamais un cul-de-sac
+
+`FicheVin` s'ouvre depuis dix-huit endroits. Onze d'entre eux — les envies, le
+guide des accords, les millésimes, la roue des arômes, « ce soir ? », le budget
+caviste, le mode dîner, le profil de goût… — vivent sous des écrans qui ne
+reçoivent pas la cave et n'ont aucune raison de la recevoir. Ils ouvraient donc
+la fiche **sans bouton « Ajouter à ma cave »** : pas grisé, absent.
+
+D'où `lib/cave.js` : la capacité de ranger une bouteille est **ambiante**, lue
+par contexte. Le bouton existe par défaut, et un nouvel écran qui ouvre une
+fiche l'a sans rien câbler. Passer `onAddToCave` reste possible et l'emporte —
+c'est ce que font les écrans qui veulent marquer la provenance.
+
+Corollaire : **ne jamais reconstruire une bouteille à la main.** Le chemin de
+« Découvrir » composait son propre objet et recopiait `prixMoyen` en ignorant
+le prix saisi. Passer par `bouteilleDepuisVin`, toujours.
+
+---
+
 ## Langue et style d'écriture
 
 **Tout est en français** — l'interface, mais aussi les noms de variables, de
@@ -126,7 +145,7 @@ de Tailwind. Les couleurs de `tailwind.config.js` pointent vers des variables
 définies dans `styles/globals.css` (`:root` et `:root[data-theme='sombre']`).
 Une classe existante comme `bg-anthracite-900` s'adapte donc toute seule.
 
-Trois rôles, trois familles — les confondre est le piège nº 3 :
+Trois rôles, trois familles — les confondre est le piège nº 4 :
 
 | Rôle | Quoi employer |
 |---|---|
@@ -183,6 +202,7 @@ Ce que couvre le filet, et pourquoi :
 | `reglages.test.js` | Les défauts, la tolérance aux données illisibles, et la frontière avec `SYNC_KEYS` (piège nº 2). |
 | `ajoutCave.test.js` | La traduction fiche de catalogue → bouteille de cave, et le fait qu'**Œno n'impose jamais son prix** : celui de l'utilisateur seul compte. |
 | `parcours.spec.mjs` | Chaque écran s'ouvre, **zéro exception JS**, thème posé avant le premier rendu, et l'ajout à la cave depuis la recherche et depuis Œno. |
+| `ajoutPartout.spec.mjs` | Une fiche de vin ouverte propose **toujours** de la ranger (piège nº 4). |
 
 Ce que le filet **ne** couvre pas : le scan, l'IA, le social, la carte, l'école.
 Y toucher demande toujours un passage au navigateur, à la main.

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
+import { FournisseurCave } from '../lib/cave'
 
 import Navbar           from '../components/Navbar'
 import Sidebar          from '../components/Sidebar'
@@ -440,7 +441,7 @@ export default function App() {
   }
 
   return (
-    <>
+    <FournisseurCave value={saveWine}>
       <Head>
         <title>Œno — Le vin, enfin simple</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -586,16 +587,6 @@ export default function App() {
           <FicheVin
             wine={ficheVin}
             onClose={() => setFicheVin(null)}
-            onAddToCave={(w, m) => {
-              saveWine({
-                id: `${w.id}-${m}-${Date.now()}`,
-                name: w.appellation, domain: '', appellation: w.appellation,
-                region: w.region, type: w.type, cepages: w.cepages, vintage: m,
-                quantity: 1, drinkFrom: w.drinkFrom, drinkUntil: w.drinkUntil,
-                serviceTemp: w.serviceTemp, carafage: w.carafage,
-                estimatedValue: w.prixMoyen, foodPairings: w.accords, notes: w.enUneMot,
-              })
-            }}
             onNoter={noterDegustation}
           />
         )}
@@ -684,6 +675,6 @@ export default function App() {
           </button>
         )}
       </div>
-    </>
+    </FournisseurCave>
   )
 }
