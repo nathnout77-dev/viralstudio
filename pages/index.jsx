@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import { FournisseurCave } from '../lib/cave'
@@ -319,6 +319,13 @@ export default function App() {
     })
   }, [])
 
+  // Ce que la fiche d'un vin peut faire, où qu'elle s'ouvre (lib/cave.js).
+  // Mémorisé : le contexte re-rendrait sinon tous ses lecteurs à chaque frappe.
+  const capacitesCave = useMemo(
+    () => ({ ranger: saveWine, noter: noterDegustation }),
+    [saveWine, noterDegustation],
+  )
+
   // « J'ai acheté » depuis la liste d'envies → formulaire d'ajout pré-rempli
   const buyFromEnvie = useCallback(prefill => {
     setEnviePrefill(prefill)
@@ -441,7 +448,7 @@ export default function App() {
   }
 
   return (
-    <FournisseurCave value={saveWine}>
+    <FournisseurCave value={capacitesCave}>
       <Head>
         <title>Œno — Le vin, enfin simple</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />

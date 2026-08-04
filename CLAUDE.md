@@ -106,10 +106,15 @@ caviste, le mode dîner, le profil de goût… — vivent sous des écrans qui n
 reçoivent pas la cave et n'ont aucune raison de la recevoir. Ils ouvraient donc
 la fiche **sans bouton « Ajouter à ma cave »** : pas grisé, absent.
 
-D'où `lib/cave.js` : la capacité de ranger une bouteille est **ambiante**, lue
-par contexte. Le bouton existe par défaut, et un nouvel écran qui ouvre une
-fiche l'a sans rien câbler. Passer `onAddToCave` reste possible et l'emporte —
-c'est ce que font les écrans qui veulent marquer la provenance.
+D'où `lib/cave.js` : ranger une bouteille et noter une dégustation sont des
+capacités **ambiantes**, lues par contexte. Les boutons existent par défaut, et
+un nouvel écran qui ouvre une fiche les a sans rien câbler. Passer
+`onAddToCave` reste possible et l'emporte — c'est ce que font les écrans qui
+veulent marquer la provenance.
+
+La notation avait exactement la même histoire : présente sur 2 fiches sur 18.
+Chercher `onQuelqueChose` qui descend en prop à travers un écran qui n'a aucune
+raison de la porter est le bon réflexe pour trouver le suivant.
 
 Corollaire : **ne jamais reconstruire une bouteille à la main.** Le chemin de
 « Découvrir » composait son propre objet et recopiait `prixMoyen` en ignorant
@@ -206,7 +211,8 @@ Ce que couvre le filet, et pourquoi :
 | `ajoutCave.test.js` | La traduction fiche de catalogue → bouteille de cave, et le fait qu'**Œno n'impose jamais son prix** : celui de l'utilisateur seul compte. |
 | `parcours.spec.mjs` | Chaque écran s'ouvre, **zéro exception JS**, thème posé avant le premier rendu, et l'ajout à la cave depuis la recherche et depuis Œno. |
 | `mentions.test.js` | Les vins qu'Œno nomme deviennent cliquables — dans **tout** le catalogue, sans mordre dans un mot ni confondre une appellation avec un arôme. |
-| `ajoutPartout.spec.mjs` | Une fiche de vin ouverte propose **toujours** de la ranger (piège nº 4). |
+| `ajoutPartout.spec.mjs` | Une fiche de vin ouverte propose **toujours** de la ranger (piège nº 3). |
+| `ficheActions.test.jsx` | La fiche tient ses actions du **contexte**, pas de qui l'ouvre — les dix-huit chemins d'un coup, et ceux à venir. |
 
 Ce que le filet **ne** couvre pas : le scan, l'IA, le social, la carte, l'école.
 Y toucher demande toujours un passage au navigateur, à la main.

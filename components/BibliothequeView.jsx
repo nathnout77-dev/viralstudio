@@ -9,7 +9,7 @@ import JaugesGout from './JaugesGout'
 import Terme from './Tooltip'
 import WineGlassAnim, { fillLevelFromJauges } from './WineGlassAnim'
 import useModalBehavior from '../lib/useModal'
-import { useAjoutCave } from '../lib/cave'
+import { useAjoutCave, useNoterDegustation } from '../lib/cave'
 import { bouteilleDepuisVin, prixSuggere } from '../lib/ajoutCave'
 import { tintStyle, pastilleStyle, regionMonogram, collectionNumero } from '../lib/wineStyle'
 import WineTile from './WineTile'
@@ -329,6 +329,14 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
   const onRanger = onAddToCave || (rangerAmbiant
     ? (w, m, prix) => { rangerAmbiant(bouteilleDepuisVin(w, m, { prix })); setRangeIci(`${w.id}-${m}`) }
     : null)
+  // Même règle pour la notation : à défaut de fonction reçue, on ouvre le
+  // journal par le contexte. Et on referme la fiche — le journal s'ouvre sur
+  // l'écran Ma Cave, derrière la modale : sans cela, la note demandée reste
+  // invisible sous le vin qu'on voulait noter.
+  const noterAmbiant = useNoterDegustation()
+  const onNoterVin = (onNoter || noterAmbiant)
+    ? (seed) => { (onNoter || noterAmbiant)(seed); onClose?.() }
+    : null
   const addedSet = added || new Set()
   const isAdded = addedSet.has(`${wine.id}-${millesime}`) || rangeIci === `${wine.id}-${millesime}`
   const garde = gardeForMillesime(wine, millesime)
@@ -678,9 +686,9 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
               >
                 <Sparkles size={13} /> Simuler la dégustation
               </button>
-              {onNoter && (
+              {onNoterVin && (
                 <button
-                  onClick={() => onNoter({ name: wine.appellation, domain: wine.domaines?.[0]?.name || '', vintage: millesime, type: wine.type })}
+                  onClick={() => onNoterVin({ name: wine.appellation, domain: wine.domaines?.[0]?.name || '', vintage: millesime, type: wine.type })}
                   className="w-full lg:w-auto flex items-center justify-center gap-1.5 py-2.5 lg:px-4 mt-2 lg:mt-0 rounded-full text-xs font-semibold text-anthracite-500 hover:text-wine-texte transition-colors cursor-pointer"
                 >
                   <NotebookPen size={13} /> Noter cette dégustation
