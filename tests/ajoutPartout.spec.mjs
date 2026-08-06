@@ -120,3 +120,31 @@ test('le guide conduit d’une envie à une bouteille rangée', async ({ page })
   expect(cave[0].estimatedValue).toBe(23)
   expect(incidents).toEqual([])
 })
+
+test('une bouteille dont on ignore le prix se range quand même', async ({ page }) => {
+  // Le prix reste obligatoire — la valeur de cave en dépend — mais une
+  // bouteille offerte ou héritée n'en a pas. Exiger un chiffre obligerait à
+  // en inventer un, ce que l'obligation cherchait justement à empêcher.
+  const incidents = []
+  page.on('pageerror', e => incidents.push(e.message))
+  await page.goto('/')
+
+  await page.getByRole('button', { name: 'Recherche', exact: true }).click()
+  const modale = page.getByRole('dialog', { name: /Recherche/ })
+  await modale.getByRole('textbox').first().fill('Chablis')
+  await modale.locator('button').filter({ hasText: /Chablis/ }).first().click()
+  await page.getByRole('button', { name: /Ajouter à ma cave/ }).first().click()
+  await page.getByRole('button', { name: /Je ne sais plus/ }).click()
+
+  const cave = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem('oenotheque-v2') || '[]').filter(w => !w.demo))
+  expect(cave).toHaveLength(1)
+  expect(cave[0].estimatedValue).toBeUndefined()
+
+  // Et le panorama le dit, au lieu d'annoncer un total qui paraît complet.
+  await page.keyboard.press('Escape')   // refermer la fiche restée ouverte
+  await page.getByRole('button', { name: 'Ma Cave', exact: true }).click()
+  await page.locator('button').filter({ hasText: /Panorama/ }).first().click()
+  await expect(page.getByText(/bouteille sans prix, non comptée/)).toBeVisible()
+  expect(incidents).toEqual([])
+})

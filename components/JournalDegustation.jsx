@@ -190,7 +190,7 @@ function JournalForm({ initial, caveWines, onSave, onClose }) {
       className="fixed inset-0 z-[80] flex items-end sm:items-center justify-center p-0 sm:p-4"
       style={{ background: 'rgba(12,10,9,0.55)', backdropFilter: 'blur(8px)' }}
       onClick={onClose}
-      role="dialog" aria-modal="true"
+      role="dialog" aria-modal="true" aria-label="Noter une dégustation"
     >
       <form
         onSubmit={submit}
@@ -306,7 +306,7 @@ function CarnetPage({ entry, onClose, onEdit, onDelete }) {
       className="fixed inset-0 z-[80] flex items-end sm:items-center justify-center p-0 sm:p-4"
       style={{ background: 'rgba(12,10,9,0.55)', backdropFilter: 'blur(8px)' }}
       onClick={onClose}
-      role="dialog" aria-modal="true"
+      role="dialog" aria-modal="true" aria-label="Détail de la dégustation"
     >
       <div
         className="modal-panel sm:max-w-2xl max-h-[92vh] shadow-card-hover"

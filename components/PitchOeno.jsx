@@ -88,7 +88,7 @@ export default function PitchOeno({ onClose, onCommencer }) {
   useModalBehavior(onClose)
 
   return (
-    <div className="fixed inset-0 z-[85] overflow-y-auto bg-fond animate-fade-in">
+    <div role="dialog" aria-modal="true" aria-label="Œno, c’est quoi ?" className="fixed inset-0 z-[85] overflow-y-auto bg-fond animate-fade-in">
       <button
         onClick={onClose}
         aria-label="Fermer"

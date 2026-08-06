@@ -133,7 +133,7 @@ export default function WineTile({
     <div
       onClick={open}
       role="button" tabIndex={0}
-      onKeyDown={e => e.key === 'Enter' && open()}
+      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open() } }}
       className={`card p-4 sm:p-5 animate-slide-up cursor-pointer hover:border-gold-500/30 hover:-translate-y-0.5 transition-all ${className}`}
       style={{ animationDelay: `${Math.min(index * 80, 400)}ms`, animationFillMode: 'both' }}
     >

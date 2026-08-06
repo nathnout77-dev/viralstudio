@@ -91,6 +91,8 @@ export default function WineForm({ initial, onSave, onClose }) {
     foodPairings: initial.foodPairings || [],
   } : blankForm()))
   const [errors, setErrors] = useState({})
+  // Prix inconnu assumé : une bouteille offerte ou héritée n'en a pas.
+  const [prixInconnu, setPrixInconnu] = useState(false)
   const [useFreeText, setUseFreeText] = useState(
     !!initial?.appellation && !WINE_DB_APPELLATIONS.some(a => a.appellation === initial.appellation)
   )
@@ -232,7 +234,7 @@ export default function WineForm({ initial, onSave, onClose }) {
     if (form.quantity < 0)   e.quantity = 'Quantité invalide'
     // Le prix est le vôtre, pas celui d'Œno : sans lui, la valeur de la cave
     // et le panorama reposeraient sur des moyennes d'appellation.
-    if (form.estimatedValue === '' || form.estimatedValue == null || Number(form.estimatedValue) < 0) {
+    if (!prixInconnu && (form.estimatedValue === '' || form.estimatedValue == null || Number(form.estimatedValue) < 0)) {
       e.estimatedValue = 'Prix requis'
     }
     setErrors(e)
@@ -250,7 +252,7 @@ export default function WineForm({ initial, onSave, onClose }) {
       drinkFrom:      Number(form.drinkFrom),
       drinkUntil:     Number(form.drinkUntil),
       serviceTemp:    form.serviceTemp ? Number(form.serviceTemp) : undefined,
-      estimatedValue: Number(form.estimatedValue),
+      estimatedValue: prixInconnu ? undefined : Number(form.estimatedValue),
       rating:         form.rating ? Number(form.rating) : undefined,
     })
   }
@@ -500,8 +502,17 @@ export default function WineForm({ initial, onSave, onClose }) {
               <input className="input-field" value={form.carafage} onChange={e => set('carafage', e.target.value)} placeholder="1h" />
             </Field>
             <Field label="Prix payé (€/btle) *" error={errors.estimatedValue}>
-              <input type="number" required className="input-field" value={form.estimatedValue}
+              <input type="number" required={!prixInconnu} disabled={prixInconnu}
+                     className="input-field disabled:opacity-50" value={prixInconnu ? '' : form.estimatedValue}
                      onChange={e => set('estimatedValue', e.target.value)} placeholder="0" min={0} step="0.01" />
+              {/* Une bouteille offerte ou héritée n'a pas de prix connu.
+                  L'exiger obligerait à en inventer un — exactement ce que le
+                  champ obligatoire cherchait à éviter. */}
+              <label className="flex items-center gap-2 mt-2 text-[11px] text-anthracite-500 cursor-pointer">
+                <input type="checkbox" checked={prixInconnu}
+                       onChange={e => { setPrixInconnu(e.target.checked); if (e.target.checked) set('estimatedValue', '') }} />
+                Je ne sais plus ce que je l’ai payée
+              </label>
             </Field>
           </div>
 

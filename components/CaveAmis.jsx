@@ -214,7 +214,7 @@ export function CaveAmieViewer({ code, onClose }) {
   }, [])
 
   return (
-    <div className="fixed inset-0 z-[80] overflow-y-auto bg-fond animate-fade-in">
+    <div role="dialog" aria-modal="true" aria-label="La cave d’un ami" className="fixed inset-0 z-[80] overflow-y-auto bg-fond animate-fade-in">
       {/* En-tête */}
       <header className="sticky top-0 z-10 backdrop-blur-xl border-b border-anthracite-900/[0.08]"
               style={{ background: 'rgb(var(--fond) / 0.88)' }}>
@@ -296,7 +296,7 @@ export function CaveAmieViewer({ code, onClose }) {
                     key={e.id || i}
                     onClick={() => openFiche({ appellation: e.appellation })}
                     role="button" tabIndex={0}
-                    onKeyDown={ev => ev.key === 'Enter' && openFiche({ appellation: e.appellation })}
+                    onKeyDown={ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openFiche({ appellation: e.appellation }) } }}
                     className="card p-4 flex items-center gap-3 cursor-pointer hover:border-gold-500/30 transition-all"
                   >
                     <div className="w-9 h-9 rounded-2xl bg-wine-50 flex items-center justify-center flex-shrink-0">

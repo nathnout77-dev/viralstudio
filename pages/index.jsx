@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import { FournisseurCave } from '../lib/cave'
+import usePiegeDeFocus from '../lib/focusModale'
 
 import Navbar           from '../components/Navbar'
 import Sidebar          from '../components/Sidebar'
@@ -132,6 +133,9 @@ const VUES = {
 }
 
 export default function App() {
+  // Le clavier ne doit jamais s'échapper d'une fenêtre ouverte (lib/focusModale).
+  usePiegeDeFocus()
+
   const [wines, setWines]             = useState([])
   const [view, setView]               = useState('hub')
   const [ready, setReady]             = useState(false)

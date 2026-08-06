@@ -253,7 +253,7 @@ function InlineWineCard({ wine, onSelect }) {
     <div
       onClick={() => onSelect?.(wine)}
       role="button" tabIndex={0}
-      onKeyDown={e => e.key === 'Enter' && onSelect?.(wine)}
+      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect?.(wine) } }}
       className="card p-3 mt-2 flex items-start gap-3 cursor-pointer hover:border-gold-500/30 hover:-translate-y-0.5 transition-all">
       <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
            style={{ background: `${wine.color}18` }}>

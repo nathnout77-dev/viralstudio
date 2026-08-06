@@ -88,7 +88,7 @@ function DecouverteFiche({ dec, onClose, onDelete }) {
       className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center p-0 sm:p-4"
       style={{ background: 'rgba(12,10,9,0.55)', backdropFilter: 'blur(8px)' }}
       onClick={onClose}
-      role="dialog" aria-modal="true"
+      role="dialog" aria-modal="true" aria-label="Ma découverte"
     >
       <div className="modal-panel sm:max-w-lg max-h-[92vh] shadow-card-hover" onClick={e => e.stopPropagation()}>
         <div className="p-6 pb-5 flex-shrink-0 relative overflow-hidden text-cream"
@@ -348,7 +348,7 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
       className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center p-0 sm:p-4"
       style={{ background: 'rgba(12,10,9,0.55)', backdropFilter: 'blur(8px)' }}
       onClick={onClose}
-      role="dialog" aria-modal="true"
+      role="dialog" aria-modal="true" aria-label="Fiche du vin"
     >
       <div
         className="modal-panel sm:max-w-xl lg:max-w-5xl max-h-[92vh] lg:h-[88vh] shadow-card-hover"
@@ -662,6 +662,18 @@ export function FicheVin({ wine: wineProp, onClose, onAddToCave, added, onNoter 
                   </div>
                   <button type="submit" className="btn-gold text-sm px-5 py-2.5 whitespace-nowrap">
                     <Check size={14} /> Ranger
+                  </button>
+                  {/* Une bouteille offerte, héritée, rapportée d'un dîner : on
+                      n'en connaît pas le prix, et exiger un chiffre obligerait
+                      à en inventer un — ce que le champ obligatoire visait
+                      justement à empêcher. Elle est rangée sans prix, et le
+                      panorama la décompte à part au lieu de la deviner. */}
+                  <button
+                    type="button"
+                    onClick={() => { onRanger(wine, millesime, null); setSaisiePrix(false) }}
+                    className="text-[11px] font-semibold text-anthracite-500 hover:text-wine-texte underline whitespace-nowrap transition-colors cursor-pointer"
+                  >
+                    Je ne sais plus
                   </button>
                 </form>
               )}

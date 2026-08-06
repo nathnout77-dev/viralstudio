@@ -58,7 +58,7 @@ jamais écrire de code qui suppose une clé, un compte ou une connexion présent
 
 ---
 
-## Quatre pièges qui ont déjà coûté des bugs
+## Cinq pièges qui ont déjà coûté des bugs
 
 ### 1. `WINE_DB` n'est **pas** le catalogue
 
@@ -120,7 +120,27 @@ Corollaire : **ne jamais reconstruire une bouteille à la main.** Le chemin de
 « Découvrir » composait son propre objet et recopiait `prixMoyen` en ignorant
 le prix saisi. Passer par `bouteilleDepuisVin`, toujours.
 
-### 4. Un seul questionnaire, une seule porte
+### 4. Une fenêtre ouverte n'est pas un cul-de-sac au clavier
+
+Même forme que le piège nº 3, ailleurs. Œno comptait dix-sept `role="dialog"`
+et dix-neuf appels à `useModalBehavior` — **deux ensembles qui ne se
+recouvraient pas** — et cinq calques n'étaient pas déclarés comme fenêtres du
+tout (Réglages, Compte, l'avatar, la cave d'un ami, la présentation).
+
+Tabuler depuis une modale s'en échappait vers l'écran masqué derrière, sans
+retour possible. Au clavier seul ou au lecteur d'écran, l'app devenait
+inutilisable dès la première fenêtre.
+
+D'où `lib/focusModale.js`, posé **une seule fois** dans `pages/index.jsx` : il
+suit le dernier `[role="dialog"]` du DOM, quel qu'il soit. Une nouvelle modale
+en hérite sans rien câbler — à la seule condition de porter `role="dialog"` et
+`aria-label`. C'est la seule chose à ne pas oublier.
+
+Mesurer : `node scripts/audit-clavier.mjs 3400` sur un build de production.
+
+---
+
+### 5. Un seul questionnaire, une seule porte
 
 « Ce soir ? », le Goût-o-mètre, le budget caviste et le mode dîner étaient
 quatre questionnaires distincts, atteignables par trois portes différentes.
@@ -176,7 +196,7 @@ de Tailwind. Les couleurs de `tailwind.config.js` pointent vers des variables
 définies dans `styles/globals.css` (`:root` et `:root[data-theme='sombre']`).
 Une classe existante comme `bg-anthracite-900` s'adapte donc toute seule.
 
-Trois rôles, trois familles — les confondre est le piège nº 5 :
+Trois rôles, trois familles — les confondre est le piège nº 6 :
 
 | Rôle | Quoi employer |
 |---|---|
@@ -236,6 +256,7 @@ Ce que couvre le filet, et pourquoi :
 | `mentions.test.js` | Les vins qu'Œno nomme deviennent cliquables — dans **tout** le catalogue, sans mordre dans un mot ni confondre une appellation avec un arôme. |
 | `ajoutPartout.spec.mjs` | Une fiche de vin ouverte propose **toujours** de la ranger (piège nº 3). |
 | `guide.test.js` | Le guide unifié : les questions ne se posent que si elles servent, et **les directions se composent** (le palais affine le conseil du soir). |
+| `clavier.spec.mjs` | Le focus n'échappe **jamais** d'une fenêtre ouverte, y revient, et repart d'où il venait. Toute fenêtre porte un nom annonçable. |
 | `ficheActions.test.jsx` | La fiche tient ses actions du **contexte**, pas de qui l'ouvre — les dix-huit chemins d'un coup, et ceux à venir. |
 | `askIA.test.js` | La chaîne de repli Groq → Gemini → Claude, et le fait qu'**une clé absente ne bloque rien**. |
 | `decouvertes.test.js` | Les vins scannés : dédoublonnage au re-scan, tolérance à une étiquette à moitié lue. |
@@ -253,6 +274,23 @@ Trois pièges connus :
   est épinglé à la version qui correspond à ce build ; ne pas lancer
   `playwright install`, ne pas relever la version à la légère.
 - Compiler ne prouve rien. Le bug des envies compilait parfaitement.
+
+### L'audit du clavier
+
+```bash
+npx next start -p 3400 &
+node scripts/audit-clavier.mjs 3400
+```
+
+Il ouvre quinze vues et fenêtres, et relève les commandes **sans nom
+annonçable** — un bouton qui ne contient qu'une icône est annoncé « bouton »
+et rien d'autre. Il retire volontairement tout ce qui est `aria-hidden` du
+calcul : les repères d'Œno sont des emojis, justement masqués aux lecteurs
+d'écran. Les compter comme des noms déclarerait l'app irréprochable alors
+qu'un bouton « 🍷 » n'annonce rien.
+
+Référence actuelle : **0 commande sans nom**. Toute nouvelle entrée est une
+régression.
 
 ### L'audit de contraste
 

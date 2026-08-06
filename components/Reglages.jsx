@@ -114,7 +114,7 @@ export default function Reglages({ onClose }) {
   if (!r) return null
 
   return (
-    <div className="fixed inset-0 z-[75] flex items-end sm:items-center justify-center scrim animate-fade-in" onClick={onClose}>
+    <div role="dialog" aria-modal="true" aria-label="Réglages" className="fixed inset-0 z-[75] flex items-end sm:items-center justify-center scrim animate-fade-in" onClick={onClose}>
       <div className="modal-panel max-w-md sm:mx-4 max-h-[90dvh]" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-anthracite-900/[0.07]">
           <div>

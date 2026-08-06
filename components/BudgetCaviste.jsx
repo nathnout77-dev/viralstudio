@@ -278,7 +278,7 @@ export default function BudgetCaviste() {
                 key={w.id}
                 onClick={() => setWineSelected(w)}
                 role="button" tabIndex={0}
-                onKeyDown={e => e.key === 'Enter' && setWineSelected(w)}
+                onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setWineSelected(w) } }}
                 className="card p-5 animate-slide-up cursor-pointer hover:border-gold-500/30 hover:-translate-y-0.5 transition-all"
                 style={{ animationDelay: `${i * 80}ms`, animationFillMode: 'both' }}
               >

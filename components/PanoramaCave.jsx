@@ -209,6 +209,7 @@ export default function PanoramaCave({ wines }) {
     let readyCount = 0
     let ageSum = 0, ageBottles = 0
     let priceSum = 0, priceBottles = 0
+    let sansPrix = 0   // bouteilles dont on ne connaît pas le prix payé
 
     wines.forEach(w => {
       const q = w.quantity || 0
@@ -218,6 +219,7 @@ export default function PanoramaCave({ wines }) {
       const price = bottlePrice(w)
       totalValue += price * q
       if (price > 0) { priceSum += price * q; priceBottles += q }
+      else sansPrix += q
       const gi = PRIX_GAMMES.findIndex(g => g.test(price))
       if (price > 0 && gi >= 0) gammeCounts[gi] += q
       if (isReadyNow(w)) readyCount += q
@@ -234,7 +236,7 @@ export default function PanoramaCave({ wines }) {
     const avgPrice = priceBottles ? priceSum / priceBottles : 0
 
     return {
-      totalBottles, byType, byRegion, gammeCounts, totalValue, readyCount, avgAge, avgPrice,
+      totalBottles, byType, byRegion, gammeCounts, totalValue, readyCount, avgAge, avgPrice, sansPrix,
       profil: buildProfil({ byType, byRegion, avgPrice, totalBottles, readyCount }),
     }
   }, [wines])
@@ -274,7 +276,10 @@ export default function PanoramaCave({ wines }) {
       {/* Chiffres clés */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { Icon: Coins,         label: 'Valeur de la cave', value: `${Math.round(stats.totalValue).toLocaleString('fr')} €`, sub: 'selon vos prix d’achat' },
+          { Icon: Coins,         label: 'Valeur de la cave', value: `${Math.round(stats.totalValue).toLocaleString('fr')} €`,
+            sub: stats.sansPrix
+              ? `${stats.sansPrix} bouteille${stats.sansPrix > 1 ? 's' : ''} sans prix, non comptée${stats.sansPrix > 1 ? 's' : ''}`
+              : 'selon vos prix d’achat' },
           { Icon: Wine,          label: 'À boire cette année', value: stats.readyCount, sub: 'dans leur fenêtre idéale' },
           { Icon: Hourglass,     label: 'Âge moyen',        value: stats.avgAge ? `${stats.avgAge.toFixed(1).replace('.', ',')} ans` : '—', sub: 'depuis le millésime' },
           { Icon: CalendarClock, label: 'Prix moyen',       value: stats.avgPrice ? `${Math.round(stats.avgPrice)} €` : '—', sub: 'par bouteille' },

@@ -84,7 +84,7 @@ export default function WineCard({ wine, onSelect, onEdit, onDelete, onUpdateQty
         className="card card-tinted p-5 cursor-pointer hover:border-anthracite-900/20 hover:-translate-y-0.5 active:scale-[0.98] group animate-fade-in"
         style={tintStyle(wine.type)}
         role="button" tabIndex={0}
-        onKeyDown={e => e.key === 'Enter' && onSelect?.(wine)}
+        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect?.(wine) } }}
         aria-label={`${wine.name} ${wine.vintage}`}
       >
         <div className="flex items-center gap-3">
