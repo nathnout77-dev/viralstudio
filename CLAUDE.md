@@ -226,6 +226,26 @@ Classes utilitaires prêtes dans `globals.css` : `.card`, `.card-dark`,
 
 ---
 
+## Les données périment
+
+`MILLESIMES_DB` et les `bonsMilsimes` de chaque vin vieillissent tout seuls.
+Le **dernier** millésime de `bonsMilsimes` sert de valeur par défaut partout —
+fiche, scan, carte, « Découvrir » — si bien qu'une liste qui s'arrête à 2022
+fait proposer un vin de quatre ans sans que rien ne le signale : le code
+compile, les tests passent, et seul un connaisseur le voit à l'écran.
+
+D'où `tests/fraicheur.test.js`, qui échoue dès que le guide accuse plus de deux
+ans de retard. Deux ans, et pas un : les vendanges de l'année en cours ne sont
+pas en bouteille, et celles de l'an dernier n'arrivent qu'au printemps.
+
+Compléter un millésime = des lignes dans `MILLESIMES_DB` (bilans de vendanges
+publiés) **et** l'année ajoutée aux `bonsMilsimes` des régions concernées.
+Ne rien ajouter pour une région dont on n'a pas trouvé de jugement de qualité :
+un trou vaut mieux qu'une note inventée. Les vins étrangers (Espagne, Italie,
+Portugal) ne sont pas suivis, et le test les exclut explicitement.
+
+---
+
 ## Le garde-fou des imports
 
 `npm run verifier` détecte les composants JSX utilisés sans être importés.
@@ -255,6 +275,7 @@ Ce que couvre le filet, et pourquoi :
 | `parcours.spec.mjs` | Chaque écran s'ouvre, **zéro exception JS**, thème posé avant le premier rendu, et l'ajout à la cave depuis la recherche et depuis Œno. |
 | `mentions.test.js` | Les vins qu'Œno nomme deviennent cliquables — dans **tout** le catalogue, sans mordre dans un mot ni confondre une appellation avec un arôme. |
 | `ajoutPartout.spec.mjs` | Une fiche de vin ouverte propose **toujours** de la ranger (piège nº 3). |
+| `fraicheur.test.js` | Les données ont une date de péremption : le guide des millésimes doit couvrir jusqu'à l'an dernier, et aucune fiche ne doit proposer par défaut un millésime dépassé. |
 | `guide.test.js` | Le guide unifié : les questions ne se posent que si elles servent, et **les directions se composent** (le palais affine le conseil du soir). |
 | `clavier.spec.mjs` | Le focus n'échappe **jamais** d'une fenêtre ouverte, y revient, et repart d'où il venait. Toute fenêtre porte un nom annonçable. |
 | `ficheActions.test.jsx` | La fiche tient ses actions du **contexte**, pas de qui l'ouvre — les dix-huit chemins d'un coup, et ceux à venir. |
