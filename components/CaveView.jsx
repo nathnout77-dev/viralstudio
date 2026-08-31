@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
-import { Search, SlidersHorizontal, LayoutGrid, List, Wine, Plus, X, ChevronDown, BookHeart, BarChart3, Heart, CloudUpload, Star, Sparkles } from 'lucide-react'
+import { Search, SlidersHorizontal, LayoutGrid, List, Wine, Plus, X, ChevronDown, BookHeart, BarChart3, Heart, CloudUpload, Star, Sparkles, Camera, Compass } from 'lucide-react'
 import WineCard from './WineCard'
 import JournalDegustation from './JournalDegustation'
 import PanoramaCave from './PanoramaCave'
@@ -33,7 +33,7 @@ function SelectFilter({ value, onChange, options, label }) {
   )
 }
 
-export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onUpdateQty, onToggleFavori, onMarkFavori, journalPrefill, onConsumeJournalPrefill, onBuyEnvie, onCompte, onOpenBibliotheque }) {
+export default function CaveView({ wines, caveDemo = false, onCommencerCave, onScan, onRecherche, onDecouvrir, onAdd, onEdit, onDelete, onSelect, onUpdateQty, onToggleFavori, onMarkFavori, journalPrefill, onConsumeJournalPrefill, onBuyEnvie, onCompte, onOpenBibliotheque }) {
   const envies = useEnvies()
   const [search, setSearch]   = useState('')
   const [typeFilter, setType] = useState('Tous')
@@ -144,7 +144,47 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
 
       {sub === 'cave' && (
       <>
+      {/* La cave d'exemple se présente : sans ce mot, un nouveau venu croit
+          posséder 34 bouteilles — ou n'ose pas toucher à ce qui ressemble à
+          la cave de quelqu'un d'autre. Elle s'efface d'elle-même au premier
+          vrai ajout (voir saveWine) ; le bouton permet de ne pas l'attendre. */}
+      {caveDemo && (
+        <div className="card p-4 mb-6 border-gold-500/40 bg-gold-500/5">
+          <p className="text-sm text-anthracite-800 font-semibold mb-1">
+            Ces bouteilles sont un décor 🍷
+          </p>
+          <p className="text-xs text-anthracite-500 leading-relaxed mb-3">
+            Une cave d’exemple pour vous montrer Œno. Ajoutez votre première
+            bouteille : elle s’effacera d’elle-même. Ou partez de zéro tout de suite :
+          </p>
+          <button onClick={onCommencerCave} className="btn-primary text-xs">
+            Commencer ma cave
+          </button>
+        </div>
+      )}
       {/* Stats strip */}
+      {wines.length === 0 ? (
+        <div className="card p-10 text-center">
+          <Wine size={36} className="text-wine-300 mx-auto mb-4" />
+          <p className="font-serif text-lg text-anthracite-900 mb-1">Votre cave démarre ici</p>
+          <p className="text-xs text-anthracite-500 leading-relaxed mb-6 max-w-sm mx-auto">
+            Une bouteille sous la main ? Scannez son étiquette. Sinon, cherchez
+            un vin que vous aimez — ou laissez Œno vous en faire découvrir.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-2.5 justify-center">
+            <button onClick={onScan} className="btn-primary text-xs justify-center">
+              <Camera size={13} /> Scanner une étiquette
+            </button>
+            <button onClick={onRecherche} className="btn-ghost text-xs justify-center">
+              <Search size={13} /> Chercher un vin
+            </button>
+            <button onClick={onDecouvrir} className="btn-ghost text-xs justify-center">
+              <Compass size={13} /> Découvrir
+            </button>
+          </div>
+        </div>
+      ) : (
+      <>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         {[
           { label: 'Bouteilles', value: stats.total,               sub: 'en cave' },
@@ -280,6 +320,8 @@ export default function CaveView({ wines, onAdd, onEdit, onDelete, onSelect, onU
             />
           ))}
         </div>
+      )}
+      </>
       )}
       </>
       )}

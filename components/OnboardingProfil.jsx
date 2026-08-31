@@ -5,6 +5,8 @@ import WineVisuel from './WineVisuel'
 import { diversifyByRegion, buildRaison, getRegionsPref } from '../lib/suggestions'
 import RegionsPrefFilter from './RegionsPrefFilter'
 import useModalBehavior from '../lib/useModal'
+import { FicheVin } from './BibliothequeView'
+import { loadEnvies, toggleEnvie } from './Envies'
 import Icone from './Icone'
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -206,6 +208,7 @@ export default function OnboardingProfil({ onComplete }) {
   const [step, setStep]     = useState(0)
   const [answers, setAnswers] = useState({})
   const [pendingProfil, setPendingProfil] = useState(null)
+  const [ficheOuverte, setFicheOuverte] = useState(null) // carte de résultat touchée
   const [regionsPref, setRegionsPrefState] = useState(() =>
     typeof window === 'undefined' ? [] : getRegionsPref()
   )
@@ -243,6 +246,15 @@ export default function OnboardingProfil({ onComplete }) {
   const finish = () => {
     if (!pendingProfil) return
     try { localStorage.setItem(PROFIL_KEY, JSON.stringify(pendingProfil)) } catch {}
+    // Les vins choisis « pour vous » ne doivent pas s'évaporer : ils partent
+    // dans les envies, fiche complète comprise. Sans doublon — refaire le
+    // questionnaire ne doit pas empiler deux fois le même vin.
+    try {
+      const deja = new Set(loadEnvies().map(e => e.appellation))
+      for (const w of results || []) {
+        if (!deja.has(w.appellation)) toggleEnvie(w.appellation, w)
+      }
+    } catch { /* stockage indisponible : les envies sont un bonus */ }
     onComplete(pendingProfil)
   }
 
@@ -262,7 +274,7 @@ export default function OnboardingProfil({ onComplete }) {
           </div>
           <h3 className="font-serif text-xl font-medium">Bienvenue sur Œno !</h3>
           <p className="text-cream/70 text-xs mt-1">
-            {results ? `Voici $🎉 {results.length} vins pour démarrer, choisis pour vous` : niveau ? `Encore ${questions.length - step} petite${questions.length - step > 1 ? 's' : ''} question${questions.length - step > 1 ? 's' : ''}…` : '5 questions max pour tout personnaliser pour vous.'}
+            {results ? `🎉 Voici ${results.length} vins pour démarrer, choisis pour vous` : niveau ? `Encore ${questions.length - step} petite${questions.length - step > 1 ? 's' : ''} question${questions.length - step > 1 ? 's' : ''}…` : '5 questions max pour tout personnaliser pour vous.'}
           </p>
         </div>
 
@@ -273,16 +285,18 @@ export default function OnboardingProfil({ onComplete }) {
                 {results.length} vins pour démarrer
               </h4>
               <p className="text-xs text-anthracite-400 text-center mb-5">
-                Sélectionnés selon vos réponses — vous les retrouverez dans la Bibliothèque
+                Gardés dans vos envies (Ma cave → ❤️) — touchez une carte pour ouvrir la fiche
               </p>
               {isConnaisseur && (
                 <RegionsPrefFilter selected={regionsPref} onChange={setRegionsPrefState} />
               )}
               <div className="space-y-3">
                 {results.map((w, i) => (
-                  <div
+                  <button
                     key={w.id}
-                    className="card p-4 flex items-start gap-3 animate-scale-in"
+                    type="button"
+                    onClick={() => setFicheOuverte(w)}
+                    className="w-full text-left cursor-pointer card p-4 flex items-start gap-3 animate-scale-in hover:shadow-card-hover transition-shadow"
                     style={{ animationDelay: `${i * 90}ms`, animationFillMode: 'both' }}
                   >
                     <WineVisuel type={w.type} size={20} className="flex-shrink-0" />
@@ -295,7 +309,7 @@ export default function OnboardingProfil({ onComplete }) {
                         <span>{buildRaison(w, { ...criteres, regionPref: isConnaisseur && regionsPref.includes(w.region) })}</span>
                       </span>
                     </span>
-                  </div>
+                  </button>
                 ))}
               </div>
               <button
@@ -366,6 +380,12 @@ export default function OnboardingProfil({ onComplete }) {
           )}
         </div>
       </div>
+
+      {ficheOuverte && (
+        <div className="relative z-[96]">
+          <FicheVin wine={ficheOuverte} onClose={() => setFicheOuverte(null)} />
+        </div>
+      )}
     </div>
   )
 }

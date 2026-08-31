@@ -137,6 +137,11 @@ suit le dernier `[role="dialog"]` du DOM, quel qu'il soit. Une nouvelle modale
 en hérite sans rien câbler — à la seule condition de porter `role="dialog"` et
 `aria-label`. C'est la seule chose à ne pas oublier.
 
+Échap suit la même logique de pile (`lib/useModal.js`) : **seule la fenêtre
+du dessus répond**. Chaque modale écoutait Échap pour son compte, et une
+fiche de vin ouverte par-dessus le questionnaire d'arrivée fermait les deux
+d'un coup.
+
 Mesurer : `node scripts/audit-clavier.mjs 3400` sur un build de production.
 
 ---
@@ -291,6 +296,7 @@ Ce que couvre le filet, et pourquoi :
 | `ajoutPartout.spec.mjs` | Une fiche de vin ouverte propose **toujours** de la ranger (piège nº 3). |
 | `fraicheur.test.js` | Les données ont une date de péremption : le guide des millésimes doit couvrir jusqu'à l'an dernier, et aucune fiche ne doit proposer par défaut un millésime dépassé. |
 | `guide.test.js` | Le guide unifié : les questions ne se posent que si elles servent, et **les directions se composent** (le palais affine le conseil du soir). |
+| `arrivee.spec.mjs` | La première minute d'un débutant : le questionnaire laisse cinq vins en envies (pas un cul-de-sac), la cave d'exemple se dit décor et s'écarte, Échap ne ferme que la fenêtre du dessus. |
 | `clavier.spec.mjs` | Le focus n'échappe **jamais** d'une fenêtre ouverte, y revient, et repart d'où il venait. Toute fenêtre porte un nom annonçable. |
 | `ficheActions.test.jsx` | La fiche tient ses actions du **contexte**, pas de qui l'ouvre — les dix-huit chemins d'un coup, et ceux à venir. |
 | `askIA.test.js` | La chaîne de repli Groq → Gemini → Claude, et le fait qu'**une clé absente ne bloque rien**. |

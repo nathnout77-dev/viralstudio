@@ -380,6 +380,11 @@ export default function App() {
   const total = wines.reduce((s, w) => s + w.quantity, 0)
   // Cave encore entièrement composée d'exemples : rien n'appartient au visiteur.
   const caveDemo = caveEncoreDemo(wines)
+
+  // « Commencer ma cave » : écarter le décor sans attendre le premier ajout.
+  const viderDemo = useCallback(() => {
+    setWines(prev => prev.filter(v => !estVinDemo(v)))
+  }, [])
   const ariane = VUES[view]
 
   // Glissement horizontal entre onglets (mobile). Désactivé pendant la landing
@@ -535,6 +540,11 @@ export default function App() {
           {view === 'cave' && (
             <CaveView
               wines={wines}
+              caveDemo={caveDemo}
+              onCommencerCave={viderDemo}
+              onScan={openScan}
+              onRecherche={() => setShowRecherche(true)}
+              onDecouvrir={() => goTo('decouvrir')}
               onAdd={() => setShowForm(true)}
               onEdit={editWineHandler}
               onDelete={deleteWine}
