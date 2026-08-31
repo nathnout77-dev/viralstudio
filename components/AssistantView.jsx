@@ -481,7 +481,9 @@ export default function AssistantView({ onClose, onAddWine }) {
     } finally {
       setLoading(false)
     }
-  }, [messages, loading, profil])
+    // `contexteReferentiel` a une identité stable (useCallback sur []) :
+    // le déclarer ne re-crée jamais rien, il rend juste la fermeture honnête.
+  }, [messages, loading, profil, contexteReferentiel])
 
   // ── Accords à partir d'une photo de plat ──────────────────────────────────
   const analyserPlat = useCallback(async (file) => {

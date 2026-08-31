@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import '../styles/globals.css'
 import 'leaflet/dist/leaflet.css'
 import { Toaster } from '../components/Toast'
+import LimiteErreurs from '../components/LimiteErreurs'
 import { inter, fraunces, tangerine } from '../lib/fonts'
 import { surveillerReglages } from '../lib/theme'
 import { amorcerSon } from '../lib/son'
@@ -35,7 +36,11 @@ export default function App({ Component, pageProps }) {
 
   return (
     <div className={`${inter.variable} ${fraunces.variable} ${tangerine.variable}`}>
-      <Component {...pageProps} />
+      {/* Le filet : un plantage d'affichage montre un écran de secours,
+          jamais un écran noir (components/LimiteErreurs). */}
+      <LimiteErreurs>
+        <Component {...pageProps} />
+      </LimiteErreurs>
       <Toaster />
       {horsLigne && (
         <div

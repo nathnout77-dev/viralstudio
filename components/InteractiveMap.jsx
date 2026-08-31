@@ -40,7 +40,7 @@ export function WinePanel({ wine, onClose, onAddToCave, addedIds, onNoter }) {
   // Le prix payé, demandé avant de ranger : c'est lui qui figurera en cave,
   // pas le prix moyen de l'appellation.
   const [prix, setPrix] = useState(() => String(prixSuggere(wine)))
-  useEffect(() => { setPrix(String(prixSuggere(wine))) }, [wine.id])
+  useEffect(() => { setPrix(String(prixSuggere(wine))) }, [wine.id]) // eslint-disable-line react-hooks/exhaustive-deps
   const isAdded = addedIds.has(`${wine.id}-${millesime}`)
   const hasPetitDomaine = wine.domaines.some(d => d.confidentiel)
 

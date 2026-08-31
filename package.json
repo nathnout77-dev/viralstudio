@@ -7,8 +7,9 @@
     "verifier": "node scripts/verifier-imports.mjs",
     "test": "vitest run",
     "test:parcours": "playwright test",
-    "build": "node scripts/verifier-imports.mjs && next build && node scripts/generate-sw-precache.js",
-    "start": "next start"
+    "build": "node scripts/verifier-imports.mjs && eslint . && next build && node scripts/generate-sw-precache.js",
+    "start": "next start",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@headlessui/react": "^2.2.10",
@@ -25,6 +26,8 @@
   "devDependencies": {
     "@playwright/test": "^1.56.0",
     "autoprefixer": "^10.5.4",
+    "eslint": "^10.9.1",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "jsdom": "^30.0.1",
     "postcss": "^8.5.26",
     "tailwindcss": "^3.4.19",

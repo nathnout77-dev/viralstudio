@@ -678,7 +678,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
     return () => clearTimeout(t)
   }, [step])
 
-  useEffect(() => () => fermerCamera(), []) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => () => fermerCamera(), [])
 
   // Après identification vision : mémoriser et enrichir si le vin est inconnu.
   const traiterDecouverte = async (json, matchedWine) => {
@@ -955,7 +955,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
       }
     })()
     return () => { annule = true }
-  }, [step, rayonVins]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [step, rayonVins])
 
   // Mode secours : identifier le vin par son nom quand la lecture IA échoue.
   // Réutilise matchWine → même écran résultat que le scan (fiche, prix, cave).
@@ -1155,7 +1155,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
           {step === 'camera' && (
             <div className="animate-fade-in">
               <div className="relative rounded-2xl overflow-hidden bg-black" style={{ aspectRatio: '3 / 4' }}>
-                {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+                {/* Flux caméra muet : aucune piste à sous-titrer */}
                 <video
                   ref={videoRef}
                   playsInline
@@ -1237,7 +1237,7 @@ export default function ScanEtiquette({ onClose, onAddWine }) {
           {step === 'preview' && photo && (
             <div className="space-y-4 animate-fade-in">
               <div className="rounded-2xl overflow-hidden flex items-center justify-center" style={{ background: '#1C1917' }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
+                {/* <img> à dessein : blob local, next/image n'optimise rien ici */}
                 <img src={photo} alt="Aperçu de l'étiquette photographiée" className="max-h-72 w-auto max-w-full object-contain" />
               </div>
               <button

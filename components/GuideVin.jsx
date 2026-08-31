@@ -88,6 +88,7 @@ export default function GuideVin({ mode, depart = null, onOpenBibliotheque }) {
     })
     // `rejoue` force un nouveau tirage à l'identique : la diversification par
     // région n'est pas déterministe sur les ex æquo.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [termine, reponses, mode, profilAppris, regions, rejoue])
 
   const choisir = useCallback((valeur) => {

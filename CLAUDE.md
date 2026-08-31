@@ -16,7 +16,8 @@ npm run dev            # développement
 npm test               # tests unitaires (Vitest) — rapides, à lancer souvent
 npm run test:parcours  # parcours navigateur (Playwright) — lance le serveur seul
 npm run verifier       # garde-fou imports (voir plus bas)
-npm run build          # verifier + next build + génération du précache SW
+npm run lint           # règles des hooks React, rien d'autre — zéro toléré
+npm run build          # verifier + lint + next build + génération du précache SW
 ```
 
 Le filet est **mince et volontairement ciblé** : il couvre la fusion des
@@ -254,6 +255,19 @@ Webpack compile sans broncher un `<Icone />` non importé — l'app plante alors
 place. Il tourne automatiquement avant chaque `next build`. Cette erreur est
 déjà arrivée en production (« Réparer le scan : import manquant »).
 
+Son pendant à l'exécution : `components/LimiteErreurs.jsx`, posé dans
+`_app.jsx` autour de l'application entière. Tout ce que le build n'attrape
+pas finit là — écran de secours qui dit que les données sont intactes, au
+lieu d'un écran noir. Ses styles sont en ligne, à dessein : si c'est la
+chaîne CSS qui a cassé, l'écran de secours doit rester lisible.
+
+`npm run lint` complète le duo : uniquement les règles des hooks React
+(hook sous condition = plantage, dépendance oubliée = état figé). Zéro
+signalement toléré — les dérogations volontaires portent leur
+justification en commentaire, comme les quatre `[moi?.id]` de
+`VeilleMessages` (suivre l'objet `moi` réinscrirait le push à chaque
+rafraîchissement de session).
+
 ---
 
 ## Vérifier
@@ -281,6 +295,7 @@ Ce que couvre le filet, et pourquoi :
 | `ficheActions.test.jsx` | La fiche tient ses actions du **contexte**, pas de qui l'ouvre — les dix-huit chemins d'un coup, et ceux à venir. |
 | `askIA.test.js` | La chaîne de repli Groq → Gemini → Claude, et le fait qu'**une clé absente ne bloque rien**. |
 | `decouvertes.test.js` | Les vins scannés : dédoublonnage au re-scan, tolérance à une étiquette à moitié lue. |
+| `limiteErreurs.test.jsx` | Le filet sous l'app : un plantage d'affichage montre l'écran de secours, jamais un écran noir. |
 | `social.test.js` | **Aucune** fonction du social ne jette sans compte — la liste est parcourue en entier, y compris les fonctions à venir. |
 
 Ce que le filet **ne** couvre pas : la carte et l'école. Y toucher demande

@@ -58,7 +58,7 @@ export default function VeilleMessages({ amiOuvert }) {
     amorce.current = false
     pseudos.current = new Map()
     if (!id) pastilleApp(0)
-  }, [moi?.id]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [moi?.id])
 
   // Identité recopiée en local : c'est elle qui permet à la barre du haut
   // d'afficher la bonne initiale — et la photo déposée depuis un autre
