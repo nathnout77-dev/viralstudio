@@ -332,9 +332,9 @@ Une vue qu'il ne sait plus ouvrir est **signalée**, jamais passée sous
 silence — sinon un écran disparaîtrait de la surveillance sans qu'on le sache.
 Ajouter une vue : une ligne dans `VUES`.
 
-Référence actuelle : **6 restants dans chaque thème, tous l'attribution
-Leaflet** (tierce, 4,49:1 pour un seuil à 4,5). Aucun texte d'Œno n'est
-sous le seuil. Toute nouvelle entrée est une régression.
+Référence actuelle : **0 dans chaque thème** — l'attribution Leaflet,
+longtemps seule fautive (4,49:1), est foncée dans `globals.css`. Toute
+nouvelle entrée est une régression.
 
 Vérifier aussi **dans les deux thèmes** dès qu'on touche à l'apparence, et
 **sur les deux mises en page** : barre latérale au-delà de `lg`, barre du bas

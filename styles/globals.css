@@ -623,3 +623,11 @@
    Le conteneur de la carte est isolé (isolation: isolate sur la card) :
    les z-index internes de Leaflet (200-1000) ne peuvent plus s'échapper. */
 .leaflet-container { z-index: 0 !important; }
+
+/* L'attribution Leaflet est le dernier texte sous le seuil de contraste :
+   son bleu d'origine (#0078A8) fait 4,49:1 sur son fond, pour un seuil à
+   4,5. Elle doit rester (c'est la licence des tuiles), mais rien n'impose
+   sa couleur : un même bleu plus profond passe à 5,2:1 dans les deux
+   thèmes — le fond de l'attribution, blanc translucide, ne change pas. */
+.leaflet-control-attribution,
+.leaflet-control-attribution a { color: #006d99 !important; }

@@ -3,6 +3,7 @@
   "short_name": "Œno",
   "description": "Votre cave, la carte des vignobles, un Goût-o-mètre et plus de 200 vins décodés pour néophytes.",
   "start_url": "/",
+  "id": "/",
   "display": "standalone",
   "background_color": "#12100e",
   "theme_color": "#5c0d22",
@@ -44,20 +45,35 @@
       "short_name": "Scanner",
       "description": "Photographier une bouteille pour la décoder",
       "url": "/?action=scan",
-      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Ce soir, je bois quoi ?",
       "short_name": "Ce soir ?",
       "url": "/?action=cesoir",
-      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Recherche rapide (millésimes)",
       "short_name": "Recherche",
       "description": "Appellation ou cépage → les millésimes à privilégier",
       "url": "/?action=recherche",
-      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
 }
