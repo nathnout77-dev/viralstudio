@@ -43,6 +43,8 @@ components/         65 composants. Un fichier = un écran ou un bloc.
 lib/                Logique sans JSX : stockage, synchro, réglages, thème…
 data/               Données statiques volumineuses (base de vins, leçons…).
 supabase/migrations Schéma SQL, numéroté, jamais réécrit.
+supabase/templates  Les emails de connexion. Versionnés ici, mais posés à la
+                    main dans Supabase : voir leur README.
 mobile/             Application Expo / React Native — maquette séparée,
                     ne partage pas de code avec le web.
 ```
