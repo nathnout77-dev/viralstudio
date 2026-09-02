@@ -299,6 +299,7 @@ Ce que couvre le filet, et pourquoi :
 | `fraicheur.test.js` | Les données ont une date de péremption : le guide des millésimes doit couvrir jusqu'à l'an dernier, et aucune fiche ne doit proposer par défaut un millésime dépassé. |
 | `guide.test.js` | Le guide unifié : les questions ne se posent que si elles servent, et **les directions se composent** (le palais affine le conseil du soir). |
 | `arrivee.spec.mjs` | La première minute d'un débutant : le questionnaire laisse cinq vins en envies (pas un cul-de-sac), la cave d'exemple se dit décor et s'écarte, Échap ne ferme que la fenêtre du dessus. |
+| `connexion.spec.mjs` | Le point d'arrivée du lien reçu par email n'est **jamais** un écran mort : il dit ce qui se passe et laisse repartir. |
 | `clavier.spec.mjs` | Le focus n'échappe **jamais** d'une fenêtre ouverte, y revient, et repart d'où il venait. Toute fenêtre porte un nom annonçable. |
 | `ficheActions.test.jsx` | La fiche tient ses actions du **contexte**, pas de qui l'ouvre — les dix-huit chemins d'un coup, et ceux à venir. |
 | `askIA.test.js` | La chaîne de repli Groq → Gemini → Claude, et le fait qu'**une clé absente ne bloque rien**. |

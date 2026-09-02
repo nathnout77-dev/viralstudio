@@ -4,7 +4,11 @@
   "description": "Votre cave, la carte des vignobles, un Goût-o-mètre et plus de 200 vins décodés pour néophytes.",
   "start_url": "/",
   "id": "/",
+  "scope": "/",
   "display": "standalone",
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
   "background_color": "#12100e",
   "theme_color": "#5c0d22",
   "orientation": "portrait",

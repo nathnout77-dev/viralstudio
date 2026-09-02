@@ -1,42 +1,69 @@
 # Les emails de connexion
 
-Œno demande un **code à 6 chiffres** pour retrouver sa cave (`verifyOtp`,
-dans `components/CompteSync.jsx`). Les gabarits d'email de Supabase, eux,
-n'envoient par défaut qu'un lien : `{{ .ConfirmationURL }}`, jamais
-`{{ .Token }}`. L'écran réclamait donc un code que l'email ne contenait pas.
+Deux problèmes se cachaient dans un seul email.
 
-Ces deux fichiers réparent cela. Ils ne s'appliquent pas tout seuls : les
-gabarits vivent dans la configuration du projet Supabase, pas dans le dépôt.
-Ils sont versionnés ici pour être relus, corrigés, et recopiés à l'identique.
+**Le code n'existait pas.** Œno réclame un code à 6 chiffres (`verifyOtp`,
+dans `components/CompteSync.jsx`), mais les gabarits Supabase par défaut
+n'envoient que `{{ .ConfirmationURL }}` — jamais `{{ .Token }}`. L'écran
+demandait de recopier quelque chose que l'email ne contenait pas.
 
-## Les poser (2 minutes)
+**Le lien ouvrait le navigateur, jamais l'application.** `{{ .ConfirmationURL }}`
+pointe vers `<projet>.supabase.co`, un domaine étranger à Œno. Android ne
+confie à une application installée que les adresses de **son** périmètre :
+un lien vers supabase.co ne pouvait donc, par construction, aboutir que dans
+le navigateur — la session se déposant à côté de l'app, jamais dedans.
 
-Tableau de bord Supabase → **Authentication → Emails**, puis, pour chacun :
+Ces gabarits corrigent les deux : le lien pointe vers `/connexion` **sur le
+domaine d'Œno** (voir `pages/connexion.jsx`, qui échange le jeton), et le
+code reste dessous.
+
+## Les poser
+
+### 1. Les gabarits
+
+Tableau de bord Supabase → **Authentication → Emails** :
 
 | Fichier | Gabarit à remplacer | Objet suggéré |
 |---|---|---|
-| `magic_link.html` | **Magic Link** | `{{ .Token }} — votre code Œno` |
-| `confirmation.html` | **Confirm signup** | `{{ .Token }} — bienvenue sur Œno` |
+| `magic_link.html` | **Magic Link** | `Votre cave Œno vous attend` |
+| `confirmation.html` | **Confirm signup** | `Bienvenue sur Œno` |
 
-**Les deux, pas un seul.** `signInWithOtp` choisit le gabarit selon que
-l'adresse est déjà connue : *Magic Link* pour un retour, *Confirm signup*
-pour une première fois. N'en corriger qu'un prive de code la moitié des
-utilisateurs — et si c'est *Confirm signup* qu'on oublie, précisément ceux
-qui découvrent Œno.
+**Les deux, pas un seul.** `signInWithOtp` choisit *Magic Link* pour une
+adresse déjà connue et *Confirm signup* pour une adresse nouvelle. N'en
+réparer qu'un prive la moitié des utilisateurs — et en oubliant le second,
+précisément ceux qui découvrent Œno.
 
-Mettre `{{ .Token }}` **dans l'objet** rend le code lisible depuis la liste
-des messages, sans même ouvrir l'email.
+### 2. Les adresses
 
-## Pourquoi le code avant le lien
+**Authentication → URL Configuration** :
 
-Œno s'installe comme une application. Un lien magique ouvre le navigateur du
-système : la session se dépose là, pas dans l'application installée — celle
-où l'utilisateur attend justement sa cave. Le code, lui, se recopie sans
-jamais sortir d'Œno. Le lien reste proposé, en second, pour qui lit ses
-emails sur le même appareil.
+- **Site URL** : l'adresse de production d'Œno (`https://…`). C'est elle que
+  `{{ .SiteURL }}` remplace dans le lien — mal réglée, le lien mène ailleurs.
+- **Redirect URLs** : y ajouter `https://<domaine>/**`.
+
+### 3. Pour que le lien ouvre vraiment l'application
+
+Le lien est désormais une adresse d'Œno, condition nécessaire mais pas
+suffisante. Android n'ouvre l'application installée que s'il a la preuve que
+le domaine et l'application vont ensemble — c'est le rôle de
+`/.well-known/assetlinks.json`, qui réclame l'empreinte SHA-256 de la clé de
+signature (Play Console → *Signature d'application*). Sans ce fichier, le
+lien s'ouvre dans le navigateur : le compte est bien connecté, mais dans
+l'onglet plutôt que dans l'app.
+
+Le manifeste, lui, est prêt : `scope` délimite le périmètre et
+`launch_handler` fait reprendre la fenêtre déjà ouverte.
+
+## Pourquoi le code reste, malgré le lien
+
+Il n'est pas un ornement. Sur **iOS**, une application ajoutée à l'écran
+d'accueil ne partage pas le stockage du navigateur : le lien connecte Safari,
+jamais l'app. Et un email lu depuis **un autre appareil** n'ouvrira jamais la
+bonne application. Six chiffres se recopient de partout.
 
 ## Vérifier
 
-Demander un email depuis Œno (Compte & sauvegarde), puis contrôler que le
-message reçu porte bien six chiffres, et que les saisir connecte. Un email
-qui n'affiche qu'un lien signifie qu'un des deux gabarits est resté par défaut.
+Demander un email depuis Œno (Compte & sauvegarde). Le message doit porter un
+bouton **et** six chiffres. Contrôler les deux chemins : le bouton connecte,
+et le code aussi. Un email qui n'affiche qu'un lien vers `supabase.co`
+signifie qu'un des deux gabarits est resté par défaut.

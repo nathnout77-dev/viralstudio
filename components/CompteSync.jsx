@@ -380,7 +380,7 @@ export default function CompteSync({ onClose, extraSection = null }) {
             <form onSubmit={sendLink}>
               <p className="text-sm text-anthracite-600 leading-relaxed mb-5">
                 Créez un compte (ou reconnectez-vous) pour retrouver votre cave sur tous
-                vos appareils. Pas de mot de passe : un code à 6 chiffres envoyé par email.
+                vos appareils. Pas de mot de passe : un email, un bouton, et c'est ouvert.
               </p>
               <label className="label" htmlFor="sync-email">Votre adresse email</label>
               <input
@@ -391,7 +391,7 @@ export default function CompteSync({ onClose, extraSection = null }) {
               {error && <p className="text-xs text-red-700 mb-3">{error}</p>}
               <button type="submit" disabled={busy} className="btn-gold w-full justify-center disabled:opacity-60">
                 <Mail size={14} />
-                {busy ? 'Envoi…' : 'Recevoir mon code par email'}
+                {busy ? 'Envoi…' : 'Recevoir mon email de connexion'}
               </button>
               <ExportRestoreLocal compact />
             </form>
@@ -405,9 +405,10 @@ export default function CompteSync({ onClose, extraSection = null }) {
               </div>
               <p className="font-serif text-base text-anthracite-800 mb-2">L'email est en route</p>
               <p className="text-xs text-anthracite-400 leading-relaxed max-w-xs mx-auto">
-                Recopiez ici le code à 6 chiffres envoyé à{' '}
-                <span className="font-semibold text-anthracite-600">{email}</span>.
-                Il est valable une heure.
+                Ouvrez l'email envoyé à{' '}
+                <span className="font-semibold text-anthracite-600">{email}</span> et touchez
+                le bouton : votre cave s'ouvre ici même. Depuis un autre appareil, recopiez
+                plutôt son code à 6 chiffres.
               </p>
               <form onSubmit={verifyCode} className="mt-5 max-w-[240px] mx-auto">
                 <input
