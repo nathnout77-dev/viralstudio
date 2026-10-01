@@ -1,0 +1,57 @@
+{
+  "packageId": "app.oeno",
+  "host": "viralstudio-seven.vercel.app",
+  "name": "Œno — Le vin, enfin simple",
+  "launcherName": "Œno",
+  "display": "standalone",
+  "orientation": "portrait",
+  "themeColor": "#5c0d22",
+  "themeColorDark": "#141210",
+  "navigationColor": "#12100e",
+  "navigationColorDark": "#12100e",
+  "backgroundColor": "#12100e",
+  "enableNotifications": true,
+  "startUrl": "/",
+  "iconUrl": "https://viralstudio-seven.vercel.app/icons/icon-512.png",
+  "maskableIconUrl": "https://viralstudio-seven.vercel.app/icons/icon-512-maskable.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "oeno"
+  },
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [
+    {
+      "name": "Scanner une étiquette",
+      "shortName": "Scanner",
+      "url": "/?action=scan",
+      "chosenIconUrl": "https://viralstudio-seven.vercel.app/icons/icon-192.png"
+    },
+    {
+      "name": "Ce soir, je bois quoi ?",
+      "shortName": "Ce soir ?",
+      "url": "/?action=cesoir",
+      "chosenIconUrl": "https://viralstudio-seven.vercel.app/icons/icon-192.png"
+    },
+    {
+      "name": "Recherche rapide (millésimes)",
+      "shortName": "Recherche",
+      "url": "/?action=recherche",
+      "chosenIconUrl": "https://viralstudio-seven.vercel.app/icons/icon-192.png"
+    }
+  ],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://viralstudio-seven.vercel.app/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://viralstudio-seven.vercel.app/",
+  "minSdkVersion": 21,
+  "fingerprints": []
+}

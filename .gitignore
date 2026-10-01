@@ -11,3 +11,19 @@ public/sw-precache.js
 # Tests
 test-results/
 playwright-report/
+
+# Application Play Store (Bubblewrap) — la clé de signature ne doit JAMAIS
+# entrer dans le dépôt : la perdre ou la divulguer, c'est perdre l'application.
+twa/*.keystore
+twa/*.jks
+twa/app/
+twa/build/
+twa/*.apk
+twa/*.aab
+twa/*.idsig
+twa/gradle*
+twa/settings.gradle
+twa/build.gradle
+twa/local.properties
+twa/store_icon.png
+twa/manifest-checksum.txt

@@ -164,7 +164,7 @@ await p.addInitScript(t => {
   sessionStorage.setItem('landing-seen', '1')
   localStorage.setItem('oeno-tour-v1', '1')
   localStorage.setItem('oeno-profil', JSON.stringify({ mode: 'amateur', gouts: {} }))
-  localStorage.setItem('oeno-reglages', JSON.stringify({ theme: t }))
+  localStorage.setItem('oeno-reglages', JSON.stringify({ theme: t, majeur: true }))
 }, THEME)
 
 const parEcran = new Map()

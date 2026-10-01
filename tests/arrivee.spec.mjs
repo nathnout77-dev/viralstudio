@@ -73,3 +73,36 @@ test('la cave d’exemple se présente, et s’écarte pour laisser commencer', 
   await expect(page.getByText('Essayez d’autres critères')).toHaveCount(0)
   expect(incidents).toEqual([])
 })
+
+test.describe('la porte des 18 ans', () => {
+  // Un appareil vierge, sans le drapeau que posent les autres parcours.
+  test.use({ storageState: { cookies: [], origins: [] } })
+
+  test('se pose avant tout, une seule fois, et « non » ferme vraiment', async ({ page }) => {
+    const incidents = []
+    page.on('pageerror', e => incidents.push(e.message))
+    await page.goto('/')
+    const porte = page.getByRole('dialog', { name: 'Avez-vous 18 ans ?' })
+    await expect(porte).toBeVisible()
+    // Rien d'Œno derrière : ni questionnaire, ni barre de navigation.
+    await expect(page.getByRole('dialog', { name: /Bienvenue/ })).toHaveCount(0)
+    await expect(page.getByRole('button', { name: 'Ma Cave', exact: true })).toHaveCount(0)
+
+    // Échap ne passe pas la porte.
+    await page.keyboard.press('Escape')
+    await expect(porte).toBeVisible()
+
+    // « Non » ne mène nulle part ailleurs.
+    await page.getByRole('button', { name: 'Non', exact: true }).click()
+    await expect(page.getByText(/réservé aux personnes majeures/)).toBeVisible()
+    await page.getByRole('button', { name: /Je me suis trompé/ }).click()
+
+    // « Oui » ouvre l'app, et la question ne revient pas.
+    await page.getByRole('button', { name: /Oui, j’ai 18 ans/ }).click()
+    await expect(porte).toHaveCount(0)
+    await page.reload()
+    await page.waitForTimeout(800)
+    await expect(page.getByRole('dialog', { name: 'Avez-vous 18 ans ?' })).toHaveCount(0)
+    expect(incidents).toEqual([])
+  })
+})

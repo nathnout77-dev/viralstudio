@@ -106,6 +106,7 @@ await contexte.addInitScript(() => {
   sessionStorage.setItem('landing-seen', '1')
   localStorage.setItem('oeno-tour-v1', '1')
   localStorage.setItem('oeno-profil', JSON.stringify({ mode: 'amateur', gouts: {} }))
+  localStorage.setItem('oeno-reglages', JSON.stringify({ majeur: true })) // passer la porte des 18 ans
 })
 
 const parClasse = new Map()

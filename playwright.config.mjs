@@ -17,6 +17,10 @@ export default defineConfig({
     baseURL: 'http://127.0.0.1:3210',
     channel: 'chromium',
     viewport: { width: 1280, height: 900 },
+    // Chaque parcours démarre « majeur » : la porte des 18 ans (PorteAge) se
+    // pose une fois par appareil, et chaque test serait sinon un premier
+    // lancement. Elle a son propre test, qui repart d'un appareil vierge.
+    storageState: 'tests/etat-majeur.json',
   },
   webServer: {
     command: 'npx next dev -p 3210',

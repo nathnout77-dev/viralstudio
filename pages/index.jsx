@@ -18,6 +18,7 @@ import ParcoursApprendre from '../components/ParcoursApprendre'
 import ParcoursExplorer from '../components/ParcoursExplorer'
 import MenuGrille       from '../components/MenuGrille'
 import OnboardingProfil, { loadProfil } from '../components/OnboardingProfil'
+import PorteAge from '../components/PorteAge'
 import { removeEnvie } from '../components/Envies'
 import { toast } from '../components/Toast'
 import { normaliser } from '../data/aromes'
@@ -166,6 +167,8 @@ export default function App() {
   const [nextStep, setNextStep]       = useState(null) // guidage : prochaine étape après un ajout
   const [showTour, setShowTour]       = useState(false) // visite guidée premier lancement mobile
   const [ficheVin, setFicheVin]       = useState(null)  // fiche ouverte depuis l'écran Découvrir
+  // `null` tant qu'on n'a pas lu l'appareil : ni porte, ni app, pas d'éclair.
+  const [majeur, setMajeur]           = useState(null)  // 18 ans confirmés (components/PorteAge)
 
   useEffect(() => {
     // Lecture robuste : un localStorage corrompu ne doit jamais bloquer l'app
@@ -213,6 +216,7 @@ export default function App() {
       // Nouveau visiteur sans profil : on propose l'onboarding tout de suite.
       if (!loadProfil()) setShowOnboarding(true)
     }
+    setMajeur(Boolean(lireReglages().majeur))
     setReady(true)
   }, [])
 
@@ -432,6 +436,12 @@ export default function App() {
         </div>
       </div>
     )
+  }
+
+  // La porte de l'âge passe avant tout le reste, landing comprise : on ne
+  // présente pas Œno à quelqu'un qu'on va ensuite éconduire.
+  if (majeur === false) {
+    return <PorteAge onMajeur={() => setMajeur(true)} />
   }
 
   if (showLanding) {

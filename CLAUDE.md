@@ -45,6 +45,8 @@ data/               Données statiques volumineuses (base de vins, leçons…).
 supabase/migrations Schéma SQL, numéroté, jamais réécrit.
 supabase/templates  Les emails de connexion. Versionnés ici, mais posés à la
                     main dans Supabase : voir leur README.
+twa/                L'application Play Store (Bubblewrap). Guide complet dans
+                    son README — domaine, signature, fiche, test fermé.
 mobile/             Application Expo / React Native — maquette séparée,
                     ne partage pas de code avec le web.
 ```
@@ -254,6 +256,30 @@ Portugal) ne sont pas suivis, et le test les exclut explicitement.
 
 ---
 
+## Publier sur le Play Store
+
+Œno y entre comme **TWA** (`twa/`), une coque qui ouvre le site : le code
+reste celui du web. Ce que la publication a imposé, et qu'il ne faut pas
+défaire :
+
+- **Les routes IA sont gardées** (`lib/serveur/garde.js`) : origine d'Œno
+  exigée, rafales freinées. Une nouvelle route qui relaie une clé d'API doit
+  commencer par `if (!autoriser(req, res)) return`, sinon n'importe qui s'en
+  sert. `push.js` a sa propre garde (jeton de session).
+- **On supprime son compte dans l'app** (`SupprimerCompte` dans
+  `CompteSync.jsx`, fonction SQL de la migration 006). Elle repose sur le
+  `ON DELETE CASCADE` de toutes les tables vers `auth.users` : une nouvelle
+  table liée à un compte doit l'avoir aussi.
+- **Deux pages publiques** : `/confidentialite` et `/suppression-compte`,
+  dont les adresses figurent dans la fiche. Un nouveau service tiers doit
+  être déclaré dans la première, sinon elle ment.
+- **La porte des 18 ans** (`PorteAge.jsx`) passe avant tout, une fois par
+  appareil (`majeur` dans les réglages). Les parcours Playwright démarrent
+  « majeurs » via `tests/etat-majeur.json` ; les audits posent le drapeau
+  eux-mêmes.
+- **`assetlinks.json`** se génère (`scripts/assetlinks.mjs`), il ne s'écrit
+  pas à la main et ne se pose jamais avec une empreinte inventée.
+
 ## Le garde-fou des imports
 
 `npm run verifier` détecte les composants JSX utilisés sans être importés.
@@ -298,13 +324,14 @@ Ce que couvre le filet, et pourquoi :
 | `ajoutPartout.spec.mjs` | Une fiche de vin ouverte propose **toujours** de la ranger (piège nº 3). |
 | `fraicheur.test.js` | Les données ont une date de péremption : le guide des millésimes doit couvrir jusqu'à l'an dernier, et aucune fiche ne doit proposer par défaut un millésime dépassé. |
 | `guide.test.js` | Le guide unifié : les questions ne se posent que si elles servent, et **les directions se composent** (le palais affine le conseil du soir). |
-| `arrivee.spec.mjs` | La première minute d'un débutant : le questionnaire laisse cinq vins en envies (pas un cul-de-sac), la cave d'exemple se dit décor et s'écarte, Échap ne ferme que la fenêtre du dessus. |
-| `connexion.spec.mjs` | Le point d'arrivée du lien reçu par email n'est **jamais** un écran mort : il dit ce qui se passe et laisse repartir. |
+| `arrivee.spec.mjs` | La première minute d'un débutant : le questionnaire laisse cinq vins en envies (pas un cul-de-sac), la cave d'exemple se dit décor et s'écarte, Échap ne ferme que la fenêtre du dessus. La porte des 18 ans passe avant tout et « non » ferme vraiment. |
+| `connexion.spec.mjs` | Le point d'arrivée du lien reçu par email n'est **jamais** un écran mort ; les pages confidentialité et suppression se lisent seules. |
 | `clavier.spec.mjs` | Le focus n'échappe **jamais** d'une fenêtre ouverte, y revient, et repart d'où il venait. Toute fenêtre porte un nom annonçable. |
 | `ficheActions.test.jsx` | La fiche tient ses actions du **contexte**, pas de qui l'ouvre — les dix-huit chemins d'un coup, et ceux à venir. |
 | `askIA.test.js` | La chaîne de repli Groq → Gemini → Claude, et le fait qu'**une clé absente ne bloque rien**. |
 | `decouvertes.test.js` | Les vins scannés : dédoublonnage au re-scan, tolérance à une étiquette à moitié lue. |
 | `limiteErreurs.test.jsx` | Le filet sous l'app : un plantage d'affichage montre l'écran de secours, jamais un écran noir. |
+| `garde.test.js` | Les routes IA refusent les appels étrangers et freinent les rafales : les clés d'Œno ne servent qu'à Œno. |
 | `social.test.js` | **Aucune** fonction du social ne jette sans compte — la liste est parcourue en entier, y compris les fonctions à venir. |
 
 Ce que le filet **ne** couvre pas : la carte et l'école. Y toucher demande
