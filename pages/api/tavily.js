@@ -2,8 +2,11 @@
 // Donne un vrai grounding web à n'importe quel modèle de langage, y compris
 // Groq qui n'a pas d'outil de recherche natif — lib/askIA.js appelle cette
 // route en amont puis injecte les résultats dans le prompt.
+import { autoriser } from '../../lib/serveur/garde'
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
+  // Ni script étranger, ni rafale : voir lib/serveur/garde.js.
+  if (!autoriser(req, res)) return
   if (!process.env.TAVILY_API_KEY) {
     console.error('[tavily] TAVILY_API_KEY absente des variables d\'environnement')
     return res.status(500).json({ error: 'missing_api_key' })

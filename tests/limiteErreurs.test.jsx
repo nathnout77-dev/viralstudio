@@ -35,8 +35,14 @@ describe('la limite d’erreur', () => {
 
   it('montre l’écran de secours au lieu d’un écran noir', () => {
     // React répète l'erreur en console pendant le rattrapage : c'est attendu.
+    // En développement, React la rejoue aussi comme événement « error » de la
+    // fenêtre, que jsdom imprime : on l'absorbe pour ne pas noyer une vraie
+    // erreur dans la sortie des tests.
     const silence = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const absorber = e => e.preventDefault()
+    window.addEventListener('error', absorber)
     act(() => root.render(<LimiteErreurs><Bombe /></LimiteErreurs>))
+    window.removeEventListener('error', absorber)
     silence.mockRestore()
 
     // L'essentiel du message : rien n'est perdu, et on peut repartir.

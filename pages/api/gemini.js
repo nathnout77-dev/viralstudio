@@ -4,6 +4,7 @@
 // prompt système, éventuel outil web_search) et le traduit vers le format
 // Gemini. Renvoie une structure IDENTIQUE à celle d'Anthropic ({content:[...]})
 // afin d'être 100 % interchangeable côté composants.
+import { autoriser } from '../../lib/serveur/garde'
 export const config = {
   api: {
     bodyParser: { sizeLimit: '4mb' },
@@ -60,6 +61,8 @@ function wantsWebSearch(tools) {
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
+  // Ni script étranger, ni rafale : voir lib/serveur/garde.js.
+  if (!autoriser(req, res)) return
   if (!process.env.GEMINI_API_KEY) {
     return res.status(500).json({ error: 'missing_api_key' })
   }

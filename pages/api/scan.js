@@ -11,6 +11,7 @@
 //     `detail` trace CHAQUE tentative (« groq/scout:404 · gemini/2.5-flash:429 … »)
 //     pour un diagnostic immédiat, à l'écran comme dans les logs Vercel.
 // ═══════════════════════════════════════════════════════════════════════════
+import { autoriser } from '../../lib/serveur/garde'
 export const config = {
   api: { bodyParser: { sizeLimit: '4mb' } },
   maxDuration: 60,
@@ -225,6 +226,8 @@ async function essaiClaude(image, trace, opts) {
 // ── Handler ─────────────────────────────────────────────────────────────────
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
+  // Ni script étranger, ni rafale : voir lib/serveur/garde.js.
+  if (!autoriser(req, res)) return
   const image = req.body?.image
   if (!image || typeof image !== 'string') {
     return res.status(400).json({ error: 'api', detail: 'image absente du corps de la requête' })

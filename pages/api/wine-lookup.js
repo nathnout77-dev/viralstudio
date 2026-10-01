@@ -12,6 +12,7 @@
 //                                  description, confiance }
 //   4xx/5xx { error, detail }  → error: 'quota'|'config'|'api'|'introuvable'
 // ═══════════════════════════════════════════════════════════════════════════
+import { autoriser } from '../../lib/serveur/garde'
 export const config = { maxDuration: 30 }
 
 const LOOKUP_PROMPT = `Tu es un sommelier expert qui aide quelqu'un à ajouter un vin à sa cave. On te donne le NOM d'un vin tapé à la main (appellation, château/domaine, marque de supermarché, éventuellement un millésime). Identifie ce vin du mieux possible et renvoie sa fiche.
@@ -109,6 +110,8 @@ async function essaiGemini(model, query, trace) {
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
+  // Ni script étranger, ni rafale : voir lib/serveur/garde.js.
+  if (!autoriser(req, res)) return
   const query = String(req.body?.query || '').trim()
   if (query.length < 2) return res.status(400).json({ error: 'api', detail: 'requête vide' })
 
