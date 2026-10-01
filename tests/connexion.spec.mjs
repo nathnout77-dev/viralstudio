@@ -39,3 +39,16 @@ for (const [nom, adresse] of ADRESSES) {
     expect(incidents).toEqual([])
   })
 }
+
+// Les deux pages publiques que réclame la fiche Play Store : elles doivent se
+// lire seules, sans compte, sans réseau au-delà d'elles-mêmes.
+for (const [adresse, titre] of [['/confidentialite', 'Confidentialité'], ['/suppression-compte', /Supprimer votre compte/]]) {
+  test(`${adresse} se lit sans rien d’autre`, async ({ page }) => {
+    const incidents = []
+    page.on('pageerror', e => incidents.push(e.message))
+    await page.goto(adresse)
+    await expect(page.getByRole('heading', { level: 1, name: titre })).toBeVisible()
+    await expect(page.getByRole('link', { name: /Revenir dans Œno/ })).toBeVisible()
+    expect(incidents).toEqual([])
+  })
+}

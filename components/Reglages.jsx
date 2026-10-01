@@ -202,6 +202,12 @@ export default function Reglages({ onClose }) {
           <Bloc Icone={Bell} titre="Notifications">
             <ReglagesNotifications />
           </Bloc>
+
+          <p className="text-center text-[11px] text-anthracite-400 pt-2">
+            <a href="/confidentialite" className="underline hover:text-wine-texte">Confidentialité</a>
+            {' · '}
+            <a href="/suppression-compte" className="underline hover:text-wine-texte">Supprimer mon compte</a>
+          </p>
         </div>
       </div>
     </div>

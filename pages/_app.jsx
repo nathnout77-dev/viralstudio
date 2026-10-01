@@ -35,7 +35,10 @@ export default function App({ Component, pageProps }) {
   }, [])
 
   return (
-    <div className={`${inter.variable} ${fraunces.variable} ${tangerine.variable}`}>
+    // `font-sans` ici, et pas seulement dans l'écran principal : les variables
+    // de police vivent sur ce div, que le <body> ne voit pas. Toute page hors
+    // de pages/index (connexion, confidentialité…) retombait sinon en Times.
+    <div className={`${inter.variable} ${fraunces.variable} ${tangerine.variable} font-sans`}>
       {/* Le filet : un plantage d'affichage montre un écran de secours,
           jamais un écran noir (components/LimiteErreurs). */}
       <LimiteErreurs>

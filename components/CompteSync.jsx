@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { X, CloudOff, Cloud, Mail, LogOut, Check, RefreshCw, Smartphone, CloudDownload, UserCircle2, Download, Upload, ShieldCheck } from 'lucide-react'
+import { X, CloudOff, Cloud, Mail, LogOut, Check, RefreshCw, Smartphone, CloudDownload, UserCircle2, Download, Upload, ShieldCheck, Trash2 } from 'lucide-react'
 import { supabase, cloudDisponible } from '../lib/supabase'
 import CaveAmisSection, { pushPartageSnapshot } from './CaveAmis'
 import ReglagesNotifications from './ReglagesNotifications'
@@ -183,6 +183,79 @@ function ExportRestoreLocal({ compact = false }) {
         </label>
       </div>
       {err && <p className="text-xs text-red-700 mt-2.5">{err}</p>}
+    </div>
+  )
+}
+
+// ── Supprimer son compte ─────────────────────────────────────────────────────
+// Exigé par Google Play : la suppression doit se faire DANS l'app. Deux temps,
+// parce que l'opération est sans retour, et une phrase honnête sur ce qu'elle
+// touche : le compte et la sauvegarde en ligne — pas ce qui vit sur cet
+// appareil (le local d'abord). Une case propose d'effacer aussi celui-là.
+function SupprimerCompte({ onSupprime }) {
+  const [etape, setEtape]       = useState('repos') // repos | confirmer | encours
+  const [aussiLocal, setAussiLocal] = useState(false)
+  const [erreur, setErreur]     = useState(null)
+
+  const supprimer = async () => {
+    setEtape('encours'); setErreur(null)
+    try {
+      const { error } = await supabase.rpc('supprimer_mon_compte')
+      if (error) throw error
+      await supabase.auth.signOut().catch(() => {})
+      if (aussiLocal) {
+        for (const cle of Object.values(SYNC_KEYS)) {
+          try { localStorage.removeItem(cle) } catch { /* stockage indisponible */ }
+        }
+      }
+      onSupprime(aussiLocal)
+    } catch (e) {
+      // Fonction absente = migration 006 pas encore posée : on le dit, au lieu
+      // d'un « réessayez » qui échouerait toujours.
+      const absente = /function|does not exist|PGRST202/i.test(String(e?.message || e?.code || ''))
+      setErreur(absente
+        ? 'La suppression n’est pas encore activée sur le serveur. Écrivez-nous : nous la ferons pour vous.'
+        : 'La suppression a échoué. Vérifiez votre connexion et réessayez.')
+      setEtape('confirmer')
+    }
+  }
+
+  if (etape === 'repos') {
+    return (
+      <button
+        onClick={() => setEtape('confirmer')}
+        className="mt-6 mx-auto flex items-center gap-1.5 text-[11px] text-anthracite-400 hover:text-red-700 underline cursor-pointer"
+      >
+        <Trash2 size={11} /> Supprimer mon compte
+      </button>
+    )
+  }
+
+  return (
+    <div className="mt-6 p-4 rounded-2xl border border-red-700/30 bg-red-700/5" role="group" aria-label="Supprimer mon compte">
+      <p className="text-sm font-semibold text-anthracite-900 mb-1">Supprimer définitivement votre compte ?</p>
+      <p className="text-xs text-anthracite-600 leading-relaxed mb-3">
+        Votre compte, votre sauvegarde en ligne, vos amitiés et vos messages seront
+        effacés, sans retour possible. Ce qui est enregistré sur cet appareil reste
+        là, sauf si vous cochez la case.
+      </p>
+      <label className="flex items-center gap-2 text-xs text-anthracite-700 mb-4 cursor-pointer">
+        <input type="checkbox" checked={aussiLocal} onChange={e => setAussiLocal(e.target.checked)} />
+        Effacer aussi ma cave et mon journal de cet appareil
+      </label>
+      {erreur && <p className="text-xs text-red-700 mb-3" role="alert">{erreur}</p>}
+      <div className="flex gap-2">
+        <button
+          onClick={supprimer}
+          disabled={etape === 'encours'}
+          className="flex-1 py-2.5 rounded-full text-xs font-semibold text-white bg-red-700 hover:bg-red-800 disabled:opacity-60 cursor-pointer"
+        >
+          {etape === 'encours' ? 'Suppression…' : 'Oui, tout supprimer'}
+        </button>
+        <button onClick={() => { setEtape('repos'); setErreur(null) }} className="btn-ghost text-xs flex-1 justify-center">
+          Annuler
+        </button>
+      </div>
     </div>
   )
 }
@@ -493,6 +566,12 @@ export default function CompteSync({ onClose, extraSection = null }) {
               <ReglagesNotifications compact />
               <ExportRestoreLocal compact />
               {extraSection}
+              <SupprimerCompte onSupprime={local => {
+                lastPushed.current = null
+                setSyncState('idle')
+                toast('Votre compte a été supprimé')
+                if (local) window.location.reload()
+              }} />
             </div>
           )}
         </div>
