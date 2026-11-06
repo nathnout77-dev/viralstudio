@@ -343,8 +343,12 @@ Trois pièges connus :
 - Chromium sans tête refuse les notifications quoi qu'on autorise — d'où
   `channel: 'chromium'` dans `playwright.config.mjs`.
 - Le navigateur est **déjà installé** (`/opt/pw-browsers`). `@playwright/test`
-  est épinglé à la version qui correspond à ce build ; ne pas lancer
-  `playwright install`, ne pas relever la version à la légère.
+  est épinglé, **sans `^`**, à la version qui correspond à ce build (1.63.0 ↔
+  Chromium 1243) ; ne pas lancer `playwright install`, ne pas relever la
+  version à la légère. Quand l'environnement change de navigateur, **tous** les
+  parcours échouent en quelques millisecondes (« Executable doesn't exist ») :
+  ce n'est pas l'app. Lire `ls /opt/pw-browsers`, puis chercher la version dont
+  le `browsers.json` de `playwright-core` cite la même révision de chromium.
 - Compiler ne prouve rien. Le bug des envies compilait parfaitement.
 
 ### L'audit du clavier
