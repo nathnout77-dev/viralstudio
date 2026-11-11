@@ -362,10 +362,19 @@ export default function App() {
     setEditWine(w)
   }, [])
 
+  // Retirer une bouteille, c'est l'avoir ouverte : on le retient sur la fiche
+  // (`ouvertes`, `derniereOuverture`). Une bouteille finie ne s'efface donc
+  // plus — elle passe dans « Bues », d'où l'on peut la racheter ou la noter.
+  // Rangé dans la bouteille elle-même : l'historique suit la cave dans la
+  // sauvegarde sans clé nouvelle à synchroniser.
   const updateQty = useCallback((wine, delta) => {
     const newQty = Math.max(0, wine.quantity + delta)
-    setWines(prev => prev.map(w => w.id === wine.id ? { ...w, quantity: newQty } : w))
-    if (detailWine?.id === wine.id) setDetailWine(prev => ({ ...prev, quantity: newQty }))
+    const trace = delta < 0 && newQty < wine.quantity
+      ? { ouvertes: (wine.ouvertes || 0) + (wine.quantity - newQty), derniereOuverture: Date.now() }
+      : {}
+    setWines(prev => prev.map(w => w.id === wine.id ? { ...approprier(w), quantity: newQty, ...trace } : w))
+    if (detailWine?.id === wine.id) setDetailWine(prev => ({ ...prev, quantity: newQty, ...trace }))
+    if (delta < 0 && newQty === 0 && wine.quantity > 0) toast('Dernière bouteille ouverte — elle rejoint vos bouteilles bues')
   }, [detailWine])
 
   // Étoile « préféré » sur un vin de la cave, persisté dans oenotheque-v2

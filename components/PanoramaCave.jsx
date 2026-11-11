@@ -199,6 +199,8 @@ export default function PanoramaCave({ wines }) {
     return () => cancelAnimationFrame(t)
   }, [])
 
+  const ouvertes = useMemo(() => wines.reduce((s, w) => s + (w.demo ? 0 : (w.ouvertes || 0)), 0), [wines])
+
   const stats = useMemo(() => {
     const totalBottles = wines.reduce((s, w) => s + (w.quantity || 0), 0)
 
@@ -281,6 +283,8 @@ export default function PanoramaCave({ wines }) {
               ? `${stats.sansPrix} bouteille${stats.sansPrix > 1 ? 's' : ''} sans prix, non comptée${stats.sansPrix > 1 ? 's' : ''}`
               : 'selon vos prix d’achat' },
           { Icon: Wine,          label: 'À boire cette année', value: stats.readyCount, sub: 'dans leur fenêtre idéale' },
+          // N'apparaît qu'une fois la première bouteille ouverte : un zéro n'apprend rien.
+          ...(ouvertes > 0 ? [{ Icon: Wine, label: 'Bouteilles ouvertes', value: ouvertes, sub: 'depuis que vous tenez votre cave' }] : []),
           { Icon: Hourglass,     label: 'Âge moyen',        value: stats.avgAge ? `${stats.avgAge.toFixed(1).replace('.', ',')} ans` : '—', sub: 'depuis le millésime' },
           { Icon: CalendarClock, label: 'Prix moyen',       value: stats.avgPrice ? `${Math.round(stats.avgPrice)} €` : '—', sub: 'par bouteille' },
         ].map(({ Icon, label, value, sub }, i) => (

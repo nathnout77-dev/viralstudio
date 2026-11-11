@@ -6,6 +6,7 @@ import PanoramaCave from './PanoramaCave'
 import ProfilGout from './ProfilGout'
 import EnviesView, { useEnvies } from './Envies'
 import RollingNumber from './RollingNumber'
+import { estAPoint, aOuvrirSansTarder, libelleDeGarde } from '../lib/apogee'
 
 const TYPES = ['Tous', 'Rouge', 'Blanc', 'Rosé', 'Effervescent', 'Liquoreux']
 const TYPE_MAP = { 'Rouge':'red', 'Blanc':'white', 'Rosé':'rosé', 'Effervescent':'sparkling', 'Liquoreux':'sweet' }
@@ -43,6 +44,7 @@ export default function CaveView({ wines, caveDemo = false, onCommencerCave, onS
   const [view, setView]       = useState('grid')
   const [showFilters, setShowFilters] = useState(false)
   const [sub, setSub]         = useState('cave')
+  const [montre, setMontre]   = useState('cave') // 'cave' | 'bues'
 
   const favCount = useMemo(() => wines.filter(w => w.favori).length, [wines])
 
@@ -52,7 +54,7 @@ export default function CaveView({ wines, caveDemo = false, onCommencerCave, onS
   }, [journalPrefill])
 
   const filtered = useMemo(() => {
-    let list = wines.filter(w => {
+    let list = wines.filter(w => (w.quantity || 0) > 0).filter(w => {
       const q = search.toLowerCase()
       const matchSearch = !q || w.name.toLowerCase().includes(q) || w.domain?.toLowerCase().includes(q)
                           || w.appellation?.toLowerCase().includes(q) || String(w.vintage).includes(q)
@@ -79,13 +81,17 @@ export default function CaveView({ wines, caveDemo = false, onCommencerCave, onS
     total:    wines.reduce((s, w) => s + w.quantity, 0),
     value:    wines.reduce((s, w) => s + (w.estimatedValue || 0) * w.quantity, 0),
     regions:  new Set(wines.map(w => w.region).filter(Boolean)).size,
-    ready:    wines.filter(w => {
-      const y = new Date().getFullYear()
-      const from = w.vintage + (w.drinkFrom || 2)
-      const to   = w.vintage + (w.drinkUntil || 8)
-      return y >= from && y <= to
-    }).length,
+    ready:    wines.filter(w => estAPoint(w)).length,
   }), [wines])
+
+  // Les bouteilles déjà ouvertes, la plus récente d'abord. Une bouteille à
+  // zéro sans trace d'ouverture (finie avant que l'historique existe) y
+  // figure aussi : sans cela elle disparaîtrait des deux listes.
+  const bues = useMemo(() => wines
+    .filter(w => !w.demo && ((w.ouvertes || 0) > 0 || (w.quantity || 0) <= 0))
+    .sort((a, b) => (b.derniereOuverture || 0) - (a.derniereOuverture || 0)), [wines])
+  const pressees = useMemo(() => aOuvrirSansTarder(wines), [wines])
+  useEffect(() => { if (montre === 'bues' && bues.length === 0) setMontre('cave') }, [montre, bues.length])
 
   const hasFilters = typeFilter !== 'Tous' || region !== 'Toutes' || favOnly
 
@@ -161,6 +167,33 @@ export default function CaveView({ wines, caveDemo = false, onCommencerCave, onS
             Commencer ma cave
           </button>
         </div>
+      )}
+      {/* À ouvrir sans tarder : une cave n'est pas un coffre, un vin oublié
+          s'y abîme. C'est un repère d'appellation, pas un verdict — dit tel quel. */}
+      {pressees.length > 0 && (
+        <section className="card p-4 mb-6 border-gold-500/40 bg-gold-500/5" aria-label="À ouvrir sans tarder">
+          <p className="text-sm font-semibold text-anthracite-900 mb-0.5">
+            <span aria-hidden="true">⏳ </span>À ouvrir sans tarder
+          </p>
+          <p className="text-[11px] text-anthracite-500 leading-relaxed mb-3">
+            Leur meilleure période se termine. Repère tiré de l’appellation : une
+            grande cuvée ou une bonne cave peuvent tenir plus longtemps.
+          </p>
+          <ul className="space-y-1.5">
+            {pressees.slice(0, 4).map(({ vin }) => (
+              <li key={vin.id}>
+                <button onClick={() => onSelect(vin)} className="w-full flex items-center justify-between gap-3 text-left px-3 py-2.5 rounded-xl bg-carte border border-anthracite-900/10 hover:border-gold-500/60 transition-colors cursor-pointer">
+                  <span className="min-w-0">
+                    <span className="block text-sm font-semibold text-anthracite-900 truncate">{vin.name} {vin.vintage}</span>
+                    <span className="block text-[11px] text-anthracite-500">{libelleDeGarde(vin)} · {vin.quantity} btle{vin.quantity > 1 ? 's' : ''}</span>
+                  </span>
+                  <ChevronDown size={14} className="-rotate-90 flex-shrink-0 text-anthracite-400" />
+                </button>
+              </li>
+            ))}
+          </ul>
+          {pressees.length > 4 && <p className="text-[11px] text-anthracite-500 mt-2">… et {pressees.length - 4} autre{pressees.length - 4 > 1 ? 's' : ''}.</p>}
+        </section>
       )}
       {/* Stats strip */}
       {wines.length === 0 ? (
@@ -285,6 +318,37 @@ export default function CaveView({ wines, caveDemo = false, onCommencerCave, onS
         </div>
       )}
 
+      {bues.length > 0 && (
+        <div className="flex gap-2 mb-4" role="group" aria-label="Ce que vous regardez">
+          {[['cave', 'En cave'], ['bues', `Bues (${bues.length})`]].map(([id, nom]) => (
+            <button key={id} onClick={() => setMontre(id)} aria-pressed={montre === id}
+                    className={`px-3.5 py-2 rounded-full text-xs font-semibold border transition-all cursor-pointer ${montre === id ? 'bg-wine-800 text-cream border-wine-800' : 'bg-carte text-anthracite-600 border-anthracite-200 hover:border-wine-300'}`}>
+              {nom}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {montre === 'bues' ? (
+        <ul className="flex flex-col gap-2">
+          {bues.map(w => (
+            <li key={w.id} className="card p-4 flex items-center gap-3">
+              <button onClick={() => onSelect(w)} className="min-w-0 flex-1 text-left cursor-pointer">
+                <span className="block text-sm font-semibold text-anthracite-900 truncate">{w.name} {w.vintage}</span>
+                <span className="block text-[11px] text-anthracite-500">
+                  {(w.ouvertes || 0) > 0 ? `${w.ouvertes} ouverte${w.ouvertes > 1 ? 's' : ''}` : 'Terminée'}
+                  {w.derniereOuverture ? ` · la dernière le ${new Date(w.derniereOuverture).toLocaleDateString('fr-FR')}` : ''}
+                  {(w.quantity || 0) > 0 ? ` · il en reste ${w.quantity}` : ''}
+                </span>
+              </button>
+              <button onClick={() => onUpdateQty(w, 1)} className="btn-ghost text-xs flex-shrink-0" aria-label={`Racheter ${w.name} : remettre une bouteille en cave`}>
+                <Plus size={12} /> Rachetée
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : (
+      <>
       {/* Results */}
       <div className="flex items-center justify-between mb-3">
         <p className="text-xs text-anthracite-400">
@@ -320,6 +384,8 @@ export default function CaveView({ wines, caveDemo = false, onCommencerCave, onS
             />
           ))}
         </div>
+      )}
+      </>
       )}
       </>
       )}
