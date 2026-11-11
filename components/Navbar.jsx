@@ -33,7 +33,7 @@ const MODE_BADGE = {
   expert:   { Icon: GraduationCap, label: 'Expert' },
 }
 
-export default function Navbar({ view, setView, total, caveDemo = false, mode, prenom, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte, onMenu, onRecherche, onAvatar }) {
+export default function Navbar({ view, setView, total, caveDemo = false, mode, prenom, onProfil, onAdd, onLanding, onCeSoir, onScan, onCompte, onMenu, onRecherche, onAvatar, onAssistant }) {
   const badge = MODE_BADGE[mode]
   const { breatheClass, settle } = useCtaBreathe() // halo du CTA « Ce soir ? »
   const ceSoir = () => { settle(); onCeSoir?.() }
@@ -123,13 +123,20 @@ export default function Navbar({ view, setView, total, caveDemo = false, mode, p
               <Utensils size={12} />
               Ce soir ?
             </button>
+            {/* L'assistant, à demeure dans la barre. Il flottait en bulle
+                par-dessus le contenu — jusqu'à tomber sur « Garder » dans
+                Découvrir. Sur téléphone il prend la place du raccourci
+                « Ce soir ? », qui reste à un geste : c'est le premier choix
+                de l'onglet « Trouver », juste en dessous. */}
             <button
-              onClick={ceSoir}
-              className={`sm:hidden w-11 h-11 flex items-center justify-center rounded-full text-cream cursor-pointer active:scale-[0.95] transition-transform duration-300 ${breatheClass}`}
+              onClick={onAssistant}
+              data-tour="assistant"
+              title="Œno, votre assistant"
+              aria-label="Ouvrir l'assistant Œno"
+              className={`w-11 h-11 flex items-center justify-center rounded-full text-cream cursor-pointer active:scale-[0.95] transition-transform duration-300 ${breatheClass}`}
               style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
-              aria-label="Ce soir, je bois quoi ?"
             >
-              <Utensils size={15} />
+              <Sparkles size={16} className="text-gold-400" />
             </button>
 
             {/* Add */}

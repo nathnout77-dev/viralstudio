@@ -26,7 +26,7 @@ import { estVinDemo, approprier, caveEncoreDemo } from '../lib/demo'
 // Ma cave), Scan étant une fenêtre et non une vue : glisser vers la gauche mène
 // à l'onglet de gauche, ce que l'utilisateur voit à l'écran.
 const SWIPE_ORDER = ['decouvrir', 'trouver', 'cave']
-import { Sparkles, NotebookPen, Wine as WineIcon, X } from 'lucide-react'
+import { NotebookPen, Wine as WineIcon, X } from 'lucide-react'
 
 // Écrans qu'on n'ouvre pas à la première seconde : chargés à la demande, pour
 // que le premier affichage ne paie pas le guide, l'école et les formulaires.
@@ -68,7 +68,7 @@ const TOUR_STEPS = [
   { selector: '[data-tour="scan"]',      placement: 'top',    title: '📷 Scanner une étiquette', text: 'En rayon ? Photographiez l’étiquette : Œno décode le vin, même inconnu, et le garde pour vous.' },
   { selector: '[data-tour="trouver"]',   placement: 'top',    title: '🔍 Trouver un vin',       text: 'Quoi boire ce soir, pour un plat, un budget… deux questions et Œno vous guide.' },
   { selector: '[data-tour="menu"]',      placement: 'top',    title: '🧭 Tout Œno',             text: 'Bibliothèque, carte des vignobles, école du vin… tout le reste est dans ce menu.' },
-  { selector: '[data-tour="assistant"]', placement: 'top',    title: '✨ Votre sommelier Œno',  text: 'Une question sur le vin ? Œno répond à tout moment, en langage simple.' },
+  { selector: '[data-tour="assistant"]', placement: 'bottom',    title: '✨ Votre sommelier Œno',  text: 'Une question sur le vin ? Œno répond à tout moment, en langage simple.' },
 ]
 
 // ─── Vins de démonstration ────────────────────────────────────────────────────
@@ -518,6 +518,7 @@ export default function App() {
           onMenu={() => setShowMenu(true)}
           onRecherche={() => setShowRecherche(true)}
           onAvatar={() => setShowAvatar(true)}
+          onAssistant={() => setShowAssistant(true)}
         />
 
         {/* Desktop ≥ lg : sidebar fixe noire, signature luxe */}
@@ -713,18 +714,6 @@ export default function App() {
 
         {/* Bulle flottante Assistant Œno — masquée en pleine conversation
             Social, où elle chevauche le champ de saisie du message. */}
-        {!showAssistant && !amiOuvert && view !== 'decouvrir' && (
-          <button
-            onClick={() => setShowAssistant(true)}
-            data-tour="assistant"
-            className="lg:hidden fixed bottom-20 md:bottom-6 right-3 md:right-6 z-40 w-12 h-12 rounded-full flex items-center justify-center text-cream shadow-wine-lg hover:scale-110 active:scale-95 transition-all cursor-pointer animate-pulse-gold"
-            style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
-            aria-label="Ouvrir l'assistant Œno"
-            title="Œno, votre assistant"
-          >
-            <Sparkles size={19} className="text-gold-400" />
-          </button>
-        )}
       </div>
     </FournisseurCave>
   )

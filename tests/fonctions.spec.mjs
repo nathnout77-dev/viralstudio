@@ -144,3 +144,18 @@ test('une cave tenue dans un tableur entre dans Œno sans rien remplacer', async
   expect(cave[1]).toMatchObject({ type: 'rosé', vintage: 2024, quantity: 6, estimatedValue: 12.5 })
   expect(incidents).toEqual([])
 })
+
+test('sans son cerveau distant, l’assistant répond quand même aux questions simples', async ({ page }) => {
+  // Les routes IA répondent « pas de clé » en test : c'est exactement le cas
+  // d'un utilisateur hors-ligne ou d'un quota dépassé.
+  await page.setViewportSize({ width: 390, height: 844 })
+  await amorce(page)
+  await page.goto('/')
+  // L'assistant vit dans la barre du haut : plus de bulle par-dessus le contenu.
+  await page.getByRole('button', { name: 'Ouvrir l\'assistant Œno' }).click()
+  const fenetre = page.getByRole('dialog').last()
+  await fenetre.getByPlaceholder(/Posez votre question/).fill('Quel vin avec une raclette ?')
+  await fenetre.getByRole('button', { name: 'Envoyer' }).click()
+  await expect(fenetre.getByText(/Trois pistes qui marchent bien/)).toBeVisible({ timeout: 20000 })
+  await expect(fenetre.getByText(/sans connexion à mon cerveau distant/)).toBeVisible()
+})

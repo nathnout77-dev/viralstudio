@@ -9,6 +9,7 @@ import { normaliser } from '../data/aromes'
 import JaugesGout from './JaugesGout'
 import WineVisuel from './WineVisuel'
 import useModalBehavior from '../lib/useModal'
+import { repondreLocalement } from '../lib/assistantLocal'
 import { askIA } from '../lib/askIA'
 import { FicheVin } from './BibliothequeView'
 import { bouteilleDepuisVin } from '../lib/ajoutCave'
@@ -471,9 +472,13 @@ export default function AssistantView({ onClose, onAddWine }) {
 
       setMessages(prev => [...prev, { role: 'assistant', content: answer }])
     } catch (e) {
+      // Avant d'avouer qu'on est injoignable : la base d'Œno sait répondre
+      // seule aux questions simples (lib/assistantLocal). Les raccourcis du
+      // menu gardent leur propre contenu de secours, plus riche.
+      const locale = menuId ? null : repondreLocalement(text)
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: e?.rateLimited
+        content: locale ? locale : e?.rateLimited
           ? `Vous êtes en pleine forme, et moi j'ai besoin de reprendre mon souffle une petite minute ! Le temps de reposer mes idées, reposez-moi votre question dans quelques instants — en attendant, l'onglet **Vins** et le **Guide** sont là.`
           : fallbackFor(menuId, profil),
         fallback: true,
