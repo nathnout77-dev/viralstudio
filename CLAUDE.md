@@ -260,6 +260,24 @@ Portugal) ne sont pas suivis, et le test les exclut explicitement.
 
 ---
 
+## La cave vit dans la bouteille
+
+Trois choses qu'on aurait pu ranger ailleurs, et qui sont volontairement
+portées par chaque bouteille de `oenotheque-v2` — donc sauvegardées et
+synchronisées avec elle, sans clé nouvelle :
+
+- **L'historique** : `ouvertes` et `derniereOuverture`, posés par `updateQty`
+  quand on retire une bouteille. Une bouteille à zéro ne s'efface pas, elle
+  passe dans « Bues ». La liste principale ne montre que `quantity > 0`.
+- **La fenêtre de garde** se calcule (`lib/apogee.js`), elle ne se stocke pas.
+  Un seul calcul pour le compteur, la suggestion du jour et l'alerte.
+- **La provenance** (`provenance: 'import'` pour un tableur).
+
+Le référentiel national (un demi-mégaoctet) ne doit **pas** entrer dans le
+premier chargement : la bibliothèque le charge par `import()` après coup.
+L'importer en tête d'un composant chargé d'emblée coûte 50 kB au démarrage —
+c'est arrivé, `npm run build` l'affiche (« First Load JS » de `/`, ~256 kB).
+
 ## Publier sur le Play Store
 
 Œno y entre comme **TWA** (`twa/`), une coque qui ouvre le site : le code
@@ -330,7 +348,10 @@ Ce que couvre le filet, et pourquoi :
 | `guide.test.js` | Le guide unifié : les questions ne se posent que si elles servent, et **les directions se composent** (le palais affine le conseil du soir). |
 | `arrivee.spec.mjs` | La première minute d'un débutant : le questionnaire laisse cinq vins en envies (pas un cul-de-sac), la cave d'exemple se dit décor et s'écarte, Échap ne ferme que la fenêtre du dessus. La porte des 18 ans passe avant tout et « non » ferme vraiment. |
 | `connexion.spec.mjs` | Le point d'arrivée du lien reçu par email n'est **jamais** un écran mort ; les pages confidentialité et suppression se lisent seules. |
-| `fonctions.spec.mjs` | Au bout du geste, pas seulement à l'ouverture : une note s'écrit et se retrouve, une leçon se termine et compte, les portes de la landing mènent où elles le disent, et « Découvrir » ne range rien au prix d'Œno. |
+| `fonctions.spec.mjs` | Au bout du geste, pas seulement à l'ouverture : journal, leçon, portes de la landing, « Découvrir », bouteilles bues et pressées, import d'un tableur, assistant sans réseau, niveau dans les réglages, bibliothèque complète. |
+| `apogee.test.js` | La fenêtre de garde et l'alerte « à ouvrir sans tarder » : jamais sur une bouteille d'exemple ou finie, jamais inventée sans millésime. |
+| `tableur.test.js` | L'aller-retour CSV ne perd rien ; un fichier tenu ailleurs se lit ; **aucun prix ni millésime inventé** pour combler un vide. |
+| `assistantLocal.test.js` | Sans réseau, l'assistant répond aux questions simples depuis la base — et **se tait** sur le reste plutôt que de répondre à côté. |
 | `clavier.spec.mjs` | Le focus n'échappe **jamais** d'une fenêtre ouverte, y revient, et repart d'où il venait. Toute fenêtre porte un nom annonçable. |
 | `ficheActions.test.jsx` | La fiche tient ses actions du **contexte**, pas de qui l'ouvre — les dix-huit chemins d'un coup, et ceux à venir. |
 | `askIA.test.js` | La chaîne de repli Groq → Gemini → Claude, et le fait qu'**une clé absente ne bloque rien**. |

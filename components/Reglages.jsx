@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { X, Sun, Moon, Monitor, Volume2, Bell, Smartphone, Type, Home } from 'lucide-react'
+import { X, Sun, Moon, Monitor, Volume2, Bell, Smartphone, Type, Home, GraduationCap } from 'lucide-react'
 import { lireReglages, ecrireReglage, REGLAGES_EVENT } from '../lib/reglages'
 import { glouglou } from '../lib/son'
 import ReglagesNotifications from './ReglagesNotifications'
@@ -30,6 +30,16 @@ const ECRANS = [
   { id: 'cave',      label: 'Ma cave',   detail: 'Vos bouteilles' },
   { id: 'hub',       label: 'Accueil',   detail: 'Le hub' },
   { id: 'decouvrir', label: 'Découvrir', detail: 'Au geste' },
+]
+
+// Le niveau n'est pas un réglage d'appareil : il vit dans le profil, donc il
+// suit le compte (SYNC_KEYS). Il est montré ici parce que c'est ici qu'on le
+// cherche — jusqu'alors il ne se changeait qu'en refaisant tout le
+// questionnaire, et rien ne disait dans quel mode on était.
+const NIVEAUX = [
+  { id: 'debutant', label: 'Je débute',    detail: 'Mots simples' },
+  { id: 'amateur',  label: 'Des repères',  detail: 'On approfondit' },
+  { id: 'expert',   label: 'Connaisseur',  detail: 'Sans détour' },
 ]
 
 function Bloc({ Icone, titre, detail, children }) {
@@ -90,7 +100,7 @@ function Bascule({ actif, onChange, libelle }) {
   )
 }
 
-export default function Reglages({ onClose }) {
+export default function Reglages({ onClose, niveau = null, onNiveau, onRefaireProfil }) {
   useModalBehavior(onClose)
   const [r, setR] = useState(null)
 
@@ -157,6 +167,26 @@ export default function Reglages({ onClose }) {
           </Bloc>
 
           {/* ── Écran d'ouverture ─────────────────────────────────────────── */}
+          {onNiveau && (
+            <Bloc Icone={GraduationCap} titre="Mon niveau"
+                  detail="Œno adapte son vocabulaire et ses conseils. Vos goûts, eux, ne changent pas.">
+              <Choix
+                options={NIVEAUX} valeur={niveau} onChoisir={onNiveau}
+                rendu={o => (
+                  <>
+                    <span className="text-[12px] font-bold">{o.label}</span>
+                    <span className="text-[10px] opacity-70">{o.detail}</span>
+                  </>
+                )}
+              />
+              {onRefaireProfil && (
+                <button onClick={onRefaireProfil} className="mt-3 text-[11px] text-anthracite-500 underline hover:text-wine-texte cursor-pointer">
+                  Refaire le questionnaire de goût
+                </button>
+              )}
+            </Bloc>
+          )}
+
           <Bloc Icone={Home} titre="À l'ouverture"
                 detail="L'écran sur lequel Œno démarre.">
             <Choix

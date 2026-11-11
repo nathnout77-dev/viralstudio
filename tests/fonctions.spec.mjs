@@ -159,3 +159,34 @@ test('sans son cerveau distant, l’assistant répond quand même aux questions 
   await expect(fenetre.getByText(/Trois pistes qui marchent bien/)).toBeVisible({ timeout: 20000 })
   await expect(fenetre.getByText(/sans connexion à mon cerveau distant/)).toBeVisible()
 })
+
+test('le niveau se voit et se change dans les réglages, sans toucher aux goûts', async ({ page }) => {
+  await page.addInitScript(() => {
+    sessionStorage.setItem('landing-seen', '1')
+    localStorage.setItem('oeno-tour-v1', '1')
+    localStorage.setItem('oeno-hub-tour', '1')
+    if (!localStorage.getItem('oeno-profil')) {
+      localStorage.setItem('oeno-profil', JSON.stringify({ niveau: 'debutant', gouts: { sucre: 'Sec et frais' } }))
+    }
+  })
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Réglages', exact: true }).click()
+  const reglages = page.getByRole('dialog', { name: 'Réglages' })
+  await expect(reglages.getByRole('button', { name: /Je débute/ })).toHaveAttribute('aria-pressed', 'true')
+  await reglages.getByRole('button', { name: /Connaisseur/ }).click()
+  await expect(reglages.getByRole('button', { name: /Connaisseur/ })).toHaveAttribute('aria-pressed', 'true')
+  const profil = await page.evaluate(() => JSON.parse(localStorage.getItem('oeno-profil')))
+  expect(profil).toEqual({ niveau: 'expert', gouts: { sucre: 'Sec et frais' } })
+})
+
+test('la bibliothèque couvre tout le catalogue, une page à la fois', async ({ page }) => {
+  await amorce(page)
+  await page.addInitScript(() => localStorage.setItem('oeno-profil', JSON.stringify({ niveau: 'amateur', gouts: {} })))
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Bibliothèque', exact: true }).click()
+  // Un vin que seules les appellations du référentiel connaissent.
+  await page.locator('main').getByPlaceholder(/Cherchez un vin/).fill('Blanquette de Limoux')
+  await expect(page.locator('main').getByText('Blanquette de Limoux').first()).toBeVisible()
+  await page.locator('main').getByPlaceholder(/Cherchez un vin/).fill('')
+  await expect(page.getByRole('button', { name: /Afficher la suite — encore \d+ vins/ })).toBeVisible()
+})

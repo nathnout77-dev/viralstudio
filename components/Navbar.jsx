@@ -49,7 +49,7 @@ export default function Navbar({ view, setView, total, caveDemo = false, mode, p
             <AvatarOeno size={36} prenom={prenom} onClick={onAvatar} />
             <button onClick={onLanding} className="text-left cursor-pointer group">
               <div className="font-serif text-lg text-anthracite-950 tracking-wide leading-none transition-colors duration-300 group-hover:text-wine-texte">Œno</div>
-              <div className="text-[9px] text-gold-600 uppercase tracking-[0.2em] mt-1">{caveDemo ? 'Cave d\u2019exemple' : `${total} bouteille${total > 1 ? 's' : ''} en cave`}</div>
+              <div className="text-[9px] text-gold-600 uppercase tracking-[0.2em] mt-1 whitespace-nowrap">{caveDemo ? 'Cave d\u2019exemple' : `${total} bouteille${total > 1 ? 's' : ''}`}</div>
             </button>
           </div>
 

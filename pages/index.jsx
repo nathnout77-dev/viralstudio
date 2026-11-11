@@ -276,6 +276,15 @@ export default function App() {
 
   const redoProfil = useCallback(() => setShowOnboarding(true), [])
 
+  // Changer de niveau sans refaire le questionnaire : les goûts restent.
+  const changerNiveau = useCallback(niveau => {
+    setProfil(prev => {
+      const suivant = { gouts: {}, ...(prev || {}), niveau }
+      try { localStorage.setItem('oeno-profil', JSON.stringify(suivant)) } catch { /* stockage indisponible */ }
+      return suivant
+    })
+  }, [])
+
   useEffect(() => {
     if (ready) localStorage.setItem('oenotheque-v2', JSON.stringify(wines))
   }, [wines, ready])
@@ -645,7 +654,14 @@ export default function App() {
         {friendCode && <CaveAmieViewer code={friendCode} onClose={closeFriendCave} />}
         {showCompte && <CompteSync onClose={() => setShowCompte(false)} />}
         {showAvatar && <AvatarEditeur onClose={() => setShowAvatar(false)} prenom={profil?.prenom} />}
-        {showReglages && <Reglages onClose={() => setShowReglages(false)} />}
+        {showReglages && (
+          <Reglages
+            onClose={() => setShowReglages(false)}
+            niveau={mode}
+            onNiveau={changerNiveau}
+            onRefaireProfil={() => { setShowReglages(false); setShowOnboarding(true) }}
+          />
+        )}
         {showPitch && (
           <PitchOeno
             onClose={() => setShowPitch(false)}

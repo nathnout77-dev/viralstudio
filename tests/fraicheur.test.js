@@ -66,3 +66,19 @@ describe('les fiches ne conseillent pas un millésime dépassé', () => {
     expect(futurs).toEqual([])
   })
 })
+
+describe('le référentiel national suit le guide', () => {
+  // Ses 419 vins tiraient leurs millésimes d'une table figée vers 2021, hors
+  // de portée des tests ci-dessus : « Découvrir » proposait par défaut un vin
+  // de cinq ans. Ils puisent maintenant dans le guide tenu à jour.
+  it('un vin du référentiel ne propose pas un millésime plus vieux que ceux de sa région', async () => {
+    const { VINS_REFERENTIEL } = await import('../lib/vinsReferentiel')
+    const an = new Date().getFullYear()
+    const dernier = region => Math.max(0, ...WINE_DB.filter(w => w.region === region).map(w => w.bonsMilsimes?.at(-1) || 0))
+    const enRetard = VINS_REFERENTIEL
+      .filter(v => dernier(v.region) >= an - 2)                 // région suivie et à jour
+      .filter(v => (v.bonsMilsimes.at(-1) || 0) < an - 2)
+      .map(v => `${v.appellation} (${v.region}) → ${v.bonsMilsimes.at(-1)}`)
+    expect(enRetard).toEqual([])
+  })
+})

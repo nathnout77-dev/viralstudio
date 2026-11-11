@@ -201,6 +201,17 @@ function DecouverteFiche({ dec, onClose, onDelete }) {
 // Index stable dans WINE_DB → numérotation de collection (« N° 07 »)
 const WINE_INDEX = new Map(WINE_DB.map((w, i) => [w.id, i]))
 
+// Le référentiel écrit « Vallée de la Loire » là où les fiches décodées
+// disent « Loire ». Pour filtrer, on range chaque vin sous le nom que
+// l'utilisateur connaît déjà, quand il y en a un.
+const sansDecor = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\b(vallee|de|du|la)\b/g, ' ').replace(/\s+/g, ' ').trim()
+const CANON = new Map(REGIONS_LIST.map(r => [sansDecor(r), r]))
+const regionDe = w => CANON.get(sansDecor(w.region || '')) || w.region
+
+// Sept cents tuiles d'un coup figeraient un téléphone : on en montre une
+// page, et la suite à la demande.
+const PAGE = 48
+
 const TYPE_FILTERS = [
   { value: 'all',       label: 'Tous' },
   { value: 'red',       label: 'Rouge' },
@@ -734,6 +745,20 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
   // Mode Débutant : vins « faciles à aimer » proposés en premier (filtre modifiable)
   const [diff, setDiff]       = useState(mode === 'debutant' ? 'facile' : 'all')
   const [region, setRegion]   = useState('all')
+  const [limite, setLimite]   = useState(PAGE)
+  // Les fiches décodées d'abord, tout de suite ; le référentiel national
+  // (un demi-mégaoctet) arrive juste après, sans peser sur l'ouverture de
+  // l'app. S'il ne vient pas, la bibliothèque reste celle d'avant.
+  const [catalogue, setCatalogue] = useState(WINE_DB)
+  useEffect(() => {
+    let vivant = true
+    import('../lib/vinsReferentiel').then(m => { if (vivant) setCatalogue(m.CATALOGUE) }).catch(() => {})
+    return () => { vivant = false }
+  }, [])
+  const regionsCompletes = useMemo(
+    () => [...new Set(catalogue.map(regionDe).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'fr')),
+    [catalogue],
+  )
   const [selected, setSelected] = useState(null)
   const [added, setAdded]     = useState(new Set())
   // Collection (WINE_DB) vs bibliothèque personnelle « Mes découvertes »
@@ -752,7 +777,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
     setSelectedDec(null)
   }
 
-  const filtered = useMemo(() => WINE_DB.filter(w => {
+  const filtered = useMemo(() => catalogue.filter(w => {
     if (search) {
       const q = search.toLowerCase()
       const hit = w.appellation.toLowerCase().includes(q)
@@ -763,7 +788,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
     }
     if (type !== 'all' && w.type !== type) return false
     if (diff !== 'all' && w.difficulte !== diff) return false
-    if (region !== 'all' && w.region !== region) return false
+    if (region !== 'all' && regionDe(w) !== region) return false
     if (budget !== 'all') {
       const p = w.prixMoyen
       if (budget === '0-10'  && p > 10) return false
@@ -772,7 +797,10 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
       if (budget === '50+'   && p <= 50) return false
     }
     return true
-  }), [search, type, budget, diff, region])
+  }), [catalogue, search, type, budget, diff, region])
+
+  // Un nouveau filtre repart de la première page.
+  useEffect(() => { setLimite(PAGE) }, [search, type, budget, diff, region])
 
   const handleAdd = (wine, millesime, prix) => {
     onAddWine?.(bouteilleDepuisVin(wine, millesime, { prix }))
@@ -789,7 +817,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
         <div className="flex-1 min-w-0">
           <span className="eyebrow mb-1">La collection</span>
           <h2 className="section-title">Bibliothèque des Vins</h2>
-          <p className="section-sub">{WINE_DB.length} appellations décodées pour vous — cliquez pour tout comprendre</p>
+          <p className="section-sub">{catalogue.length} appellations : {WINE_DB.length} décodées en détail, puis tout le référentiel national</p>
         </div>
         <button
           onClick={() => setShowComparateur(true)}
@@ -809,7 +837,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
             onglet === 'collection' ? 'bg-wine-800 text-cream shadow-wine' : 'bg-carte text-anthracite-600 border border-anthracite-200 hover:border-wine-300'
           }`}
         >
-          <Library size={13} /> La collection <span className="opacity-70">({WINE_DB.length})</span>
+          <Library size={13} /> La collection <span className="opacity-70">({catalogue.length})</span>
         </button>
         <button
           onClick={() => setOnglet('decouvertes')}
@@ -882,7 +910,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
             {[
               { value: budget, set: setBudget, options: BUDGET_FILTERS, label: 'Filtrer par budget' },
               { value: diff,   set: setDiff,   options: DIFF_FILTERS, label: 'Filtrer par difficulté' },
-              { value: region, set: setRegion, options: [{ value: 'all', label: 'Toutes régions' }, ...REGIONS_LIST.map(r => ({ value: r, label: r }))], label: 'Filtrer par région' },
+              { value: region, set: setRegion, options: [{ value: 'all', label: 'Toutes régions' }, ...regionsCompletes.map(r => ({ value: r, label: r }))], label: 'Filtrer par région' },
             ].map(({ value, set, options, label }, i) => (
               <div key={i} className="relative flex-shrink-0 lg:w-full">
                 <select
@@ -905,7 +933,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
         {/* Contenu */}
         <div className="flex-1 min-w-0">
           <p className="hidden lg:block text-xs text-anthracite-400 font-medium mb-4">
-            {filtered.length} vin{filtered.length > 1 ? 's' : ''} sur {WINE_DB.length}
+            {filtered.length} vin{filtered.length > 1 ? 's' : ''} sur {catalogue.length}
           </p>
 
           {/* Grille */}
@@ -915,11 +943,20 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
               <p className="text-anthracite-500 text-sm">Aucun vin ne correspond — élargissez vos filtres.</p>
             </div>
           ) : (
+            <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
-              {filtered.map((w, i) => (
-                <WineTile key={w.id} wine={w} variant="collection" index={WINE_INDEX.get(w.id) ?? i} onOpen={setSelected} />
+              {filtered.slice(0, limite).map((w, i) => (
+                <WineTile key={w.id} wine={w} variant="collection" index={WINE_INDEX.get(w.id) ?? WINE_DB.length + i} onOpen={setSelected} />
               ))}
             </div>
+            {filtered.length > limite && (
+              <div className="text-center mt-6">
+                <button onClick={() => setLimite(l => l + PAGE)} className="btn-ghost text-xs">
+                  Afficher la suite — encore {filtered.length - limite} vin{filtered.length - limite > 1 ? 's' : ''}
+                </button>
+              </div>
+            )}
+            </>
           )}
         </div>
       </div>

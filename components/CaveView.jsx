@@ -80,8 +80,9 @@ export default function CaveView({ wines, caveDemo = false, onCommencerCave, onS
   const stats = useMemo(() => ({
     total:    wines.reduce((s, w) => s + w.quantity, 0),
     value:    wines.reduce((s, w) => s + (w.estimatedValue || 0) * w.quantity, 0),
-    regions:  new Set(wines.map(w => w.region).filter(Boolean)).size,
-    ready:    wines.filter(w => estAPoint(w)).length,
+    // Une bouteille finie ne compte ni pour les régions, ni pour « à boire ».
+    regions:  new Set(wines.filter(w => (w.quantity || 0) > 0).map(w => w.region).filter(Boolean)).size,
+    ready:    wines.filter(w => (w.quantity || 0) > 0 && estAPoint(w)).length,
   }), [wines])
 
   // Les bouteilles déjà ouvertes, la plus récente d'abord. Une bouteille à
