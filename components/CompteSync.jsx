@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { X, CloudOff, Cloud, Mail, LogOut, Check, RefreshCw, Smartphone, CloudDownload, UserCircle2, Download, Upload, ShieldCheck, Trash2 } from 'lucide-react'
+import { X, CloudOff, Cloud, Mail, LogOut, Check, RefreshCw, Smartphone, CloudDownload, UserCircle2, Download, Upload, ShieldCheck, Trash2, Table } from 'lucide-react'
 import { supabase, cloudDisponible } from '../lib/supabase'
 import CaveAmisSection, { pushPartageSnapshot } from './CaveAmis'
 import ReglagesNotifications from './ReglagesNotifications'
@@ -7,6 +7,7 @@ import useModalBehavior from '../lib/useModal'
 import { decisionFusion } from '../lib/fusion'
 import { sansDemo } from '../lib/demo'
 import { toast } from './Toast'
+import { caveVersCsv, csvVersCave } from '../lib/tableur'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Compte & synchronisation cloud — local-first.
@@ -142,6 +143,46 @@ function restaurerSauvegardeLocale(file, onDone) {
   reader.readAsText(file)
 }
 
+// ── La cave en tableur (lib/tableur.js) ──────────────────────────────────────
+const lireCave = () => {
+  try { const c = JSON.parse(localStorage.getItem(SYNC_KEYS.cave) || '[]'); return Array.isArray(c) ? c : [] } catch { return [] }
+}
+
+function exporterTableur() {
+  const cave = sansDemo(lireCave())
+  if (!cave.length) { toast('Votre cave est vide : rien à exporter'); return }
+  const url = URL.createObjectURL(new Blob([caveVersCsv(cave)], { type: 'text/csv;charset=utf-8' }))
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `oeno-cave-${new Date().toISOString().slice(0, 10)}.csv`
+  document.body.appendChild(a); a.click(); a.remove()
+  URL.revokeObjectURL(url)
+  toast(`${cave.length} vin${cave.length > 1 ? 's' : ''} exporté${cave.length > 1 ? 's' : ''}`)
+}
+
+// Les bouteilles importées s'AJOUTENT à la cave : rien n'est remplacé, une
+// erreur de fichier ne peut donc rien faire perdre. Les bouteilles d'exemple,
+// elles, s'effacent — comme au premier vrai ajout.
+async function importerTableur(fichier, rendre) {
+  try {
+    const octets = await fichier.arrayBuffer()
+    // Excel enregistre souvent en Windows-1252 : lu en UTF-8, « Rosé »
+    // deviendrait « Ros� ». On essaie l'UTF-8 strict, puis on se replie.
+    let texte
+    try { texte = new TextDecoder('utf-8', { fatal: true }).decode(octets) }
+    catch { texte = new TextDecoder('windows-1252').decode(octets) }
+    const { bouteilles, ignorees } = csvVersCave(texte)
+    if (!bouteilles.length) {
+      rendre('Aucune bouteille reconnue. Le fichier doit être un CSV avec une ligne de titres, dont une colonne « Nom » (ou « Appellation »).')
+      return
+    }
+    localStorage.setItem(SYNC_KEYS.cave, JSON.stringify([...sansDemo(lireCave()), ...bouteilles]))
+    rendre(null, bouteilles.length, ignorees)
+  } catch {
+    rendre('Fichier illisible. Enregistrez votre tableau au format CSV, puis réessayez.')
+  }
+}
+
 function ExportRestoreLocal({ compact = false }) {
   const [err, setErr] = useState(null)
   const inputId = compact ? 'restore-file-compact' : 'restore-file'
@@ -154,6 +195,19 @@ function ExportRestoreLocal({ compact = false }) {
     restaurerSauvegardeLocale(file, (error, reload) => {
       if (error) { setErr(error); return }
       if (reload) window.location.reload()
+    })
+  }
+
+  const handleTableur = e => {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    setErr(null)
+    importerTableur(file, (error, ajoutees, ignorees) => {
+      if (error) { setErr(error); return }
+      // Le message survit au rechargement, qui remet la cave à l'écran.
+      try { sessionStorage.setItem('oeno-import', JSON.stringify({ ajoutees, ignorees })) } catch { /* tant pis pour le message */ }
+      window.location.reload()
     })
   }
 
@@ -182,7 +236,20 @@ function ExportRestoreLocal({ compact = false }) {
           <input id={inputId} type="file" accept="application/json" onChange={handleFile} className="hidden" />
         </label>
       </div>
-      {err && <p className="text-xs text-red-700 mt-2.5">{err}</p>}
+      <p className="text-[11px] text-anthracite-400 leading-relaxed mt-4 mb-2.5">
+        Votre cave en tableur (CSV, lisible par Excel et Numbers). Importer ajoute
+        des bouteilles à votre cave, sans rien remplacer.
+      </p>
+      <div className="flex flex-wrap gap-2.5">
+        <button type="button" onClick={exporterTableur} className="btn-ghost text-xs px-3.5 py-2">
+          <Table size={12} /> Exporter ma cave en tableur
+        </button>
+        <label htmlFor={`${inputId}-csv`} className="btn-ghost text-xs px-3.5 py-2 cursor-pointer">
+          <Upload size={12} /> Importer un tableur
+          <input id={`${inputId}-csv`} type="file" accept=".csv,text/csv,text/plain" onChange={handleTableur} className="hidden" />
+        </label>
+      </div>
+      {err && <p className="text-xs text-red-700 mt-2.5" role="alert">{err}</p>}
     </div>
   )
 }

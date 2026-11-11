@@ -218,6 +218,15 @@ export default function App() {
       // Nouveau visiteur sans profil : on propose l'onboarding tout de suite.
       if (!loadProfil()) setShowOnboarding(true)
     }
+    // Retour d'un import de tableur (CompteSync) : dire ce qui est entré.
+    try {
+      const imp = JSON.parse(sessionStorage.getItem('oeno-import') || 'null')
+      if (imp) {
+        sessionStorage.removeItem('oeno-import')
+        setView('cave')
+        setTimeout(() => toast(`${imp.ajoutees} bouteille${imp.ajoutees > 1 ? 's' : ''} importée${imp.ajoutees > 1 ? 's' : ''}${imp.ignorees ? ` · ${imp.ignorees} ligne${imp.ignorees > 1 ? 's' : ''} sans nom ignorée${imp.ignorees > 1 ? 's' : ''}` : ''}`), 600)
+      }
+    } catch { /* message perdu, cave intacte */ }
     setMajeur(Boolean(lireReglages().majeur))
     setReady(true)
   }, [])

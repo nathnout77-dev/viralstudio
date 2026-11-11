@@ -121,3 +121,26 @@ test('une bouteille finie passe dans « Bues », et une bouteille pressée s’a
   expect(muscadet.ouvertes).toBe(1)
   expect(incidents).toEqual([])
 })
+
+test('une cave tenue dans un tableur entre dans Œno sans rien remplacer', async ({ page }) => {
+  const incidents = []
+  page.on('pageerror', e => incidents.push(e.message))
+  await amorce(page)
+  await page.addInitScript(() => {
+    if (!localStorage.getItem('oenotheque-v2')) {
+      localStorage.setItem('oenotheque-v2', JSON.stringify([{ id: 'z', name: 'Déjà là', vintage: 2021, quantity: 1, type: 'red' }]))
+    }
+  })
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Compte', exact: true }).click()
+  const compte = page.getByRole('dialog', { name: /Mon compte/ })
+  // Windows-1252, comme Excel l'enregistre : « Rosé » doit rester « Rosé ».
+  const csv = Buffer.from('Nom;Couleur;Mill\xe9sime;Quantit\xe9;Prix\r\nTavel;Ros\xe9;2024;6;12,50\r\n;Rouge;2020;1;\r\n', 'latin1')
+  await compte.locator('input[type="file"][accept*="csv"]').setInputFiles({ name: 'cave.csv', mimeType: 'text/csv', buffer: csv })
+
+  await expect(page.getByText(/1 bouteille importée · 1 ligne sans nom ignorée/)).toBeVisible()
+  const cave = await page.evaluate(() => JSON.parse(localStorage.getItem('oenotheque-v2')))
+  expect(cave.map(w => w.name)).toEqual(['Déjà là', 'Tavel'])
+  expect(cave[1]).toMatchObject({ type: 'rosé', vintage: 2024, quantity: 6, estimatedValue: 12.5 })
+  expect(incidents).toEqual([])
+})
