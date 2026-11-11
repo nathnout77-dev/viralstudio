@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useMemo, useEffect } from 'react'
-import { Heart, X, RotateCcw, Info, Plus, MapPin } from 'lucide-react'
+import { Heart, X, RotateCcw, Info, MapPin } from 'lucide-react'
 import { DIFFICULTE_CONFIG, rapportQualitePrix } from '../data/wineDatabase'
 import { CATALOGUE } from '../lib/vinsReferentiel'
 import { diversifyByRegion } from '../lib/suggestions'
@@ -114,7 +114,7 @@ function Carte({ wine, style, dragging, onPointerDown, refCarte, decision }) {
   )
 }
 
-export default function DecouvrirSwipe({ onFiche, onAddWine }) {
+export default function DecouvrirSwipe({ onFiche }) {
   // Pile diversifiée par région : deux Bordeaux d'affilée, jamais.
   const pile = useMemo(() => {
     const base = CATALOGUE.filter(w => w.prixMoyen && !w.grandPublic)
@@ -224,7 +224,7 @@ export default function DecouvrirSwipe({ onFiche, onAddWine }) {
   return (
     <div className="max-w-md mx-auto animate-fade-in">
       {/* Pile de cartes */}
-      <div className="relative w-full" style={{ aspectRatio: '3 / 4.15' }}>
+      <div className="relative w-full" style={{ aspectRatio: '3 / 4.15', maxHeight: 'calc(100dvh - 330px)', minHeight: 300 }}>
         {suivant && (
           <div className="absolute inset-0 rounded-3xl overflow-hidden scale-[0.955] translate-y-2.5 opacity-70 pointer-events-none">
             <div className="absolute inset-0" style={{ background: `linear-gradient(160deg, ${suivant.color} 0%, ${suivant.color}dd 45%, #17130f 130%)` }} />
@@ -241,54 +241,35 @@ export default function DecouvrirSwipe({ onFiche, onAddWine }) {
         />
       </div>
 
-      {/* Actions — le geste d'abord, les boutons pour ceux qui préfèrent */}
-      <div className="flex items-center justify-center gap-5 mt-6">
-        <button
-          onClick={() => trancher(-1)}
-          aria-label="Passer ce vin"
-          className="w-14 h-14 rounded-full bg-carte border border-anthracite-900/12 flex items-center justify-center text-anthracite-400 hover:text-wine-texte hover:border-wine-300 active:scale-90 transition-all cursor-pointer shadow-card"
-        >
-          <X size={22} />
-        </button>
-        <button
-          onClick={() => onFiche?.(wine)}
-          aria-label="Voir la fiche complète"
-          className="w-12 h-12 rounded-full bg-carte border border-anthracite-900/12 flex items-center justify-center text-anthracite-400 hover:text-gold-700 hover:border-gold-400 active:scale-90 transition-all cursor-pointer shadow-card"
-        >
-          <Info size={19} />
-        </button>
-        {onAddWine && (
-          <button
-            onClick={() => {
-              onAddWine({
-                id: `${wine.id}-${Date.now()}`,
-                name: wine.appellation, domain: '', appellation: wine.appellation,
-                region: wine.region, type: wine.type, cepages: wine.cepages,
-                vintage: wine.bonsMilsimes?.[wine.bonsMilsimes.length - 1] || new Date().getFullYear() - 2,
-                quantity: 1, drinkFrom: wine.drinkFrom, drinkUntil: wine.drinkUntil,
-                serviceTemp: wine.serviceTemp, carafage: wine.carafage,
-                estimatedValue: wine.prixMoyen, foodPairings: wine.accords, notes: wine.enUneMot,
-              })
-              trancher(1)
-            }}
-            aria-label="Ajouter directement à ma cave"
-            className="w-12 h-12 rounded-full bg-carte border border-anthracite-900/12 flex items-center justify-center text-anthracite-400 hover:text-emerald-700 hover:border-emerald-300 active:scale-90 transition-all cursor-pointer shadow-card"
-          >
-            <Plus size={19} />
+      {/* Actions — le geste d'abord, les boutons pour ceux qui préfèrent.
+          Chaque bouton porte son nom : quatre ronds muets (✕ ⓘ + ♥)
+          obligeaient à deviner. Le « + » d'origine a disparu : il fabriquait
+          une bouteille à la main, au prix moyen d'Œno pris pour le prix payé,
+          et la doublait d'une envie. La fiche range la bouteille avec le
+          vrai prix, à un geste d'ici. */}
+      <div className="flex items-start justify-center gap-7 mt-6">
+        {[
+          { nom: 'Passer', aria: 'Passer ce vin', agir: () => trancher(-1), Icone: X,
+            rond: 'w-14 h-14 bg-carte border border-anthracite-900/12 text-anthracite-400 hover:text-wine-texte hover:border-wine-300 shadow-card' },
+          { nom: 'La fiche', aria: 'Voir la fiche complète', agir: () => onFiche?.(wine), Icone: Info,
+            rond: 'w-14 h-14 bg-carte border border-anthracite-900/12 text-anthracite-400 hover:text-gold-700 hover:border-gold-400 shadow-card' },
+          { nom: 'Garder', aria: 'Garder ce vin dans mes envies', agir: () => trancher(1), Icone: Heart, plein: true,
+            rond: 'w-14 h-14 text-cream shadow-wine' },
+        ].map(({ nom, aria, agir, Icone, rond, plein }) => (
+          <button key={nom} onClick={agir} aria-label={aria} className="group flex flex-col items-center gap-1.5 cursor-pointer">
+            <span
+              className={`${rond} rounded-full flex items-center justify-center group-active:scale-90 transition-all`}
+              style={plein ? { background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' } : undefined}
+            >
+              <Icone size={21} className={plein ? 'text-gold-400' : undefined} />
+            </span>
+            <span className="text-[11px] font-semibold text-anthracite-500" aria-hidden="true">{nom}</span>
           </button>
-        )}
-        <button
-          onClick={() => trancher(1)}
-          aria-label="Garder ce vin dans mes envies"
-          className="w-14 h-14 rounded-full flex items-center justify-center text-cream active:scale-90 transition-all cursor-pointer shadow-wine"
-          style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
-        >
-          <Heart size={22} className="text-gold-400" />
-        </button>
+        ))}
       </div>
 
       <p className="text-center text-[11px] text-anthracite-400 mt-4">
-        Glissez la carte · touchez-la pour tout savoir
+        Ou glissez la carte : à droite pour garder, à gauche pour passer
       </p>
     </div>
   )

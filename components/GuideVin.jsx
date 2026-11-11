@@ -114,7 +114,7 @@ export default function GuideVin({ mode, depart = null, onOpenBibliotheque }) {
   const Retour = ({ label = 'Retour' }) => (
     <button
       onClick={revenir}
-      className="flex items-center gap-1.5 text-xs font-semibold text-anthracite-500 hover:text-anthracite-900 transition-colors cursor-pointer mb-5"
+      className="flex items-center gap-1.5 min-h-[44px] -my-2 pr-3 text-xs font-semibold text-anthracite-500 hover:text-anthracite-900 transition-colors cursor-pointer mb-3"
     >
       <ChevronLeft size={14} /> {label}
     </button>

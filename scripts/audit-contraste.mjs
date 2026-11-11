@@ -60,7 +60,6 @@ const VUES = [
   ['Tout Œno',           clic('Tout Œno')],
   ['Ajouter un vin',     clic('Ajouter un vin')],
   // ── Accès par la grille ────────────────────────────────────────────────
-  ['Sommelier',          suite('Tout Œno', 'Sommelier')],
   ['Guide complet',      suite('Tout Œno', 'Guide complet')],
   ['Carte seule',        suite('Tout Œno', 'Carte')],
 ]

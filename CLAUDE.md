@@ -35,8 +35,8 @@ Next.js 14, **Pages Router**, PWA. Pas de TypeScript côté web.
 pages/index.jsx     Écran unique. Un état `view` commute entre les vues. Huit
                     d'entre elles sont les parcours affichés dans la barre
                     (hub, cave, decouvrir, trouver, social, vins, explorer,
-                    apprendre) ; s'y ajoutent carte, guide et sommelier,
-                    atteintes autrement. Les modales sont des états booléens.
+                    apprendre) ; s'y ajoutent carte et guide, atteintes
+                    autrement. Les modales sont des états booléens.
 pages/api/          Routes serveur : IA (claude, gemini, groq), scan,
                     recherche web (tavily), push.
 components/         65 composants. Un fichier = un écran ou un bloc.
@@ -169,6 +169,10 @@ Tout passe désormais par `components/GuideVin.jsx`, adossé à `lib/guide/` :
 Deux directions gardent leur écran, parce que leur résultat n'est pas une
 liste de bouteilles : le **budget** compose un panier, le **repas complet** un
 menu par service. Elles ont perdu leur porte d'entrée, pas leur spécialité.
+
+Entrer dans le guide sur une direction précise : `ouvrirGuide(direction)` dans
+`pages/index.jsx`. La landing passait par une clé de session que plus rien ne
+lisait ; ses boutons déposaient sur le choix général sans que rien ne casse.
 
 Ajouter une question = une entrée dans `QUESTIONS`. Ne pas rouvrir un
 questionnaire parallèle : c'est exactement ce qu'on vient de défaire.
@@ -326,6 +330,7 @@ Ce que couvre le filet, et pourquoi :
 | `guide.test.js` | Le guide unifié : les questions ne se posent que si elles servent, et **les directions se composent** (le palais affine le conseil du soir). |
 | `arrivee.spec.mjs` | La première minute d'un débutant : le questionnaire laisse cinq vins en envies (pas un cul-de-sac), la cave d'exemple se dit décor et s'écarte, Échap ne ferme que la fenêtre du dessus. La porte des 18 ans passe avant tout et « non » ferme vraiment. |
 | `connexion.spec.mjs` | Le point d'arrivée du lien reçu par email n'est **jamais** un écran mort ; les pages confidentialité et suppression se lisent seules. |
+| `fonctions.spec.mjs` | Au bout du geste, pas seulement à l'ouverture : une note s'écrit et se retrouve, une leçon se termine et compte, les portes de la landing mènent où elles le disent, et « Découvrir » ne range rien au prix d'Œno. |
 | `clavier.spec.mjs` | Le focus n'échappe **jamais** d'une fenêtre ouverte, y revient, et repart d'où il venait. Toute fenêtre porte un nom annonçable. |
 | `ficheActions.test.jsx` | La fiche tient ses actions du **contexte**, pas de qui l'ouvre — les dix-huit chemins d'un coup, et ceux à venir. |
 | `askIA.test.js` | La chaîne de repli Groq → Gemini → Claude, et le fait qu'**une clé absente ne bloque rien**. |
@@ -376,9 +381,9 @@ node scripts/audit-contraste.mjs sombre 3216
 node scripts/audit-contraste.mjs clair  3216
 ```
 
-Il ouvre **22 vues** — les huit parcours, les sous-onglets de Ma Cave, et les
+Il ouvre **21 vues** — les huit parcours, les sous-onglets de Ma Cave, et les
 modales (réglages, compte, recherche, assistant, ce soir, formulaire, grille,
-sommelier, guide, carte) — et mesure le contraste réel de **chaque texte
+guide, carte) — et mesure le contraste réel de **chaque texte
 affiché**, puis le confirme au pixel près sur une capture de l'élément : sans
 cela, un texte posé sur un calque frère est dénoncé à tort. Il regroupe par
 couleur fautive : c'est la cause qu'on veut voir, pas 2 300 occurrences.

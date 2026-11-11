@@ -72,3 +72,17 @@ describe('les fiches du catalogue sont exploitables', () => {
     expect(max).toBeLessThan(4000)
   })
 })
+
+describe('les chiffres annoncés', () => {
+  // Le manifeste, la fiche Play et les balises de partage annoncent un nombre
+  // de vins. Il a déjà valu 200, 240, 244 et 250 selon l'endroit, pour 284
+  // réels : on vérifie qu'aucune promesse ne dépasse la réalité.
+  it('ne promettent jamais plus de vins qu’il n’y en a', async () => {
+    const { readFileSync } = await import('node:fs')
+    for (const f of ['public/manifest.json', 'pages/_document.jsx', 'pages/index.jsx']) {
+      for (const [, n] of readFileSync(f, 'utf8').matchAll(/[Pp]lus de (\d+) (?:vins|appellations)/g)) {
+        expect(Number(n), `${f} annonce ${n}`).toBeLessThanOrEqual(WINE_DB.length)
+      }
+    }
+  })
+})

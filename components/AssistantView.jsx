@@ -299,7 +299,7 @@ function fallbackFor(menuId, profil) {
     return `## Mes suggestions pour vous\n` +
       picks.map(w => `- **${w.appellation}** (${w.region}, ~${w.prixMoyen}€) — ${w.pourQui}. À chercher chez : ${w.domaines[0]?.name || 'votre caviste'}.`).join('\n')
   }
-  return `Je n'arrive pas à joindre mon cerveau distant pour le moment. En attendant, explorez l'onglet **Vins** (plus de ${WINE_DB_TERROIR.length} appellations décodées) ou le **Guide** (millésimes, accords, lexique) — tout y est disponible hors-ligne !`
+  return `Je n'arrive pas à joindre mon cerveau distant pour le moment. En attendant, explorez l'onglet **Vins** (${WINE_DB.length} vins décodés) ou le **Guide** (millésimes, accords, lexique) — tout y est disponible hors-ligne !`
 }
 
 export default function AssistantView({ onClose, onAddWine }) {
@@ -704,7 +704,7 @@ export default function AssistantView({ onClose, onAddWine }) {
                 <Camera size={17} />
               </button>
               <input
-                className="flex-1 px-4 py-3 bg-carte border border-anthracite-200 rounded-2xl text-sm placeholder-anthracite-400 focus:outline-none focus:ring-2 focus:ring-gold-600/40 focus:border-gold-500 transition-all"
+                className="flex-1 min-w-0 px-4 py-3 bg-carte border border-anthracite-200 rounded-2xl text-sm placeholder-anthracite-400 focus:outline-none focus:ring-2 focus:ring-gold-600/40 focus:border-gold-500 transition-all"
                 placeholder="Posez votre question sur le vin…"
                 value={input}
                 onChange={e => setInput(e.target.value)}

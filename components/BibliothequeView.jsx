@@ -862,12 +862,12 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
         <aside className="lg:w-52 lg:flex-shrink-0 lg:sticky lg:top-10">
           {/* Filtres type */}
           <div className="hidden lg:block text-[10px] uppercase tracking-[0.2em] font-bold text-anthracite-400 mb-3">Couleur</div>
-          <div className="flex gap-2 flex-wrap mb-3 lg:flex-col lg:gap-1.5 lg:mb-6">
+          <div className="flex gap-2 mb-3 max-lg:overflow-x-auto max-lg:-mx-4 max-lg:px-4 sans-barre lg:flex-col lg:gap-1.5 lg:mb-6">
             {TYPE_FILTERS.map(f => (
               <button
                 key={f.value}
                 onClick={() => setType(f.value)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer lg:w-full lg:text-left lg:rounded-xl lg:px-3.5 lg:py-2 ${
+                className={`flex-shrink-0 px-3.5 py-2 rounded-full text-xs font-semibold border transition-all cursor-pointer lg:w-full lg:text-left lg:rounded-xl lg:px-3.5 lg:py-2 ${
                   type === f.value ? 'bg-wine-800 text-cream border-wine-800' : 'bg-carte text-anthracite-600 border-anthracite-200 hover:border-wine-300'
                 }`}
               >
@@ -878,13 +878,13 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
 
           {/* Filtres budget + difficulté + région */}
           <div className="hidden lg:block text-[10px] uppercase tracking-[0.2em] font-bold text-anthracite-400 mb-3">Affiner</div>
-          <div className="flex gap-2 flex-wrap mb-6 lg:flex-col lg:gap-2.5">
+          <div className="flex gap-2 mb-5 max-lg:overflow-x-auto max-lg:-mx-4 max-lg:px-4 sans-barre lg:flex-col lg:gap-2.5">
             {[
               { value: budget, set: setBudget, options: BUDGET_FILTERS, label: 'Filtrer par budget' },
               { value: diff,   set: setDiff,   options: DIFF_FILTERS, label: 'Filtrer par difficulté' },
               { value: region, set: setRegion, options: [{ value: 'all', label: 'Toutes régions' }, ...REGIONS_LIST.map(r => ({ value: r, label: r }))], label: 'Filtrer par région' },
             ].map(({ value, set, options, label }, i) => (
-              <div key={i} className="relative lg:w-full">
+              <div key={i} className="relative flex-shrink-0 lg:w-full">
                 <select
                   value={value}
                   onChange={e => set(e.target.value)}
@@ -896,7 +896,7 @@ export default function BibliothequeView({ onAddWine, mode, initialSearch = '', 
                 <ChevronDown size={11} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-anthracite-400 pointer-events-none" />
               </div>
             ))}
-            <span className="text-xs text-anthracite-400 self-center ml-auto font-medium lg:hidden">
+            <span className="flex-shrink-0 text-xs text-anthracite-400 self-center pl-1 font-medium lg:hidden">
               {filtered.length} vin{filtered.length > 1 ? 's' : ''}
             </span>
           </div>

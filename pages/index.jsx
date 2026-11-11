@@ -6,23 +6,17 @@ import usePiegeDeFocus from '../lib/focusModale'
 
 import Navbar           from '../components/Navbar'
 import Sidebar          from '../components/Sidebar'
-import WineDetail       from '../components/WineDetail'
-import WineForm         from '../components/WineForm'
 import CaveView         from '../components/CaveView'
 import BibliothequeView from '../components/BibliothequeView'
 import LandingPage      from '../components/LandingPage'
 import HubGuide         from '../components/HubGuide'
 import FilAriane        from '../components/FilAriane'
-import GuideVin         from '../components/GuideVin'
-import ParcoursApprendre from '../components/ParcoursApprendre'
-import ParcoursExplorer from '../components/ParcoursExplorer'
-import MenuGrille       from '../components/MenuGrille'
 import OnboardingProfil, { loadProfil } from '../components/OnboardingProfil'
 import PorteAge from '../components/PorteAge'
 import { removeEnvie } from '../components/Envies'
 import { toast } from '../components/Toast'
 import { normaliser } from '../data/aromes'
-import { WINE_DB_TERROIR } from '../data/wineDatabase'
+import { WINE_DB } from '../data/wineDatabase'
 import useSwipeNav from '../lib/useSwipeNav'
 import { lireReglages } from '../lib/reglages'
 import { estVinDemo, approprier, caveEncoreDemo } from '../lib/demo'
@@ -34,6 +28,15 @@ import { estVinDemo, approprier, caveEncoreDemo } from '../lib/demo'
 const SWIPE_ORDER = ['decouvrir', 'trouver', 'cave']
 import { Sparkles, NotebookPen, Wine as WineIcon, X } from 'lucide-react'
 
+// Écrans qu'on n'ouvre pas à la première seconde : chargés à la demande, pour
+// que le premier affichage ne paie pas le guide, l'école et les formulaires.
+// Le service worker les pré-cache tous : hors-ligne, rien ne manque.
+const WineDetail        = dynamic(() => import('../components/WineDetail'), { ssr: false })
+const WineForm          = dynamic(() => import('../components/WineForm'), { ssr: false })
+const GuideVin          = dynamic(() => import('../components/GuideVin'), { ssr: false })
+const ParcoursApprendre = dynamic(() => import('../components/ParcoursApprendre'), { ssr: false })
+const ParcoursExplorer  = dynamic(() => import('../components/ParcoursExplorer'), { ssr: false })
+const MenuGrille        = dynamic(() => import('../components/MenuGrille'), { ssr: false })
 const InteractiveMap = dynamic(() => import('../components/InteractiveMap'), { ssr: false })
 // Overlays lourds, chargés uniquement à l'ouverture (jamais au premier rendu)
 const ScanEtiquette  = dynamic(() => import('../components/ScanEtiquette'), { ssr: false })
@@ -125,11 +128,10 @@ const VUES = {
   trouver:   { titre: '🔍 Trouver un vin',        sousTitre: 'Quelques questions, et Œno vous conseille' },
   cave:      { titre: '🍾 Ma cave',                sousTitre: 'Bouteilles, dégustations, envies' },
   social:    { titre: '👥 Mes amis',               sousTitre: 'Caves partagées et discussions' },
-  vins:      { titre: '📚 La bibliothèque',        sousTitre: `${WINE_DB_TERROIR.length} vins décodés` },
+  vins:      { titre: '📚 La bibliothèque',        sousTitre: `${WINE_DB.length} vins décodés` },
   explorer:  { titre: '🗺️ Explorer les régions',   sousTitre: 'Carte, routes des vins, domaines' },
   apprendre: { titre: '🎓 Apprendre',              sousTitre: 'Votre parcours du vin' },
   carte:     { titre: '🗺️ Carte des vignobles',    sousTitre: 'Accès direct' },
-  sommelier: { titre: '🍷 Sommelier',              sousTitre: 'Goût-o-mètre · Budget · Dîner' },
   guide:     { titre: '📖 Guide complet',          sousTitre: 'Accords, millésimes, actualité…' },
 }
 
@@ -288,12 +290,17 @@ export default function App() {
     if (!loadProfil()) setShowOnboarding(true)
   }, [])
 
-  const openCeSoir = useCallback(() => {
+  // Entrer dans le guide sur une direction précise. La landing passait par une
+  // clé de session que plus personne ne lisait depuis la fusion des
+  // questionnaires : « Faire le test » et « Composer » déposaient sur le choix
+  // général au lieu du parcours promis.
+  const ouvrirGuide = useCallback((direction) => {
     sessionStorage.setItem('landing-seen', '1')
     setShowLanding(false)
-    setGuideDepart('ce-soir')
+    setGuideDepart(direction)
     setView('trouver')
   }, [])
+  const openCeSoir = useCallback(() => ouvrirGuide('ce-soir'), [ouvrirGuide])
 
   const openScan = useCallback(() => {
     sessionStorage.setItem('landing-seen', '1')
@@ -449,10 +456,10 @@ export default function App() {
       <>
         <Head>
           <title>Œno — Le vin, enfin simple</title>
-          <meta name="description" content="Vous n'y connaissez rien en vin ? Parfait. Œno traduit l'œnologie en langage humain : plus de 250 vins décodés, quiz de goût, carte des vignobles." />
+          <meta name="description" content="Vous n'y connaissez rien en vin ? Parfait. Œno traduit l'œnologie en langage humain : plus de 280 vins décodés, quiz de goût, carte des vignobles." />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
-        <LandingPage onEnter={enterApp} onTabChange={goTo} onCeSoir={openCeSoir} onScan={openScan} />
+        <LandingPage onEnter={enterApp} onTabChange={goTo} onCeSoir={openCeSoir} onGuide={ouvrirGuide} onScan={openScan} />
         {friendCode && <CaveAmieViewer code={friendCode} onClose={closeFriendCave} />}
         {showScan && (
           <ScanEtiquette
@@ -537,7 +544,7 @@ export default function App() {
             />
           )}
           {view === 'decouvrir' && (
-            <DecouvrirSwipe onFiche={setFicheVin} onAddWine={saveWine} />
+            <DecouvrirSwipe onFiche={setFicheVin} />
           )}
           {view === 'trouver' && (
             <GuideVin
@@ -583,7 +590,6 @@ export default function App() {
           {view === 'apprendre' && <ParcoursApprendre />}
           {/* Accès directs conservés pour les habitués (menu « Tout Œno ») */}
           {view === 'carte'     && <InteractiveMap onAddWine={saveWine} onNoter={noterDegustation} />}
-          {view === 'sommelier' && <GuideVin mode={mode} onOpenBibliotheque={() => goTo('vins')} />}
           {view === 'guide'     && <GuideView onAddWine={saveWine} />}
           </div>
         </main>
@@ -689,16 +695,16 @@ export default function App() {
 
         {/* Bulle flottante Assistant Œno — masquée en pleine conversation
             Social, où elle chevauche le champ de saisie du message. */}
-        {!showAssistant && !amiOuvert && (
+        {!showAssistant && !amiOuvert && view !== 'decouvrir' && (
           <button
             onClick={() => setShowAssistant(true)}
             data-tour="assistant"
-            className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-40 w-14 h-14 rounded-full flex items-center justify-center text-cream shadow-wine-lg hover:scale-110 active:scale-95 transition-all cursor-pointer animate-pulse-gold"
+            className="lg:hidden fixed bottom-20 md:bottom-6 right-3 md:right-6 z-40 w-12 h-12 rounded-full flex items-center justify-center text-cream shadow-wine-lg hover:scale-110 active:scale-95 transition-all cursor-pointer animate-pulse-gold"
             style={{ background: 'linear-gradient(135deg, #8c2f39, #5c0d22)' }}
             aria-label="Ouvrir l'assistant Œno"
             title="Œno, votre assistant"
           >
-            <Sparkles size={22} className="text-gold-400" />
+            <Sparkles size={19} className="text-gold-400" />
           </button>
         )}
       </div>

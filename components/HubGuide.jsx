@@ -4,7 +4,7 @@ import {
   ArrowRight, Sparkles, Lightbulb, Layers,
 } from 'lucide-react'
 import { computeSuggestionDuJour } from '../lib/suggestionDuJour'
-import { WINE_DB_TERROIR } from '../data/wineDatabase'
+import { WINE_DB } from '../data/wineDatabase'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HubGuide — le nouvel écran d'accueil. L'app ne présente plus des onglets
@@ -18,7 +18,7 @@ const INTENTIONS = [
   { id: 'decouvrir', titre: 'Découvrir',    texte: 'Au geste',                       emoji: '🍷', hero: true },
   { id: 'trouver',   titre: 'Trouver',      texte: '2 questions',                    emoji: '🔍', hero: true },
   { id: 'cave',      titre: 'Ma cave',      texte: 'Mes bouteilles',                 emoji: '🍾' },
-  { id: 'vins',      titre: 'Bibliothèque', texte: `${WINE_DB_TERROIR.length} vins`, emoji: '📚' },
+  { id: 'vins',      titre: 'Bibliothèque', texte: `${WINE_DB.length} vins`, emoji: '📚' },
   { id: 'explorer',  titre: 'Régions',      texte: 'Carte & routes',                 emoji: '🗺️' },
   { id: 'apprendre', titre: 'Apprendre',    texte: 'À mon rythme',                   emoji: '🎓' },
 ]

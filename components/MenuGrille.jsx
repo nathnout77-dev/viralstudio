@@ -21,7 +21,6 @@ const PARCOURS = [
 ]
 
 const CLASSIQUES = [
-  { id: 'sommelier', label: 'Sommelier',       Icon: Sparkles,   sous: 'Goût-o-mètre · Budget · Dîner' },
   { id: 'guide',     label: 'Guide complet',   Icon: BookOpen,   sous: 'Accords · Millésimes · Actualité' },
   { id: 'carte',     label: 'Carte seule',     Icon: GlassWater, sous: 'Vignobles & routes des vins' },
 ]

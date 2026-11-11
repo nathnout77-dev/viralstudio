@@ -631,3 +631,8 @@
    thèmes — le fond de l'attribution, blanc translucide, ne change pas. */
 .leaflet-control-attribution,
 .leaflet-control-attribution a { color: #006d99 !important; }
+
+/* Rangée qui défile horizontalement sans afficher sa barre : filtres et
+   rubans sur téléphone, où la barre mangerait la hauteur d'un pouce. */
+.sans-barre { scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.sans-barre::-webkit-scrollbar { display: none; }
