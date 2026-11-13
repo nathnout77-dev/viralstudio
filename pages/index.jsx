@@ -3,6 +3,7 @@ import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import { FournisseurCave } from '../lib/cave'
 import usePiegeDeFocus from '../lib/focusModale'
+import useRetourArriere from '../lib/retourArriere'
 
 import Navbar           from '../components/Navbar'
 import Sidebar          from '../components/Sidebar'
@@ -417,6 +418,9 @@ export default function App() {
 
   const total = wines.reduce((s, w) => s + w.quantity, 0)
   // Cave encore entièrement composée d'exemples : rien n'appartient au visiteur.
+  // Le bouton retour du téléphone ferme, puis recule, au lieu de quitter.
+  useRetourArriere(view, setView, ready && !showLanding && majeur === true)
+
   const caveDemo = caveEncoreDemo(wines)
 
   // « Commencer ma cave » : écarter le décor sans attendre le premier ajout.

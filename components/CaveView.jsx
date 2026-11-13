@@ -219,17 +219,22 @@ export default function CaveView({ wines, caveDemo = false, onCommencerCave, onS
         </div>
       ) : (
       <>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+      {/* Sur téléphone, une seule ligne serrée : en deux rangées de grandes
+          cartes, les compteurs remplissaient tout le premier écran et l'on
+          n'apercevait pas une bouteille sans faire défiler. */}
+      <div className="grid grid-cols-4 gap-2 sm:gap-3 mb-5 sm:mb-6">
         {[
-          { label: 'Bouteilles', value: stats.total,               sub: 'en cave' },
-          { label: 'Valeur totale',  value: `${stats.value.toLocaleString('fr')} €`, sub: 'vos prix d’achat' },
-          { label: 'Régions',    value: stats.regions,            sub: 'représentées' },
-          { label: 'À boire',    value: stats.ready,              sub: 'à l\'apogée' },
+          { label: 'Bouteilles', court: 'Btles',   value: stats.total,               sub: 'en cave' },
+          { label: 'Valeur totale', court: 'Valeur', value: `${Math.round(stats.value).toLocaleString('fr')} €`, sub: 'vos prix d’achat' },
+          { label: 'Régions',    court: 'Régions', value: stats.regions,            sub: 'représentées' },
+          { label: 'À boire',    court: 'À boire', value: stats.ready,              sub: 'à l\'apogée' },
         ].map(s => (
-          <div key={s.label} className="card p-4">
-            <div className="text-2xl font-semibold text-anthracite-900 font-serif">{s.value}</div>
-            <div className="text-xs text-anthracite-500 uppercase tracking-wide mt-0.5">{s.label}</div>
-            <div className="text-[10px] text-anthracite-400">{s.sub}</div>
+          <div key={s.label} className="card px-2 py-2.5 sm:p-4 text-center sm:text-left min-w-0">
+            <div className="text-[15px] sm:text-2xl font-semibold text-anthracite-900 font-serif whitespace-nowrap truncate">{s.value}</div>
+            <div className="text-[9px] sm:text-xs text-anthracite-500 uppercase tracking-wide mt-0.5 truncate">
+              <span className="sm:hidden">{s.court}</span><span className="hidden sm:inline">{s.label}</span>
+            </div>
+            <div className="hidden sm:block text-[10px] text-anthracite-400">{s.sub}</div>
           </div>
         ))}
       </div>

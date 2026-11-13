@@ -426,7 +426,15 @@ export default function CompteSync({ onClose, extraSection = null }) {
       // (limite d'envoi du mailer gratuit Supabase, inscriptions coupées…).
       const msg = String(err?.message || '').replace(/^\{\}$/, '')
       const status = err?.status || err?.code || ''
-      if (/rate limit|too many/i.test(msg) || status === 429) {
+      // Le serveur n'a pas répondu du tout. Rien à voir avec l'adresse saisie :
+      // l'ancien message (« vérifiez l'adresse ») envoyait chercher une faute
+      // de frappe qui n'existait pas. Cas vécu : le projet Supabase gratuit
+      // s'était mis en pause après une semaine sans visite.
+      if (/failed to fetch|networkerror|load failed|network request failed/i.test(msg) || (typeof navigator !== 'undefined' && navigator.onLine === false)) {
+        setError(typeof navigator !== 'undefined' && navigator.onLine === false
+          ? 'Vous êtes hors connexion. Votre cave reste disponible sur cet appareil ; la sauvegarde en ligne reprendra avec le réseau.'
+          : 'Le serveur de sauvegarde ne répond pas pour le moment — votre adresse n’est pas en cause. Votre cave reste disponible sur cet appareil. Réessayez dans quelques minutes.')
+      } else if (/rate limit|too many/i.test(msg) || status === 429) {
         setError('Limite d\'envoi d\'emails atteinte. Patientez une minute (ou une heure si ça persiste) puis réessayez.')
       } else if (/signup|not allowed|disabled/i.test(msg)) {
         setError('Les inscriptions par email sont désactivées côté serveur (Supabase → Authentication → Sign In / Up → Email).')

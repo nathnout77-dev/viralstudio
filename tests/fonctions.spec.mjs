@@ -190,3 +190,48 @@ test('la bibliothèque couvre tout le catalogue, une page à la fois', async ({ 
   await page.locator('main').getByPlaceholder(/Cherchez un vin/).fill('')
   await expect(page.getByRole('button', { name: /Afficher la suite — encore \d+ vins/ })).toBeVisible()
 })
+
+test('le bouton retour du téléphone ferme, puis recule, au lieu de quitter', async ({ page }) => {
+  // Œno est un écran unique : sans cela, « retour » sortait de l'application
+  // où qu'on soit — au milieu d'une fiche comme d'un formulaire.
+  const incidents = []
+  page.on('pageerror', e => incidents.push(e.message))
+  await page.setViewportSize({ width: 390, height: 844 })
+  await amorce(page)
+  await page.goto('/')
+  const barre = page.locator('nav.fixed.bottom-0')
+  await barre.getByRole('button', { name: 'Découvrir' }).click()
+  await barre.getByRole('button', { name: 'Trouver' }).click()
+  await expect(page.getByRole('heading', { name: /Qu’est-ce qu’on cherche/ })).toBeVisible()
+
+  // Une fenêtre, puis une seconde par-dessus.
+  await page.getByRole('button', { name: 'Recherche rapide' }).click()
+  const recherche = page.getByRole('dialog', { name: /Recherche/ })
+  await recherche.getByRole('textbox').first().fill('Chablis')
+  await recherche.locator('button').filter({ hasText: /Chablis/ }).first().click()
+  await expect(page.getByRole('dialog', { name: 'Fiche du vin' })).toBeVisible()
+
+  // Retour : la fiche se ferme, la recherche reste.
+  await page.goBack()
+  await expect(page.getByRole('dialog', { name: 'Fiche du vin' })).toHaveCount(0)
+  await expect(recherche).toBeVisible()
+  // Retour : la recherche se ferme, on est toujours sur « Trouver ».
+  await page.goBack()
+  await expect(page.getByRole('dialog')).toHaveCount(0)
+  await expect(page.getByRole('heading', { name: /Qu’est-ce qu’on cherche/ })).toBeVisible()
+  // Retour : la vue précédente.
+  await page.goBack()
+  await expect(page.getByRole('button', { name: 'Garder ce vin dans mes envies' })).toBeVisible()
+
+  // Fermer une fenêtre soi-même ne laisse pas d'entrée fantôme : un seul
+  // retour suffit ensuite pour changer de vue.
+  await page.getByRole('button', { name: 'Recherche rapide' }).click()
+  await expect(page.getByRole('dialog', { name: /Recherche/ })).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('dialog')).toHaveCount(0)
+  await page.waitForTimeout(300)
+  await page.goBack()
+  await expect(page.getByRole('button', { name: 'Garder ce vin dans mes envies' })).toHaveCount(0)
+  expect(new URL(page.url()).pathname).toBe('/')
+  expect(incidents).toEqual([])
+})

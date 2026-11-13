@@ -146,6 +146,12 @@ du dessus répond**. Chaque modale écoutait Échap pour son compte, et une
 fiche de vin ouverte par-dessus le questionnaire d'arrivée fermait les deux
 d'un coup.
 
+Le **bouton retour du téléphone** suit la même pile (`lib/retourArriere.js`,
+posé une fois lui aussi) : il ferme la fenêtre du dessus — en passant par
+Échap —, puis recule d'une vue, et ne quitte qu'à la toute première. Avant,
+il faisait sortir de l'app où qu'on soit. Une fenêtre qui ne se ferme pas à
+Échap lui échappe donc aussi.
+
 Mesurer : `node scripts/audit-clavier.mjs 3400` sur un build de production.
 
 ---
@@ -278,6 +284,20 @@ premier chargement : la bibliothèque le charge par `import()` après coup.
 L'importer en tête d'un composant chargé d'emblée coûte 50 kB au démarrage —
 c'est arrivé, `npm run build` l'affiche (« First Load JS » de `/`, ~256 kB).
 
+## La sauvegarde en ligne peut dormir
+
+Sur l'offre gratuite, Supabase met le projet **en pause après une semaine
+sans activité**. Toute connexion échoue alors en « Failed to fetch » — c'est
+arrivé, et l'app accusait l'adresse email saisie. Deux parades :
+
+- `pages/api/veille.js`, appelée chaque jour par Vercel (`vercel.json`), pose
+  une requête minuscule à la base. Elle repousse la pause, rien de plus.
+- `CompteSync.jsx` distingue la panne réseau des autres erreurs et dit que
+  l'adresse n'est pas en cause.
+
+Si la connexion retombe en panne partout : regarder d'abord l'état du projet
+Supabase (« INACTIVE » = en pause, à réveiller), avant de soupçonner le code.
+
 ## Publier sur le Play Store
 
 Œno y entre comme **TWA** (`twa/`), une coque qui ouvre le site : le code
@@ -348,7 +368,7 @@ Ce que couvre le filet, et pourquoi :
 | `guide.test.js` | Le guide unifié : les questions ne se posent que si elles servent, et **les directions se composent** (le palais affine le conseil du soir). |
 | `arrivee.spec.mjs` | La première minute d'un débutant : le questionnaire laisse cinq vins en envies (pas un cul-de-sac), la cave d'exemple se dit décor et s'écarte, Échap ne ferme que la fenêtre du dessus. La porte des 18 ans passe avant tout et « non » ferme vraiment. |
 | `connexion.spec.mjs` | Le point d'arrivée du lien reçu par email n'est **jamais** un écran mort ; les pages confidentialité et suppression se lisent seules. |
-| `fonctions.spec.mjs` | Au bout du geste, pas seulement à l'ouverture : journal, leçon, portes de la landing, « Découvrir », bouteilles bues et pressées, import d'un tableur, assistant sans réseau, niveau dans les réglages, bibliothèque complète. |
+| `fonctions.spec.mjs` | Au bout du geste, pas seulement à l'ouverture : journal, leçon, portes de la landing, « Découvrir », bouteilles bues et pressées, import d'un tableur, assistant sans réseau, niveau dans les réglages, bibliothèque complète., bouton retour du téléphone. |
 | `apogee.test.js` | La fenêtre de garde et l'alerte « à ouvrir sans tarder » : jamais sur une bouteille d'exemple ou finie, jamais inventée sans millésime. |
 | `tableur.test.js` | L'aller-retour CSV ne perd rien ; un fichier tenu ailleurs se lit ; **aucun prix ni millésime inventé** pour combler un vide. |
 | `assistantLocal.test.js` | Sans réseau, l'assistant répond aux questions simples depuis la base — et **se tait** sur le reste plutôt que de répondre à côté. |
